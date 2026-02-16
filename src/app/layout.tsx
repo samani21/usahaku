@@ -24,6 +24,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <meta title="Usahaku" />
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
