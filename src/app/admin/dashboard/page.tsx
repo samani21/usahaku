@@ -1,4 +1,4 @@
-import DashboardPage from '@/Components/Admin'
+import DashboardPage from '@/Components/Admin/Dashboard'
 import MainLayout from '@/Components/Layout/MainLayout'
 import React from 'react'
 
