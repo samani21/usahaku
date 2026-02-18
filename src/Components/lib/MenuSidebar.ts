@@ -32,7 +32,10 @@ export const menuSidebar: menuSide[] = [
                 label: 'Info Toko',
                 href: '/store'
             },
-
+            {
+                label: 'Produk',
+                href: '/products'
+            },
             {
                 label: 'Kategori',
                 href: '/categories'

@@ -1,5 +1,5 @@
 "use client"
-import { ChevronDown, HelpCircle, Settings, Wallet } from 'lucide-react'
+import { ChevronDown, HelpCircle, Settings } from 'lucide-react'
 import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { menuSidebar } from '../lib/MenuSidebar';
 import SidebarItem from './SidebarItem';

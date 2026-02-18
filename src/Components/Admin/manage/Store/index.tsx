@@ -212,7 +212,7 @@ export default function BusinessProfile() {
 
                                 <div className="col-span-1 md:col-span-2 flex flex-col gap-2">
                                     <Label>Deskripsi</Label>
-                                    <Textarea value={form.description} onChange={(e) => handleChange("description", e.target.value)} rows={4} />
+                                    <Textarea value={form.description ?? ''} onChange={(e) => handleChange("description", e.target.value)} rows={4} />
                                 </div>
 
                                 <div className="flex flex-col gap-2">
