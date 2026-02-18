@@ -1,4 +1,4 @@
-import { Gift, Globe, LayoutDashboard, Store } from "lucide-react";
+import { Database, Gift, Globe, LayoutDashboard, Store } from "lucide-react";
 import { ReactElement } from "react";
 
 interface child {
@@ -24,18 +24,18 @@ export const menuSidebar: menuSide[] = [
     },
 
     {
-        Icon: Gift,
-        label: "Produk",
-        href: '/product',
+        Icon: Database,
+        label: "Manage",
+        href: '/manage',
         child: [
             {
-                label: 'List',
-                href: '/list'
+                label: 'Info Toko',
+                href: '/store'
             },
 
             {
                 label: 'Kategori',
-                href: '/categorie'
+                href: '/categories'
             },
         ]
     },

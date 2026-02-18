@@ -61,7 +61,7 @@ const SidebarComponent = ({ isActivityDropdownOpen, setIsActivityDropdownOpen, i
                                     <div className={`${isOpen ? 'block' : 'hidden'} pl-8 pt-1 pb-1 space-y-1`}>
                                         {
                                             ms?.child?.map((c, i) => (
-                                                <button key={i} onClick={() => route?.push(`/admin${ms?.href}${c?.href}`)} className={`block p-2 w-full text-left rounded-lg text-sm ${pathname === `/admin${ms?.href}${c?.href}` ? 'text-blue-800 font-bold bg-blue-200' : 'text-gray-600'} hover:bg-gray-100 transition duration-150`}>{c?.label}</button>
+                                                <button key={i} onClick={() => route?.push(`/admin${ms?.href}${c?.href}`)} className={`block p-2 w-full text-left rounded-lg text-sm ${pathname === `/admin${ms?.href}${c?.href}` ? 'text-green-800 font-bold bg-green-200' : 'text-gray-600'} hover:bg-gray-100 transition duration-150`}>{c?.label}</button>
                                             ))
                                         }
                                     </div >

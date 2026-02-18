@@ -26,7 +26,7 @@ const SidebarItem = ({ Icon, label, isActive = false, onClick, count, children, 
                 <Icon className={`w-5 h-5 mr-3 ${iconColor}`} />
                 {label}
                 {count && (
-                    <span className="ml-auto bg-blue-500 text-white text-xs font-bold w-6 h-6 flex items-center justify-center rounded-full">
+                    <span className="ml-auto bg-green-500 text-white text-xs font-bold w-6 h-6 flex items-center justify-center rounded-full">
                         {count}
                     </span>
                 )}
