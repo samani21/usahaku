@@ -1,18 +1,19 @@
 'use client'
-
 import { useEffect, useRef, useState } from 'react'
 import { Icon } from '@iconify/react'
 
 type Props = {
     value?: string
     onChange?: (val: string) => void
-    prefix?: string
+    prefix?: string;
+    handleDelete: () => void;
 }
 
 export default function IconAutocomplete({
     value = '',
     onChange,
     prefix = 'mdi',
+    handleDelete
 }: Props) {
     const wrapperRef = useRef<HTMLDivElement>(null)
 
@@ -67,11 +68,10 @@ export default function IconAutocomplete({
 
     return (
         <div ref={wrapperRef} className="relative w-full">
-            <div className="flex items-center border rounded px-2">
-                {value && (
-                    <Icon icon={value} width={20} className="mr-2 text-gray-600" />
-                )}
-
+            <div className="grid items-center rounded space-y-1">
+                <label className="text-sm font-medium text-gray-800 uppercase font-semibold">
+                    Icon
+                </label>
                 <input
                     type="text"
                     value={search}
@@ -81,13 +81,18 @@ export default function IconAutocomplete({
                         setOpen(true)
                     }}
                     placeholder="Search icon..."
-                    className="w-full py-2 outline-none"
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-white text-gray-800 transition duration-150"
                 />
+                {value && (
+                    <div className='flex items-center justify-between'>
+                        <Icon icon={value} width={24} className="mr-2 text-gray-600" />
+                        <button type="button" className='text-sm text-red-500' onClick={handleDelete}>Hapus</button>
+                    </div>
+                )}
             </div>
-
             {/* DROPDOWN */}
             {open && (
-                <div className="absolute z-50 w-full max-h-64 overflow-auto bg-white border rounded mt-1 shadow">
+                <div className="absolute z-50 w-full bg-white border border-gray-200 rounded-lg mt-1 max-h-48 overflow-y-auto shadow-lg">
                     {loading && (
                         <div className="p-3 text-sm text-gray-500">
                             Loading...

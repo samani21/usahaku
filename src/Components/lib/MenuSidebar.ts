@@ -33,13 +33,14 @@ export const menuSidebar: menuSide[] = [
                 href: '/store'
             },
             {
-                label: 'Produk',
-                href: '/products'
-            },
-            {
                 label: 'Kategori',
                 href: '/categories'
             },
+            {
+                label: 'Produk',
+                href: '/products'
+            },
+
         ]
     },
     {

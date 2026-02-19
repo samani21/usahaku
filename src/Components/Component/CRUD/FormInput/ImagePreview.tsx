@@ -1,15 +1,17 @@
+import { Trash2 } from 'lucide-react';
 import React from 'react'
 
 type Props = {
     imageUrl: string | null;
     fileName: string | null | undefined;
+    handleDeleteImage?: () => void;
 }
 
-const ImagePreview = ({ imageUrl, fileName }: Props) => {
+const ImagePreview = ({ imageUrl, fileName, handleDeleteImage }: Props) => {
     if (!imageUrl) return null;
 
     return (
-        <div className="mt-2 p-3 bg-white border border-gray-300 rounded-lg shadow-sm flex items-center space-x-3">
+        <div className="mt-2 p-3 bg-white border border-gray-300 rounded-lg shadow-sm flex items-center space-x-3 relative">
             <div className="w-16 h-16 flex-shrink-0 rounded-md overflow-hidden bg-gray-200 flex items-center justify-center">
                 <img
                     src={imageUrl}
@@ -27,6 +29,9 @@ const ImagePreview = ({ imageUrl, fileName }: Props) => {
             <div>
                 <p className="text-sm font-medium text-gray-800 line-clamp-1">{fileName || "Gambar Terpilih"}</p>
                 <p className="text-xs text-green-600">Pratinjau Aktif</p>
+            </div>
+            <div className='text-red-500 absolute top-2 right-2 cursor-pointer' onClick={handleDeleteImage}>
+                <Trash2 />
             </div>
         </div>
     );
