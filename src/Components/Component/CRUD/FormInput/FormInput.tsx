@@ -132,11 +132,13 @@ const FormInput = ({
     /* AUTOCOMPLETE FILTER */
     /* ============================= */
     const filteredOptions = useMemo(() => {
+        if (!open) return [];
         if (!search) return options;
+
         return options.filter((opt) =>
             opt.label.toLowerCase().includes(search.toLowerCase())
         );
-    }, [search, options]);
+    }, [search, options, open]);
 
     /* ============================= */
     /* RENDER INPUT */
@@ -185,7 +187,10 @@ const FormInput = ({
                         type="text"
                         placeholder={`Cari ${label}`}
                         value={search}
-                        onFocus={() => setOpen(true)}
+                        onFocus={() => {
+                            setOpen(true);
+                            setSearch(""); // reset supaya semua opsi muncul
+                        }}
                         onChange={(e) => {
                             setSearch(e.target.value);
                             setOpen(true);
@@ -196,27 +201,40 @@ const FormInput = ({
                     {open && (
                         <div className="absolute z-20 w-full bg-white border border-gray-200 rounded-lg mt-1 max-h-48 overflow-y-auto shadow-lg">
                             {filteredOptions.length > 0 ? (
-                                filteredOptions.map((opt) => (
-                                    <div
-                                        key={opt.value}
-                                        onClick={() => {
-                                            setSearch(opt.label);
-                                            setOpen(false);
+                                filteredOptions.map((opt) => {
+                                    const isSelected =
+                                        opt.value.toString() === value?.toString();
 
-                                            const fakeEvent = {
-                                                target: {
-                                                    name,
-                                                    value: opt.value,
-                                                },
-                                            };
+                                    return (
+                                        <div
+                                            key={opt.value}
+                                            onClick={() => {
+                                                setSearch(opt.label);
+                                                setOpen(false);
 
-                                            onChange(fakeEvent as any);
-                                        }}
-                                        className="p-2 hover:bg-green-50 cursor-pointer text-sm"
-                                    >
-                                        {opt.label}
-                                    </div>
-                                ))
+                                                const fakeEvent = {
+                                                    target: {
+                                                        name,
+                                                        value: opt.value,
+                                                    },
+                                                };
+
+                                                onChange(fakeEvent as any);
+                                            }}
+                                            className={`p-2 cursor-pointer text-sm flex justify-between items-center
+                            ${isSelected
+                                                    ? "bg-green-100 text-green-700 font-medium"
+                                                    : "hover:bg-green-50"
+                                                }
+                        `}
+                                        >
+                                            {opt.label}
+                                            {isSelected && (
+                                                <span className="text-green-600 text-xs">✔</span>
+                                            )}
+                                        </div>
+                                    );
+                                })
                             ) : (
                                 <div className="p-2 text-sm text-gray-400">
                                     Tidak ditemukan

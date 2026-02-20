@@ -40,6 +40,10 @@ export const menuSidebar: menuSide[] = [
                 label: 'Produk',
                 href: '/products'
             },
+            {
+                label: 'Stok',
+                href: '/product-stock'
+            },
 
         ]
     },

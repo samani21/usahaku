@@ -1,0 +1,9 @@
+export interface ProductStockType {
+    id: number;
+    business_id: number;
+    product_id: number;
+    product_variant_id?: number;
+    stock: number;
+    name_product: string;
+    name_variant: string;
+}
