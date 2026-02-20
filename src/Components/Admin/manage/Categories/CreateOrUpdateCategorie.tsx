@@ -20,6 +20,11 @@ interface AlertType {
     message: string;
 }
 
+interface OptionsType {
+    label: string;
+    value: number;
+}
+
 
 const CreateOrUpdateCategorie = ({ handleFormSubmit, data }: Props) => {
     const [form, setForm] = useState<any>({
@@ -174,7 +179,7 @@ const CreateOrUpdateCategorie = ({ handleFormSubmit, data }: Props) => {
                     </div>
                 </div>
             )}
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-6 p-4 bg-gray-50">
                 <FormInput
                     type="text"
                     label="name"

@@ -10,15 +10,11 @@ import { Post } from "@/utils/Post";
 import React, { useState, useMemo, useEffect, useCallback, ReactElement } from "react";
 import ProductFormModalContent from "./ProductFormModalContent";
 import BusinessDataModal from "@/Components/Component/BusinessDataModal";
-
-interface Column<T> {
-    key: keyof T;
-    label?: string;
-    width?: string;
-    align?: "left" | "center" | "right";
-    render?: (row: T) => React.ReactNode;
-}
-
+import ModalCrud from "@/Components/Component/CRUD/ModalCrud";
+import Alert from "@/Components/Component/Alert";
+import { AlertType } from "@/types/Alert";
+import { Column } from "@/types/Admin/CRUD";
+import { Edit, Trash2Icon } from "lucide-react";
 
 export default function ListProductPage() {
     const [search, setSearch] = useState("");
@@ -38,6 +34,7 @@ export default function ListProductPage() {
         total: 0,
     });
     const [debouncedSearch, setDebouncedSearch] = useState('');
+    const [showAlert, setShowAlert] = useState<AlertType | null>(null)
     const [openModal, setOpenModal] = useState<boolean>(false)
     useEffect(() => {
         const handler = setTimeout(() => {
@@ -149,23 +146,36 @@ export default function ListProductPage() {
         setDateRangeText("");
     };
 
+    const handleEdit = (row: ProductsType) => {
+        setIsModalOpen(true)
+        setDataUpdate(row)
+    }
+    const handleDelete = (row: ProductsType) => {
+        setIsModalOpen(true)
+        setDeleteData(row)
+    }
+
     const columns: Column<ProductsType>[] = useMemo(
         () => [
             {
                 key: "image",
-                label: "Image",
-                width: "200",
-                render: (row) => <img src={row.image} className="w-32 rounded-md" />,
+                label: "Gambar",
+                width: "200px",
+                render: (row) =>
+                    <img src={row.image} className="w-32 rounded-md" />,
             },
-            { key: "name", label: "Nama Produk" },
-
+            {
+                key: "name",
+                label: "Nama Produk",
+            },
+            {
+                key: "category",
+                label: "Nama Kategori",
+                render: (row) => row?.category ?? ''
+            },
             {
                 key: "description",
                 label: "Deskripsi",
-                width: "200",
-                render: (row) => (
-                    <p className="overflow-hidden text-ellipsis line-clamp-3">{row.description}</p>
-                ),
             },
 
             {
@@ -191,7 +201,7 @@ export default function ListProductPage() {
             {
                 key: "stock",
                 label: "Stok",
-                render: (row) => row.stock.toLocaleString("id-ID"),
+                render: (row) => (row.stock ?? 0).toLocaleString("id-ID"),
             },
             {
                 key: "qrcode",
@@ -217,19 +227,33 @@ export default function ListProductPage() {
                         </span>
                     )
                 }
-            }
+            },
+            {
+                key: "actions",
+                label: "Aksi",
+                align: "center",
+                render: (row) => (
+                    <div className="flex justify-center gap-2">
+                        <button
+                            onClick={() => handleEdit(row)}
+                            className="text-blue-600 hover:text-blue-800"
+                        >
+                            <Edit size={18} />
+                        </button>
+                        <button
+                            onClick={() => handleDelete(row)}
+                            className="text-red-600 hover:text-red-800"
+                        >
+                            <Trash2Icon size={18} />
+                        </button>
+                    </div>
+                ),
+            },
         ],
-        []
+        [handleEdit, handleDelete]
     );
 
-    const handleEdit = (row: ProductsType) => {
-        setIsModalOpen(true)
-        setDataUpdate(row)
-    }
-    const handleDelete = (row: ProductsType) => {
-        setIsModalOpen(true)
-        setDeleteData(row)
-    }
+
 
     return (
         <div>
@@ -253,8 +277,6 @@ export default function ListProductPage() {
                     itemsPerPage={itemsPerPage}
                     total={meta.total}
                     onPageChange={(p) => setPage(p)}
-                    onEdit={(row) => handleEdit(row)}
-                    onDelete={(row) => handleDelete(row)}
                     loading={loading}
                     error={error}
                 />
@@ -269,18 +291,26 @@ export default function ListProductPage() {
                         }}
                         deleteData={deleteData}
                         handleDelete={onDelete} /> :
-                    <ProductFormModalContent
-                        isOpen={isModalOpen}
-                        onClose={() => {
-                            setIsModalOpen(false)
-                            setDataUpdate(null)
-                        }}
-                        onSubmit={handleFormSubmit}
-                        dataUpdate={dataUpdate}
-                    />
+                    <ModalCrud isOpen={isModalOpen} title={(dataUpdate ? "Edit" : "Tambah") + ' Produk'} onClose={() => {
+                        setIsModalOpen(false)
+                        setDataUpdate(null)
+                    }}>
+                        <ProductFormModalContent
+                            isOpen={isModalOpen}
+                            onClose={() => {
+                                setIsModalOpen(false)
+                                setDataUpdate(null)
+                            }}
+                            onSubmit={handleFormSubmit}
+                            dataUpdate={dataUpdate}
+                        />
+                    </ModalCrud>
             }
-            {openModal &&
-                <BusinessDataModal isOpen={openModal} />}
+
+            {
+                showAlert?.isOpen &&
+                <Alert type={showAlert?.type} message={showAlert?.message} onClose={() => setShowAlert(null)} />
+            }
         </div>
     );
 };

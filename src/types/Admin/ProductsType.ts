@@ -3,7 +3,7 @@ import { ChangeEvent } from "react";
 export interface Variant {
     name: string;
     price: string | number; // String untuk input yang kosong/diketik, Number untuk konversi akhir
-    stock: string | number; // String untuk input yang kosong/diketik, Number untuk konversi akhir
+    stock?: string | number; // String untuk input yang kosong/diketik, Number untuk konversi akhir
     image: File | null;
     imagePreviewUrl: string | null;
     id?: number
@@ -14,25 +14,26 @@ export interface ProductForm {
     name: string;
     description?: string;
     price: string | number;
-    stock: string | number;
+    stock?: string | number;
     image: File | null;
     imagePreviewUrl: string | null;
     has_variant: 0 | 1; // 0 (Tidak) atau 1 (Ya)
     variants: Variant[];
-    category?: number
+    category?: number | null
+    is_qty: boolean
 }
 
 /** Tipe untuk Objek Error Validasi */
 export interface VariantErrors {
     name: string;
     price: string;
-    stock: string;
+    stock?: string;
 }
 
 export interface Errors {
     name: string;
     price: string;
-    stock: string;
+    stock?: string;
     variants: VariantErrors[];
 }
 
@@ -41,17 +42,16 @@ export interface Errors {
 export const initialProductState: ProductForm = {
     name: '',
     price: '',
-    stock: '',
     image: null,
     imagePreviewUrl: null,
     has_variant: 0,
     variants: [],
+    is_qty: true
 };
 
 export const initialErrors: Errors = {
     name: '',
     price: '',
-    stock: '',
     variants: [],
 };
 
@@ -60,7 +60,7 @@ export interface Variants {
     name: string,
     id: number,
     product_id: number,
-    stock: number,
+    stock?: number,
     price: number,
     discount_price?: number,
     percent_discount?: number,
@@ -75,6 +75,7 @@ export interface Services {
 
 export interface ProductsType {
     id: number,
+    product_category_id?: number,
     name: string,
     description: string,
     slug: string,
@@ -83,7 +84,7 @@ export interface ProductsType {
     has_variant: boolean,
     is_active: boolean
     price: number,
-    stock: number,
+    stock?: number,
     variants: Variants[]
     price_discount?: number,
     percent_discount?: number,
@@ -91,8 +92,9 @@ export interface ProductsType {
     is_recomended?: boolean
     title_recomended?: string,
     color_recomended?: string,
-    categori?: string,
+    category?: string,
     is_quantity?: boolean,
     is_service?: boolean,
+    is_qty?: boolean,
     service?: Services[]
 }

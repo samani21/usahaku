@@ -14,14 +14,9 @@ import { Icon } from '@iconify/react'
 import ModalDelete from '@/Components/Component/CRUD/ModalDelete'
 import Alert from '@/Components/Component/Alert'
 import { Edit, Edit2, Trash2Icon } from 'lucide-react'
+import { AlertType } from '@/types/Alert'
 
 type Props = {}
-
-interface AlertType {
-    isOpen: boolean;
-    type: 'success' | 'error' | 'warning' | 'info';
-    message: string;
-}
 
 const CategoriesComponent = (props: Props) => {
     const [search, setSearch] = useState("");
@@ -283,7 +278,7 @@ const CategoriesComponent = (props: Props) => {
                         }}
                         deleteData={deleteData}
                         handleDelete={onDelete} /> :
-                    <ModalCrud isOpen={isModalOpen} title='Kategori' onClose={() => {
+                    <ModalCrud isOpen={isModalOpen} title={(dataUpdate ? "Edit" : "Tambah") + ' Kategori'} onClose={() => {
                         setIsModalOpen(false)
                         setDataUpdate(null)
                     }}>

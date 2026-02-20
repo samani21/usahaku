@@ -9,11 +9,16 @@ import { Delete } from '@/utils/Delete'
 import { Column } from '@/types/Admin/CRUD'
 import FilterComponent from '@/Components/Component/CRUD/FilterComponent'
 import DataTable from '@/Components/Component/CRUD/DataTable'
+import { Icon } from '@iconify/react'
+import ModalDelete from '@/Components/Component/CRUD/ModalDelete'
+import Alert from '@/Components/Component/Alert'
+import { Edit, Edit2, Trash2Icon } from 'lucide-react'
+import { AlertType } from '@/types/Alert'
 import CreateOrUpdate from './CreateOrUpdate'
 
 type Props = {}
 
-const ExampleComponent = (props: Props) => {
+const CategoriesComponent = (props: Props) => {
     const [search, setSearch] = useState("");
     const [dateRangeText, setDateRangeText] = useState("");
     const [page, setPage] = useState(1);
@@ -28,11 +33,21 @@ const ExampleComponent = (props: Props) => {
         total: 0,
     });
     const [debouncedSearch, setDebouncedSearch] = useState('');
+    const [showAlert, setShowAlert] = useState<AlertType | null>(null)
 
     const [dataUpdate, setDataUpdate] = useState<CategoriesType | null>(null)
     const [deleteData, setDeleteData] = useState<CategoriesType | null>(null)
     const [categorie, setCategorie] = useState<CategoriesType[]>([]);
 
+    useEffect(() => {
+        setTimeout(() => {
+            setShowAlert({
+                isOpen: false,
+                message: '',
+                type: 'success'
+            });
+        }, 3000)
+    }, [showAlert])
     useEffect(() => {
         const handler = setTimeout(() => {
             setDebouncedSearch(search);
@@ -103,24 +118,36 @@ const ExampleComponent = (props: Props) => {
 
     const handleFormSubmit = async (formData: FormData, id: number | null) => {
         try {
-
             if (id) {
                 const res = await Post(`/categorie/${id}`, formData);
                 if (res) {
                     fetchCategorie()
                     setDataUpdate(null)
                     setIsModalOpen(false);
+                    setShowAlert({
+                        type: 'success',
+                        message: 'Berhasil update data',
+                        isOpen: true
+                    })
                 }
             } else {
                 const res = await Post('/categorie', formData);
                 if (res) {
                     fetchCategorie()
                     setIsModalOpen(false);
+                    setShowAlert({
+                        type: 'success',
+                        message: 'Berhasil simpan data',
+                        isOpen: true
+                    })
                 }
             }
         } catch (err: any) {
-
-            console.log(err.message || "Gagal mengambil data");
+            setShowAlert({
+                type: 'error',
+                message: 'Gagal proses data ' + err.message,
+                isOpen: true
+            })
         }
     };
     const onDelete = async (id: number | null) => {
@@ -131,9 +158,18 @@ const ExampleComponent = (props: Props) => {
                 fetchCategorie();
                 setDeleteData(null)
                 setIsModalOpen(false);
+                setShowAlert({
+                    type: 'success',
+                    message: 'Berhasil hapus data',
+                    isOpen: true
+                })
             }
         } catch (err: any) {
-            console.log(err.message || "Gagal mengambil data");
+            setShowAlert({
+                type: 'error',
+                message: 'Gagal proses data ' + err.message,
+                isOpen: true
+            })
         }
     };
 
@@ -154,19 +190,24 @@ const ExampleComponent = (props: Props) => {
     const columns: Column<CategoriesType>[] = useMemo(
         () => [
             {
-                key: "image",
-                label: "Image",
+                key: "icon",
+                label: "Icon",
                 width: "200px",
                 render: (row) =>
-                    row?.image ? (
-                        <img
-                            src={row.image}
-                            alt={row.name}
-                            className="w-24 h-24 object-cover rounded-md"
-                        />
+                    row?.icon ? (
+                        row.icon.startsWith("http") ? (
+                            <img
+                                src={row.icon}
+                                alt={row.name}
+                                className="w-24 h-24 object-cover rounded-md"
+                            />
+                        ) : (
+                            <Icon icon={row?.icon} className="mr-2 text-gray-600 w-24 h-24" />
+                        )
                     ) : (
                         "-"
-                    ),
+                    )
+
             },
             {
                 key: "name",
@@ -182,13 +223,13 @@ const ExampleComponent = (props: Props) => {
                             onClick={() => handleEdit(row)}
                             className="text-blue-600 hover:text-blue-800"
                         >
-                            Edit
+                            <Edit size={18} />
                         </button>
                         <button
                             onClick={() => handleDelete(row)}
                             className="text-red-600 hover:text-red-800"
                         >
-                            Delete
+                            <Trash2Icon size={18} />
                         </button>
                     </div>
                 ),
@@ -198,9 +239,8 @@ const ExampleComponent = (props: Props) => {
     );
 
 
-
     return (
-        <div>
+        <div className='relative'>
             <FilterComponent
                 search={search}
                 setSearch={setSearch}
@@ -226,11 +266,31 @@ const ExampleComponent = (props: Props) => {
                     rowKey={(row) => row.id}
                 />
             </div>
-            <ModalCrud isOpen={isModalOpen} title='Kategori' onClose={() => setIsModalOpen(false)}>
-                <CreateOrUpdate />
-            </ModalCrud>
+
+            {
+                deleteData ?
+                    <ModalDelete
+                        isOpen={isModalOpen}
+                        onClose={() => {
+                            setIsModalOpen(false)
+                            setDeleteData(null)
+                        }}
+                        deleteData={deleteData}
+                        handleDelete={onDelete} /> :
+                    <ModalCrud isOpen={isModalOpen} title={dataUpdate ? "Edit" : "Tambah" + ' Kategori'} onClose={() => {
+                        setIsModalOpen(false)
+                        setDataUpdate(null)
+                    }}>
+                        <CreateOrUpdate handleFormSubmit={handleFormSubmit} data={dataUpdate} />
+                    </ModalCrud>
+            }
+
+            {
+                showAlert?.isOpen &&
+                <Alert type={showAlert?.type} message={showAlert?.message} onClose={() => setShowAlert(null)} />
+            }
         </div>
     )
 }
 
-export default ExampleComponent
+export default CategoriesComponent
