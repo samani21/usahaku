@@ -264,7 +264,9 @@ const ProductFormModalContent = ({ isOpen, onClose, onSubmit, dataUpdate }: Prop
         // Tambahkan field produk dasar
         formData.append('name', productData.name);
         formData.append('description', productData.description ?? '');
-        formData.append('product_category_id', String(productData.category) ?? '');
+        if (productData.category) {
+            formData.append('product_category_id', String(productData.category));
+        }
         formData.append('price', (productData.price === '' ? 0 : productData.price).toString());
         formData.append('has_variant', productData.has_variant.toString());
         formData.append('is_qty', productData.is_qty ? "1" : "0");
@@ -384,7 +386,7 @@ const ProductFormModalContent = ({ isOpen, onClose, onSubmit, dataUpdate }: Prop
                                 type="autocomplete"
                                 label="Kategori"
                                 name="category"
-                                value={productData.category}
+                                value={productData.category ?? null}
                                 onChange={handleProductChange}
                                 options={categories}
                             />

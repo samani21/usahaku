@@ -97,4 +97,5 @@ export interface ProductsType {
     is_service?: boolean,
     is_qty?: boolean,
     service?: Services[]
+    product_stock?: number,
 }

@@ -176,16 +176,21 @@ export default function ListProductPage() {
             {
                 key: "description",
                 label: "Deskripsi",
+                render: (row) =>
+                    row.description
+                        ? row.description.length > 50
+                            ? row.description.slice(0, 50) + "..."
+                            : row.description
+                        : "-"
             },
-
             {
                 key: "has_variant",
-                label: "Varian",
+                label: "Varian :stock",
                 render: (row) =>
                     row.variants?.map((v, i) => (
                         <b key={i}>
-                            {v.name}
-                            {row.variants.length !== i + 1 && ", "}
+                            {v.name} : {v?.stock ?? 0}
+                            {row.variants.length !== i + 1 && <br />}
                         </b>
                     )),
             },
@@ -201,7 +206,7 @@ export default function ListProductPage() {
             {
                 key: "stock",
                 label: "Stok",
-                render: (row) => (row.stock ?? 0).toLocaleString("id-ID"),
+                render: (row) => (row.product_stock ?? 0).toLocaleString("id-ID"),
             },
             {
                 key: "qrcode",
