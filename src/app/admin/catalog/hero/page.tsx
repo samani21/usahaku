@@ -1,9 +1,10 @@
 'use client'
 import React, { useState, useEffect, useRef } from 'react';
-import { Palette, Home, Utensils, Cpu, Sparkles, Pipette, HeartPulse, Shirt, Coffee, GraduationCap, Upload, CircleCheckBigIcon, Circle } from 'lucide-react';
+import { Palette, Home, Utensils, Cpu, Sparkles, Pipette, HeartPulse, Shirt, Coffee, GraduationCap, Upload, CircleCheckBigIcon, Circle, Sun, Moon, Check } from 'lucide-react';
 import HeaderConfig from '@/Components/Config/Theme/Header';
 import NavIcons from '@/Components/Config/Theme/Header/NavIcons';
 import MainLayout from '@/Components/Layout/MainLayout';
+import HeroConfig from '@/Components/Config/Theme/Hero';
 
 const BUSINESS_THEMES = [
     {
@@ -71,38 +72,38 @@ const BUSINESS_THEMES = [
         textColor: '#FFFFFF'
     }
 ];
-const listHeader = [
-    { id: 1, name: "Header Satu" },
-    { id: 2, name: "Header Dua" },
-    { id: 3, name: "Header Tiga" },
-    { id: 4, name: "Header Empat" },
-    { id: 5, name: "Header Lima" },
-    { id: 6, name: "Header Enam" },
-    { id: 7, name: "Header Tujuh" },
-    { id: 8, name: "Header Delapan" },
-    { id: 9, name: "Header Sembilan" },
-    { id: 10, name: "Header Sepuluh" },
-    { id: 11, name: "Header Sebelas" },
-    { id: 12, name: "Header Dua belas" },
-    { id: 13, name: "Header Tiga Belas" },
-    { id: 14, name: "Header Empat Belas" },
-    { id: 15, name: "Header Lima Belas" },
+const listHero = [
+    { id: 1, name: "Classic Split" },
+    { id: 2, name: "Modern Floating Card" },
+    { id: 3, name: "Modern Floating Card" },
+    { id: 4, name: "Rustic Coffee" },
+    { id: 5, name: "Cyber Tech" },
+    { id: 6, name: "Vibrant Foodie" },
+    { id: 7, name: "Elegant Property" },
+    { id: 8, name: "Classic Barber" },
+    { id: 9, name: "Industrial Service" },
+    { id: 10, name: "Soft Laundry" },
+    { id: 11, name: "Playful Pet" },
+    { id: 12, name: "Music Dynamic" },
+    { id: 13, name: "Fine Tailor" },
+    { id: 14, name: "Typo Hero" },
+    { id: 15, name: "Library Grid" },
 ]
 
-export default function HeaderPage() {
+export default function HeroPage() {
     const [selectedColor, setSelectedColor] = useState(BUSINESS_THEMES[0].hex);
     const [activeTab, setActiveTab] = useState(BUSINESS_THEMES[0].id);
-    const [headerLayout, setHeaderLayout] = useState<number>();
+    const [heroLayout, setHeroLayout] = useState<number>();
 
-    const [themeDark, setThemeDark] = useState<boolean>(false);
-    const [logoFile, setLogoFile] = useState<File | null>(null);
-    const [logo, setLogo] = useState<string | null>(null);
+    const [title, setTitle] = useState("Rekomendasi Hari Ini");
+    const [headline, setHeadline] = useState("PRODUK TERBAIK KAMI");
+    const [subHeadline, setSubHeadline] = useState("Kualitas premium dengan harga yang sangat terjangkau khusus untuk Anda.");
+    const [ctaText, setCtaText] = useState("Pesan Sekarang");
+    const [isDarkMode, setIsDarkMode] = useState(false);
+
+    const [heroFile, setHeroFile] = useState<File | null>(null);
+    const [imageHero, setImageHero] = useState<string | null>(null);
     const fileInputRef = useRef<HTMLInputElement | null>(null);
-    const [frameType, setFrameType] = useState<"circle" | "square" | "none">("none"); // circle, square, none
-    const [frameTheme, setFrameTheme] = useState<"dark" | "light">("dark"); // dark, light
-    const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
-    const [spanOne, setSpanOne] = useState<string>("NAMA");
-    const [spanTwo, setSpanTwo] = useState<string>("USAHA");
     // Fungsi untuk menghitung kontras teks secara otomatis
     const getContrastColor = (hex: string) => {
         if (!hex) return '#1e293b';
@@ -118,21 +119,21 @@ export default function HeaderPage() {
     // Efek samping untuk memperbarui CSS Variables di root secara dinamis
     useEffect(() => {
         // 1. Set Primary Color (Warna Background)
-        document.documentElement.style.setProperty('--header-primary-color', selectedColor);
+        document.documentElement.style.setProperty('--hero-primary-color', selectedColor);
 
         // 2. Set Secondary Color (Warna Teks/Kontras)
-        document.documentElement.style.setProperty('--header-secondary-color', currentTextColor);
+        document.documentElement.style.setProperty('--hero-secondary-color', currentTextColor);
 
-        // 3. Set RGB values untuk kebutuhan transparansi (misal: rgba(var(--header-primary-rgb), 0.5))
+        // 3. Set RGB values untuk kebutuhan transparansi (misal: rgba(var(--hero-primary-rgb), 0.5))
         const r = parseInt(selectedColor.slice(1, 3), 16);
         const g = parseInt(selectedColor.slice(3, 5), 16);
         const b = parseInt(selectedColor.slice(5, 7), 16);
-        document.documentElement.style.setProperty('--header-primary-rgb', `${r}, ${g}, ${b}`);
+        document.documentElement.style.setProperty('--hero-primary-rgb', `${r}, ${g}, ${b}`);
 
         const tr = parseInt(currentTextColor.slice(1, 3), 16);
         const tg = parseInt(currentTextColor.slice(3, 5), 16);
         const tb = parseInt(currentTextColor.slice(5, 7), 16);
-        document.documentElement.style.setProperty('--header-secondary-rgb', `${tr}, ${tg}, ${tb}`);
+        document.documentElement.style.setProperty('--hero-secondary-rgb', `${tr}, ${tg}, ${tb}`);
     }, [selectedColor, currentTextColor]);
 
     // Menentukan headline berdasarkan kategori aktif
@@ -157,14 +158,14 @@ export default function HeaderPage() {
             reader.readAsDataURL(file);
         });
 
-    const handleLogoUpload = async (
+    const handleImageUpload = async (
         e: React.ChangeEvent<HTMLInputElement>
     ) => {
         const file = e.target.files?.[0];
         if (!file) return;
-        setLogoFile(file);
+        setHeroFile(file);
         const b64 = await handleFileToBase64(file);
-        setLogo(b64);
+        setImageHero(b64);
     };
     return (
         <MainLayout>
@@ -175,7 +176,7 @@ export default function HeaderPage() {
                     <div className='bg-yellow-500 rounded-full h-4 w-4' />
                     <div className='bg-green-500 rounded-full h-4 w-4' />
                 </div>
-                <div className={`${themeDark ? 'bg-slate-950 text-white' : 'bg-slate-50 text-slate-900'}`}>
+                <div className={`${isDarkMode ? 'bg-slate-950 text-white' : 'bg-slate-50 text-slate-900'} rounded-b-xl`}>
                     <div className="min-h-screen font-sans ">
                         <div className="space-y-6">
                             <div className="space-y-2 p-4">
@@ -230,99 +231,118 @@ export default function HeaderPage() {
                                             {selectedColor.toUpperCase()}
                                         </div>
                                     </div>
-                                    <div className="space-y-1">
-                                        <label className="text-[10px] font-bold uppercase text-gray-500">Nama Usaha (2 Span)</label>
-                                        <div className="flex gap-2">
-                                            <input
-                                                value={spanOne}
-                                                onChange={(e) => setSpanOne(e.target.value)}
-                                                placeholder="Span 1"
-                                                className="w-1/2 p-2 text-sm text-slate-900  rounded-lg border border-gray-300"
-                                            />
-                                            <input
-                                                value={spanTwo}
-                                                onChange={(e) => setSpanTwo(e.target.value)}
-                                                placeholder="Span 2"
-                                                className="w-1/2 p-2 text-sm text-slate-900 rounded-lg border border-gray-300"
-                                            />
+                                    <div className="sm:flex items-start gap-4">
+                                        <div className="sm:w-1/2 space-y-1">
+                                            <label className="text-[10px] font-bold uppercase text-slate-400 tracking-wider">Teks Hero</label>
+                                            <div className="w-full space-y-2">
+                                                <input
+                                                    value={title}
+                                                    onChange={(e) => setTitle(e.target.value)}
+                                                    className="w-full p-2 text-sm text-slate-900 rounded-lg border-gray-300 border focus:ring-2 focus:ring-blue-500 outline-none"
+                                                    placeholder="Headline Utama"
+                                                />
+                                                <input
+                                                    value={headline}
+                                                    onChange={(e) => setHeadline(e.target.value.toUpperCase())}
+                                                    className="w-full p-2 text-sm text-slate-900 rounded-lg border-gray-300 border focus:ring-2 focus:ring-blue-500 outline-none"
+                                                    placeholder="Headline Utama"
+                                                />
+                                                <textarea
+                                                    value={subHeadline}
+                                                    onChange={(e) => setSubHeadline(e.target.value)}
+                                                    className="w-full p-2 text-sm text-slate-900 rounded-lg border-gray-300 border h-16 outline-none"
+                                                    placeholder="Sub-headline deskripsi..."
+                                                />
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div className="space-y-1" onClick={() => fileInputRef.current?.click()}>
-                                        <label className="text-[10px] font-bold uppercase text-gray-500">Logo</label>
-                                        <button
 
-                                            className="flex items-center gap-2 p-2 text-slate-900 text-sm bg-gray-300 hover:bg-gray-500 rounded-md transition-colors"
-                                        >
-                                            <Upload className="w-4 h-4" /> {logo ? "Ganti" : "Upload"}
-                                        </button>
-                                        <input type="file"
-                                            ref={fileInputRef}
-                                            className="hidden"
-                                            accept="image/*"
-                                            onChange={handleLogoUpload} />
-                                    </div>
-                                    <div className="flex flex-wrap gap-6 border-t border-gray-300 py-3  ">
-                                        <div className="flex items-center gap-3">
-                                            <span className="text-[10px]  font-bold uppercase text-gray-500">Tipe Frame:</span>
-                                            {['circle', 'square', 'none'].map(t => (
-                                                <button
-                                                    key={t}
-                                                    onClick={() => setFrameType(t as "circle" | "square" | "none")}
-                                                    className={`text-xs px-3 py-1 rounded-full border transition-all ${frameType === t ? 'bg-blue-600 text-white border-blue-600' : 'bg-gray-300 text-slate-900  border-transparent'}`}
-                                                >
-                                                    {t}
-                                                </button>
-                                            ))}
-                                        </div>
-                                        <div className="flex items-center gap-3">
-                                            <span className="text-[10px] font-bold uppercase text-gray-500">Tema Frame:</span>
-                                            {['dark', 'light'].map(th => (
-                                                <button
-                                                    key={th}
-                                                    onClick={() => setFrameTheme(th as "dark" | "light")}
-                                                    className={`text-xs px-3 py-1 rounded-full border transition-all ${frameTheme === th ? 'bg-blue-600 text-white border-blue-600' : 'bg-gray-300  text-slate-900 border-transparent'}`}
-                                                >
-                                                    {th}
-                                                </button>
-                                            ))}
+                                        <div>
+                                            <div className='sm:pt-6'>
+                                                <input
+                                                    value={ctaText}
+                                                    onChange={(e) => setCtaText(e.target.value)}
+                                                    className="w-full p-2 text-sm text-slate-900 rounded-lg border border-gray-300 outline-none"
+                                                    placeholder="Teks Tombol"
+                                                />
+                                            </div>
+                                            <div className="space-y-1">
+                                                <label className="text-[10px] font-bold uppercase text-gray-500">Gambar</label>
+                                                <div className='flex items-center gap-4'>
+                                                    <button
+                                                        onClick={() => fileInputRef.current?.click()}
+                                                        className={`flex items-center gap-2 p-2 text-sm bg-gray-300 hover:bg-gray-500 rounded-md transition-colors text-gray-900`}
+                                                    >
+                                                        <Upload className="w-4 h-4" /> {imageHero ? "Ganti" : "Upload"}
+                                                    </button>
+
+                                                    <button
+                                                        onClick={() => setIsDarkMode(!isDarkMode)}
+                                                        className={`p-2 ${isDarkMode ? "bg-slate-800" : "bg-slate-200"} rounded-lg transition-colors`}
+                                                    >
+                                                        {isDarkMode ? <Sun className="w-5 h-5 text-yellow-400" /> : <Moon className="w-5 h-5 text-slate-600" />}
+                                                    </button>
+                                                    <button
+                                                        // onClick={handleSubmit}
+                                                        className="flex mb-1 items-center gap-2 p-2 text-sm bg-blue-600 text-white font-semibold hover:bg-blue-800 rounded-md transition-colors"
+                                                    >
+                                                        <Check className="w-4 h-4" /> Simpan Perubahan
+                                                    </button>
+                                                </div>
+
+                                                <p className="text-[10px] text-slate-400 italic text-center">Gunakan gambar landscape untuk hasil terbaik.</p>
+                                                <input type="file"
+                                                    ref={fileInputRef}
+                                                    className="hidden"
+                                                    accept="image/*"
+                                                    onChange={handleImageUpload} />
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div className='relative pb-8 space-y-4'>
+                            <div className='relative pb-8 space-y-4 px-4'>
                                 {
-                                    listHeader?.map((lh, i) => (
+                                    heroLayout &&
+                                    <>
+                                        <label className="text-[12px] font-bold uppercase tracking-[0.3em] text-slate-500 block">Yang anda pilih No.{heroLayout}</label>
+                                        <HeroConfig
+                                            theme={heroLayout}
+                                            isDarkMode={isDarkMode}
+                                            headline={headline}
+                                            subHeadline={subHeadline}
+                                            ctaText={ctaText}
+                                            imageHero={imageHero}
+                                            title={title} />
+                                    </>
+                                }
+                                {
+                                    listHero?.map((lh, i) => (
                                         <div className='relative space-y-4' key={i}>
                                             {
-                                                headerLayout === lh?.id ?
-                                                    <div className='flex items-center gap-2 cursor-pointer px-4'>
+                                                heroLayout === lh?.id ?
+                                                    <div className='flex items-center gap-2 cursor-pointer'>
                                                         <CircleCheckBigIcon />
-                                                        <p className='font-semibold text-gray-600'>{lh?.name}</p>
+                                                        <label className="text-[12px] font-bold uppercase tracking-[0.3em] text-slate-500 block">{lh?.id}. {lh?.name}</label>
                                                     </div> :
-                                                    <div className='flex items-center gap-2 cursor-pointer px-4' onClick={() => setHeaderLayout(lh?.id)}>
+                                                    <div className='flex items-center gap-2 cursor-pointer' onClick={() => setHeroLayout(lh?.id)}>
                                                         <Circle />
-                                                        <p className='font-semibold text-gray-600'>{lh?.name}</p>
+                                                        <label className="text-[12px] font-bold uppercase tracking-[0.3em] text-slate-500 block">{lh?.id}. {lh?.name}</label>
                                                     </div>
                                             }
-                                            <HeaderConfig
-                                                layout={lh?.id}
-                                                themeMode={themeDark ? "dark" : "light"}
-                                                isBuild={true}
-                                                logoImage={logo}
-                                                frameType={frameType}
-                                                frameTheme={frameTheme}
-                                                setSidebarOpen={setSidebarOpen}
-                                                toggleTheme={() => setThemeDark(!themeDark)}
-                                                spanOne={spanOne}
-                                                spanTwo={spanTwo} />
+                                            <HeroConfig
+                                                theme={lh?.id}
+                                                isDarkMode={isDarkMode}
+                                                headline={headline}
+                                                subHeadline={subHeadline}
+                                                ctaText={ctaText}
+                                                imageHero={imageHero}
+                                                title={title} />
                                         </div>
                                     ))
                                 }
 
                             </div>
-                            <div className={`sm:hidden fixed left-0 p-2 z-10 ${themeDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200 shadow-sm'} bottom-0 w-full`}>
-                                <NavIcons colorClass={`text-[var(--header-primary-color)]`} setSidebarOpen={setSidebarOpen} toggleTheme={() => setThemeDark(!themeDark)} themeMode={themeDark ? "dark" : "light"} />
-                            </div>
+
                         </div>
                     </div>
                 </div>
