@@ -50,7 +50,8 @@ const CreateOrUpdateCategorie = ({ handleFormSubmit, data }: Props) => {
         })
         if (data) {
             setForm({
-                name: data?.name
+                name: data?.name,
+                color: data?.color
             });
             if (data?.icon?.startsWith("http")) {
                 setPreviewImage(data?.icon)
@@ -99,12 +100,21 @@ const CreateOrUpdateCategorie = ({ handleFormSubmit, data }: Props) => {
             setLoading(false);
             return;
         }
+        if (icon && form.color == '') {
+            setError({
+                color: "Warna icon harus dipilih"
+            })
+            setLoading(false);
+            return;
+        }
+
         const formData = new FormData();
         formData.append('name', form?.name);
         if (fileImage) {
             formData.append('icon', fileImage);
         } else {
             formData.append('icon', icon);
+            formData.append('color', form.color);
         }
         handleFormSubmit(formData, data?.id ?? null)
         setLoading(false);
@@ -182,7 +192,7 @@ const CreateOrUpdateCategorie = ({ handleFormSubmit, data }: Props) => {
             <form onSubmit={handleSubmit} className="space-y-6 p-4 bg-gray-50">
                 <FormInput
                     type="text"
-                    label="name"
+                    label="Nama"
                     name="name"
                     value={form.name}
                     onChange={handleChange}
@@ -199,6 +209,19 @@ const CreateOrUpdateCategorie = ({ handleFormSubmit, data }: Props) => {
                     <p className="text-xs text-gray-500">
                         Pilih icon (opsional). Bisa pilih icon atau upload gambar.
                     </p>
+                    {
+                        icon &&
+                        <FormInput
+                            type="color"
+                            label="Warna"
+                            name="color"
+                            value={form.color}
+                            onChange={handleChange}
+                            placeholder="Type text"
+                            required
+                            error={error?.color}
+                        />
+                    }
                 </div>
                 <div className="flex items-center text-gray-500 gap-4">
                     <div className="border border-gray-400 w-full" />

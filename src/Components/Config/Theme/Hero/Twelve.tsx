@@ -28,7 +28,7 @@ const Twelve = ({ isDarkMode, headline, subHeadline, ctaText, imageHero }: Props
                         <div className="w-full h-full bg-white/20 rounded-full flex items-center justify-center animate-pulse">
                             {
                                 imageHero &&
-                                <img src={imageHero} className='rounded-full' />
+                                <img src={imageHero} className='rounded-full object-cover w-50 h-50' />
                             }
                         </div>
                     </div>

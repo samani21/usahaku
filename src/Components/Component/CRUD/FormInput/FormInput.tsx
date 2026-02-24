@@ -14,6 +14,7 @@ type Props = {
     | "autocomplete"
     | "checkbox"
     | "switch"
+    | "color"
     | "image"
     | "password";
 
@@ -363,6 +364,33 @@ const FormInput = ({
                     >
                         {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                     </button>
+                </div>
+            );
+        }
+        if (type === "color") {
+            return (
+                <div className="flex items-center gap-3">
+                    <input
+                        type="color"
+                        name={name}
+                        value={value || "#000000"}
+                        onChange={onChange}
+                        className="w-14 h-10 p-1 border rounded-lg cursor-pointer"
+                    />
+
+                    <input
+                        type="text"
+                        value={value || ""}
+                        onChange={onChange}
+                        name={name}
+                        placeholder="#000000"
+                        className={`${baseInput} ${errorStyle}`}
+                    />
+
+                    <div
+                        className="w-10 h-10 rounded-lg border"
+                        style={{ background: value || "#000000" }}
+                    />
                 </div>
             );
         }

@@ -186,7 +186,6 @@ const CategoriesComponent = (props: Props) => {
         setIsModalOpen(true)
         setDeleteData(row)
     }
-
     const columns: Column<CategoriesType>[] = useMemo(
         () => [
             {
@@ -202,7 +201,7 @@ const CategoriesComponent = (props: Props) => {
                                 className="w-24 h-24 object-cover rounded-md"
                             />
                         ) : (
-                            <Icon icon={row?.icon} className="mr-2 text-gray-600 w-24 h-24" />
+                            <Icon icon={row?.icon} color={row?.color} className={`mr-2  w-24 h-24`} />
                         )
                     ) : (
                         "-"

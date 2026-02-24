@@ -27,4 +27,5 @@ export interface CategoriesType {
     id: number,
     icon?: string;
     count?: number;
+    color?: string;
 }

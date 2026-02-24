@@ -123,7 +123,7 @@ const MainLayout = ({ children }: Props) => {
                     closeMobileActionMenu={closeMobileActionMenu}
                     handleNotificationClick={handleNotificationClick}
                     handleProfileClick={handleProfileClick}
-                    title={lastOne}
+                    title={pathname}
                     handleLogout={handleLogout}
                 />
 

@@ -30,7 +30,7 @@ const Six = ({ isDarkMode, headline, subHeadline, ctaText, imageHero, title }: P
                         <div className={`absolute -inset-4 bg-[var(--hero-primary-color)] rounded-full scale-90 blur-xl opacity-20 animate-pulse`} />
                         {
                             imageHero &&
-                            <img src={imageHero} alt="Hero" className="relative z-10 w-full h-80 md:h-[350px] object-contain drop-shadow-[10px_10px_0px_#000]" />
+                            <img src={imageHero} alt="Hero" className="relative z-10 w-full h-80 md:h-[350px] object-cover drop-shadow-[10px_10px_0px_#000]" />
                         }
                     </div>
                 </div>

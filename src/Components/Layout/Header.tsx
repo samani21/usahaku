@@ -2,6 +2,7 @@
 import { getUserInfo } from '@/store/authStore';
 import { Bell, ChevronDown, LogOut, Menu, MoreVertical, Search, Settings, User } from 'lucide-react'
 import React, { Dispatch, SetStateAction, useState } from 'react'
+import { menuSidebar } from '../lib/MenuSidebar';
 
 type Props = {
   setIsSidebarOpen: Dispatch<SetStateAction<boolean>>;
@@ -11,11 +12,34 @@ type Props = {
   closeMobileActionMenu: () => void;
   handleNotificationClick: () => void;
   handleProfileClick: () => void;
-  title: string[];
+  title: string;
   handleLogout: () => void;
+}
+const pathname = "/admin/catalog/categorie";
+
+function getMenuLabel(pathname: string) {
+  for (const menu of menuSidebar) {
+
+    // cek child
+    if (menu.child) {
+      for (const child of menu.child) {
+        if (pathname.includes(menu.href + child.href)) {
+          return child.label;
+        }
+      }
+    }
+
+    // cek parent
+    if (pathname.includes(menu.href)) {
+      return menu.label;
+    }
+  }
+
+  return null;
 }
 
 const Header = ({ setIsSidebarOpen, isSidebarOpen, setIsMobileActionMenuOpen, handleNotificationClick, handleProfileClick, isMobileActionMenuOpen, closeMobileActionMenu, title, handleLogout }: Props) => {
+  const label = getMenuLabel(title);
   const [notifOpen, setNotifOpen] = useState<boolean>(false);
   const [profileOpen, setProfileOpen] = useState(false);
   const notifications = [
@@ -26,13 +50,7 @@ const Header = ({ setIsSidebarOpen, isSidebarOpen, setIsMobileActionMenuOpen, ha
   const user = getUserInfo();
   return (
     <header className="flex items-center justify-between p-4 md:p-6 bg-[#f7f9fc] sticky top-0 z-10 border-b border-gray-100">
-      <h1 className="text-2xl font-bold text-gray-800 hidden md:block">{
-        title?.map((item) => (
-          <span key={item}>
-            {item.charAt(0).toUpperCase() + item.slice(1)}
-          </span>
-        ))
-      }</h1>
+      <h1 className="text-2xl font-bold text-gray-800 hidden md:block">{label}</h1>
 
       <button
         className="md:hidden text-gray-600 p-2 rounded-full hover:bg-gray-100"
