@@ -86,7 +86,7 @@ export interface ProductsType {
     price: number,
     stock?: number,
     variants: Variants[]
-    price_discount?: number,
+    discount_price?: number,
     percent_discount?: number,
     final_price?: number,
     is_recomended?: boolean

@@ -1,4 +1,5 @@
 import { CategoriesType } from "./CategoriesType";
+import { ProductsType } from "./ProductsType";
 
 export interface Catalog {
     // header: ResHeader;
@@ -7,5 +8,5 @@ export interface Catalog {
     // category: categorie;
     categories: CategoriesType[];
     // product: product;
-    // products: ResProduct[];
+    products: ProductsType[];
 }

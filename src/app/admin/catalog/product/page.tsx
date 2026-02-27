@@ -9,6 +9,8 @@ import { CategoriesType } from '@/types/Admin/CategoriesType';
 import { Get } from '@/utils/Get';
 import { Catalog } from '@/types/Admin/Catalog';
 import CategorieConfig from '@/Components/Config/Theme/Categories';
+import { ProductsType } from '@/types/Admin/ProductsType';
+import ProductConfig from '@/Components/Config/Theme/Products';
 
 const BUSINESS_THEMES = [
     {
@@ -77,32 +79,32 @@ const BUSINESS_THEMES = [
     }
 ];
 
-const listCategorie = [
-    { id: 1, name: "Modern Bento Grid" },
-    { id: 2, name: "Minimalist Circles" },
-    { id: 3, name: "Floating Glass Cards" },
+const listProduct = [
+    { id: 1, name: "Classic" },
+    { id: 2, name: "Minimalist" },
+    { id: 3, name: "Floating Bubble" },
     { id: 4, name: "Horizontal Stripes" },
-    { id: 5, name: "Interactive Pills" },
-    { id: 6, name: "Duotone Image Grid" },
-    { id: 7, name: "Numbered Sophistication" },
-    { id: 8, name: "Soft Neumorphism" },
-    { id: 9, name: "Badge Cards" },
-    { id: 10, name: "Typographic Focus" },
-    { id: 11, name: "Vintage Polaroids" },
-    { id: 12, name: "Glassmorphism Icons" },
-    { id: 13, name: "Minimal Bordered" },
-    { id: 14, name: "Accent Shadow Boxes" },
-    { id: 15, name: "Modern Split Slides" },
+    { id: 5, name: "Polaroid" },
+    { id: 6, name: "Retro Hardware" },
+    { id: 7, name: "Cyberpunk HUD" },
+    { id: 8, name: "Bento Bento" },
+    { id: 9, name: "Horizontal Split" },
+    { id: 10, name: "Brutalist List" },
+    { id: 11, name: "Soft Gradient" },
+    { id: 12, name: "Floating Stack" },
+    { id: 13, name: "Luxury Boutique" },
+    { id: 14, name: "Ticket Stub" },
+    { id: 15, name: "Circle Focus" },
 ]
 
 export default function HeroPage() {
     const [selectedColor, setSelectedColor] = useState(BUSINESS_THEMES[0].hex);
     const [activeTab, setActiveTab] = useState(BUSINESS_THEMES[0].id);
-    const [categorieLayout, setCategorieLayout] = useState<number>();
+    const [productLayout, setProductLayout] = useState<number>();
     const [isDarkMode, setIsDarkMode] = useState(false);
 
     const [loading, setLoading] = useState<boolean>(false);
-    const [categorie, setCategorie] = useState<CategoriesType[]>();
+    const [products, setProducts] = useState<ProductsType[]>();
 
     useEffect(() => {
         getCalog()
@@ -115,7 +117,7 @@ export default function HeroPage() {
             if (res?.success) {
 
                 // setCategorieLayout(res?.data?.categorie?.theme);
-                setCategorie(res?.data?.categories);
+                setProducts(res?.data?.products);
             }
         } finally {
             setLoading(false);
@@ -135,21 +137,21 @@ export default function HeroPage() {
     // Efek samping untuk memperbarui CSS Variables di root secara dinamis
     useEffect(() => {
         // 1. Set Primary Color (Warna Background)
-        document.documentElement.style.setProperty('--category-primary-color', selectedColor);
+        document.documentElement.style.setProperty('--product-primary-color', selectedColor);
 
         // 2. Set Secondary Color (Warna Teks/Kontras)
-        document.documentElement.style.setProperty('--category-secondary-color', currentTextColor);
+        document.documentElement.style.setProperty('--product-secondary-color', currentTextColor);
 
-        // 3. Set RGB values untuk kebutuhan transparansi (misal: rgba(var(--category-primary-rgb), 0.5))
+        // 3. Set RGB values untuk kebutuhan transparansi (misal: rgba(var(--product-primary-rgb), 0.5))
         const r = parseInt(selectedColor.slice(1, 3), 16);
         const g = parseInt(selectedColor.slice(3, 5), 16);
         const b = parseInt(selectedColor.slice(5, 7), 16);
-        document.documentElement.style.setProperty('--category-primary-rgb', `${r}, ${g}, ${b}`);
+        document.documentElement.style.setProperty('--product-primary-rgb', `${r}, ${g}, ${b}`);
 
         const tr = parseInt(currentTextColor.slice(1, 3), 16);
         const tg = parseInt(currentTextColor.slice(3, 5), 16);
         const tb = parseInt(currentTextColor.slice(5, 7), 16);
-        document.documentElement.style.setProperty('--category-secondary-rgb', `${tr}, ${tg}, ${tb}`);
+        document.documentElement.style.setProperty('--product-secondary-rgb', `${tr}, ${tg}, ${tb}`);
     }, [selectedColor, currentTextColor]);
 
     // Menentukan headline berdasarkan kategori aktif
@@ -256,42 +258,54 @@ export default function HeroPage() {
                             </div>
                             <div className='relative pb-8 space-y-4 px-4'>
                                 {
-                                    categorieLayout &&
+                                    productLayout &&
                                     <>
-                                        <label className="text-[12px] font-bold uppercase tracking-[0.3em] text-slate-500 block">Yang anda pilih No.{categorieLayout}</label>
-                                        {
-                                            categorie &&
-                                            <CategorieConfig
-                                                theme={categorieLayout}
-                                                categories={categorie}
+                                        <label className="text-[12px] font-bold uppercase tracking-[0.3em] text-slate-500 block">Yang anda pilih No.{productLayout}</label>
+                                        <div className='hidden md:grid'>
+                                            <ProductConfig
+                                                theme={productLayout}
+                                                products={products?.slice(0, 4) ?? []}
                                                 isDarkMode={isDarkMode} />
-                                        }
+                                        </div>
+                                        <div className='md:hidden'>
+                                            <ProductConfig
+                                                theme={productLayout}
+                                                products={products?.slice(1, 3) ?? []}
+                                                isDarkMode={isDarkMode} />
+                                        </div>
                                     </>
                                 }
+                                <div className={`${isDarkMode ? "bg-gray-200" : "bg-gray-700"}  h-1`} />
                                 {
-                                    listCategorie?.map((lh, i) => (
+                                    listProduct?.map((lh, i) => (
                                         <div className='relative space-y-4' key={i}>
                                             {
-                                                categorieLayout === lh?.id ?
+                                                productLayout === lh?.id ?
                                                     <div className='flex items-center gap-2 cursor-pointer'>
                                                         <CircleCheckBigIcon />
                                                         <label className="text-[12px] font-bold uppercase tracking-[0.3em] text-slate-500 block">{lh?.id}. {lh?.name}</label>
                                                     </div> :
-                                                    <div className='flex items-center gap-2 cursor-pointer' onClick={() => setCategorieLayout(lh?.id)}>
+                                                    <div className='flex items-center gap-2 cursor-pointer' onClick={() => setProductLayout(lh?.id)}>
                                                         <Circle />
                                                         <label className="text-[12px] font-bold uppercase tracking-[0.3em] text-slate-500 block">{lh?.id}. {lh?.name}</label>
                                                     </div>
                                             }
-                                            {
-                                                categorie &&
-                                                <CategorieConfig
+                                            <div className='hidden md:grid'>
+                                                <ProductConfig
                                                     theme={lh?.id}
-                                                    categories={categorie}
+                                                    products={products?.slice(0, 4) ?? []}
                                                     isDarkMode={isDarkMode} />
-                                            }
+                                            </div>
+                                            <div className='md:hidden'>
+                                                <ProductConfig
+                                                    theme={lh?.id}
+                                                    products={products?.slice(1, 3) ?? []}
+                                                    isDarkMode={isDarkMode} />
+                                            </div>
                                         </div>
                                     ))
                                 }
+
 
                             </div>
 
