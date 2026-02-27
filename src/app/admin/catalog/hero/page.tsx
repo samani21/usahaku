@@ -1,6 +1,6 @@
 'use client'
 import React, { useState, useEffect, useRef } from 'react';
-import { Palette, Home, Utensils, Cpu, Sparkles, Pipette, HeartPulse, Shirt, Coffee, GraduationCap, Upload, CircleCheckBigIcon, Circle, Sun, Moon, Check } from 'lucide-react';
+import { Palette, Home, Utensils, Cpu, Sparkles, Pipette, HeartPulse, Shirt, Coffee, GraduationCap, Upload, CircleCheckBigIcon, Circle, Sun, Moon, Check, SunMoon } from 'lucide-react';
 import HeaderConfig from '@/Components/Config/Theme/Header';
 import NavIcons from '@/Components/Config/Theme/Header/NavIcons';
 import MainLayout from '@/Components/Layout/MainLayout';
@@ -94,6 +94,8 @@ export default function HeroPage() {
     const [selectedColor, setSelectedColor] = useState(BUSINESS_THEMES[0].hex);
     const [activeTab, setActiveTab] = useState(BUSINESS_THEMES[0].id);
     const [heroLayout, setHeroLayout] = useState<number>();
+    const [displayMode, setDisplayMode] = useState('auto');
+
 
     const [title, setTitle] = useState("Rekomendasi Hari Ini");
     const [headline, setHeadline] = useState("PRODUK TERBAIK KAMI");
@@ -265,7 +267,42 @@ export default function HeroPage() {
                                                     placeholder="Teks Tombol"
                                                 />
                                             </div>
-                                            <div className="space-y-1">
+                                            <div className="space-y-1 mt-2">
+                                                <div className="space-y-2">
+                                                    <span className="text-[10px] font-bold uppercase text-gray-500 block">Mode Tampilan Aplikasi:</span>
+                                                    <div className="grid grid-cols-3 gap-2 bg-gray-100 p-1 rounded-xl">
+                                                        <button
+                                                            onClick={() => {
+                                                                setDisplayMode('light')
+                                                                setIsDarkMode(false)
+                                                            }}
+                                                            className={`flex items-center justify-center gap-2 py-2 rounded-lg text-xs font-semibold transition-all ${displayMode === 'light' ? 'bg-white text-orange-500 shadow-sm' : 'text-gray-500'
+                                                                }`}
+                                                        >
+                                                            <Sun size={14} /> Light
+                                                        </button>
+                                                        <button
+                                                            onClick={() => {
+                                                                setDisplayMode('dark')
+                                                                setIsDarkMode(true)
+                                                            }}
+                                                            className={`flex items-center justify-center gap-2 py-2 rounded-lg text-xs font-semibold transition-all ${displayMode === 'dark' ? 'bg-white text-indigo-600 shadow-sm' : 'text-gray-500'
+                                                                }`}
+                                                        >
+                                                            <Moon size={14} /> Dark
+                                                        </button>
+                                                        <button
+                                                            onClick={() => {
+                                                                setDisplayMode('auto')
+                                                                setIsDarkMode(false)
+                                                            }}
+                                                            className={`flex items-center justify-center gap-2 py-2 rounded-lg text-xs font-semibold transition-all ${displayMode === 'auto' ? 'bg-white text-green-600 shadow-sm' : 'text-gray-500'
+                                                                }`}
+                                                        >
+                                                            <SunMoon size={14} /> Auto
+                                                        </button>
+                                                    </div>
+                                                </div>
                                                 <label className="text-[10px] font-bold uppercase text-gray-500">Gambar</label>
                                                 <div className='flex items-center gap-4'>
                                                     <button
@@ -273,13 +310,6 @@ export default function HeroPage() {
                                                         className={`flex items-center gap-2 p-2 text-sm bg-gray-300 hover:bg-gray-500 rounded-md transition-colors text-gray-900`}
                                                     >
                                                         <Upload className="w-4 h-4" /> {imageHero ? "Ganti" : "Upload"}
-                                                    </button>
-
-                                                    <button
-                                                        onClick={() => setIsDarkMode(!isDarkMode)}
-                                                        className={`p-2 ${isDarkMode ? "bg-slate-800" : "bg-slate-200"} rounded-lg transition-colors`}
-                                                    >
-                                                        {isDarkMode ? <Sun className="w-5 h-5 text-yellow-400" /> : <Moon className="w-5 h-5 text-slate-600" />}
                                                     </button>
                                                     <button
                                                         // onClick={handleSubmit}
@@ -296,6 +326,8 @@ export default function HeroPage() {
                                                     accept="image/*"
                                                     onChange={handleImageUpload} />
                                             </div>
+
+
                                         </div>
                                     </div>
                                 </div>

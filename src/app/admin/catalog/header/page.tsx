@@ -1,6 +1,6 @@
 'use client'
 import React, { useState, useEffect, useRef } from 'react';
-import { Palette, Home, Utensils, Cpu, Sparkles, Pipette, HeartPulse, Shirt, Coffee, GraduationCap, Upload, CircleCheckBigIcon, Circle } from 'lucide-react';
+import { Palette, Home, Utensils, Cpu, Sparkles, Pipette, HeartPulse, Shirt, Coffee, GraduationCap, Upload, CircleCheckBigIcon, Circle, Sun, Moon, SunMoon } from 'lucide-react';
 import HeaderConfig from '@/Components/Config/Theme/Header';
 import NavIcons from '@/Components/Config/Theme/Header/NavIcons';
 import MainLayout from '@/Components/Layout/MainLayout';
@@ -93,6 +93,7 @@ export default function HeaderPage() {
     const [selectedColor, setSelectedColor] = useState(BUSINESS_THEMES[0].hex);
     const [activeTab, setActiveTab] = useState(BUSINESS_THEMES[0].id);
     const [headerLayout, setHeaderLayout] = useState<number>();
+    const [displayMode, setDisplayMode] = useState('auto');
 
     const [themeDark, setThemeDark] = useState<boolean>(false);
     const [logoFile, setLogoFile] = useState<File | null>(null);
@@ -247,44 +248,83 @@ export default function HeaderPage() {
                                             />
                                         </div>
                                     </div>
-                                    <div className="space-y-1" onClick={() => fileInputRef.current?.click()}>
+                                    <div className="space-y-1">
                                         <label className="text-[10px] font-bold uppercase text-gray-500">Logo</label>
                                         <button
-
-                                            className="flex items-center gap-2 p-2 text-slate-900 text-sm bg-gray-300 hover:bg-gray-500 rounded-md transition-colors"
+                                            onClick={() => fileInputRef.current?.click()}
+                                            className="flex items-center gap-2 px-4 py-2 text-white text-sm bg-slate-700 hover:bg-slate-800 rounded-lg transition-colors w-full justify-center"
                                         >
-                                            <Upload className="w-4 h-4" /> {logo ? "Ganti" : "Upload"}
+                                            <Upload className="w-4 h-4" /> {logo ? "Ganti Logo" : "Upload Logo"}
                                         </button>
-                                        <input type="file"
+                                        <input
+                                            type="file"
                                             ref={fileInputRef}
                                             className="hidden"
                                             accept="image/*"
-                                            onChange={handleLogoUpload} />
+                                            onChange={handleLogoUpload}
+                                        />
                                     </div>
-                                    <div className="flex flex-wrap gap-6 border-t border-gray-300 py-3  ">
-                                        <div className="flex items-center gap-3">
-                                            <span className="text-[10px]  font-bold uppercase text-gray-500">Tipe Frame:</span>
-                                            {['circle', 'square', 'none'].map(t => (
-                                                <button
-                                                    key={t}
-                                                    onClick={() => setFrameType(t as "circle" | "square" | "none")}
-                                                    className={`text-xs px-3 py-1 rounded-full border transition-all ${frameType === t ? 'bg-blue-600 text-white border-blue-600' : 'bg-gray-300 text-slate-900  border-transparent'}`}
-                                                >
-                                                    {t}
-                                                </button>
-                                            ))}
+                                    <div className="space-y-4 border-t border-gray-100 pt-4">
+                                        <div className="flex items-center justify-between">
+                                            <span className="text-[10px] font-bold uppercase text-gray-500">Tipe Frame:</span>
+                                            <div className="flex bg-gray-100 p-1 rounded-lg">
+                                                {['circle', 'square', 'none'].map(t => (
+                                                    <button
+                                                        key={t}
+                                                        onClick={() => setFrameType(t as "circle" | "square" | "none")}
+                                                        className={`text-[10px] px-3 py-1 rounded-md transition-all font-medium capitalize ${frameType === t ? 'bg-white text-indigo-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'
+                                                            }`}
+                                                    >
+                                                        {t}
+                                                    </button>
+                                                ))}
+                                            </div>
                                         </div>
-                                        <div className="flex items-center gap-3">
-                                            <span className="text-[10px] font-bold uppercase text-gray-500">Tema Frame:</span>
-                                            {['dark', 'light'].map(th => (
+
+                                        {/* BARU: Mode Tampilan Switch (3 Pilihan) */}
+                                        <div className="space-y-2">
+                                            <span className="text-[10px] font-bold uppercase text-gray-500 block">Mode Tampilan Aplikasi:</span>
+                                            <div className="grid grid-cols-3 gap-2 bg-gray-100 p-1 rounded-xl">
                                                 <button
-                                                    key={th}
-                                                    onClick={() => setFrameTheme(th as "dark" | "light")}
-                                                    className={`text-xs px-3 py-1 rounded-full border transition-all ${frameTheme === th ? 'bg-blue-600 text-white border-blue-600' : 'bg-gray-300  text-slate-900 border-transparent'}`}
+                                                    onClick={() => setDisplayMode('light')}
+                                                    className={`flex items-center justify-center gap-2 py-2 rounded-lg text-xs font-semibold transition-all ${displayMode === 'light' ? 'bg-white text-orange-500 shadow-sm' : 'text-gray-500'
+                                                        }`}
                                                 >
-                                                    {th}
+                                                    <Sun size={14} /> Light
                                                 </button>
-                                            ))}
+                                                <button
+                                                    onClick={() => setDisplayMode('dark')}
+                                                    className={`flex items-center justify-center gap-2 py-2 rounded-lg text-xs font-semibold transition-all ${displayMode === 'dark' ? 'bg-white text-indigo-600 shadow-sm' : 'text-gray-500'
+                                                        }`}
+                                                >
+                                                    <Moon size={14} /> Dark
+                                                </button>
+                                                <button
+                                                    onClick={() => setDisplayMode('auto')}
+                                                    className={`flex items-center justify-center gap-2 py-2 rounded-lg text-xs font-semibold transition-all ${displayMode === 'auto' ? 'bg-white text-green-600 shadow-sm' : 'text-gray-500'
+                                                        }`}
+                                                >
+                                                    <SunMoon size={14} /> Auto
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <div className="flex items-center justify-between">
+                                            <span className="text-[10px] font-bold uppercase text-gray-500">Aksen Warna Frame:</span>
+                                            <div className="flex gap-2">
+                                                {['dark', 'light'].map(th => (
+                                                    <button
+                                                        key={th}
+                                                        onClick={() => setFrameTheme(th as "dark" | "light")}
+                                                        className={`text-[10px] px-4 py-1.5 rounded-full border transition-all font-bold uppercase ${frameTheme === th
+                                                            ? 'bg-slate-800 text-white border-slate-800'
+                                                            : 'bg-gray-100 text-gray-400 border-transparent hover:bg-gray-200'
+                                                            }`}
+                                                    >
+                                                        {th}
+                                                    </button>
+                                                ))}
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

@@ -1,6 +1,6 @@
 'use client'
 import React, { useState, useEffect, useRef } from 'react';
-import { Palette, Home, Utensils, Cpu, Sparkles, Pipette, HeartPulse, Shirt, Coffee, GraduationCap, Upload, CircleCheckBigIcon, Circle, Sun, Moon, Check } from 'lucide-react';
+import { Palette, Home, Utensils, Cpu, Sparkles, Pipette, HeartPulse, Shirt, Coffee, GraduationCap, Upload, CircleCheckBigIcon, Circle, Sun, Moon, Check, SunMoon } from 'lucide-react';
 import HeaderConfig from '@/Components/Config/Theme/Header';
 import NavIcons from '@/Components/Config/Theme/Header/NavIcons';
 import MainLayout from '@/Components/Layout/MainLayout';
@@ -102,6 +102,7 @@ export default function HeroPage() {
     const [activeTab, setActiveTab] = useState(BUSINESS_THEMES[0].id);
     const [productLayout, setProductLayout] = useState<number>();
     const [isDarkMode, setIsDarkMode] = useState(false);
+    const [displayMode, setDisplayMode] = useState('auto');
 
     const [loading, setLoading] = useState<boolean>(false);
     const [products, setProducts] = useState<ProductsType[]>();
@@ -232,25 +233,50 @@ export default function HeroPage() {
                                             {selectedColor.toUpperCase()}
                                         </div>
                                     </div>
-                                    <div className="sm:flex items-start gap-4">
-                                        <div>
-                                            <div className="space-y-1">
-                                                <label className="text-[10px] font-bold uppercase text-gray-500">Gambar</label>
-                                                <div className='flex items-center gap-4'>
-
-                                                    <button
-                                                        onClick={() => setIsDarkMode(!isDarkMode)}
-                                                        className={`p-2 ${isDarkMode ? "bg-slate-800" : "bg-slate-200"} rounded-lg transition-colors`}
-                                                    >
-                                                        {isDarkMode ? <Sun className="w-5 h-5 text-yellow-400" /> : <Moon className="w-5 h-5 text-slate-600" />}
-                                                    </button>
-                                                    <button
-                                                        // onClick={handleSubmit}
-                                                        className="flex mb-1 items-center gap-2 p-2 text-sm bg-blue-600 text-white font-semibold hover:bg-blue-800 rounded-md transition-colors"
-                                                    >
-                                                        <Check className="w-4 h-4" /> Simpan Perubahan
-                                                    </button>
+                                    <div className="sm:flex items-center gap-4">
+                                        <div className="space-y-1 w-full">
+                                            <div className='sm:flex items-center gap-4'>
+                                                <div className="space-y-2 w-full">
+                                                    <span className="text-[10px] font-bold uppercase text-gray-500 block">Mode Tampilan Aplikasi:</span>
+                                                    <div className="grid grid-cols-3 gap-2 bg-gray-100 p-1 rounded-xl">
+                                                        <button
+                                                            onClick={() => {
+                                                                setDisplayMode('light')
+                                                                setIsDarkMode(false)
+                                                            }}
+                                                            className={`flex items-center justify-center gap-2 py-2 rounded-lg text-xs font-semibold transition-all ${displayMode === 'light' ? 'bg-white text-orange-500 shadow-sm' : 'text-gray-500'
+                                                                }`}
+                                                        >
+                                                            <Sun size={14} /> Light
+                                                        </button>
+                                                        <button
+                                                            onClick={() => {
+                                                                setDisplayMode('dark')
+                                                                setIsDarkMode(true)
+                                                            }}
+                                                            className={`flex items-center justify-center gap-2 py-2 rounded-lg text-xs font-semibold transition-all ${displayMode === 'dark' ? 'bg-white text-indigo-600 shadow-sm' : 'text-gray-500'
+                                                                }`}
+                                                        >
+                                                            <Moon size={14} /> Dark
+                                                        </button>
+                                                        <button
+                                                            onClick={() => {
+                                                                setDisplayMode('auto')
+                                                                setIsDarkMode(false)
+                                                            }}
+                                                            className={`flex items-center justify-center gap-2 py-2 rounded-lg text-xs font-semibold transition-all ${displayMode === 'auto' ? 'bg-white text-green-600 shadow-sm' : 'text-gray-500'
+                                                                }`}
+                                                        >
+                                                            <SunMoon size={14} /> Auto
+                                                        </button>
+                                                    </div>
                                                 </div>
+                                                <button
+                                                    // onClick={handleSubmit}
+                                                    className="w-full mt-6 flex mb-1 items-center justify-center gap-2 p-2 text-sm bg-blue-600 text-white font-semibold hover:bg-blue-800 rounded-md transition-colors"
+                                                >
+                                                    <Check className="w-4 h-4" /> Simpan Perubahan
+                                                </button>
                                             </div>
                                         </div>
                                     </div>
