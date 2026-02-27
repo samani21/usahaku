@@ -1,0 +1,30 @@
+import { formatIDR } from '@/types/FormtRupiah';
+import { ChevronRight } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import React from 'react'
+
+type Props = {
+    isDarkMode: boolean;
+    isBuild?: boolean;
+    totalCart: number;
+    summary: number;
+}
+
+const Sevent = ({ isDarkMode, isBuild, totalCart, summary }: Props) => {
+    const router = useRouter();
+    return (
+        <div className="space-y-4">
+            <div className={`sticky bottom-0 ${isDarkMode ? "bg-slate-800 border-slate-900" : "bg-white border-slate-100"} border-t-2 px-2 sm:px-6 py-4 flex justify-between items-center`}>
+                <p className="text-sm">
+                    <span className="text-slate-400">Total: </span>
+                    <span className="font-bold">{formatIDR(summary)}</span>
+                </p>
+                <button onClick={() => !isBuild && router.push('/checkout')} className={`text-[var(--summary-primary-color)] font-bold text-sm flex items-center gap-1 uppercase tracking-widest`}>
+                    Lanjut ({totalCart}) <ChevronRight size={16} />
+                </button>
+            </div>
+        </div>
+    )
+}
+
+export default Sevent
