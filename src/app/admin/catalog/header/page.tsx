@@ -189,6 +189,7 @@ export default function HeaderPage() {
                 setFrameType(res?.data?.header?.type_frame);
                 setFrameTheme(res?.data?.header?.color_frame);
                 setDisplayMode(res?.data?.header?.mode);
+                setThemeDark(res?.data?.header?.mode == 'dark')
             }
         } finally {
             setLoading(false);
@@ -227,23 +228,6 @@ export default function HeaderPage() {
         document.documentElement.style.setProperty('--header-secondary-rgb', `${tr}, ${tg}, ${tb}`);
     }, [selectedColor, currentTextColor]);
 
-    const handleFileToBase64 = (file: File): Promise<string> =>
-        new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.onload = () => resolve(String(reader.result));
-            reader.onerror = reject;
-            reader.readAsDataURL(file);
-        });
-
-    // const handleLogoUpload = async (
-    //     e: React.ChangeEvent<HTMLInputElement>
-    // ) => {
-    //     const file = e.target.files?.[0];
-    //     if (!file) return;
-    //     setLogoFile(file);
-    //     const b64 = await handleFileToBase64(file);
-    //     setLogo(b64);
-    // };
 
     const handleSubmit = async () => {
         try {
