@@ -6,15 +6,15 @@ type Props = {
     themeMode: string;
     spanOne?: string;
     spanTwo?: string;
-    setSidebarOpen: (val: boolean) => void;
     toggleTheme: () => void;
-    frameType: "circle" | "square" | "none";
-    frameTheme: "dark" | "light";
+    frameType: string;
+    frameTheme: string;
     logoImage: string | null;
-    isBuild?: boolean
+    isBuild?: boolean;
+    displayMode: string;
 }
 
-const Thirteen = ({ themeMode, spanOne, spanTwo, setSidebarOpen, toggleTheme, frameType, frameTheme, logoImage, isBuild }: Props) => {
+const Thirteen = ({ themeMode, spanOne, spanTwo, toggleTheme, frameType, frameTheme, logoImage, isBuild, displayMode }: Props) => {
     const isDarkMode = useMemo(() => {
         return themeMode === 'dark' ? true : false;
     }, [themeMode])
@@ -31,9 +31,7 @@ const Thirteen = ({ themeMode, spanOne, spanTwo, setSidebarOpen, toggleTheme, fr
                         <span className="text-slate-300 ml-1 font-medium">{spanTwo}</span>
                     </h2>
                 </div>
-                <div className='hidden sm:grid'>
-                    <NavIcons colorClass={`text-[var(--header-primary-color)]`} setSidebarOpen={setSidebarOpen} toggleTheme={toggleTheme} themeMode={themeMode} />
-                </div>
+                <NavIcons isBuild={isBuild} displayMode={displayMode} colorClass={`text-[var(--header-primary-color)]`} toggleTheme={toggleTheme} themeMode={themeMode} />
             </div>
         </header>
     )

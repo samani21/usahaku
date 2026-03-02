@@ -6,15 +6,15 @@ type Props = {
     themeMode: string;
     spanOne?: string;
     spanTwo?: string;
-    setSidebarOpen: (val: boolean) => void;
     toggleTheme: () => void;
-    frameType: "circle" | "square" | "none";
-    frameTheme: "dark" | "light";
+    frameType: string;
+    frameTheme: string;
     logoImage: string | null;
-    isBuild?: boolean
+    isBuild?: boolean;
+    displayMode: string;
 }
 
-const Four = ({ themeMode, spanOne, spanTwo, setSidebarOpen, toggleTheme, frameType, frameTheme, logoImage, isBuild }: Props) => {
+const Four = ({ themeMode, spanOne, spanTwo, toggleTheme, frameType, frameTheme, logoImage, isBuild, displayMode }: Props) => {
     return (
         <header className={`${!isBuild && 'absolute'} z-100 w-full`}>
             <div className={`flex items-center justify-between p-3 rounded-xl bg-slate-900 text-white overflow-hidden relative`}>
@@ -30,9 +30,7 @@ const Four = ({ themeMode, spanOne, spanTwo, setSidebarOpen, toggleTheme, frameT
                         <span className={`text-[var(--header-primary-color)] ml-1`}>{spanTwo}</span>
                     </h2>
                 </div>
-                <div className='hidden sm:grid'>
-                    <NavIcons colorClass={`text-[var(--header-primary-color)]`} setSidebarOpen={setSidebarOpen} toggleTheme={toggleTheme} themeMode={themeMode} />
-                </div>
+                <NavIcons isBuild={isBuild} colorClass={`text-[var(--header-primary-color)]`} displayMode={displayMode} toggleTheme={toggleTheme} themeMode={themeMode} />
             </div>
         </header>
     )

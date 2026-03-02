@@ -9,13 +9,13 @@ type Props = {
     logoImage: string | null;
     frameType: FrameType;
     frameTheme: FrameTheme;
-    setSidebarOpen: (val: boolean) => void;
     toggleTheme: () => void;
     spanOne?: string;
     spanTwo?: string;
+    displayMode: string;
 }
 
-const One = ({ isBuild, themeMode, logoImage, frameType, frameTheme, setSidebarOpen, toggleTheme, spanOne, spanTwo }: Props) => {
+const One = ({ isBuild, themeMode, logoImage, frameType, frameTheme, toggleTheme, spanOne, spanTwo, displayMode }: Props) => {
     return (
         <header className={`${!isBuild && 'absolute'} z-100 w-full`}>
             <div className={`flex items-center justify-between p-3 rounded-2xl border transition-all ${themeMode === 'dark' ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200 shadow-sm'}`}>
@@ -29,9 +29,7 @@ const One = ({ isBuild, themeMode, logoImage, frameType, frameTheme, setSidebarO
                         <span className={themeMode === 'dark' ? 'text-white' : 'text-slate-900'}>{spanTwo}</span>
                     </h2>
                 </div>
-                <div className='hidden sm:grid'>
-                    <NavIcons colorClass={`text-[var(--header-primary-color)]`} setSidebarOpen={setSidebarOpen} toggleTheme={toggleTheme} themeMode={themeMode} />
-                </div>
+                <NavIcons isBuild={isBuild} colorClass={`text-[var(--header-primary-color)]`} displayMode={displayMode} toggleTheme={toggleTheme} themeMode={themeMode} />
             </div>
         </header>
     )

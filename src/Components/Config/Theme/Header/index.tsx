@@ -23,23 +23,24 @@ type Props = {
     logoImage: string | null;
     frameType: FrameType;
     frameTheme: FrameTheme;
-    setSidebarOpen: (val: boolean) => void;
     toggleTheme: () => void;
     spanOne?: string;
     spanTwo?: string;
+    displayMode: string;
+
 }
 
-const HeaderConfig = ({ layout, themeMode, isBuild, logoImage, frameType, frameTheme, setSidebarOpen, toggleTheme, spanOne, spanTwo }: Props) => {
+const HeaderConfig = ({ layout, themeMode, isBuild, logoImage, frameType, frameTheme, toggleTheme, spanOne, spanTwo, displayMode }: Props) => {
     const component = {
         themeMode,
         isBuild,
         logoImage,
         frameType,
         frameTheme,
-        setSidebarOpen,
         toggleTheme,
         spanOne,
-        spanTwo
+        spanTwo,
+        displayMode
     }
     switch (layout) {
         case 1:

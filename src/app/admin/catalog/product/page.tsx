@@ -7,7 +7,7 @@ import MainLayout from '@/Components/Layout/MainLayout';
 import HeroConfig from '@/Components/Config/Theme/Hero';
 import { CategoriesType } from '@/types/Admin/CategoriesType';
 import { Get } from '@/utils/Get';
-import { Catalog } from '@/types/Admin/Catalog';
+import { Catalog } from '@/types/Admin/Catalog/Catalog';
 import CategorieConfig from '@/Components/Config/Theme/Categories';
 import { ProductsType } from '@/types/Admin/ProductsType';
 import ProductConfig from '@/Components/Config/Theme/Products';

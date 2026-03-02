@@ -1,2 +1,2 @@
-export type FrameType = "circle" | "square" | "none";
-export type FrameTheme = "light" | "dark";
+export type FrameType = string;
+export type FrameTheme = string;

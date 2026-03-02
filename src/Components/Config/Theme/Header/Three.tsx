@@ -6,15 +6,15 @@ type Props = {
     themeMode: string;
     spanOne?: string;
     spanTwo?: string;
-    setSidebarOpen: (val: boolean) => void;
     toggleTheme: () => void;
-    frameType: "circle" | "square" | "none";
-    frameTheme: "dark" | "light";
+    frameType: string;
+    frameTheme: string;
     logoImage: string | null;
-    isBuild?: boolean
+    isBuild?: boolean;
+    displayMode: string;
 }
 
-const Three = ({ themeMode, spanOne, spanTwo, setSidebarOpen, toggleTheme, frameType, frameTheme, logoImage, isBuild }: Props) => {
+const Three = ({ themeMode, spanOne, spanTwo, toggleTheme, frameType, frameTheme, logoImage, isBuild, displayMode }: Props) => {
     const isDarkMode = useMemo(() => {
         return themeMode === 'dark' ? true : false;
     }, [themeMode])
@@ -30,7 +30,7 @@ const Three = ({ themeMode, spanOne, spanTwo, setSidebarOpen, toggleTheme, frame
                     <span className="text-slate-400 ml-2 font-light">{spanTwo}</span>
                 </h2>
                 <div className={`w-full h-[1px]  ${isDarkMode ? 'bg[var(--primary-header-color)]' : 'bg[var(--secondary-header-color)]'} mb-4`} />
-                <NavIcons colorClass={`text-[var(--header-primary-color)]`} setSidebarOpen={setSidebarOpen} toggleTheme={toggleTheme} themeMode={themeMode} />
+                <NavIcons isBuild={isBuild} displayMode={displayMode} colorClass={`text-[var(--header-primary-color)]`} toggleTheme={toggleTheme} themeMode={themeMode} />
             </div>
         </header>
     )

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     CheckCircle,
     XCircle,
@@ -62,6 +62,11 @@ export const AlertComponent = ({ type = 'success', message, onClose }: Props) =>
 
 
 export default function Alert({ type, message, onClose }: Props) {
+    useEffect(() => {
+        setTimeout(() => {
+            onClose()
+        }, 5000)
+    }, [])
     return (
         <div className="absolute z-11 top-4 right-0 w-full max-w-xl">
             <AlertComponent

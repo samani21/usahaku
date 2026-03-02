@@ -1,8 +1,9 @@
-import { CategoriesType } from "./CategoriesType";
-import { ProductsType } from "./ProductsType";
+import { CategoriesType } from "../CategoriesType";
+import { ProductsType } from "../ProductsType";
+import { CatalogHeaderType } from "./Header";
 
 export interface Catalog {
-    // header: ResHeader;
+    header: CatalogHeaderType;
     // hero: ResHero;
     // queue: queue;
     // category: categorie;

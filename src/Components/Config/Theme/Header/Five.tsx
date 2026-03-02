@@ -6,15 +6,15 @@ type Props = {
     themeMode: string;
     spanOne?: string;
     spanTwo?: string;
-    setSidebarOpen: (val: boolean) => void;
     toggleTheme: () => void;
-    frameType: "circle" | "square" | "none";
-    frameTheme: "dark" | "light";
+    frameType: string;
+    frameTheme: string;
     logoImage: string | null;
-    isBuild?: boolean
+    isBuild?: boolean;
+    displayMode: string;
 }
 
-const Five = ({ themeMode, spanOne, spanTwo, setSidebarOpen, toggleTheme, frameType, frameTheme, logoImage, isBuild }: Props) => {
+const Five = ({ themeMode, spanOne, spanTwo, toggleTheme, frameType, frameTheme, logoImage, isBuild, displayMode }: Props) => {
     const isDarkMode = useMemo(() => {
         return themeMode === 'dark' ? true : false;
     }, [themeMode])
@@ -31,9 +31,7 @@ const Five = ({ themeMode, spanOne, spanTwo, setSidebarOpen, toggleTheme, frameT
                         <span className={`text-xl font-serif font-bold uppercase text-[var(--header-primary-color)]`}>{spanTwo}</span>
                     </div>
                 </div>
-                <div className='hidden sm:grid'>
-                    <NavIcons colorClass={`text-[var(--header-primary-color)]`} setSidebarOpen={setSidebarOpen} toggleTheme={toggleTheme} themeMode={themeMode} />
-                </div>
+                <NavIcons isBuild={isBuild} colorClass={`text-[var(--header-primary-color)]`} toggleTheme={toggleTheme} displayMode={displayMode} themeMode={themeMode} />
             </div>
         </header>
     )

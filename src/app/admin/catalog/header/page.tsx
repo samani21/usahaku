@@ -1,9 +1,16 @@
 'use client'
-import React, { useState, useEffect, useRef } from 'react';
-import { Palette, Home, Utensils, Cpu, Sparkles, Pipette, HeartPulse, Shirt, Coffee, GraduationCap, Upload, CircleCheckBigIcon, Circle, Sun, Moon, SunMoon } from 'lucide-react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { Palette, Home, Utensils, Cpu, Sparkles, Pipette, HeartPulse, Shirt, Coffee, GraduationCap, Upload, CircleCheckBigIcon, Circle, Sun, Moon, SunMoon, Trash, Trash2, Check, X } from 'lucide-react';
 import HeaderConfig from '@/Components/Config/Theme/Header';
 import NavIcons from '@/Components/Config/Theme/Header/NavIcons';
 import MainLayout from '@/Components/Layout/MainLayout';
+import { AlertType } from '@/types/Alert';
+import Alert from '@/Components/Component/Alert';
+import Loading from '@/Components/Component/Loading';
+import { Post } from '@/utils/Post';
+import { Get } from '@/utils/Get';
+import { Catalog } from '@/types/Admin/Catalog/Catalog';
+import Cropper, { Area } from 'react-easy-crop';
 
 const BUSINESS_THEMES = [
     {
@@ -91,19 +98,103 @@ const listHeader = [
 
 export default function HeaderPage() {
     const [selectedColor, setSelectedColor] = useState(BUSINESS_THEMES[0].hex);
-    const [activeTab, setActiveTab] = useState(BUSINESS_THEMES[0].id);
-    const [headerLayout, setHeaderLayout] = useState<number>();
-    const [displayMode, setDisplayMode] = useState('auto');
+    const [activeTab, setActiveTab] = useState<any>();
+    const [headerLayout, setHeaderLayout] = useState<number | null>(null);
+    const [displayMode, setDisplayMode] = useState<string>('auto');
+    const [showAlert, setShowAlert] = useState<AlertType | null>(null);
+    const [loading, setLoading] = useState<boolean>(false);
 
     const [themeDark, setThemeDark] = useState<boolean>(false);
-    const [logoFile, setLogoFile] = useState<File | null>(null);
-    const [logo, setLogo] = useState<string | null>(null);
     const fileInputRef = useRef<HTMLInputElement | null>(null);
-    const [frameType, setFrameType] = useState<"circle" | "square" | "none">("none"); // circle, square, none
-    const [frameTheme, setFrameTheme] = useState<"dark" | "light">("dark"); // dark, light
-    const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
+    const [frameType, setFrameType] = useState<string>("none"); // circle, square, none
+    const [frameTheme, setFrameTheme] = useState<string>("dark"); // dark, light
     const [spanOne, setSpanOne] = useState<string>("NAMA");
     const [spanTwo, setSpanTwo] = useState<string>("USAHA");
+    const [isDeleteLogo, setIsDeleteLogo] = useState<boolean>(false);
+
+    const [imageToCrop, setImageToCrop] = useState<string | null>(null);
+    const [crop, setCrop] = useState({ x: 0, y: 0 });
+    const [zoom, setZoom] = useState(1);
+    const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null);
+    const [showCropModal, setShowCropModal] = useState(false);
+    const [logoFile, setLogoFile] = useState<File | null>(null);
+    const [logo, setLogo] = useState<string | null>(null);
+
+    useEffect(() => {
+        getCalog()
+    }, []);
+
+    const getCroppedImg = async (imageSrc: string, pixelCrop: Area): Promise<{ file: File, url: string }> => {
+        const image = new Image();
+        image.src = imageSrc;
+        await new Promise((resolve) => (image.onload = resolve));
+
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+
+        canvas.width = pixelCrop.width;
+        canvas.height = pixelCrop.height;
+
+        ctx?.drawImage(
+            image,
+            pixelCrop.x, pixelCrop.y, pixelCrop.width, pixelCrop.height,
+            0, 0, pixelCrop.width, pixelCrop.height
+        );
+
+        return new Promise((resolve) => {
+            canvas.toBlob((blob) => {
+                if (!blob) return;
+                const file = new File([blob], "logo_cropped.png", { type: "image/png" });
+                const url = URL.createObjectURL(blob);
+                resolve({ file, url });
+            }, 'image/png');
+        });
+    };
+    const onCropComplete = useCallback((_area: Area, areaPixels: Area) => {
+        setCroppedAreaPixels(areaPixels);
+    }, []);
+
+    const handleLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => {
+            setImageToCrop(reader.result as string);
+            setShowCropModal(true);
+        };
+    };
+
+    const handleSaveCrop = async () => {
+        if (imageToCrop && croppedAreaPixels) {
+            const { file, url } = await getCroppedImg(imageToCrop, croppedAreaPixels);
+            setLogo(url); // Preview base64/blob url
+            setLogoFile(file); // File asli untuk upload
+            setShowCropModal(false);
+            setImageToCrop(null);
+        }
+    };
+    const getCalog = async () => {
+        try {
+            setLoading(true);
+            const res = await Get<{ success: boolean; data: Catalog }>('/catalog');
+
+            if (res?.success) {
+                setHeaderLayout(res?.data?.header?.layout_header);
+                setLogo(res?.data?.header?.logo);
+                setSpanOne(res?.data?.header?.span_one);
+                setSpanTwo(res?.data?.header?.span_two);
+                setSelectedColor(res?.data?.header?.color);
+                setFrameType(res?.data?.header?.type_frame);
+                setFrameTheme(res?.data?.header?.color_frame);
+                setDisplayMode(res?.data?.header?.mode);
+            }
+        } finally {
+            setLoading(false);
+        }
+    };
+
     // Fungsi untuk menghitung kontras teks secara otomatis
     const getContrastColor = (hex: string) => {
         if (!hex) return '#1e293b';
@@ -136,20 +227,6 @@ export default function HeaderPage() {
         document.documentElement.style.setProperty('--header-secondary-rgb', `${tr}, ${tg}, ${tb}`);
     }, [selectedColor, currentTextColor]);
 
-    // Menentukan headline berdasarkan kategori aktif
-    const getHeadline = () => {
-        switch (activeTab) {
-            case 'property': return 'Hunian Minimalis Masa Kini';
-            case 'fnb': return 'Rasa Otentik Setiap Saat';
-            case 'tech': return 'Solusi Digital Masa Depan';
-            case 'luxury': return 'Kemewahan Tanpa Batas';
-            case 'medical': return 'Layanan Kesehatan Terpadu';
-            case 'fashion': return 'Gaya Hidup Tanpa Batas';
-            case 'coffee': return 'Ruang Cerita & Inspirasi';
-            case 'education': return 'Wujudkan Masa Depan Cerah';
-            default: return 'Inovasi Tanpa Henti';
-        }
-    };
     const handleFileToBase64 = (file: File): Promise<string> =>
         new Promise((resolve, reject) => {
             const reader = new FileReader();
@@ -158,18 +235,115 @@ export default function HeaderPage() {
             reader.readAsDataURL(file);
         });
 
-    const handleLogoUpload = async (
-        e: React.ChangeEvent<HTMLInputElement>
-    ) => {
-        const file = e.target.files?.[0];
-        if (!file) return;
-        setLogoFile(file);
-        const b64 = await handleFileToBase64(file);
-        setLogo(b64);
-    };
+    // const handleLogoUpload = async (
+    //     e: React.ChangeEvent<HTMLInputElement>
+    // ) => {
+    //     const file = e.target.files?.[0];
+    //     if (!file) return;
+    //     setLogoFile(file);
+    //     const b64 = await handleFileToBase64(file);
+    //     setLogo(b64);
+    // };
+
+    const handleSubmit = async () => {
+        try {
+            setLoading(true);
+            if (!headerLayout) {
+                setLoading(false);
+                setShowAlert({
+                    isOpen: true,
+                    type: 'error',
+                    message: "Harap pilih salah satu header dibawah"
+                })
+                return;
+            }
+            const formData = new FormData();
+            formData.append('layout_header', String(headerLayout))
+            formData.append('color', selectedColor)
+            formData.append('span_one', spanOne)
+            formData.append('span_two', spanTwo)
+            if (logoFile) {
+                formData.append('logo', logoFile)
+            }
+            formData.append('type_frame', frameType)
+            formData.append('color_frame', frameTheme)
+            formData.append('mode', displayMode)
+            if (isDeleteLogo) {
+                formData.append('delete_image', '1')
+
+            }
+            const res = await Post('catalog/header', formData)
+            if (res) {
+                setLoading(false);
+                setShowAlert({
+                    isOpen: true,
+                    type: 'success',
+                    message: "Pengaturan header berhasil disimpan"
+                })
+            }
+
+        } catch (e: any) {
+            setLoading(false);
+            setShowAlert({
+                isOpen: true,
+                type: 'error',
+                message: "Pengaturan header gagal disimpan"
+            })
+        }
+    }
     return (
         <MainLayout>
-
+            {showCropModal && (
+                <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 p-4">
+                    <div className="bg-white rounded-2xl w-full max-w-lg overflow-hidden">
+                        <div className="p-4 border-b flex justify-between items-center">
+                            <h3 className="font-bold text-slate-800">Sesuaikan Logo</h3>
+                            <button onClick={() => setShowCropModal(false)}>
+                                <X size={20} />
+                            </button>
+                        </div>
+                        <div className="relative h-80 w-full bg-slate-200">
+                            <Cropper
+                                image={imageToCrop!}
+                                crop={crop}
+                                zoom={zoom}
+                                aspect={1 / 1} // Atur aspect ratio sesuai kebutuhan (1/1 untuk kotak/lingkaran)
+                                onCropChange={setCrop}
+                                onCropComplete={onCropComplete}
+                                onZoomChange={setZoom}
+                            />
+                        </div>
+                        <div className="p-4 space-y-4">
+                            <div className="flex items-center gap-4">
+                                <span className="text-xs font-medium">Zoom</span>
+                                <input
+                                    type="range"
+                                    value={zoom}
+                                    min={1}
+                                    max={3}
+                                    step={0.1}
+                                    onChange={(e) => setZoom(Number(e.target.value))}
+                                    className="flex-1"
+                                />
+                            </div>
+                            <div className="flex gap-2">
+                                <button
+                                    onClick={() => setShowCropModal(false)}
+                                    className="flex-1 py-2 text-sm font-semibold bg-gray-100 rounded-xl"
+                                >
+                                    Batal
+                                </button>
+                                <button
+                                    onClick={handleSaveCrop}
+                                    className="flex-1 py-2 text-sm font-semibold bg-indigo-600 text-white rounded-xl flex items-center justify-center gap-2"
+                                >
+                                    <Check size={16} /> Gunakan Gambar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
             <div className='bg-slate-100 rounded-xl'>
                 <div className='bg-gray-200 w-full  rounded-t-xl flex items-center gap-2 py-2 px-6'>
                     <div className='bg-red-500 rounded-full h-4 w-4' />
@@ -250,12 +424,26 @@ export default function HeaderPage() {
                                     </div>
                                     <div className="space-y-1">
                                         <label className="text-[10px] font-bold uppercase text-gray-500">Logo</label>
-                                        <button
-                                            onClick={() => fileInputRef.current?.click()}
-                                            className="flex items-center gap-2 px-4 py-2 text-white text-sm bg-slate-700 hover:bg-slate-800 rounded-lg transition-colors w-full justify-center"
-                                        >
-                                            <Upload className="w-4 h-4" /> {logo ? "Ganti Logo" : "Upload Logo"}
-                                        </button>
+                                        {
+                                            logo ?
+                                                <button
+                                                    onClick={() => {
+                                                        setLogo(null);
+                                                        setLogoFile(null)
+                                                        setIsDeleteLogo(true)
+                                                    }}
+                                                    className="flex items-center gap-2 px-4 py-2 text-white text-sm bg-red-700 hover:bg-red-800 rounded-lg transition-colors w-full justify-center"
+                                                >
+                                                    <Trash2 className="w-4 h-4" />Hapus Logo
+                                                </button> :
+
+                                                <button
+                                                    onClick={() => fileInputRef.current?.click()}
+                                                    className="flex items-center gap-2 px-4 py-2 text-white text-sm bg-slate-700 hover:bg-slate-800 rounded-lg transition-colors w-full justify-center"
+                                                >
+                                                    <Upload className="w-4 h-4" /> {logo ? "Ganti Logo" : "Upload Logo"}
+                                                </button>
+                                        }
                                         <input
                                             type="file"
                                             ref={fileInputRef}
@@ -286,21 +474,30 @@ export default function HeaderPage() {
                                             <span className="text-[10px] font-bold uppercase text-gray-500 block">Mode Tampilan Aplikasi:</span>
                                             <div className="grid grid-cols-3 gap-2 bg-gray-100 p-1 rounded-xl">
                                                 <button
-                                                    onClick={() => setDisplayMode('light')}
+                                                    onClick={() => {
+                                                        setDisplayMode('light')
+                                                        setThemeDark(false)
+                                                    }}
                                                     className={`flex items-center justify-center gap-2 py-2 rounded-lg text-xs font-semibold transition-all ${displayMode === 'light' ? 'bg-white text-orange-500 shadow-sm' : 'text-gray-500'
                                                         }`}
                                                 >
                                                     <Sun size={14} /> Light
                                                 </button>
                                                 <button
-                                                    onClick={() => setDisplayMode('dark')}
+                                                    onClick={() => {
+                                                        setDisplayMode('dark')
+                                                        setThemeDark(true)
+                                                    }}
                                                     className={`flex items-center justify-center gap-2 py-2 rounded-lg text-xs font-semibold transition-all ${displayMode === 'dark' ? 'bg-white text-indigo-600 shadow-sm' : 'text-gray-500'
                                                         }`}
                                                 >
                                                     <Moon size={14} /> Dark
                                                 </button>
                                                 <button
-                                                    onClick={() => setDisplayMode('auto')}
+                                                    onClick={() => {
+                                                        setDisplayMode('auto')
+                                                        setThemeDark(false)
+                                                    }}
                                                     className={`flex items-center justify-center gap-2 py-2 rounded-lg text-xs font-semibold transition-all ${displayMode === 'auto' ? 'bg-white text-green-600 shadow-sm' : 'text-gray-500'
                                                         }`}
                                                 >
@@ -325,6 +522,9 @@ export default function HeaderPage() {
                                                     </button>
                                                 ))}
                                             </div>
+                                        </div>
+                                        <div className='flex items-center justify-end'>
+                                            <button type='button' onClick={handleSubmit} className='w-full sm:w-auto text-center bg-green-600 px-4 py-2 rounded-xl cursor-pointer hover:bg-green-700 text-white font-medium'>Simpan Perubahan</button>
                                         </div>
                                     </div>
                                 </div>
@@ -351,23 +551,25 @@ export default function HeaderPage() {
                                                 logoImage={logo}
                                                 frameType={frameType}
                                                 frameTheme={frameTheme}
-                                                setSidebarOpen={setSidebarOpen}
                                                 toggleTheme={() => setThemeDark(!themeDark)}
                                                 spanOne={spanOne}
-                                                spanTwo={spanTwo} />
+                                                spanTwo={spanTwo}
+                                                displayMode={displayMode} />
                                         </div>
                                     ))
                                 }
 
                             </div>
-                            <div className={`sm:hidden fixed left-0 p-2 z-10 ${themeDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200 shadow-sm'} bottom-0 w-full`}>
-                                <NavIcons colorClass={`text-[var(--header-primary-color)]`} setSidebarOpen={setSidebarOpen} toggleTheme={() => setThemeDark(!themeDark)} themeMode={themeDark ? "dark" : "light"} />
-                            </div>
+
                         </div>
                     </div>
                 </div>
             </div>
-
+            {
+                showAlert?.isOpen &&
+                <Alert type={showAlert?.type} message={showAlert?.message} onClose={() => setShowAlert(null)} />
+            }
+            {loading && <Loading title='Sedang Proses' />}
         </MainLayout>
     );
 }
