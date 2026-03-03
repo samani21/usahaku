@@ -11,6 +11,10 @@ import { Catalog } from '@/types/Admin/Catalog/Catalog';
 import CategorieConfig from '@/Components/Config/Theme/Categories';
 import { ProductsType } from '@/types/Admin/ProductsType';
 import ProductConfig from '@/Components/Config/Theme/Products';
+import { Post } from '@/utils/Post';
+import Alert from '@/Components/Component/Alert';
+import Loading from '@/Components/Component/Loading';
+import { AlertType } from '@/types/Alert';
 
 const BUSINESS_THEMES = [
     {
@@ -103,7 +107,7 @@ export default function HeroPage() {
     const [productLayout, setProductLayout] = useState<number>();
     const [isDarkMode, setIsDarkMode] = useState(false);
     const [displayMode, setDisplayMode] = useState('auto');
-
+    const [showAlert, setShowAlert] = useState<AlertType | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
     const [products, setProducts] = useState<ProductsType[]>();
 
@@ -116,8 +120,12 @@ export default function HeroPage() {
             const res = await Get<{ success: boolean; data: Catalog }>('/catalog');
 
             if (res?.success) {
-
-                // setCategorieLayout(res?.data?.categorie?.theme);
+                setProductLayout(res?.data?.product?.layout_products);
+                if (res?.data?.product?.color) {
+                    setSelectedColor(res?.data?.product?.color);
+                }
+                setDisplayMode(res?.data?.product?.mode);
+                setIsDarkMode(res?.data?.product?.mode == 'dark');
                 setProducts(res?.data?.products);
             }
         } finally {
@@ -156,19 +164,41 @@ export default function HeroPage() {
     }, [selectedColor, currentTextColor]);
 
     // Menentukan headline berdasarkan kategori aktif
-    const getHeadline = () => {
-        switch (activeTab) {
-            case 'property': return 'Hunian Minimalis Masa Kini';
-            case 'fnb': return 'Rasa Otentik Setiap Saat';
-            case 'tech': return 'Solusi Digital Masa Depan';
-            case 'luxury': return 'Kemewahan Tanpa Batas';
-            case 'medical': return 'Layanan Kesehatan Terpadu';
-            case 'fashion': return 'Gaya Hidup Tanpa Batas';
-            case 'coffee': return 'Ruang Cerita & Inspirasi';
-            case 'education': return 'Wujudkan Masa Depan Cerah';
-            default: return 'Inovasi Tanpa Henti';
+    const handleSubmit = async () => {
+        try {
+            setLoading(true);
+            if (!productLayout) {
+                setLoading(false);
+                setShowAlert({
+                    isOpen: true,
+                    type: 'error',
+                    message: "Harap pilih salah satu header dibawah"
+                })
+                return;
+            }
+            const formData = new FormData();
+            formData.append('layout_products', String(productLayout))
+            formData.append('color', selectedColor)
+            formData.append('mode', displayMode)
+            const res = await Post('catalog/product', formData)
+            if (res) {
+                setLoading(false);
+                setShowAlert({
+                    isOpen: true,
+                    type: 'success',
+                    message: "Pengaturan product berhasil disimpan"
+                })
+            }
+
+        } catch (e: any) {
+            setLoading(false);
+            setShowAlert({
+                isOpen: true,
+                type: 'error',
+                message: "Pengaturan product gagal disimpan"
+            })
         }
-    };
+    }
     return (
         <MainLayout>
 
@@ -272,8 +302,8 @@ export default function HeroPage() {
                                                     </div>
                                                 </div>
                                                 <button
-                                                    // onClick={handleSubmit}
-                                                    className="w-full mt-6 flex mb-1 items-center justify-center gap-2 p-2 text-sm bg-blue-600 text-white font-semibold hover:bg-blue-800 rounded-md transition-colors"
+                                                    onClick={handleSubmit}
+                                                    className="w-full mt-6 flex mb-1 items-center justify-center gap-2 p-2 text-sm bg-green-600 text-white font-semibold hover:bg-green-800 rounded-md transition-colors"
                                                 >
                                                     <Check className="w-4 h-4" /> Simpan Perubahan
                                                 </button>
@@ -339,7 +369,11 @@ export default function HeroPage() {
                     </div>
                 </div>
             </div>
-
+            {
+                showAlert?.isOpen &&
+                <Alert type={showAlert?.type} message={showAlert?.message} onClose={() => setShowAlert(null)} />
+            }
+            {loading && <Loading title='Sedang Proses' />}
         </MainLayout>
     );
 }

@@ -301,7 +301,12 @@ export default function HeroPage() {
                                                     </div>
                                                 </div>
                                                 <div className='w-full flex items-center justify-end'>
-                                                    <button type='button' onClick={handleSubmit} className='w-full mt-6 text-center bg-green-600 px-4 py-2 rounded-xl cursor-pointer hover:bg-green-700 text-white font-medium'>Simpan Perubahan</button>
+                                                    <button
+                                                        onClick={handleSubmit}
+                                                        className="w-full mt-6 flex mb-1 items-center justify-center gap-2 p-2 text-sm bg-green-600 text-white font-semibold hover:bg-green-800 rounded-md transition-colors"
+                                                    >
+                                                        <Check className="w-4 h-4" /> Simpan Perubahan
+                                                    </button>
                                                 </div>
                                             </div>
                                         </div>

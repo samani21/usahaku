@@ -183,9 +183,15 @@ export default function HeaderPage() {
             if (res?.success) {
                 setHeaderLayout(res?.data?.header?.layout_header);
                 setLogo(res?.data?.header?.logo);
-                setSpanOne(res?.data?.header?.span_one);
-                setSpanTwo(res?.data?.header?.span_two);
-                setSelectedColor(res?.data?.header?.color);
+                if (res?.data?.header?.span_one) {
+                    setSpanOne(res?.data?.header?.span_one);
+                }
+                if (res?.data?.header?.span_two) {
+                    setSpanTwo(res?.data?.header?.span_two);
+                }
+                if (res?.data?.header?.color) {
+                    setSelectedColor(res?.data?.header?.color);
+                }
                 setFrameType(res?.data?.header?.type_frame);
                 setFrameTheme(res?.data?.header?.color_frame);
                 setDisplayMode(res?.data?.header?.mode);
@@ -386,7 +392,7 @@ export default function HeaderPage() {
                                             className="h-12 w-12  rounded-lg cursor-pointer border-none bg-transparent"
                                         />
                                         <div className="flex-1 px-3 py-2 bg-gray-50 text-slate-900 rounded-lg border border-gray-200 font-mono text-sm">
-                                            {selectedColor.toUpperCase()}
+                                            {selectedColor?.toUpperCase()}
                                         </div>
                                     </div>
                                     <div className="space-y-1">
@@ -508,7 +514,12 @@ export default function HeaderPage() {
                                             </div>
                                         </div>
                                         <div className='flex items-center justify-end'>
-                                            <button type='button' onClick={handleSubmit} className='w-full sm:w-auto text-center bg-green-600 px-4 py-2 rounded-xl cursor-pointer hover:bg-green-700 text-white font-medium'>Simpan Perubahan</button>
+                                            <button
+                                                onClick={handleSubmit}
+                                                className="w-full mt-6 flex mb-1 items-center justify-center gap-2 p-2 text-sm bg-green-600 text-white font-semibold hover:bg-green-800 rounded-md transition-colors"
+                                            >
+                                                <Check className="w-4 h-4" /> Simpan Perubahan
+                                            </button>
                                         </div>
                                     </div>
                                 </div>

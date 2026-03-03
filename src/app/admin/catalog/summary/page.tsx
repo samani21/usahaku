@@ -12,6 +12,10 @@ import CategorieConfig from '@/Components/Config/Theme/Categories';
 import { ProductsType } from '@/types/Admin/ProductsType';
 import ProductConfig from '@/Components/Config/Theme/Products';
 import SummaryConfig from '@/Components/Config/Theme/Summary';
+import { Post } from '@/utils/Post';
+import Alert from '@/Components/Component/Alert';
+import Loading from '@/Components/Component/Loading';
+import { AlertType } from '@/types/Alert';
 
 const BUSINESS_THEMES = [
     {
@@ -101,12 +105,12 @@ const ListSummary = [
 
 export default function SummaryPage() {
     const [selectedColor, setSelectedColor] = useState(BUSINESS_THEMES[0].hex);
-    const [activeTab, setActiveTab] = useState(BUSINESS_THEMES[0].id);
+    const [activeTab, setActiveTab] = useState<any>();
     const [summaryLayout, setSummaryLayout] = useState<number | null>(null);
     const [isDarkMode, setIsDarkMode] = useState(false);
     const [displayMode, setDisplayMode] = useState('auto');
+    const [showAlert, setShowAlert] = useState<AlertType | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
-
     useEffect(() => {
         getCalog()
     }, []);
@@ -116,8 +120,12 @@ export default function SummaryPage() {
             const res = await Get<{ success: boolean; data: Catalog }>('/catalog');
 
             if (res?.success) {
-
-                // setCategorieLayout(res?.data?.categorie?.theme);
+                setSummaryLayout(res?.data?.summary?.layout_summary);
+                if (res?.data?.summary?.color) {
+                    setSelectedColor(res?.data?.summary?.color);
+                }
+                setDisplayMode(res?.data?.summary?.mode);
+                setIsDarkMode(res?.data?.summary?.mode == 'dark');
             }
         } finally {
             setLoading(false);
@@ -154,20 +162,41 @@ export default function SummaryPage() {
         document.documentElement.style.setProperty('--summary-secondary-rgb', `${tr}, ${tg}, ${tb}`);
     }, [selectedColor, currentTextColor]);
 
-    // Menentukan headline berdasarkan kategori aktif
-    const getHeadline = () => {
-        switch (activeTab) {
-            case 'property': return 'Hunian Minimalis Masa Kini';
-            case 'fnb': return 'Rasa Otentik Setiap Saat';
-            case 'tech': return 'Solusi Digital Masa Depan';
-            case 'luxury': return 'Kemewahan Tanpa Batas';
-            case 'medical': return 'Layanan Kesehatan Terpadu';
-            case 'fashion': return 'Gaya Hidup Tanpa Batas';
-            case 'coffee': return 'Ruang Cerita & Inspirasi';
-            case 'education': return 'Wujudkan Masa Depan Cerah';
-            default: return 'Inovasi Tanpa Henti';
+    const handleSubmit = async () => {
+        try {
+            setLoading(true);
+            if (!summaryLayout) {
+                setLoading(false);
+                setShowAlert({
+                    isOpen: true,
+                    type: 'error',
+                    message: "Harap pilih salah satu header dibawah"
+                })
+                return;
+            }
+            const formData = new FormData();
+            formData.append('layout_summary', String(summaryLayout))
+            formData.append('color', selectedColor)
+            formData.append('mode', displayMode)
+            const res = await Post('catalog/summary', formData)
+            if (res) {
+                setLoading(false);
+                setShowAlert({
+                    isOpen: true,
+                    type: 'success',
+                    message: "Pengaturan summary berhasil disimpan"
+                })
+            }
+
+        } catch (e: any) {
+            setLoading(false);
+            setShowAlert({
+                isOpen: true,
+                type: 'error',
+                message: "Pengaturan summary gagal disimpan"
+            })
         }
-    };
+    }
     return (
         <MainLayout>
 
@@ -271,8 +300,8 @@ export default function SummaryPage() {
                                                     </div>
                                                 </div>
                                                 <button
-                                                    // onClick={handleSubmit}
-                                                    className="w-full mt-6 flex mb-1 items-center justify-center gap-2 p-2 text-sm bg-blue-600 text-white font-semibold hover:bg-blue-800 rounded-md transition-colors"
+                                                    onClick={handleSubmit}
+                                                    className="w-full mt-6  flex mb-1 items-center justify-center gap-2 p-2 text-sm bg-green-600 text-white font-semibold hover:bg-green-800 rounded-md transition-colors"
                                                 >
                                                     <Check className="w-4 h-4" /> Simpan Perubahan
                                                 </button>
@@ -284,7 +313,7 @@ export default function SummaryPage() {
                             <div className={`flex p-4 overflow-auto w-full gap-4 thin-scroll ${isDarkMode ? 'bg-slate-950 text-white' : 'bg-slate-50 text-slate-900'}`}>
                                 {
                                     ListSummary?.map((ls, i) => (
-                                        <div key={i} className='whitespace-nowrap bg-gray-200 text-gray-600 p-2 rounded-lg cursor-pointer flex items-center gap-2' onClick={() => setSummaryLayout(ls?.id)}>
+                                        <div key={i} className='whitespace-nowrap text-sm font-medium bg-gray-200 text-gray-600 p-2 rounded-lg cursor-pointer flex items-center gap-2' onClick={() => setSummaryLayout(ls?.id)}>
                                             {ls?.id === summaryLayout ? <CheckCircleIcon /> : <Circle />}
                                             <span>{ls?.id}. {ls?.name}</span>
                                         </div>
@@ -323,7 +352,11 @@ export default function SummaryPage() {
                     </div>
                 </div>
             </div>
-
+            {
+                showAlert?.isOpen &&
+                <Alert type={showAlert?.type} message={showAlert?.message} onClose={() => setShowAlert(null)} />
+            }
+            {loading && <Loading title='Sedang Proses' />}
         </MainLayout>
     );
 }

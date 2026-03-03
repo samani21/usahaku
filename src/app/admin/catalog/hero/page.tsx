@@ -131,12 +131,22 @@ export default function HeroPage() {
 
             if (res?.success) {
                 setHeroLayout(res?.data?.hero?.layout_hero);
-                setSelectedColor(res?.data?.hero?.color);
+                if (res?.data?.hero?.color) {
+                    setSelectedColor(res?.data?.hero?.color);
+                }
                 setImageHero(res?.data?.hero?.image ?? null)
-                setTitle(res?.data?.hero?.title ?? '')
-                setHeadline(res?.data?.hero?.headline ?? '')
-                setSubHeadline(res?.data?.hero?.sub_headline ?? '')
-                setCtaText(res?.data?.hero?.cta ?? '')
+                if (res?.data?.hero?.title) {
+                    setTitle(res?.data?.hero?.title ?? '')
+                }
+                if (res?.data?.hero?.headline) {
+                    setHeadline(res?.data?.hero?.headline ?? '')
+                }
+                if (res?.data?.hero?.sub_headline) {
+                    setSubHeadline(res?.data?.hero?.sub_headline ?? '')
+                }
+                if (res?.data?.hero?.cta) {
+                    setCtaText(res?.data?.hero?.cta ?? '')
+                }
                 setDisplayMode(res?.data?.hero?.mode);
                 setIsDarkMode(res?.data?.hero?.mode == 'dark')
             }
@@ -480,7 +490,12 @@ export default function HeroPage() {
                                                             </button>
                                                     }
                                                     <div className='flex items-center justify-end'>
-                                                        <button type='button' onClick={handleSubmit} className='w-full sm:w-auto text-center bg-green-600 px-4 py-2 rounded-xl cursor-pointer hover:bg-green-700 text-white font-medium'>Simpan Perubahan</button>
+                                                        <button
+                                                            onClick={handleSubmit}
+                                                            className="w-full  flex mb-1 items-center justify-center gap-2 p-2 text-sm bg-green-600 text-white font-semibold hover:bg-green-800 rounded-md transition-colors"
+                                                        >
+                                                            <Check className="w-4 h-4" /> Simpan Perubahan
+                                                        </button>
                                                     </div>
                                                 </div>
 

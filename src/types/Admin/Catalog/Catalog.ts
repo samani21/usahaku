@@ -3,13 +3,15 @@ import { ProductsType } from "../ProductsType";
 import { CategoryType } from "./Categories";
 import { CatalogHeaderType } from "./Header";
 import { HeroType } from "./Hero";
+import { ProductType } from "./Products";
+import { SummaryType } from "./Summary";
 
 export interface Catalog {
     header: CatalogHeaderType;
     hero: HeroType;
-    // queue: queue;
+    summary: SummaryType;
     category: CategoryType;
     categories: CategoriesType[];
-    // product: product;
+    product: ProductType;
     products: ProductsType[];
 }
