@@ -10,10 +10,10 @@ type Props = {
 const Elevent = ({ categories }: Props) => {
     return (
         <section>
-            <div className="flex flex-wrap justify-center gap-12">
+            <div className="flex overflow-auto overflow-y-hidden no-scrollbar py-6 gap-12">
                 {categories.map((cat, i) => (
                     <div key={i} className="bg-white p-4 pb-10 shadow-xl rotate-[-2deg] odd:rotate-[3deg] hover:rotate-0 transition-transform cursor-pointer">
-                        <div className="w-56 h-56 overflow-hidden mb-6">
+                        <div className="w-32 sm:w-56 h-32 sm:h-56 overflow-hidden mb-6">
                             {
                                 cat?.icon ? (
                                     cat.icon.startsWith("http") ? (

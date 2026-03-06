@@ -30,7 +30,7 @@ const Six = ({ categories, isDarkMode }: Props) => {
                             )
                         }
 
-                        <div className={`absolute inset-0 mix-blend-multiply opacity-60 transition-opacity group-hover:opacity-0 bg-[var(--category-primary-color)]`} />
+                        <div className={`absolute inset-0 mix-blend-multiply opacity-60 transition-opacity group-hover:opacity-0 bg-black`} />
                         <div className="absolute inset-0 flex flex-col items-center justify-center text-white hover:bg-black/50">
                             <h3 className="text-2xl font-black uppercase italic tracking-tighter">{cat.name}</h3>
                             <div className="w-8 h-1 bg-white mt-2 scale-x-0 group-hover:scale-x-100 transition-transform" />

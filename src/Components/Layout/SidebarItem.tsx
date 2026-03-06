@@ -1,4 +1,5 @@
 "use client"
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import React, { ReactElement } from 'react'
 
@@ -19,19 +20,33 @@ const SidebarItem = ({ Icon, label, isActive = false, onClick, count, children, 
     const iconColor = isActive ? 'text-white' : 'text-gray-400';
     return (
         <div className="relative">
-            <button
-                className={`sidebar-item flex items-center p-3 w-full rounded-xl font-semibold transition duration-150 ${activeClass}`}
-                onClick={child ? onClick : () => { route?.push(`/admin${href}`) }}
-            >
-                <Icon className={`w-5 h-5 mr-3 ${iconColor}`} />
-                {label}
-                {count && (
-                    <span className="ml-auto bg-green-500 text-white text-xs font-bold w-6 h-6 flex items-center justify-center rounded-full">
-                        {count}
-                    </span>
-                )}
-                {children}
-            </button>
+            {
+                child ? <button
+                    className={`sidebar-item flex items-center p-3 w-full rounded-xl font-semibold transition duration-150 ${activeClass}`}
+                    onClick={onClick}
+                >
+                    <Icon className={`w-5 h-5 mr-3 ${iconColor}`} />
+                    {label}
+                    {count && (
+                        <span className="ml-auto bg-green-500 text-white text-xs font-bold w-6 h-6 flex items-center justify-center rounded-full">
+                            {count}
+                        </span>
+                    )}
+                    {children}
+                </button> :
+                    <Link href={`/admin${href}`} prefetch
+                        className={`sidebar-item flex items-center p-3 w-full rounded-xl font-semibold transition duration-150 ${activeClass}`}
+                    >
+                        <Icon className={`w-5 h-5 mr-3 ${iconColor}`} />
+                        {label}
+                        {count && (
+                            <span className="ml-auto bg-green-500 text-white text-xs font-bold w-6 h-6 flex items-center justify-center rounded-full">
+                                {count}
+                            </span>
+                        )}
+                        {children}
+                    </Link>
+            }
         </div>
     );
 }

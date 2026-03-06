@@ -47,13 +47,13 @@ const Two = ({ products, isDarkMode }: Props) => {
         }
     }, [activeAlert]);
     return (
-        <div className='grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-2 h-full'>
+        <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 h-full'>
             {products?.map((p, i) => (
                 <div key={i} onClick={() => setProduct(p)} className="group cursor-pointer text-center flex flex-col items-center">
-                    <div className="w-full aspect-[3/4] rounded-[3rem] overflow-hidden mb-6">
+                    <div className="w-full aspect-[3/4] rounded-[3rem] overflow-hidden mb-2">
                         <img src={p?.image} className="w-full h-full object-cover group-hover:scale-110 transition-transform" alt="" />
                     </div>
-                    <h3 className="font-black italic uppercase text-sm mt-1">{p?.name}</h3>
+                    <h3 className="font-black italic uppercase text-sm ">{p?.name}</h3>
                     <p className="opacity-50 text-xs">{formatIDR(p?.final_price ?? 0)}</p>
                 </div>
 

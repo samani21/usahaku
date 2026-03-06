@@ -21,7 +21,7 @@ const ThirTeen = ({ isDarkMode, isBuild, summary }: Props) => {
                         <span className="absolute -top-1 -right-1 bg-[var(--summary-primary-color)] text-[var(--summary-secondary-color)] w-5 h-5 rounded-full border-2 border-white flex items-center justify-center text-[10px] font-bold">3</span>
                     </div>
                     <div className="flex flex-col">
-                        <span className="font-black text-slate-800 leading-none">{formatIDR(summary)}</span>
+                        <span className={`font-black ${isDarkMode ? "text-slate-100" : "text-slate-800"} leading-none`}>{formatIDR(summary)}</span>
                         <span className="text-[9px] text-slate-400 font-bold uppercase tracking-widest">Checkout Sekarang</span>
                     </div>
                 </div>

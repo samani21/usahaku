@@ -12,14 +12,14 @@ type Props = {
 }
 
 
-const Sevent = ({  isDarkMode, headline, subHeadline, ctaText, imageHero, title }: Props) => {
+const Sevent = ({ isDarkMode, headline, subHeadline, ctaText, imageHero, title }: Props) => {
     return (
         <section>
             <div className="relative grid md:grid-cols-2 gap-0 overflow-hidden rounded-3xl">
-                <div className="h-[400px] md:h-auto">
+                <div className="h-full md:h-auto">
                     {
                         imageHero &&
-                        <img src={imageHero} alt="Hero" className="w-full h-full md:h-[450px] object-cover" />
+                        <img src={imageHero} alt="Hero" className="w-full h-full  object-cover" />
                     }
                 </div>
                 <div className={`p-10 md:p-20 flex flex-col justify-center ${isDarkMode ? 'bg-slate-900' : 'bg-white shadow-2xl z-10'}`}>

@@ -32,7 +32,7 @@ const Five = ({ categories, isDarkMode }: Props) => {
                         {cat.name}
                     </button>
                 ))}
-                <button className="flex items-center gap-3 px-6 py-3 rounded-full font-bold bg-black text-white">Lihat Semua</button>
+                <button className={`flex items-center gap-3 px-10 py-3 rounded-full font-bold transition-all border-2 ${isDarkMode ? `border-slate-800 hover:border[var(--category-primary-color)]` : `border-slate-200 hover:border[var(--category-primary-color)]`}`}>Lihat Semua</button>
             </div>
         </section>
     )

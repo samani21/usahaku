@@ -46,7 +46,7 @@ const One = ({ products, isDarkMode }: Props) => {
     }, [activeAlert]);
 
     return (
-        <div className='grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-2 h-full'>
+        <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 h-full'>
             {products?.map((p, i) => (
                 <div key={i} onClick={() => setProduct(p)} className={`group cursor-pointer rounded-3xl overflow-hidden border-2 transition-all ${isDarkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-100 shadow-xl'}`}>
                     <img src={p?.image} className="w-full aspect-square object-cover" alt="" />

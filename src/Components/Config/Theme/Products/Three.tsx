@@ -38,9 +38,9 @@ const Three = ({ products, isDarkMode }: Props) => {
         }
     }, [activeAlert]);
     return (
-        <div className='grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-2 h-full'>
+        <div className='grid grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-6 md:gap-2 h-full'>
             {products?.map((p, i) => (
-                <div onClick={() => setProduct(p)} key={i} className="group cursor-pointer flex flex-col items-center justify-center p-8">
+                <div onClick={() => setProduct(p)} key={i} className="group cursor-pointer flex flex-col items-center justify-center">
                     <div className={`w-48 h-48 rounded-full overflow-hidden shadow-2xl group-hover:-translate-y-4 transition-transform border-8 ${isDarkMode ? "border-slate-800" : "border-white"}`}>
                         <img src={p?.image} className="w-full h-full object-cover" alt="" />
                     </div>

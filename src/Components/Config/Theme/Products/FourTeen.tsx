@@ -46,7 +46,7 @@ const Fourteen = ({ products, isDarkMode }: Props) => {
         }
     }, [activeAlert]);
     return (
-        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 h-full'>
+        <div className='grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4 h-full'>
             {products?.map((p, i) => (
                 <div onClick={() => setProduct(p)} key={i} className={`relative flex flex-col h-80 rounded-[2rem] overflow-hidden cursor-pointer ${isDarkMode ? 'bg-slate-800' : 'bg-slate-200'}`}>
                     <img src={p?.image} className="w-full h-1/2 object-cover" alt="" />
@@ -59,7 +59,7 @@ const Fourteen = ({ products, isDarkMode }: Props) => {
                                 p?.category &&
                                 <span className="text-[14px] font-black opacity-70">{p?.category}</span>
                             }
-                            <h3 className="font-black text-xl mt-2 leading-none uppercase italic">{p?.name}</h3>
+                            <h3 className="font-black sm:text-xl mt-2 leading-none uppercase italic">{p?.name}</h3>
                         </div>
                         <div className="flex justify-between items-end">
                             <p className="text-2xl font-black">{formatIDR(p?.final_price ?? 0)}</p>

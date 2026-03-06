@@ -46,7 +46,7 @@ const Thirteen = ({ products, isDarkMode }: Props) => {
         }
     }, [activeAlert]);
     return (
-        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 h-full'>
+        <div className='grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4 h-full'>
             {products?.map((p, i) => (
                 <div onClick={() => setProduct(p)} key={i} className="text-center cursor-pointer group">
                     <div className={`aspect-[4/5] ${isDarkMode ? "bg-slate-900" : "bg-slate-100 "} mb-6 overflow-hidden relative`}>

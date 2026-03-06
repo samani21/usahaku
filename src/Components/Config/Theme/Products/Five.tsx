@@ -47,9 +47,9 @@ const Five = ({ products, isDarkMode }: Props) => {
         }
     }, [activeAlert]);
     return (
-        <div className='grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-2 h-full'>
+        <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 h-full'>
             {products?.map((p, i) => (
-                <div onClick={() => setProduct(p)} key={i} className="bg-white p-4 pb-8 shadow-2xl -rotate-2 hover:rotate-0 transition-transform cursor-pointer">
+                <div onClick={() => setProduct(p)} key={i} className=" bg-white p-4 pb-8 shadow-2xl -rotate-2 hover:rotate-0 transition-transform cursor-pointer">
                     <div className="aspect-square bg-slate-200 mb-6 overflow-hidden"><img src={p?.image} className="w-full h-full object-cover" alt="" /></div>
                     <div className="px-2">
                         <p className="font-serif text-slate-800 text-lg font-black italic tracking-tighter">{p?.name}</p>

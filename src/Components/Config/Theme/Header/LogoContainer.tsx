@@ -8,7 +8,7 @@ type Props = {
     logoImage?: string;
 };
 
-const frameStyles: Record<FrameType, string> = {
+const frameStyles: Record<any, string> = {
     circle: "rounded-full",
     square: "rounded-xl",
     none: "rounded-none",
@@ -32,14 +32,14 @@ const LogoContainer: React.FC<Props> = ({
 
     const sizeStyles =
         frameType === "none"
-            ? "w-12 h-12"
-            : "w-10 h-10 sm:w-12 sm:h-12";
+            ? "w-[70px] h-[70px]"
+            : "w-[70px] h-[70px] sm:w-[70px] sm:h-[70px]";
 
     return (
         <div
             className={[
                 frameBase,
-                frameStyles[frameType],
+                frameStyles[frameType as any],
                 themeStyles,
                 sizeStyles,
                 className,

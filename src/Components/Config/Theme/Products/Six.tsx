@@ -84,7 +84,7 @@ const Six = ({ products, isDarkMode }: Props) => {
                             }
                             <p>{formatIDR(selectedVariant?.final_price ?? product?.final_price ?? 0)}</p>
                         </div>
-                        <p className="font-bold text-lg leading-tight border-l-8 border-black pl-6">{product?.description}</p>
+                        <p className="font-bold text-lg text-[var(--product-secondary-color)] line-clamp-8 leading-tight border-l-8 border-black pl-6">{product?.description}</p>
                         {product?.variants && product?.variants?.length > 0 ?
                             <div className='bg-black  px-4 py-2 rounded-xl'>
                                 <VariantPicker variants={product?.variants} selectedVariant={selectedVariant} setSelectedVariant={setSelectedVariant} isDarkMode={true} />
@@ -96,7 +96,7 @@ const Six = ({ products, isDarkMode }: Props) => {
                                     <QtySelector quantity={quantity} setQuantity={setQuantity} isDarkMode={isDarkMode} /> : ""
                             }
                             <div>
-                                <p className='font-semibold text-gray-700'>Total</p>
+                                <p className='font-semibold text-[var(--product-secondary-color)]'>Total</p>
                                 <p className='text-2xl font-bold'>{formatIDR((selectedVariant?.final_price || (product?.final_price ?? 0)) * quantity)}</p>
                             </div>
                         </div>

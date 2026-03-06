@@ -1,14 +1,15 @@
 import React, { useMemo } from 'react'
 import LogoContainer from './LogoContainer';
 import NavIcons from './NavIcons';
+import { FrameTheme, FrameType } from './FrameType';
 
 type Props = {
     themeMode: string;
     spanOne?: string;
     spanTwo?: string;
     toggleTheme: () => void;
-    frameType: string;
-    frameTheme: string;
+    frameType: FrameType;
+    frameTheme: FrameTheme;
     logoImage: string | null;
     isBuild?: boolean;
     displayMode: string;
@@ -20,7 +21,7 @@ const Elevent = ({ themeMode, spanOne, spanTwo, toggleTheme, frameType, frameThe
     }, [themeMode])
     return (
         <header className={`${!isBuild && 'absolute'} z-100 w-full`}>
-            <div className={`flex items-center justify-between p-4 rounded-none border-y-2 transition-all border-[var(--header-primary-color)] ${isDarkMode ? 'bg-slate-900' : 'bg-white'}`}>
+            <div className={`flex items-center justify-between p-4 py-2 rounded-none border-y-2 transition-all border-[var(--header-primary-color)] ${isDarkMode ? 'bg-slate-900' : 'bg-white'}`}>
                 <div className="flex items-center gap-4">
                     {
                         logoImage &&

@@ -46,7 +46,7 @@ const Fiveteen = ({ products, isDarkMode }: Props) => {
         }
     }, [activeAlert]);
     return (
-        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 h-full'>
+        <div className='grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4 h-full'>
             {products?.map((p, i) => (
                 <div onClick={() => setProduct(p)} key={i} className="group cursor-pointer flex flex-col items-center justify-center p-4">
                     <div className={`w-full aspect-square rounded-full border-4 border-dashed ${isDarkMode ? "border-slate-700" : "border-slate-300"} p-3 group-hover:rotate-90 transition-transform duration-1000 ease-in-out`}>
@@ -54,14 +54,14 @@ const Fiveteen = ({ products, isDarkMode }: Props) => {
                             <img src={p?.image} className="w-full h-full object-cover group-hover:scale-125 transition-transform duration-1000" alt="" />
                         </div>
                     </div>
-                    <div className="mt-8 text-center">
+                    <div className="text-center">
                         {
                             p?.category &&
                             <span className="text-[14px] font-black opacity-80 tracking-tighter">{p?.category}</span>
                         }
-                        <h3 className="text-lg font-black uppercase italic mt-1">{p?.name}</h3>
+                        <h3 className="text-md sm:text-lg font-black uppercase italic">{p?.name}</h3>
                         <div className="flex justify-between items-end">
-                            <p className="text-2xl font-black">{formatIDR(p?.final_price ?? 0)}</p>
+                            <p className="text-lh sm:text-2xl font-black">{formatIDR(p?.final_price ?? 0)}</p>
                         </div>
                     </div>
                 </div>

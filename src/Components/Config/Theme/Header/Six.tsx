@@ -1,14 +1,15 @@
 import React, { useMemo } from 'react'
 import LogoContainer from './LogoContainer';
 import NavIcons from './NavIcons';
+import { FrameTheme, FrameType } from './FrameType';
 
 type Props = {
     themeMode: string;
     spanOne?: string;
     spanTwo?: string;
     toggleTheme: () => void;
-    frameType: string;
-    frameTheme: string;
+    frameType: FrameType;
+    frameTheme: FrameTheme;
     logoImage: string | null;
     isBuild?: boolean;
     displayMode: string;

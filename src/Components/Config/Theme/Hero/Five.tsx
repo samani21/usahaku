@@ -15,9 +15,9 @@ const Five = ({ headline, subHeadline, ctaText, imageHero }: Props) => {
         <section>
             <div className="bg-black rounded-3xl overflow-hidden relative min-h-[400px] flex items-center px-8">
                 <div
-                    className={`absolute top-0 right-0 w-1/3 h-2/3 opacity-20 blur-3xl pointer-events-none bg-gradient-to-r from-[var(--hero-primary-color)] to-[var(--hero-secondary-color)]`}
+                    className={`absolute top-0 right-0 w-1/3 z-0 h-2/3 opacity-20 blur-3xl pointer-events-none bg-gradient-to-r from-[var(--hero-primary-color)] to-[var(--hero-secondary-color)]`}
                 />
-                <div className="grid md:grid-cols-2 items-center gap-12 w-full relative z-10 py-12">
+                <div className="grid md:grid-cols-2 items-center gap-12 w-full relative z-0 py-12">
                     <div className="order-2 md:order-1">
                         <h2 className="text-5xl md:text-7xl font-black text-white mb-6 italic uppercase leading-none tracking-tighter">
                             {headline.split(' ').map((word, i) => (

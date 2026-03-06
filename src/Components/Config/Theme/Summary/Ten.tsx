@@ -18,7 +18,7 @@ const Ten = ({ isDarkMode, isBuild, totalCart, summary }: Props) => {
                     <p className={`text-[14px] font-bold ${isDarkMode ? "text-slate-300" : "text-slate-400"} uppercase tracking-wider`}>Keranjang ({totalCart})</p>
                     <p className={`text-lg font-black ${isDarkMode ? "text-slate-100" : "text-slate-900"} leading-none`}>{formatIDR(summary)}</p>
                 </div>
-                <button onClick={() => !isBuild && router.push('/checkout')} className={`bg-[var(--summary-primary-color)]/80 text-slate-900 px-6 py-2 rounded-md font-black uppercase text-xs italic`}>Checkout</button>
+                <button onClick={() => !isBuild && router.push('/checkout')} className={`bg-[var(--summary-primary-color)]/80 text-[var(--summary-secondary-color)] px-6 py-2 rounded-md font-black uppercase text-xs italic`}>Checkout</button>
             </div>
         </div>
     )

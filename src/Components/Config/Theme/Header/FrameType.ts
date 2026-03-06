@@ -1,2 +1,2 @@
-export type FrameType = string;
-export type FrameTheme = string;
+export type FrameType = string |undefined;
+export type FrameTheme = string |undefined;
