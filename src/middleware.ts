@@ -1,12 +1,22 @@
 import { NextRequest, NextResponse } from "next/server";
 
+const ROOT_DOMAIN = process.env.NEXT_PUBLIC_ROOT_DOMAIN || "localhost";
+
 export function middleware(req: NextRequest) {
     const host = req.headers.get("host") || "";
 
-    // contoh: toko1.localhost:3000
-    const subdomain = host.split(".")[0];
+    // hapus port
+    const hostname = host.split(":")[0];
 
-    if (host.includes("localhost") && subdomain !== "localhost") {
+    // localhost / root domain
+    if (hostname === ROOT_DOMAIN) {
+        return NextResponse.next();
+    }
+
+    // cek subdomain
+    if (hostname.endsWith(`.${ROOT_DOMAIN}`)) {
+        const subdomain = hostname.replace(`.${ROOT_DOMAIN}`, "");
+
         const url = req.nextUrl.clone();
         url.pathname = `/${subdomain}${req.nextUrl.pathname}`;
 
