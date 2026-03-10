@@ -13,18 +13,18 @@ const Six = ({ categories, isDarkMode }: Props) => {
         <section>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 {categories.map((cat, i) => (
-                    <div key={i} className="relative h-64 rounded-2xl overflow-hidden group">
+                    <div key={i} className="relative h-32 sm:h-64 rounded-2xl overflow-hidden group">
                         {
                             cat?.icon ? (
                                 cat.icon.startsWith("http") ? (
-                                    <img src={cat.icon} className={`absolute inset-0 w-full h-full object-cover grayscale ${isDarkMode && "bg-white"} group-hover:grayscale-50 `} alt="" />
+                                    <img src={cat.icon} className={`absolute inset-0 w-full h-full object-cover grayscale bg-white group-hover:grayscale-50 `} alt="" />
                                 ) : (
-                                    <div className={`absolute inset-0 w-full h-full object-cover grayscale ${isDarkMode && "bg-white"} group-hover:grayscale-50 `} >
+                                    <div className={`absolute inset-0 w-full h-full object-cover grayscale bg-white group-hover:grayscale-50 `} >
                                         <Icon color={cat?.color} icon={cat?.icon} className='w-full h-full' />
                                     </div>
                                 )
                             ) : (
-                                <div className={`text-[var(--category-primary-color)] absolute inset-0 w-full h-full object-cover grayscale ${isDarkMode && "bg-white"} group-hover:grayscale-50  `} >
+                                <div className={`text-[var(--category-primary-color)] absolute inset-0 w-full h-full object-cover grayscale bg-white group-hover:grayscale-50  `} >
                                     <Icon icon={'arcticons:defaultdarktheme'} className='w-full h-full' />
                                 </div>
                             )

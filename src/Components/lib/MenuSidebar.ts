@@ -56,31 +56,5 @@ export const menuSidebar: menuSide[] = [
         Icon: Globe,
         label: "katalog",
         href: '/catalog',
-        child: [
-            {
-                label: 'Header',
-                href: '/header'
-            },
-            {
-                label: 'Hero/Banner',
-                href: '/hero'
-            },
-            {
-                label: 'Kategori',
-                href: '/categorie'
-            },
-            {
-                label: 'Produk dan Modal',
-                href: '/product'
-            },
-            {
-                label: 'Ringkasan Pembayaran',
-                href: '/summary'
-            },
-            {
-                label: 'Preview',
-                href: '/preview'
-            },
-        ]
     },
 ]

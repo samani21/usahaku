@@ -7,6 +7,7 @@ import { ArrowRight, X } from 'lucide-react';
 import { col } from 'framer-motion/client';
 import { ProductsType, Variants } from '@/types/Admin/ProductsType';
 import { formatIDR } from '@/types/FormtRupiah';
+import ExpandableHTML from './ExpandableHTML';
 
 type Props = {
     products: ProductsType[];
@@ -46,11 +47,25 @@ const Two = ({ products, isDarkMode }: Props) => {
             return () => clearTimeout(timer);
         }
     }, [activeAlert]);
+    useEffect(() => {
+        if (product) {
+            // Jika modal aktif (product tidak null), kunci scroll
+            document.body.style.overflow = 'hidden';
+        } else {
+            // Jika modal tutup, kembalikan scroll
+            document.body.style.overflow = 'unset';
+        }
+
+        // Cleanup function untuk memastikan scroll kembali normal jika komponen unmount
+        return () => {
+            document.body.style.overflow = 'unset';
+        };
+    }, [product]);
     return (
-        <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 h-full'>
+        <div className='grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-2 h-full'>
             {products?.map((p, i) => (
                 <div key={i} onClick={() => setProduct(p)} className="group cursor-pointer text-center flex flex-col items-center">
-                    <div className="w-full aspect-[3/4] rounded-[3rem] overflow-hidden mb-2">
+                    <div className="w-full aspect-[6/4] sm:aspect-[3/4] rounded-[3rem] overflow-hidden mb-2">
                         <img src={p?.image} className="w-full h-full object-cover group-hover:scale-110 transition-transform" alt="" />
                     </div>
                     <h3 className="font-black italic uppercase text-sm ">{p?.name}</h3>
@@ -78,7 +93,11 @@ const Two = ({ products, isDarkMode }: Props) => {
                         <h2 className="text-2xl sm:text-5xl font-black tracking-tighter italic uppercase">{product?.name}</h2>
                         <p className={`text-[var(--product-primary-color)] font-bold uppercase tracking-[0.3em] text-xs`}>{product?.category}</p>
                     </div>
-                    <p className="opacity-80 text-sm text-left sm:text-center">{product?.description}</p>
+                    <ExpandableHTML
+                        htmlContent={product?.description}
+                        className={`opacity-80 text-sm text-left`}
+                        maxLines="line-clamp-[2]" // Bisa diganti line-clamp-5 dll
+                    />
                     {product?.variants && product?.variants?.length > 0 &&
                         <VariantPicker variants={product?.variants} selectedVariant={selectedVariant} setSelectedVariant={setSelectedVariant} isDarkMode={isDarkMode} />
                     }

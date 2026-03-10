@@ -2,10 +2,11 @@ import ModalWrapper from './ModalWrapper';
 import { useEffect, useMemo, useState } from 'react';
 import QtySelector from './QtySelector';
 import VariantPicker from './VariantPicker';
-import { Check, Package, Plus, ShoppingCart, Zap } from 'lucide-react';
+import { Package } from 'lucide-react';
 import AlertWrapper from './AlertWrapper';
 import { ProductsType, Variants } from '@/types/Admin/ProductsType';
 import { formatIDR } from '@/types/FormtRupiah';
+import ExpandableHTML from './ExpandableHTML';
 
 type Props = {
     products: ProductsType[];
@@ -45,10 +46,24 @@ const Fourteen = ({ products, isDarkMode }: Props) => {
             return () => clearTimeout(timer);
         }
     }, [activeAlert]);
+    useEffect(() => {
+        if (product) {
+            // Jika modal aktif (product tidak null), kunci scroll
+            document.body.style.overflow = 'hidden';
+        } else {
+            // Jika modal tutup, kembalikan scroll
+            document.body.style.overflow = 'unset';
+        }
+
+        // Cleanup function untuk memastikan scroll kembali normal jika komponen unmount
+        return () => {
+            document.body.style.overflow = 'unset';
+        };
+    }, [product]);
     return (
         <div className='grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4 h-full'>
             {products?.map((p, i) => (
-                <div onClick={() => setProduct(p)} key={i} className={`relative flex flex-col h-80 rounded-[2rem] overflow-hidden cursor-pointer ${isDarkMode ? 'bg-slate-800' : 'bg-slate-200'}`}>
+                <div onClick={() => setProduct(p)} key={i} className={`relative flex flex-col h-80 rounded-[2rem] overflow-hidden cursor-pointer ${isDarkMode ? 'bg-slate-800 text-white' : 'bg-slate-200 text-slate-900'}`}>
                     <img src={p?.image} className="w-full h-1/2 object-cover" alt="" />
                     <div className="flex-1 p-6 relative flex flex-col justify-between">
                         <div className={`absolute -top-4 left-0 w-8 h-8 rounded-full ${isDarkMode ? "bg-slate-950 " : "bg-slate-50"} -ml-4`} />
@@ -59,10 +74,10 @@ const Fourteen = ({ products, isDarkMode }: Props) => {
                                 p?.category &&
                                 <span className="text-[14px] font-black opacity-70">{p?.category}</span>
                             }
-                            <h3 className="font-black sm:text-xl mt-2 leading-none uppercase italic">{p?.name}</h3>
+                            <h3 className="font-black text-sm sm:text-lg mt-2 leading-none uppercase italic line-clamp-3">{p?.name}</h3>
                         </div>
                         <div className="flex justify-between items-end">
-                            <p className="text-2xl font-black">{formatIDR(p?.final_price ?? 0)}</p>
+                            <p className="text-lg sm:text-xl font-black">{formatIDR(p?.final_price ?? 0)}</p>
                         </div>
                     </div>
                 </div>
@@ -99,7 +114,12 @@ const Fourteen = ({ products, isDarkMode }: Props) => {
                             <div className="px-4 py-2 bg-red-100 text-red-600 rounded-xl font-bold text-sm italic">Hemat {formatIDR((product?.price ?? 0) - (product?.final_price ?? 0))}</div>
                         }
                     </div>
-                    <p className="text-sm max-w-md">{product?.description}</p>
+                    <ExpandableHTML
+                        htmlContent={product?.description}
+                        className={`text-sm max-w-md`}
+                        maxLines="line-clamp-[2]" // Bisa diganti line-clamp-5 dll
+                        maxHeight='max-h-[200px]'
+                    />
                     <div>
                         {product?.variants && product?.variants?.length > 0 ?
                             <VariantPicker variants={product?.variants} selectedVariant={selectedVariant} setSelectedVariant={setSelectedVariant} isDarkMode={isDarkMode} /> : ""

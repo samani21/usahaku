@@ -176,12 +176,20 @@ export default function ListProductPage() {
             {
                 key: "description",
                 label: "Deskripsi",
-                render: (row) =>
-                    row.description
-                        ? row.description.length > 50
-                            ? row.description.slice(0, 50) + "..."
-                            : row.description
-                        : "-"
+                render: (row) => {
+                    // 1. Ambil string HTML dari description
+                    const htmlContent = row.description || "";
+
+                    // 2. Hilangkan semua tag HTML menggunakan Regex
+                    const plainText = htmlContent.replace(/<[^>]*>/g, "");
+
+                    // 3. Cek panjang teks yang sudah bersih
+                    if (!plainText || plainText.trim() === "") return "-";
+
+                    return plainText.length > 50
+                        ? plainText.slice(0, 50) + "..."
+                        : plainText;
+                }
             },
             {
                 key: "has_variant",

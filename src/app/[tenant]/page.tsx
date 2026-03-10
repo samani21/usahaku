@@ -1,3 +1,5 @@
+import Store from "@/Components/Tenant/Store"
+
 type Props = {
     params: Promise<{ tenant: string }>
 }
@@ -8,7 +10,7 @@ export default async function Page({ params }: Props) {
 
     return (
         <div>
-            <h1>Toko: {tenant}</h1>
+            <Store tenant={tenant} />
         </div>
     )
 }

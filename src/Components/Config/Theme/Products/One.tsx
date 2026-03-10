@@ -6,6 +6,7 @@ import AlertWrapper from './AlertWrapper';
 import { Check, X } from 'lucide-react';
 import { ProductsType, Variants } from '@/types/Admin/ProductsType';
 import { formatIDR } from '@/types/FormtRupiah';
+import ExpandableHTML from './ExpandableHTML';
 
 type Props = {
     products: ProductsType[];
@@ -30,6 +31,21 @@ const One = ({ products, isDarkMode }: Props) => {
             }
         }
     }, [product, selectedVariant])
+    // Tambahkan di bawah useEffect yang sudah ada
+    useEffect(() => {
+        if (product) {
+            // Jika modal aktif (product tidak null), kunci scroll
+            document.body.style.overflow = 'hidden';
+        } else {
+            // Jika modal tutup, kembalikan scroll
+            document.body.style.overflow = 'unset';
+        }
+
+        // Cleanup function untuk memastikan scroll kembali normal jika komponen unmount
+        return () => {
+            document.body.style.overflow = 'unset';
+        };
+    }, [product]);
     const mockItem = useMemo(() => {
         return {
             name: product?.name,
@@ -48,9 +64,9 @@ const One = ({ products, isDarkMode }: Props) => {
     return (
         <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 h-full'>
             {products?.map((p, i) => (
-                <div key={i} onClick={() => setProduct(p)} className={`group cursor-pointer rounded-3xl overflow-hidden border-2 transition-all ${isDarkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-100 shadow-xl'}`}>
+                <div key={i} onClick={() => setProduct(p)} className={` group cursor-pointer rounded-3xl overflow-hidden border-2 transition-all ${isDarkMode ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-100 shadow-xl text-slate-900'}`}>
                     <img src={p?.image} className="w-full aspect-square object-cover" alt="" />
-                    <div className="p-6">
+                    <div className="py-2 px-6">
                         <h3 className="font-bold text-lg mt-1">{p?.name}</h3>
                         <p className={`font-black text-xl mt-2 text-[var(--product-primary-color)]`} >{formatIDR(p?.final_price || 0)}</p>
                     </div>
@@ -84,7 +100,11 @@ const One = ({ products, isDarkMode }: Props) => {
                     {product?.variants && product?.variants?.length > 0 &&
                         <VariantPicker variants={product?.variants} selectedVariant={selectedVariant} setSelectedVariant={setSelectedVariant} isDarkMode={isDarkMode} />
                     }
-                    <p className={`${isDarkMode ? "ext-slate-400" : "text-slate-500"} text-sm leading-relaxed`}>{product?.description}</p>
+                    <ExpandableHTML
+                        htmlContent={product?.description}
+                        className={`${isDarkMode ? "text-slate-400" : "text-slate-500"} text-sm leading-relaxed`}
+                        maxLines="line-clamp-[2]" // Bisa diganti line-clamp-5 dll
+                    />
                     <div className={`space-y-4 pt-4 border-t ${isDarkMode ? 'border-slate-800' : 'border-slate-400'}`}>
                         <div className='md:flex justify-between'>
                             {

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Dispatch, SetStateAction } from 'react'
 import One from './One';
 import Two from './Two';
 import Three from './Three';
@@ -20,13 +20,15 @@ type Props = {
     theme: number;
     categories: CategoriesType[];
     isDarkMode: boolean;
+    onClick?: (v: string | null) => void;
 }
 
-const CategorieConfig = ({ theme, categories, isDarkMode }: Props) => {
+const CategorieConfig = ({ theme, categories, isDarkMode, onClick }: Props) => {
 
     const commonProps = {
         categories,
         isDarkMode,
+        onClick
     };
 
     /* ===================== Numeric Theme ===================== */

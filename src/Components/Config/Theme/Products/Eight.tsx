@@ -6,6 +6,7 @@ import { ShoppingCart } from 'lucide-react';
 import AlertWrapper from './AlertWrapper';
 import { ProductsType, Variants } from '@/types/Admin/ProductsType';
 import { formatIDR } from '@/types/FormtRupiah';
+import ExpandableHTML from './ExpandableHTML';
 
 type Props = {
     products: ProductsType[];
@@ -45,6 +46,20 @@ const Eight = ({ products, isDarkMode }: Props) => {
             return () => clearTimeout(timer);
         }
     }, [activeAlert]);
+    useEffect(() => {
+        if (product) {
+            // Jika modal aktif (product tidak null), kunci scroll
+            document.body.style.overflow = 'hidden';
+        } else {
+            // Jika modal tutup, kembalikan scroll
+            document.body.style.overflow = 'unset';
+        }
+
+        // Cleanup function untuk memastikan scroll kembali normal jika komponen unmount
+        return () => {
+            document.body.style.overflow = 'unset';
+        };
+    }, [product]);
     return (
         <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 h-full'>
             {products?.map((p, i) => (
@@ -95,7 +110,12 @@ const Eight = ({ products, isDarkMode }: Props) => {
                                     <span className="text-3xl font-black opacity-60 italic">{formatIDR(selectedVariant?.final_price ?? product?.price ?? 0)}</span>
                             }
                         </div>
-                        <p className=" text-sm leading-relaxed">{product?.description}</p>
+                        <ExpandableHTML
+                            htmlContent={product?.description}
+                            className={`text-sm leading-relaxed`}
+                            maxLines="line-clamp-[2]" // Bisa diganti line-clamp-5 dll
+                            maxHeight='max-h-[200px]'
+                        />
                         <div>
                             {product?.variants && product?.variants?.length > 0 ?
                                 <VariantPicker variants={product?.variants} selectedVariant={selectedVariant} setSelectedVariant={setSelectedVariant} isDarkMode={isDarkMode} /> : ""

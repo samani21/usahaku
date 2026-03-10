@@ -6,6 +6,7 @@ import { ArrowRight, CircleCheckBig, CircleCheckIcon, Sparkles } from 'lucide-re
 import AlertWrapper from './AlertWrapper';
 import { ProductsType, Variants } from '@/types/Admin/ProductsType';
 import { formatIDR } from '@/types/FormtRupiah';
+import ExpandableHTML from './ExpandableHTML';
 
 type Props = {
     products: ProductsType[];
@@ -37,6 +38,20 @@ const Three = ({ products, isDarkMode }: Props) => {
             return () => clearTimeout(timer);
         }
     }, [activeAlert]);
+    useEffect(() => {
+        if (product) {
+            // Jika modal aktif (product tidak null), kunci scroll
+            document.body.style.overflow = 'hidden';
+        } else {
+            // Jika modal tutup, kembalikan scroll
+            document.body.style.overflow = 'unset';
+        }
+
+        // Cleanup function untuk memastikan scroll kembali normal jika komponen unmount
+        return () => {
+            document.body.style.overflow = 'unset';
+        };
+    }, [product]);
     return (
         <div className='grid grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-6 md:gap-2 h-full'>
             {products?.map((p, i) => (
@@ -92,7 +107,11 @@ const Three = ({ products, isDarkMode }: Props) => {
                                 <div className="bg-red-500 text-white px-4 py-2 rounded-2xl font-black italic">-{product?.percent_discount}%</div>
                             }
                         </div>
-                        <p className="opacity-50 text-sm">{product?.description}</p>
+                        <ExpandableHTML
+                            htmlContent={product?.description}
+                            className={`opacity-50 text-sm`}
+                            maxLines="line-clamp-[2]" // Bisa diganti line-clamp-5 dll
+                        />
                         {/* <div className="space-y-4">
                             <span className="text-[10px] font-black uppercase opacity-30 tracking-widest">Pilih Paket Layanan</span>
                             <VariantButtons items={product?.variants} />

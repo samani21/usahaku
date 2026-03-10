@@ -31,7 +31,8 @@ const ProductFormModalContent = ({ isOpen, onClose, onSubmit, dataUpdate }: Prop
     const [croppedAreaPixels, setCroppedAreaPixels] = useState<any>(null);
     const [isCropping, setIsCropping] = useState(false);
     const [idVariant, setIdVariant] = useState<number | null>(null);
-    const [categories, setCategories] = useState<OptionsType[]>()
+    const [categories, setCategories] = useState<OptionsType[]>();
+    console.log('productData', productData)
     const resetForm = useCallback(() => {
         // Membersihkan URL pratinjau utama
         if (productData.imagePreviewUrl) URL.revokeObjectURL(productData.imagePreviewUrl);
@@ -409,7 +410,7 @@ const ProductFormModalContent = ({ isOpen, onClose, onSubmit, dataUpdate }: Prop
                             <div className="col-span-1">
                                 <FormInput
                                     label="Deskripsi"
-                                    type="textarea"
+                                    type="wysiwyg"
                                     name="description"
                                     value={productData.description ?? ''}
                                     onChange={handleProductChange}

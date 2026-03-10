@@ -6,6 +6,7 @@ import { X } from 'lucide-react';
 import AlertWrapper from './AlertWrapper';
 import { ProductsType, Variants } from '@/types/Admin/ProductsType';
 import { formatIDR } from '@/types/FormtRupiah';
+import ExpandableHTML from './ExpandableHTML';
 
 type Props = {
     products: ProductsType[];
@@ -45,6 +46,20 @@ const Thirteen = ({ products, isDarkMode }: Props) => {
             return () => clearTimeout(timer);
         }
     }, [activeAlert]);
+    useEffect(() => {
+        if (product) {
+            // Jika modal aktif (product tidak null), kunci scroll
+            document.body.style.overflow = 'hidden';
+        } else {
+            // Jika modal tutup, kembalikan scroll
+            document.body.style.overflow = 'unset';
+        }
+
+        // Cleanup function untuk memastikan scroll kembali normal jika komponen unmount
+        return () => {
+            document.body.style.overflow = 'unset';
+        };
+    }, [product]);
     return (
         <div className='grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4 h-full'>
             {products?.map((p, i) => (
@@ -55,9 +70,9 @@ const Thirteen = ({ products, isDarkMode }: Props) => {
                     </div>
                     {
                         p?.category &&
-                        <p className="text-[12px] tracking-[0.8em] uppercase opacity-70 mb-3">{p?.category}</p>
+                        <p className="text-[10px] sm:text-[12px] tracking-[0.8em] uppercase opacity-70 mb-3">{p?.category}</p>
                     }
-                    <h3 className="text-xl font-light tracking-widest uppercase">{p?.name}</h3>
+                    <h3 className="text-md sm:text-lg font-light tracking-widest uppercase">{p?.name}</h3>
                     <div className="w-10 h-px bg-current mx-auto my-4 opacity-20" />
                     <span className="font-bold text-sm tracking-widest">{formatIDR(p?.final_price ?? 0)}</span>
                 </div>
@@ -83,7 +98,12 @@ const Thirteen = ({ products, isDarkMode }: Props) => {
                         </div>
                         <div className="space-y-2">
                             {/* <p className="text-2xl font-serif italic leading-relaxed opacity-80">"Kualitas bukan sekadar janji, tapi sebuah warisan yang kami tuangkan dalam setiap produk."</p> */}
-                            <p className="text-sm opacity-50 leading-relaxed max-w-sm">{product?.description}</p>
+                            <ExpandableHTML
+                                htmlContent={product?.description}
+                                className={`text-sm opacity-50 leading-relaxed max-w-sm`}
+                                maxLines="line-clamp-[2]" // Bisa diganti line-clamp-5 dll
+                                maxHeight='max-h-[200px]'
+                            />
                         </div>
                         <div className="space-y-8">
                             <div className="grid sm:flex items-baseline gap-4">

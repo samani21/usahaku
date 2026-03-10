@@ -29,12 +29,12 @@ const Nine = ({ headline, subHeadline, ctaText, imageHero, title }: Props) => {
                         {ctaText}
                     </button>
                 </div>
-                <div className="md:col-span-5 relative min-h-[300px]">
+                <div className="md:col-span-5 relative min-h-[200px] sm:min-h-[300px]">
                     {
                         imageHero &&
                         <img src={imageHero} alt="Hero" className="absolute inset-0 w-full h-full object-cover grayscale opacity-50" />
                     }
-                    <div className="absolute inset-0 bg-gradient-to-r from-slate-900 via-transparent to-transparent" />
+                    <div className="absolute inset-0 bg-gradient-to-b sm:bg-gradient-to-r from-slate-900 via-transparent to-transparent" />
                 </div>
             </div>
         </section>

@@ -13,18 +13,20 @@ import Twelve from './Twelve';
 import Thirteen from './Thirteen';
 import Fourteen from './FourTeen';
 import Fiveteen from './Fiveteen';
-import { ProductsType } from '@/types/Admin/ProductsType';
+import { ProductsType, Variants } from '@/types/Admin/ProductsType';
 type Props = {
     theme: number;
     products: ProductsType[];
     isDarkMode: boolean;
+    handleCart?: (p: ProductsType | null, v: Variants | null, qty: number) => void;
 }
 
-const ProductConfig = ({ theme, products, isDarkMode }: Props) => {
+const ProductConfig = ({ theme, products, isDarkMode, handleCart }: Props) => {
 
     const commonProps = {
         products,
         isDarkMode,
+        handleCart
     };
 
     /* ===================== Numeric Theme ===================== */

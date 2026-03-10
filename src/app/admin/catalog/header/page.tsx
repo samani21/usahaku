@@ -1,6 +1,6 @@
 'use client'
-import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { Palette, Home, Utensils, Cpu, Sparkles, Pipette, HeartPulse, Shirt, Coffee, GraduationCap, Upload, CircleCheckBigIcon, Circle, Sun, Moon, SunMoon, Trash, Trash2, Check, X } from 'lucide-react';
+import React, { useState, useEffect, useRef, useCallback, Dispatch, SetStateAction } from 'react';
+import { Palette, Home, Utensils, Cpu, Sparkles, Pipette, HeartPulse, Shirt, Coffee, GraduationCap, Upload, CircleCheckBigIcon, Circle, Sun, Moon, SunMoon, Trash, Trash2, Check, X, CheckCircleIcon } from 'lucide-react';
 import HeaderConfig from '@/Components/Config/Theme/Header';
 import NavIcons from '@/Components/Config/Theme/Header/NavIcons';
 import MainLayout from '@/Components/Layout/MainLayout';
@@ -11,6 +11,7 @@ import { Post } from '@/utils/Post';
 import { Get } from '@/utils/Get';
 import { Catalog } from '@/types/Admin/Catalog/Catalog';
 import Cropper, { Area } from 'react-easy-crop';
+import { CatalogHeaderType } from '@/types/Admin/Catalog/Header';
 
 const BUSINESS_THEMES = [
     {
@@ -96,7 +97,14 @@ const listHeader = [
     { id: 15, name: "Header Lima Belas" },
 ]
 
-export default function HeaderPage() {
+type Props = {
+    themeDark: boolean
+    setThemeDark: Dispatch<SetStateAction<boolean>>;
+    headerData: CatalogHeaderType | null
+    getCalog: () => void;
+}
+
+export default function HeaderPage({ themeDark, setThemeDark, headerData, getCalog }: Props) {
     const [selectedColor, setSelectedColor] = useState(BUSINESS_THEMES[0].hex);
     const [activeTab, setActiveTab] = useState<any>();
     const [headerLayout, setHeaderLayout] = useState<number | null>(null);
@@ -104,7 +112,6 @@ export default function HeaderPage() {
     const [showAlert, setShowAlert] = useState<AlertType | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
 
-    const [themeDark, setThemeDark] = useState<boolean>(false);
     const fileInputRef = useRef<HTMLInputElement | null>(null);
     const [frameType, setFrameType] = useState<string>("none"); // circle, square, none
     const [frameTheme, setFrameTheme] = useState<string>("dark"); // dark, light
@@ -121,8 +128,24 @@ export default function HeaderPage() {
     const [logo, setLogo] = useState<string | null>(null);
 
     useEffect(() => {
-        getCalog()
-    }, []);
+        if (headerData) {
+            setHeaderLayout(headerData.layout_header);
+            setLogo(headerData.logo);
+            if (headerData.span_one) {
+                setSpanOne(headerData.span_one);
+            }
+            if (headerData.span_two) {
+                setSpanTwo(headerData.span_two);
+            }
+            if (headerData.color) {
+                setSelectedColor(headerData.color);
+            }
+            setFrameType(headerData.type_frame);
+            setFrameTheme(headerData.color_frame);
+            setDisplayMode(headerData.mode);
+            setThemeDark(headerData.mode == 'dark')
+        }
+    }, [headerData]);
 
     const getCroppedImg = async (imageSrc: string, pixelCrop: Area): Promise<{ file: File, url: string }> => {
         const image = new Image();
@@ -175,32 +198,7 @@ export default function HeaderPage() {
             setImageToCrop(null);
         }
     };
-    const getCalog = async () => {
-        try {
-            setLoading(true);
-            const res = await Get<{ success: boolean; data: Catalog }>('/catalog');
 
-            if (res?.success) {
-                setHeaderLayout(res?.data?.header?.layout_header);
-                setLogo(res?.data?.header?.logo);
-                if (res?.data?.header?.span_one) {
-                    setSpanOne(res?.data?.header?.span_one);
-                }
-                if (res?.data?.header?.span_two) {
-                    setSpanTwo(res?.data?.header?.span_two);
-                }
-                if (res?.data?.header?.color) {
-                    setSelectedColor(res?.data?.header?.color);
-                }
-                setFrameType(res?.data?.header?.type_frame);
-                setFrameTheme(res?.data?.header?.color_frame);
-                setDisplayMode(res?.data?.header?.mode);
-                setThemeDark(res?.data?.header?.mode == 'dark')
-            }
-        } finally {
-            setLoading(false);
-        }
-    };
 
     // Fungsi untuk menghitung kontras teks secara otomatis
     const getContrastColor = (hex: string) => {
@@ -265,6 +263,7 @@ export default function HeaderPage() {
             const res = await Post('catalog/header', formData)
             if (res) {
                 setLoading(false);
+                getCalog()
                 setShowAlert({
                     isOpen: true,
                     type: 'success',
@@ -282,7 +281,7 @@ export default function HeaderPage() {
         }
     }
     return (
-        <MainLayout>
+        <div>
             {showCropModal && (
                 <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 p-4">
                     <div className="bg-white rounded-2xl w-full max-w-lg overflow-hidden">
@@ -334,229 +333,232 @@ export default function HeaderPage() {
                     </div>
                 </div>
             )}
-            <div className='bg-slate-100 rounded-xl'>
-                <div className='bg-gray-200 w-full  rounded-t-xl flex items-center gap-2 py-2 px-6'>
-                    <div className='bg-red-500 rounded-full h-4 w-4' />
-                    <div className='bg-yellow-500 rounded-full h-4 w-4' />
-                    <div className='bg-green-500 rounded-full h-4 w-4' />
-                </div>
-                <div className={`${themeDark ? 'bg-slate-950 text-white' : 'bg-slate-50 text-slate-900'}`}>
-                    <div className="min-h-screen font-sans ">
-                        <div className="space-y-6">
-                            <div className="space-y-2 p-4">
-                                <label className="text-sm font-semibold uppercase tracking-wider text-gray-400">Pilih Kategori Warna</label>
-                                {/* Business Presets */}
-                                <div className="space-y-3">
-                                    <div className="flex gap-2 max-h-[500px] overflow-x-auto pr-2  no-scrollbar rounded-xl">
-                                        {BUSINESS_THEMES.map((theme) => (
+            <div>
+                <div className="min-h-screen font-sans ">
+                    <div className="space-y-6">
+                        <div className="space-y-2 p-4">
+                            <label className="text-sm font-semibold uppercase tracking-wider text-gray-400">Pilih Kategori Warna</label>
+                            {/* Business Presets */}
+                            <div className="space-y-3">
+                                <div className="flex gap-2 max-h-[500px] overflow-x-auto pr-2  no-scrollbar rounded-xl">
+                                    {BUSINESS_THEMES.map((theme) => (
+                                        <button
+                                            key={theme.id}
+                                            onClick={() => {
+                                                setSelectedColor(theme.hex);
+                                                setActiveTab(theme.id);
+                                            }}
+                                            className={`w-full flex whitespace-nowrap items-center gap-3 p-3 rounded-xl border-2 transition-all ${activeTab === theme.id
+                                                ? 'border-indigo-600 bg-white shadow-md'
+                                                : 'border-transparent bg-gray-100 hover:bg-gray-200'
+                                                }`}
+                                        >
+                                            <div
+                                                className="p-2 rounded-lg text-white shrink-0"
+                                                style={{ backgroundColor: theme.hex }}
+                                            >
+                                                {theme.icon}
+                                            </div>
+                                            <div className="text-left">
+                                                <div className="font-bold text-slate-900 text-sm">{theme.name}</div>
+                                                <div className="text-xs text-gray-500 leading-tight line-clamp-1">{theme.description}</div>
+                                            </div>
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* Custom Picker */}
+                            <div className="p-4 bg-white rounded-2xl shadow-sm border border-gray-100 space-y-3">
+                                <div className="flex items-center gap-2 text-sm font-semibold text-gray-700">
+                                    <Pipette size={16} />
+                                    <span>Custom Warna Sendiri</span>
+                                </div>
+                                <div className="flex items-center gap-4">
+                                    <input
+                                        type="color"
+                                        value={selectedColor}
+                                        onChange={(e) => {
+                                            setSelectedColor(e.target.value);
+                                            setActiveTab('custom');
+                                        }}
+                                        className="h-12 w-12  rounded-lg cursor-pointer border-none bg-transparent"
+                                    />
+                                    <div className="flex-1 px-3 py-2 bg-gray-50 text-slate-900 rounded-lg border border-gray-200 font-mono text-sm">
+                                        {selectedColor?.toUpperCase()}
+                                    </div>
+                                </div>
+                                <div className="space-y-1">
+                                    <label className="text-[10px] font-bold uppercase text-gray-500">Nama Usaha (2 Span)</label>
+                                    <div className="flex gap-2">
+                                        <input
+                                            value={spanOne}
+                                            onChange={(e) => setSpanOne(e.target.value)}
+                                            placeholder="Span 1"
+                                            className="w-1/2 p-2 text-sm text-slate-900  rounded-lg border border-gray-300"
+                                        />
+                                        <input
+                                            value={spanTwo}
+                                            onChange={(e) => setSpanTwo(e.target.value)}
+                                            placeholder="Span 2"
+                                            className="w-1/2 p-2 text-sm text-slate-900 rounded-lg border border-gray-300"
+                                        />
+                                    </div>
+                                </div>
+                                <div className="space-y-1">
+                                    <label className="text-[10px] font-bold uppercase text-gray-500">Logo</label>
+                                    {
+                                        logo ?
                                             <button
-                                                key={theme.id}
                                                 onClick={() => {
-                                                    setSelectedColor(theme.hex);
-                                                    setActiveTab(theme.id);
+                                                    setLogo(null);
+                                                    setLogoFile(null)
+                                                    setIsDeleteLogo(true)
                                                 }}
-                                                className={`w-full flex whitespace-nowrap items-center gap-3 p-3 rounded-xl border-2 transition-all ${activeTab === theme.id
-                                                    ? 'border-indigo-600 bg-white shadow-md'
-                                                    : 'border-transparent bg-gray-100 hover:bg-gray-200'
+                                                className="flex items-center gap-2 px-4 py-2 text-white text-sm bg-red-700 hover:bg-red-800 rounded-lg transition-colors w-full justify-center"
+                                            >
+                                                <Trash2 className="w-4 h-4" />Hapus Logo
+                                            </button> :
+
+                                            <button
+                                                onClick={() => fileInputRef.current?.click()}
+                                                className="flex items-center gap-2 px-4 py-2 text-white text-sm bg-slate-700 hover:bg-slate-800 rounded-lg transition-colors w-full justify-center"
+                                            >
+                                                <Upload className="w-4 h-4" /> {logo ? "Ganti Logo" : "Upload Logo"}
+                                            </button>
+                                    }
+                                    <input
+                                        type="file"
+                                        ref={fileInputRef}
+                                        className="hidden"
+                                        accept="image/*"
+                                        onChange={handleLogoUpload}
+                                    />
+                                </div>
+                                <div className="space-y-4 border-t border-gray-100 pt-4">
+                                    <div className="flex items-center justify-between">
+                                        <span className="text-[10px] font-bold uppercase text-gray-500">Tipe Frame:</span>
+                                        <div className="flex bg-gray-100 p-1 rounded-lg">
+                                            {['circle', 'square', 'none'].map(t => (
+                                                <button
+                                                    key={t}
+                                                    onClick={() => setFrameType(t as "circle" | "square" | "none")}
+                                                    className={`text-[10px] px-3 py-1 rounded-md transition-all font-medium capitalize ${frameType === t ? 'bg-white text-indigo-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'
+                                                        }`}
+                                                >
+                                                    {t}
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
+
+                                    {/* BARU: Mode Tampilan Switch (3 Pilihan) */}
+                                    <div className="space-y-2">
+                                        <span className="text-[10px] font-bold uppercase text-gray-500 block">Mode Tampilan Aplikasi:</span>
+                                        <div className="grid grid-cols-3 gap-2 bg-gray-100 p-1 rounded-xl">
+                                            <button
+                                                onClick={() => {
+                                                    setDisplayMode('light')
+                                                    setThemeDark(false)
+                                                }}
+                                                className={`flex items-center justify-center gap-2 py-2 rounded-lg text-xs font-semibold transition-all ${displayMode === 'light' ? 'bg-white text-orange-500 shadow-sm' : 'text-gray-500'
                                                     }`}
                                             >
-                                                <div
-                                                    className="p-2 rounded-lg text-white shrink-0"
-                                                    style={{ backgroundColor: theme.hex }}
-                                                >
-                                                    {theme.icon}
-                                                </div>
-                                                <div className="text-left">
-                                                    <div className="font-bold text-slate-900 text-sm">{theme.name}</div>
-                                                    <div className="text-xs text-gray-500 leading-tight line-clamp-1">{theme.description}</div>
-                                                </div>
+                                                <Sun size={14} /> Light
                                             </button>
-                                        ))}
-                                    </div>
-                                </div>
-
-                                {/* Custom Picker */}
-                                <div className="p-4 bg-white rounded-2xl shadow-sm border border-gray-100 space-y-3">
-                                    <div className="flex items-center gap-2 text-sm font-semibold text-gray-700">
-                                        <Pipette size={16} />
-                                        <span>Custom Warna Sendiri</span>
-                                    </div>
-                                    <div className="flex items-center gap-4">
-                                        <input
-                                            type="color"
-                                            value={selectedColor}
-                                            onChange={(e) => {
-                                                setSelectedColor(e.target.value);
-                                                setActiveTab('custom');
-                                            }}
-                                            className="h-12 w-12  rounded-lg cursor-pointer border-none bg-transparent"
-                                        />
-                                        <div className="flex-1 px-3 py-2 bg-gray-50 text-slate-900 rounded-lg border border-gray-200 font-mono text-sm">
-                                            {selectedColor?.toUpperCase()}
-                                        </div>
-                                    </div>
-                                    <div className="space-y-1">
-                                        <label className="text-[10px] font-bold uppercase text-gray-500">Nama Usaha (2 Span)</label>
-                                        <div className="flex gap-2">
-                                            <input
-                                                value={spanOne}
-                                                onChange={(e) => setSpanOne(e.target.value)}
-                                                placeholder="Span 1"
-                                                className="w-1/2 p-2 text-sm text-slate-900  rounded-lg border border-gray-300"
-                                            />
-                                            <input
-                                                value={spanTwo}
-                                                onChange={(e) => setSpanTwo(e.target.value)}
-                                                placeholder="Span 2"
-                                                className="w-1/2 p-2 text-sm text-slate-900 rounded-lg border border-gray-300"
-                                            />
-                                        </div>
-                                    </div>
-                                    <div className="space-y-1">
-                                        <label className="text-[10px] font-bold uppercase text-gray-500">Logo</label>
-                                        {
-                                            logo ?
-                                                <button
-                                                    onClick={() => {
-                                                        setLogo(null);
-                                                        setLogoFile(null)
-                                                        setIsDeleteLogo(true)
-                                                    }}
-                                                    className="flex items-center gap-2 px-4 py-2 text-white text-sm bg-red-700 hover:bg-red-800 rounded-lg transition-colors w-full justify-center"
-                                                >
-                                                    <Trash2 className="w-4 h-4" />Hapus Logo
-                                                </button> :
-
-                                                <button
-                                                    onClick={() => fileInputRef.current?.click()}
-                                                    className="flex items-center gap-2 px-4 py-2 text-white text-sm bg-slate-700 hover:bg-slate-800 rounded-lg transition-colors w-full justify-center"
-                                                >
-                                                    <Upload className="w-4 h-4" /> {logo ? "Ganti Logo" : "Upload Logo"}
-                                                </button>
-                                        }
-                                        <input
-                                            type="file"
-                                            ref={fileInputRef}
-                                            className="hidden"
-                                            accept="image/*"
-                                            onChange={handleLogoUpload}
-                                        />
-                                    </div>
-                                    <div className="space-y-4 border-t border-gray-100 pt-4">
-                                        <div className="flex items-center justify-between">
-                                            <span className="text-[10px] font-bold uppercase text-gray-500">Tipe Frame:</span>
-                                            <div className="flex bg-gray-100 p-1 rounded-lg">
-                                                {['circle', 'square', 'none'].map(t => (
-                                                    <button
-                                                        key={t}
-                                                        onClick={() => setFrameType(t as "circle" | "square" | "none")}
-                                                        className={`text-[10px] px-3 py-1 rounded-md transition-all font-medium capitalize ${frameType === t ? 'bg-white text-indigo-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'
-                                                            }`}
-                                                    >
-                                                        {t}
-                                                    </button>
-                                                ))}
-                                            </div>
-                                        </div>
-
-                                        {/* BARU: Mode Tampilan Switch (3 Pilihan) */}
-                                        <div className="space-y-2">
-                                            <span className="text-[10px] font-bold uppercase text-gray-500 block">Mode Tampilan Aplikasi:</span>
-                                            <div className="grid grid-cols-3 gap-2 bg-gray-100 p-1 rounded-xl">
-                                                <button
-                                                    onClick={() => {
-                                                        setDisplayMode('light')
-                                                        setThemeDark(false)
-                                                    }}
-                                                    className={`flex items-center justify-center gap-2 py-2 rounded-lg text-xs font-semibold transition-all ${displayMode === 'light' ? 'bg-white text-orange-500 shadow-sm' : 'text-gray-500'
-                                                        }`}
-                                                >
-                                                    <Sun size={14} /> Light
-                                                </button>
-                                                <button
-                                                    onClick={() => {
-                                                        setDisplayMode('dark')
-                                                        setThemeDark(true)
-                                                    }}
-                                                    className={`flex items-center justify-center gap-2 py-2 rounded-lg text-xs font-semibold transition-all ${displayMode === 'dark' ? 'bg-white text-indigo-600 shadow-sm' : 'text-gray-500'
-                                                        }`}
-                                                >
-                                                    <Moon size={14} /> Dark
-                                                </button>
-                                                <button
-                                                    onClick={() => {
-                                                        setDisplayMode('auto')
-                                                        setThemeDark(false)
-                                                    }}
-                                                    className={`flex items-center justify-center gap-2 py-2 rounded-lg text-xs font-semibold transition-all ${displayMode === 'auto' ? 'bg-white text-green-600 shadow-sm' : 'text-gray-500'
-                                                        }`}
-                                                >
-                                                    <SunMoon size={14} /> Auto
-                                                </button>
-                                            </div>
-                                        </div>
-
-                                        <div className="flex items-center justify-between">
-                                            <span className="text-[10px] font-bold uppercase text-gray-500">Aksen Warna Frame:</span>
-                                            <div className="flex gap-2">
-                                                {['dark', 'light'].map(th => (
-                                                    <button
-                                                        key={th}
-                                                        onClick={() => setFrameTheme(th as "dark" | "light")}
-                                                        className={`text-[10px] px-4 py-1.5 rounded-full border transition-all font-bold uppercase ${frameTheme === th
-                                                            ? 'bg-slate-800 text-white border-slate-800'
-                                                            : 'bg-gray-100 text-gray-400 border-transparent hover:bg-gray-200'
-                                                            }`}
-                                                    >
-                                                        {th}
-                                                    </button>
-                                                ))}
-                                            </div>
-                                        </div>
-                                        <div className='flex items-center justify-end'>
                                             <button
-                                                onClick={handleSubmit}
-                                                className="w-full mt-6 flex mb-1 items-center justify-center gap-2 p-2 text-sm bg-green-600 text-white font-semibold hover:bg-green-800 rounded-md transition-colors"
+                                                onClick={() => {
+                                                    setDisplayMode('dark')
+                                                    setThemeDark(true)
+                                                }}
+                                                className={`flex items-center justify-center gap-2 py-2 rounded-lg text-xs font-semibold transition-all ${displayMode === 'dark' ? 'bg-white text-indigo-600 shadow-sm' : 'text-gray-500'
+                                                    }`}
                                             >
-                                                <Check className="w-4 h-4" /> Simpan Perubahan
+                                                <Moon size={14} /> Dark
+                                            </button>
+                                            <button
+                                                onClick={() => {
+                                                    setDisplayMode('auto')
+                                                    setThemeDark(false)
+                                                }}
+                                                className={`flex items-center justify-center gap-2 py-2 rounded-lg text-xs font-semibold transition-all ${displayMode === 'auto' ? 'bg-white text-green-600 shadow-sm' : 'text-gray-500'
+                                                    }`}
+                                            >
+                                                <SunMoon size={14} /> Auto
                                             </button>
                                         </div>
                                     </div>
+
+                                    <div className="flex items-center justify-between">
+                                        <span className="text-[10px] font-bold uppercase text-gray-500">Aksen Warna Frame:</span>
+                                        <div className="flex gap-2">
+                                            {['dark', 'light'].map(th => (
+                                                <button
+                                                    key={th}
+                                                    onClick={() => setFrameTheme(th as "dark" | "light")}
+                                                    className={`text-[10px] px-4 py-1.5 rounded-full border transition-all font-bold uppercase ${frameTheme === th
+                                                        ? 'bg-slate-800 text-white border-slate-800'
+                                                        : 'bg-gray-100 text-gray-400 border-transparent hover:bg-gray-200'
+                                                        }`}
+                                                >
+                                                    {th}
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
+                                    <div className='flex items-center justify-end'>
+                                        <button
+                                            onClick={handleSubmit}
+                                            className="w-full mt-6 flex mb-1 items-center justify-center gap-2 p-2 text-sm bg-green-600 text-white font-semibold hover:bg-green-800 rounded-md transition-colors"
+                                        >
+                                            <Check className="w-4 h-4" /> Simpan Perubahan
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
-                            <div className='relative pb-8 space-y-4'>
-                                {
-                                    listHeader?.map((lh, i) => (
-                                        <div className='relative space-y-4' key={i}>
-                                            {
-                                                headerLayout === lh?.id ?
-                                                    <div className='flex items-center gap-2 cursor-pointer px-4'>
-                                                        <CircleCheckBigIcon />
-                                                        <p className='font-semibold text-gray-600'>{lh?.name}</p>
-                                                    </div> :
-                                                    <div className='flex items-center gap-2 cursor-pointer px-4' onClick={() => setHeaderLayout(lh?.id)}>
-                                                        <Circle />
-                                                        <p className='font-semibold text-gray-600'>{lh?.name}</p>
-                                                    </div>
-                                            }
-                                            <HeaderConfig
-                                                layout={lh?.id}
-                                                themeMode={themeDark ? "dark" : "light"}
-                                                isBuild={true}
-                                                logoImage={logo}
-                                                frameType={frameType}
-                                                frameTheme={frameTheme}
-                                                toggleTheme={() => setThemeDark(!themeDark)}
-                                                spanOne={spanOne}
-                                                spanTwo={spanTwo}
-                                                displayMode={displayMode} />
-                                        </div>
-                                    ))
-                                }
-
-                            </div>
+                        </div>
+                        <div className={`flex px-4 overflow-auto w-full gap-4 thin-scroll ${themeDark ? 'bg-slate-950 text-white' : 'bg-slate-50 text-slate-900'}`}>
+                            {
+                                listHeader?.map((lh, i) => (
+                                    <div key={i} className='whitespace-nowrap text-sm font-medium bg-gray-200 text-gray-600 p-2 rounded-lg cursor-pointer flex items-center gap-2' onClick={() => setHeaderLayout(lh?.id)}>
+                                        {lh?.id === headerLayout ? <CheckCircleIcon /> : <Circle />}
+                                        <span>{lh?.id}. {lh?.name}</span>
+                                    </div>
+                                ))
+                            }
+                        </div>
+                        <div className='relative pb-8 space-y-4'>
+                            {
+                                listHeader?.map((lh, i) => (
+                                    <div className='relative space-y-4' key={i}>
+                                        {
+                                            headerLayout === lh?.id ?
+                                                <div className={`flex items-center gap-2 cursor-pointer px-4 ${themeDark ? "text-white" : "text-slate-900"}`}>
+                                                    <CircleCheckBigIcon />
+                                                    <p className='font-semibold text-gray-600'>{lh?.name}</p>
+                                                </div> :
+                                                <div className={`flex items-center gap-2 cursor-pointer px-4 ${themeDark ? "text-white" : "text-slate-900"}`} onClick={() => setHeaderLayout(lh?.id)}>
+                                                    <Circle />
+                                                    <p className='font-semibold text-gray-600'>{lh?.name}</p>
+                                                </div>
+                                        }
+                                        <HeaderConfig
+                                            layout={lh?.id}
+                                            themeMode={themeDark ? "dark" : "light"}
+                                            isBuild={true}
+                                            logoImage={logo}
+                                            frameType={frameType}
+                                            frameTheme={frameTheme}
+                                            toggleTheme={() => setThemeDark(!themeDark)}
+                                            spanOne={spanOne}
+                                            spanTwo={spanTwo}
+                                            displayMode={displayMode} />
+                                    </div>
+                                ))
+                            }
 
                         </div>
+
                     </div>
                 </div>
             </div>
@@ -565,6 +567,6 @@ export default function HeaderPage() {
                 <Alert type={showAlert?.type} message={showAlert?.message} onClose={() => setShowAlert(null)} />
             }
             {loading && <Loading title='Sedang Proses' />}
-        </MainLayout>
+        </div>
     );
 }

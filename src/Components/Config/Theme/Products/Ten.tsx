@@ -6,6 +6,7 @@ import { Check, Plus, ShoppingCart, Zap } from 'lucide-react';
 import AlertWrapper from './AlertWrapper';
 import { ProductsType, Variants } from '@/types/Admin/ProductsType';
 import { formatIDR } from '@/types/FormtRupiah';
+import ExpandableHTML from './ExpandableHTML';
 
 type Props = {
     products: ProductsType[];
@@ -45,10 +46,24 @@ const Ten = ({ products, isDarkMode }: Props) => {
             return () => clearTimeout(timer);
         }
     }, [activeAlert]);
+    useEffect(() => {
+        if (product) {
+            // Jika modal aktif (product tidak null), kunci scroll
+            document.body.style.overflow = 'hidden';
+        } else {
+            // Jika modal tutup, kembalikan scroll
+            document.body.style.overflow = 'unset';
+        }
+
+        // Cleanup function untuk memastikan scroll kembali normal jika komponen unmount
+        return () => {
+            document.body.style.overflow = 'unset';
+        };
+    }, [product]);
     return (
-        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 h-full'>
+        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 h-full'>
             {products?.map((p, i) => (
-                <div onClick={() => setProduct(p)} key={i} className={`border-[6px] ${isDarkMode ? "border-white bg-slate-900" : "border-black bg-white"} p-6 flex flex-col items-center cursor-pointer group hover:bg-black hover:text-white transition-all`}>
+                <div onClick={() => setProduct(p)} key={i} className={`border-[6px] ${isDarkMode ? "border-white bg-slate-900 text-white" : "border-black bg-white text-slate-900"} p-6 flex flex-col items-center cursor-pointer group hover:bg-black hover:text-white transition-all`}>
                     <h3 className={`font-black italic text-xl uppercase tracking-tighter mb-4 text-center line-through decoration-[var(--product-primary-color)] group-hover:no-underline `}>{p?.name}</h3>
                     <img src={p?.image} className="w-full aspect-[16/6] object-cover grayscale mb-6" alt="" />
                     <div className="w-full flex justify-between items-center font-mono font-black text-sm">
@@ -81,7 +96,12 @@ const Ten = ({ products, isDarkMode }: Props) => {
                         </div>
                         <h2 className="text-5xl font-black tracking-tight leading-none">{product?.name}</h2>
                     </div>
-                    <p className="text-sm opacity-60 font-medium">{product?.description}</p>
+                    <ExpandableHTML
+                        htmlContent={product?.description}
+                        className={`text-sm opacity-60 font-medium`}
+                        maxLines="line-clamp-[2]" // Bisa diganti line-clamp-5 dll
+                        maxHeight='max-h-[200px]'
+                    />
                     <div className={`flex items-center justify-between gap-8 border-y ${isDarkMode ? "border-slate-800" : "border-slate-300"} py-8`}>
                         <div className="space-y-1">
                             <span className="text-[10px] font-black opacity-70 uppercase tracking-widest">Harga Per Item</span>

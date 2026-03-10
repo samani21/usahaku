@@ -8,7 +8,7 @@ export function middleware(req: NextRequest) {
     // hapus port
     const hostname = host.split(":")[0];
 
-    // localhost / root domain
+    // root domain -> landing page
     if (hostname === ROOT_DOMAIN) {
         return NextResponse.next();
     }
@@ -18,8 +18,19 @@ export function middleware(req: NextRequest) {
         const subdomain = hostname.replace(`.${ROOT_DOMAIN}`, "");
 
         const url = req.nextUrl.clone();
-        url.pathname = `/${subdomain}${req.nextUrl.pathname}`;
 
+        // // khusus admin
+        // if (subdomain === "admin") {
+        //     url.pathname = `/admin${req.nextUrl.pathname}`;
+        //     return NextResponse.rewrite(url);
+        // }
+        // if (subdomain === "auth") {
+        //     url.pathname = `/auth${req.nextUrl.pathname}`;
+        //     return NextResponse.rewrite(url);
+        // }
+
+        // selain admin dianggap tenant
+        url.pathname = `/${subdomain}${req.nextUrl.pathname}`;
         return NextResponse.rewrite(url);
     }
 

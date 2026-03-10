@@ -6,6 +6,7 @@ import { Check, Clock, Plus, ShoppingCart, Tag, Zap } from 'lucide-react';
 import AlertWrapper from './AlertWrapper';
 import { ProductsType, Variants } from '@/types/Admin/ProductsType';
 import { formatIDR } from '@/types/FormtRupiah';
+import ExpandableHTML from './ExpandableHTML';
 
 type Props = {
     products: ProductsType[];
@@ -45,13 +46,27 @@ const Twelve = ({ products, isDarkMode }: Props) => {
             return () => clearTimeout(timer);
         }
     }, [activeAlert]);
+    useEffect(() => {
+        if (product) {
+            // Jika modal aktif (product tidak null), kunci scroll
+            document.body.style.overflow = 'hidden';
+        } else {
+            // Jika modal tutup, kembalikan scroll
+            document.body.style.overflow = 'unset';
+        }
+
+        // Cleanup function untuk memastikan scroll kembali normal jika komponen unmount
+        return () => {
+            document.body.style.overflow = 'unset';
+        };
+    }, [product]);
     return (
-        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4  h-full'>
+        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4  h-full'>
             {products?.map((p, i) => (
                 <div onClick={() => setProduct(p)} key={i} className="relative h-80 group cursor-pointer flex items-center justify-center">
                     <div className="absolute inset-12 bg-rose-400 rounded-[2.5rem] rotate-12 transition-transform group-hover:rotate-0 opacity-20" />
                     <div className="absolute inset-12 bg-indigo-400 rounded-[2.5rem] -rotate-6 transition-transform group-hover:rotate-0 opacity-20" />
-                    <div className={`relative w-[75%] sm:w-40 h-56 rounded-[2rem] overflow-hidden shadow-2xl transition-transform group-hover:-translate-y-6 ${isDarkMode ? 'bg-slate-900' : 'bg-white'}`}>
+                    <div className={`relative w-[75%] sm:w-40 h-56 rounded-[2rem] overflow-hidden shadow-2xl transition-transform group-hover:-translate-y-6 ${isDarkMode ? 'bg-slate-900 text-white' : 'bg-white text-slate-900'}`}>
                         <img src={p?.image} className="w-full h-2/3 object-cover" alt="" />
                         <div className="pt-0 p-4 text-center">
                             {
@@ -91,7 +106,12 @@ const Twelve = ({ products, isDarkMode }: Props) => {
                                 <div className={`p-6 rounded-3xl ${isDarkMode ? "bg-slate-800" : "bg-slate-50"} space-y-3`}>
                                     <div className="w-10 h-10 rounded-full bg-blue-500/10 flex items-center justify-center text-blue-500"><Tag size={20} /></div>
                                     <h4 className="font-black text-xs uppercase opacity-40">Deskripsi</h4>
-                                    <p className="text-xs leading-relaxed opacity-60">{product?.description}</p>
+                                    <ExpandableHTML
+                                        htmlContent={product?.description}
+                                        className={`text-xs leading-relaxed opacity-60`}
+                                        maxLines="line-clamp-[2]" // Bisa diganti line-clamp-5 dll
+                                        maxHeight='max-h-[200px]'
+                                    />
                                 </div>
                             </div>
                         }

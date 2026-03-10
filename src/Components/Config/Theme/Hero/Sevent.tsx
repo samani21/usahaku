@@ -22,8 +22,8 @@ const Sevent = ({ isDarkMode, headline, subHeadline, ctaText, imageHero, title }
                         <img src={imageHero} alt="Hero" className="w-full h-full  object-cover" />
                     }
                 </div>
-                <div className={`p-10 md:p-20 flex flex-col justify-center ${isDarkMode ? 'bg-slate-900' : 'bg-white shadow-2xl z-10'}`}>
-                    <span className="text-xs font-bold tracking-[0.5em] text-slate-400 mb-4 block uppercase">{title}</span>
+                <div className={`p-10 md:p-20 flex flex-col justify-center ${isDarkMode ? 'bg-slate-900 text-white' : 'bg-white shadow-2xl z-10 text-slate-900'}`}>
+                    <span className={`text-xs font-bold tracking-[0.5em] mb-4 ${!isDarkMode&&'text-slate-400'} block uppercase`}>{title}</span>
                     <h2 className="text-4xl font-light mb-8 leading-tight tracking-tight">
                         Temukan <span className={`font-bold underline decoration-2 decoration-[var(--hero-primary-color)]`} >{headline}</span> Impian Anda
                     </h2>

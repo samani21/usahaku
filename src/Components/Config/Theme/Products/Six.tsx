@@ -6,6 +6,7 @@ import { ShoppingCart } from 'lucide-react';
 import AlertWrapper from './AlertWrapper';
 import { ProductsType, Variants } from '@/types/Admin/ProductsType';
 import { formatIDR } from '@/types/FormtRupiah';
+import ExpandableHTML from './ExpandableHTML';
 
 type Props = {
     products: ProductsType[];
@@ -48,6 +49,20 @@ const Six = ({ products, isDarkMode }: Props) => {
             return () => clearTimeout(timer);
         }
     }, [activeAlert]);
+    useEffect(() => {
+        if (product) {
+            // Jika modal aktif (product tidak null), kunci scroll
+            document.body.style.overflow = 'hidden';
+        } else {
+            // Jika modal tutup, kembalikan scroll
+            document.body.style.overflow = 'unset';
+        }
+
+        // Cleanup function untuk memastikan scroll kembali normal jika komponen unmount
+        return () => {
+            document.body.style.overflow = 'unset';
+        };
+    }, [product]);
     return (
         <div className='grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6 h-full'>
             {products?.map((p, i) => (
@@ -84,7 +99,12 @@ const Six = ({ products, isDarkMode }: Props) => {
                             }
                             <p>{formatIDR(selectedVariant?.final_price ?? product?.final_price ?? 0)}</p>
                         </div>
-                        <p className="font-bold text-lg text-[var(--product-secondary-color)] line-clamp-8 leading-tight border-l-8 border-black pl-6">{product?.description}</p>
+                        <ExpandableHTML
+                            htmlContent={product?.description}
+                            className={`font-bold text-sn text-[var(--product-secondary-color)]  leading-tight border-l-8 border-black pl-6`}
+                            maxLines="line-clamp-[2]" // Bisa diganti line-clamp-5 dll
+                            maxHeight='max-h-[200px]'
+                        />
                         {product?.variants && product?.variants?.length > 0 ?
                             <div className='bg-black  px-4 py-2 rounded-xl'>
                                 <VariantPicker variants={product?.variants} selectedVariant={selectedVariant} setSelectedVariant={setSelectedVariant} isDarkMode={true} />

@@ -6,6 +6,7 @@ import { Check, Plus, ShoppingCart, Zap } from 'lucide-react';
 import AlertWrapper from './AlertWrapper';
 import { ProductsType, Variants } from '@/types/Admin/ProductsType';
 import { formatIDR } from '@/types/FormtRupiah';
+import ExpandableHTML from './ExpandableHTML';
 
 type Props = {
     products: ProductsType[];
@@ -45,20 +46,34 @@ const Nine = ({ products, isDarkMode }: Props) => {
             return () => clearTimeout(timer);
         }
     }, [activeAlert]);
+    useEffect(() => {
+        if (product) {
+            // Jika modal aktif (product tidak null), kunci scroll
+            document.body.style.overflow = 'hidden';
+        } else {
+            // Jika modal tutup, kembalikan scroll
+            document.body.style.overflow = 'unset';
+        }
+
+        // Cleanup function untuk memastikan scroll kembali normal jika komponen unmount
+        return () => {
+            document.body.style.overflow = 'unset';
+        };
+    }, [product]);
     return (
         <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 h-full'>
             {products?.map((p, i) => (
-                <div onClick={() => setProduct(p)} key={i} className={`col-span-1 md:col-span-2 flex h-40 rounded-[2.5rem] overflow-hidden cursor-pointer transition-transform hover:scale-[1.02] border-2 ${isDarkMode ? 'bg-slate-900 border-slate-800 shadow-2xl shadow-black/50' : 'bg-white border-slate-100 shadow-2xl shadow-slate-200'}`}>
+                <div onClick={() => setProduct(p)} key={i} className={`col-span-1 md:col-span-2 flex h-30 sm:h-40 rounded-[2.5rem] overflow-hidden cursor-pointer transition-transform hover:scale-[1.02] border-2 ${isDarkMode ? 'bg-slate-900 border-slate-800 shadow-2xl shadow-black/50 text-white' : 'bg-white border-slate-100 shadow-md shadow-slate-200 text-slate-900'}`}>
                     <div className="w-2/5 h-full">
                         <img src={p?.image} className="w-full h-full object-cover" alt="" />
                     </div>
                     <div className="flex-1 p-2 sm:p-8 flex flex-col justify-center">
                         {
                             p?.category &&
-                            <span className="text-[14px] font-black opacity-50 uppercase tracking-widest">{p?.category}</span>
+                            <span className="text-[12px] sm:text-[14px] font-black opacity-50 uppercase tracking-widest">{p?.category}</span>
                         }
-                        <h3 className="font-black text-lg sm:text-2xl uppercase italic leading-none my-2">{p?.name}</h3>
-                        <div className="flex items-center justify-between mt-4">
+                        <h3 className="font-black text-lg  sm:text-2xl uppercase italic leading-none my-2">{p?.name}</h3>
+                        <div className="flex items-center justify-between">
                             <p className={`font-bold text-lg text-[var(--product-primary-color)]`}>{formatIDR(p?.final_price ?? 0)}</p>
                             <div className="p-3 bg-black text-white rounded-2xl"><Plus className="w-5 h-5" /></div>
                         </div>
@@ -88,7 +103,12 @@ const Nine = ({ products, isDarkMode }: Props) => {
                                 <h2 className="text-2xl sm:text-4xl font-black italic tracking-tighter leading-none">{product?.name}</h2>
                                 <div className={`h-2 w-20 bg-[var(--product-primary-color)] rounded-full`} />
                             </div>
-                            <p className="text-sm opacity-70 leading-relaxed font-light">{product?.description}</p>
+                            <ExpandableHTML
+                                htmlContent={product?.description}
+                                className={`text-sm opacity-70 leading-relaxed font-light`}
+                                maxLines="line-clamp-[2]" // Bisa diganti line-clamp-5 dll
+                                maxHeight='max-h-[200px]'
+                            />
                             <div className="flex flex-col gap-4">
                                 {
                                     product?.discount_price ?

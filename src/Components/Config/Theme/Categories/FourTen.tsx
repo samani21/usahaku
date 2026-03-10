@@ -17,20 +17,20 @@ const FourTen = ({ categories, isDarkMode }: Props) => {
                             {
                                 cat?.icon ? (
                                     cat.icon.startsWith("http") ? (
-                                        <img src={cat?.icon} className={`absolute inset-0 w-full h-full object-cover rounded-2xl z-10 top-0 ${isDarkMode && 'bg-white'}`} />
+                                        <img src={cat?.icon} className={`absolute inset-0 w-full h-full object-cover rounded-2xl top-0 ${isDarkMode && 'bg-white'}`} />
 
                                     ) : (
-                                        <div className={`absolute inset-0 w-full h-full object-cover rounded-2xl z-10 top-0 ${isDarkMode && 'bg-white'}`} >
+                                        <div className={`absolute inset-0 w-full h-full object-cover rounded-2xl  top-0 ${isDarkMode && 'bg-white'}`} >
                                             <Icon color={cat?.color} icon={cat?.icon} className='w-full h-full' />
                                         </div>
                                     )
                                 ) : (
-                                    <div className={`text-[var(--category-primary-color)] absolute inset-0 w-full h-full object-cover rounded-2xl z-10 top-0 ${isDarkMode && 'bg-white'} `} >
+                                    <div className={`text-[var(--category-primary-color)] absolute inset-0 w-full h-full object-cover rounded-2xl  top-0 ${isDarkMode && 'bg-white'} `} >
                                         <Icon icon={'arcticons:defaultdarktheme'} className='w-full h-full' />
                                     </div>
                                 )
                             }
-                            <div className={`w-full bg-black/50 absolute z-11 text-left text-gray-100 px-2`}>
+                            <div className={`w-full bg-black/50 absolute z-1 text-left text-gray-100 px-2`}>
                                 <h3 className="font-black uppercase italic tracking-tighter text-xl">{cat.name}</h3>
                             </div>
                         </div>

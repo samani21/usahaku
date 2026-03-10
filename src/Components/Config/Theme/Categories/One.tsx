@@ -15,14 +15,14 @@ const One = ({ categories, isDarkMode }: Props) => {
                     {
                         categories[0]?.icon ? (
                             categories[0].icon.startsWith("http") ? (
-                                <img src={categories[0].icon} className={`absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ${isDarkMode && "bg-white"}`} alt="" />
+                                <img src={categories[0].icon} className={`absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 bg-white`} alt="" />
                             ) : (
-                                <div className={`absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ${isDarkMode && "bg-white"} `} >
+                                <div className={`absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 bg-white `} >
                                     <Icon color={categories[0]?.color} icon={categories[0]?.icon} className='w-full h-full' />
                                 </div>
                             )
                         ) : (
-                            <div className={`absolute flex items-center justify-center w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ${isDarkMode && "bg-white"} text-[var(--category-primary-color)]`}>
+                            <div className={`absolute flex items-center justify-center w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 bg-white text-[var(--category-primary-color)]`}>
                                 <p className='text-5xl font-sans font-bold italic'>{categories[0]?.name}</p>
                             </div>
                         )
@@ -38,14 +38,14 @@ const One = ({ categories, isDarkMode }: Props) => {
                         {
                             cat?.icon ? (
                                 cat.icon.startsWith("http") ? (
-                                    <img src={cat.icon} className={`absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ${isDarkMode && "bg-white"}`} alt="" />
+                                    <img src={cat.icon} className={`absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 bg-white`} alt="" />
                                 ) : (
-                                    <div className={`absolute flex items-center justify-center w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ${isDarkMode && "bg-white"} text-[var(--category-primary-color)]`}>
+                                    <div className={`absolute flex items-center justify-center w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 bg-white text-[var(--category-primary-color)]`}>
                                         <Icon icon={cat?.icon} className='w-full h-full' color={cat?.color} />
                                     </div>
                                 )
                             ) : (
-                                <div className={`absolute flex items-center justify-center w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ${isDarkMode && "bg-white"} text-[var(--category-primary-color)]`}>
+                                <div className={`absolute flex items-center justify-center w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 bg-white text-[var(--category-primary-color)]`}>
                                     <p className='text-5xl font-sans font-bold italic'>{cat?.name}</p>
                                 </div>
                             )

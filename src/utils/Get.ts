@@ -9,10 +9,10 @@ export async function Get<T>(path: string): Promise<T> {
         return response.data;
     } catch (error: any) {
         // Jika token tidak ada, auto logout
-        if (!token) {
-            window.location.href = '/auth/login';
-            return Promise.reject(error);
-        }
+        // if (!token) {
+        //     window.location.href = '/auth/login';
+        //     return Promise.reject(error);
+        // }
 
         // Kembalikan langsung error Axios tanpa mengubah jadi Error runtime
         return Promise.reject({

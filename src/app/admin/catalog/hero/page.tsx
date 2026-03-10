@@ -1,6 +1,6 @@
 'use client'
-import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { Palette, Home, Utensils, Cpu, Sparkles, Pipette, HeartPulse, Shirt, Coffee, GraduationCap, Upload, CircleCheckBigIcon, Circle, Sun, Moon, Check, SunMoon, X, Trash2 } from 'lucide-react';
+import React, { useState, useEffect, useRef, useCallback, Dispatch, SetStateAction } from 'react';
+import { Palette, Home, Utensils, Cpu, Sparkles, Pipette, HeartPulse, Shirt, Coffee, GraduationCap, Upload, CircleCheckBigIcon, Circle, Sun, Moon, Check, SunMoon, X, Trash2, CheckCircleIcon } from 'lucide-react';
 import HeaderConfig from '@/Components/Config/Theme/Header';
 import NavIcons from '@/Components/Config/Theme/Header/NavIcons';
 import MainLayout from '@/Components/Layout/MainLayout';
@@ -12,6 +12,7 @@ import Alert from '@/Components/Component/Alert';
 import Loading from '@/Components/Component/Loading';
 import { Get } from '@/utils/Get';
 import { Catalog } from '@/types/Admin/Catalog/Catalog';
+import { HeroType } from '@/types/Admin/Catalog/Hero';
 
 const BUSINESS_THEMES = [
     {
@@ -97,7 +98,14 @@ const listHero = [
     { id: 15, name: "Library Grid" },
 ]
 
-export default function HeroPage() {
+type Props = {
+    heroData: HeroType | null;
+    isDarkMode: boolean;
+    setIsDarkMode: Dispatch<SetStateAction<boolean>>;
+    getCalog: () => void;
+}
+
+export default function HeroPage({ heroData, isDarkMode, setIsDarkMode, getCalog }: Props) {
     const [selectedColor, setSelectedColor] = useState(BUSINESS_THEMES[0].hex);
     const [activeTab, setActiveTab] = useState<any>();
     const [heroLayout, setHeroLayout] = useState<number | null>();
@@ -110,7 +118,6 @@ export default function HeroPage() {
     const [headline, setHeadline] = useState("PRODUK TERBAIK KAMI");
     const [subHeadline, setSubHeadline] = useState("Kualitas premium dengan harga yang sangat terjangkau khusus untuk Anda.");
     const [ctaText, setCtaText] = useState("Pesan Sekarang");
-    const [isDarkMode, setIsDarkMode] = useState(false);
 
     const [imageToCrop, setImageToCrop] = useState<string | null>(null);
     const [crop, setCrop] = useState({ x: 0, y: 0 });
@@ -122,38 +129,29 @@ export default function HeroPage() {
     const fileInputRef = useRef<HTMLInputElement | null>(null);
     const [isDeleteImage, setIsDeleteImage] = useState<boolean>(false);
     useEffect(() => {
-        getCalog()
-    }, []);
-    const getCalog = async () => {
-        try {
-            setLoading(true);
-            const res = await Get<{ success: boolean; data: Catalog }>('/catalog');
-
-            if (res?.success) {
-                setHeroLayout(res?.data?.hero?.layout_hero);
-                if (res?.data?.hero?.color) {
-                    setSelectedColor(res?.data?.hero?.color);
-                }
-                setImageHero(res?.data?.hero?.image ?? null)
-                if (res?.data?.hero?.title) {
-                    setTitle(res?.data?.hero?.title ?? '')
-                }
-                if (res?.data?.hero?.headline) {
-                    setHeadline(res?.data?.hero?.headline ?? '')
-                }
-                if (res?.data?.hero?.sub_headline) {
-                    setSubHeadline(res?.data?.hero?.sub_headline ?? '')
-                }
-                if (res?.data?.hero?.cta) {
-                    setCtaText(res?.data?.hero?.cta ?? '')
-                }
-                setDisplayMode(res?.data?.hero?.mode);
-                setIsDarkMode(res?.data?.hero?.mode == 'dark')
+        if (heroData) {
+            setHeroLayout(heroData?.layout_hero);
+            if (heroData?.color) {
+                setSelectedColor(heroData?.color);
             }
-        } finally {
-            setLoading(false);
+            setImageHero(heroData?.image ?? null)
+            if (heroData?.title) {
+                setTitle(heroData?.title ?? '')
+            }
+            if (heroData?.headline) {
+                setHeadline(heroData?.headline ?? '')
+            }
+            if (heroData?.sub_headline) {
+                setSubHeadline(heroData?.sub_headline ?? '')
+            }
+            if (heroData?.cta) {
+                setCtaText(heroData?.cta ?? '')
+            }
+            setDisplayMode(heroData?.mode);
+            setIsDarkMode(heroData?.mode == 'dark')
         }
-    };
+    }, [heroData]);
+
     // Fungsi untuk menghitung kontras teks secara otomatis
     const getContrastColor = (hex: string) => {
         if (!hex) return '#1e293b';
@@ -265,6 +263,7 @@ export default function HeroPage() {
             const res = await Post('catalog/hero', formData)
             if (res) {
                 setLoading(false);
+                getCalog()
                 setShowAlert({
                     isOpen: true,
                     type: 'success',
@@ -282,7 +281,7 @@ export default function HeroPage() {
         }
     }
     return (
-        <MainLayout>
+        <div>
             {showCropModal && (
                 <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 p-4">
                     <div className="bg-white rounded-2xl w-full max-w-2xl overflow-hidden shadow-2xl">
@@ -337,228 +336,229 @@ export default function HeroPage() {
                     </div>
                 </div>
             )}
-            <div className='bg-slate-100 rounded-xl'>
-                <div className='bg-gray-200 w-full  rounded-t-xl flex items-center gap-2 py-2 px-6'>
-                    <div className='bg-red-500 rounded-full h-4 w-4' />
-                    <div className='bg-yellow-500 rounded-full h-4 w-4' />
-                    <div className='bg-green-500 rounded-full h-4 w-4' />
-                </div>
-                <div className={`${isDarkMode ? 'bg-slate-950 text-white' : 'bg-slate-50 text-slate-900'} rounded-b-xl`}>
-                    <div className="min-h-screen font-sans ">
-                        <div className="space-y-6">
-                            <div className="space-y-2 p-4">
-                                <label className="text-sm font-semibold uppercase tracking-wider text-gray-400">Pilih Kategori Warna</label>
-                                {/* Business Presets */}
-                                <div className="space-y-3">
-                                    <div className="flex gap-2 max-h-[500px] overflow-x-auto pr-2  no-scrollbar rounded-xl">
-                                        {BUSINESS_THEMES.map((theme) => (
-                                            <button
-                                                key={theme.id}
-                                                onClick={() => {
-                                                    setSelectedColor(theme.hex);
-                                                    setActiveTab(theme.id);
-                                                }}
-                                                className={`w-full flex whitespace-nowrap items-center gap-3 p-3 rounded-xl border-2 transition-all ${activeTab === theme.id
-                                                    ? 'border-indigo-600 bg-white shadow-md'
-                                                    : 'border-transparent bg-gray-100 hover:bg-gray-200'
-                                                    }`}
-                                            >
-                                                <div
-                                                    className="p-2 rounded-lg text-white shrink-0"
-                                                    style={{ backgroundColor: theme.hex }}
-                                                >
-                                                    {theme.icon}
-                                                </div>
-                                                <div className="text-left">
-                                                    <div className="font-bold text-slate-900 text-sm">{theme.name}</div>
-                                                    <div className="text-xs text-gray-500 leading-tight line-clamp-1">{theme.description}</div>
-                                                </div>
-                                            </button>
-                                        ))}
-                                    </div>
-                                </div>
+            <div className={`min-h-screen font-sans ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>
+                <div className="space-y-6">
+                    <div className="space-y-2 p-4">
+                        <label className="text-sm font-semibold uppercase tracking-wider text-gray-400">Pilih Kategori Warna</label>
+                        {/* Business Presets */}
+                        <div className="space-y-3">
+                            <div className="flex gap-2 max-h-[500px] overflow-x-auto pr-2  no-scrollbar rounded-xl">
+                                {BUSINESS_THEMES.map((theme) => (
+                                    <button
+                                        key={theme.id}
+                                        onClick={() => {
+                                            setSelectedColor(theme.hex);
+                                            setActiveTab(theme.id);
+                                        }}
+                                        className={`w-full flex whitespace-nowrap items-center gap-3 p-3 rounded-xl border-2 transition-all ${activeTab === theme.id
+                                            ? 'border-indigo-600 bg-white shadow-md'
+                                            : 'border-transparent bg-gray-100 hover:bg-gray-200'
+                                            }`}
+                                    >
+                                        <div
+                                            className="p-2 rounded-lg text-white shrink-0"
+                                            style={{ backgroundColor: theme.hex }}
+                                        >
+                                            {theme.icon}
+                                        </div>
+                                        <div className="text-left">
+                                            <div className="font-bold text-slate-900 text-sm">{theme.name}</div>
+                                            <div className="text-xs text-gray-500 leading-tight line-clamp-1">{theme.description}</div>
+                                        </div>
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
 
-                                {/* Custom Picker */}
-                                <div className="p-4 bg-white rounded-2xl shadow-sm border border-gray-100 space-y-3">
-                                    <div className="flex items-center gap-2 text-sm font-semibold text-gray-700">
-                                        <Pipette size={16} />
-                                        <span>Custom Warna Sendiri</span>
-                                    </div>
-                                    <div className="flex items-center gap-4">
+                        {/* Custom Picker */}
+                        <div className="p-4 bg-white rounded-2xl shadow-sm border border-gray-100 space-y-3">
+                            <div className="flex items-center gap-2 text-sm font-semibold text-gray-700">
+                                <Pipette size={16} />
+                                <span>Custom Warna Sendiri</span>
+                            </div>
+                            <div className="flex items-center gap-4">
+                                <input
+                                    type="color"
+                                    value={selectedColor}
+                                    onChange={(e) => {
+                                        setSelectedColor(e.target.value);
+                                        setActiveTab('custom');
+                                    }}
+                                    className="h-12 w-12  rounded-lg cursor-pointer border-none bg-transparent"
+                                />
+                                <div className="flex-1 px-3 py-2 bg-gray-50 text-slate-900 rounded-lg border border-gray-200 font-mono text-sm">
+                                    {selectedColor.toUpperCase()}
+                                </div>
+                            </div>
+                            <div className="sm:flex items-start gap-4">
+                                <div className="sm:w-1/2 space-y-1">
+                                    <label className="text-[10px] font-bold uppercase text-slate-400 tracking-wider">Teks Hero</label>
+                                    <div className="w-full space-y-2">
                                         <input
-                                            type="color"
-                                            value={selectedColor}
-                                            onChange={(e) => {
-                                                setSelectedColor(e.target.value);
-                                                setActiveTab('custom');
-                                            }}
-                                            className="h-12 w-12  rounded-lg cursor-pointer border-none bg-transparent"
+                                            value={title}
+                                            onChange={(e) => setTitle(e.target.value)}
+                                            className="w-full p-2 text-sm text-slate-900 rounded-lg border-gray-300 border focus:ring-2 focus:ring-blue-500 outline-none"
+                                            placeholder="Headline Utama"
                                         />
-                                        <div className="flex-1 px-3 py-2 bg-gray-50 text-slate-900 rounded-lg border border-gray-200 font-mono text-sm">
-                                            {selectedColor.toUpperCase()}
-                                        </div>
-                                    </div>
-                                    <div className="sm:flex items-start gap-4">
-                                        <div className="sm:w-1/2 space-y-1">
-                                            <label className="text-[10px] font-bold uppercase text-slate-400 tracking-wider">Teks Hero</label>
-                                            <div className="w-full space-y-2">
-                                                <input
-                                                    value={title}
-                                                    onChange={(e) => setTitle(e.target.value)}
-                                                    className="w-full p-2 text-sm text-slate-900 rounded-lg border-gray-300 border focus:ring-2 focus:ring-blue-500 outline-none"
-                                                    placeholder="Headline Utama"
-                                                />
-                                                <input
-                                                    value={headline}
-                                                    onChange={(e) => setHeadline(e.target.value.toUpperCase())}
-                                                    className="w-full p-2 text-sm text-slate-900 rounded-lg border-gray-300 border focus:ring-2 focus:ring-blue-500 outline-none"
-                                                    placeholder="Headline Utama"
-                                                />
-                                                <textarea
-                                                    value={subHeadline}
-                                                    onChange={(e) => setSubHeadline(e.target.value)}
-                                                    className="w-full p-2 text-sm text-slate-900 rounded-lg border-gray-300 border h-16 outline-none"
-                                                    placeholder="Sub-headline deskripsi..."
-                                                />
-                                            </div>
-                                        </div>
-
-                                        <div>
-                                            <div className='sm:pt-6'>
-                                                <input
-                                                    value={ctaText}
-                                                    onChange={(e) => setCtaText(e.target.value)}
-                                                    className="w-full p-2 text-sm text-slate-900 rounded-lg border border-gray-300 outline-none"
-                                                    placeholder="Teks Tombol"
-                                                />
-                                            </div>
-                                            <div className="space-y-1 mt-2">
-                                                <div className="space-y-2">
-                                                    <span className="text-[10px] font-bold uppercase text-gray-500 block">Mode Tampilan Aplikasi:</span>
-                                                    <div className="grid grid-cols-3 gap-2 bg-gray-100 p-1 rounded-xl">
-                                                        <button
-                                                            onClick={() => {
-                                                                setDisplayMode('light')
-                                                                setIsDarkMode(false)
-                                                            }}
-                                                            className={`flex items-center justify-center gap-2 py-2 rounded-lg text-xs font-semibold transition-all ${displayMode === 'light' ? 'bg-white text-orange-500 shadow-sm' : 'text-gray-500'
-                                                                }`}
-                                                        >
-                                                            <Sun size={14} /> Light
-                                                        </button>
-                                                        <button
-                                                            onClick={() => {
-                                                                setDisplayMode('dark')
-                                                                setIsDarkMode(true)
-                                                            }}
-                                                            className={`flex items-center justify-center gap-2 py-2 rounded-lg text-xs font-semibold transition-all ${displayMode === 'dark' ? 'bg-white text-indigo-600 shadow-sm' : 'text-gray-500'
-                                                                }`}
-                                                        >
-                                                            <Moon size={14} /> Dark
-                                                        </button>
-                                                        <button
-                                                            onClick={() => {
-                                                                setDisplayMode('auto')
-                                                                setIsDarkMode(false)
-                                                            }}
-                                                            className={`flex items-center justify-center gap-2 py-2 rounded-lg text-xs font-semibold transition-all ${displayMode === 'auto' ? 'bg-white text-green-600 shadow-sm' : 'text-gray-500'
-                                                                }`}
-                                                        >
-                                                            <SunMoon size={14} /> Auto
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                                <label className="text-[10px] font-bold uppercase text-gray-500">Gambar</label>
-                                                <div className='flex items-center gap-4'>
-                                                    {
-                                                        imageHero ?
-                                                            <button
-                                                                onClick={() => {
-                                                                    setHeroFile(null);
-                                                                    setImageHero(null)
-                                                                    setIsDeleteImage(true)
-                                                                }}
-                                                                className={`flex items-center gap-2 p-2 text-sm bg-red-600 hover:bg-red-700 rounded-md transition-colors text-white`}
-                                                            >
-                                                                <Trash2 className="w-4 h-4" />Hapus gambar
-                                                            </button> :
-                                                            <button
-                                                                onClick={() => fileInputRef.current?.click()}
-                                                                className={`flex items-center gap-2 p-2 text-sm bg-gray-300 hover:bg-gray-500 rounded-md transition-colors text-gray-900`}
-                                                            >
-                                                                <Upload className="w-4 h-4" /> {imageHero ? "Ganti" : "Upload"}
-                                                            </button>
-                                                    }
-                                                    <div className='flex items-center justify-end'>
-                                                        <button
-                                                            onClick={handleSubmit}
-                                                            className="w-full  flex mb-1 items-center justify-center gap-2 p-2 text-sm bg-green-600 text-white font-semibold hover:bg-green-800 rounded-md transition-colors"
-                                                        >
-                                                            <Check className="w-4 h-4" /> Simpan Perubahan
-                                                        </button>
-                                                    </div>
-                                                </div>
-
-                                                <p className="text-[10px] text-slate-400 italic text-center">Gunakan gambar landscape untuk hasil terbaik.</p>
-                                                <input
-                                                    type="file"
-                                                    ref={fileInputRef}
-                                                    className="hidden"
-                                                    accept="image/*"
-                                                    onChange={handleImageUpload}
-                                                />
-                                            </div>
-
-
-                                        </div>
+                                        <input
+                                            value={headline}
+                                            onChange={(e) => setHeadline(e.target.value.toUpperCase())}
+                                            className="w-full p-2 text-sm text-slate-900 rounded-lg border-gray-300 border focus:ring-2 focus:ring-blue-500 outline-none"
+                                            placeholder="Headline Utama"
+                                        />
+                                        <textarea
+                                            value={subHeadline}
+                                            onChange={(e) => setSubHeadline(e.target.value)}
+                                            className="w-full p-2 text-sm text-slate-900 rounded-lg border-gray-300 border h-16 outline-none"
+                                            placeholder="Sub-headline deskripsi..."
+                                        />
                                     </div>
                                 </div>
-                            </div>
-                            <div className='relative pb-8 space-y-4 px-4'>
-                                {
-                                    heroLayout &&
-                                    <>
-                                        <label className="text-[12px] font-bold uppercase tracking-[0.3em] text-slate-500 block">Yang anda pilih No.{heroLayout}</label>
-                                        <HeroConfig
-                                            theme={heroLayout}
-                                            isDarkMode={isDarkMode}
-                                            headline={headline}
-                                            subHeadline={subHeadline}
-                                            ctaText={ctaText}
-                                            imageHero={imageHero}
-                                            title={title} />
-                                    </>
-                                }
-                                {
-                                    listHero?.map((lh, i) => (
-                                        <div className='relative space-y-4' key={i}>
-                                            {
-                                                heroLayout === lh?.id ?
-                                                    <div className='flex items-center gap-2 cursor-pointer'>
-                                                        <CircleCheckBigIcon />
-                                                        <label className="text-[12px] font-bold uppercase tracking-[0.3em] text-slate-500 block">{lh?.id}. {lh?.name}</label>
-                                                    </div> :
-                                                    <div className='flex items-center gap-2 cursor-pointer' onClick={() => setHeroLayout(lh?.id)}>
-                                                        <Circle />
-                                                        <label className="text-[12px] font-bold uppercase tracking-[0.3em] text-slate-500 block">{lh?.id}. {lh?.name}</label>
-                                                    </div>
-                                            }
-                                            <HeroConfig
-                                                theme={lh?.id}
-                                                isDarkMode={isDarkMode}
-                                                headline={headline}
-                                                subHeadline={subHeadline}
-                                                ctaText={ctaText}
-                                                imageHero={imageHero}
-                                                title={title} />
+
+                                <div>
+                                    <div className='sm:pt-6'>
+                                        <input
+                                            value={ctaText}
+                                            onChange={(e) => setCtaText(e.target.value)}
+                                            className="w-full p-2 text-sm text-slate-900 rounded-lg border border-gray-300 outline-none"
+                                            placeholder="Teks Tombol"
+                                        />
+                                    </div>
+                                    <div className="space-y-1 mt-2">
+                                        <div className="space-y-2">
+                                            <span className="text-[10px] font-bold uppercase text-gray-500 block">Mode Tampilan Aplikasi:</span>
+                                            <div className="grid grid-cols-3 gap-2 bg-gray-100 p-1 rounded-xl">
+                                                <button
+                                                    onClick={() => {
+                                                        setDisplayMode('light')
+                                                        setIsDarkMode(false)
+                                                    }}
+                                                    className={`flex items-center justify-center gap-2 py-2 rounded-lg text-xs font-semibold transition-all ${displayMode === 'light' ? 'bg-white text-orange-500 shadow-sm' : 'text-gray-500'
+                                                        }`}
+                                                >
+                                                    <Sun size={14} /> Light
+                                                </button>
+                                                <button
+                                                    onClick={() => {
+                                                        setDisplayMode('dark')
+                                                        setIsDarkMode(true)
+                                                    }}
+                                                    className={`flex items-center justify-center gap-2 py-2 rounded-lg text-xs font-semibold transition-all ${displayMode === 'dark' ? 'bg-white text-indigo-600 shadow-sm' : 'text-gray-500'
+                                                        }`}
+                                                >
+                                                    <Moon size={14} /> Dark
+                                                </button>
+                                                <button
+                                                    onClick={() => {
+                                                        setDisplayMode('auto')
+                                                        setIsDarkMode(false)
+                                                    }}
+                                                    className={`flex items-center justify-center gap-2 py-2 rounded-lg text-xs font-semibold transition-all ${displayMode === 'auto' ? 'bg-white text-green-600 shadow-sm' : 'text-gray-500'
+                                                        }`}
+                                                >
+                                                    <SunMoon size={14} /> Auto
+                                                </button>
+                                            </div>
                                         </div>
-                                    ))
-                                }
+                                        <label className="text-[10px] font-bold uppercase text-gray-500">Gambar</label>
+                                        <div className='flex items-center gap-4'>
+                                            {
+                                                imageHero ?
+                                                    <button
+                                                        onClick={() => {
+                                                            setHeroFile(null);
+                                                            setImageHero(null)
+                                                            setIsDeleteImage(true)
+                                                        }}
+                                                        className={`flex items-center gap-2 p-2 text-sm bg-red-600 hover:bg-red-700 rounded-md transition-colors text-white`}
+                                                    >
+                                                        <Trash2 className="w-4 h-4" />Hapus gambar
+                                                    </button> :
+                                                    <button
+                                                        onClick={() => fileInputRef.current?.click()}
+                                                        className={`flex items-center gap-2 p-2 text-sm bg-gray-300 hover:bg-gray-500 rounded-md transition-colors text-gray-900`}
+                                                    >
+                                                        <Upload className="w-4 h-4" /> {imageHero ? "Ganti" : "Upload"}
+                                                    </button>
+                                            }
+                                            <div className='flex items-center justify-end'>
+                                                <button
+                                                    onClick={handleSubmit}
+                                                    className="w-full  flex mb-1 items-center justify-center gap-2 p-2 text-sm bg-green-600 text-white font-semibold hover:bg-green-800 rounded-md transition-colors"
+                                                >
+                                                    <Check className="w-4 h-4" /> Simpan Perubahan
+                                                </button>
+                                            </div>
+                                        </div>
 
+                                        <p className="text-[10px] text-slate-400 italic text-center">Gunakan gambar landscape untuk hasil terbaik.</p>
+                                        <input
+                                            type="file"
+                                            ref={fileInputRef}
+                                            className="hidden"
+                                            accept="image/*"
+                                            onChange={handleImageUpload}
+                                        />
+                                    </div>
+
+
+                                </div>
                             </div>
-
                         </div>
                     </div>
+                    <div className={`flex px-4 overflow-auto w-full gap-4 thin-scroll ${isDarkMode ? 'bg-slate-950 text-white' : 'bg-slate-50 text-slate-900'}`}>
+                        {
+                            listHero?.map((lh, i) => (
+                                <div key={i} className='whitespace-nowrap text-sm font-medium bg-gray-200 text-gray-600 p-2 rounded-lg cursor-pointer flex items-center gap-2' onClick={() => setHeroLayout(lh?.id)}>
+                                    {lh?.id === heroLayout ? <CheckCircleIcon /> : <Circle />}
+                                    <span>{lh?.id}. {lh?.name}</span>
+                                </div>
+                            ))
+                        }
+                    </div>
+                    <div className='relative pb-8 space-y-4 px-4'>
+                        {
+                            heroLayout &&
+                            <>
+                                <label className="text-[12px] font-bold uppercase tracking-[0.3em] text-slate-500 block">Yang anda pilih No.{heroLayout}</label>
+                                <HeroConfig
+                                    theme={heroLayout}
+                                    isDarkMode={isDarkMode}
+                                    headline={headline}
+                                    subHeadline={subHeadline}
+                                    ctaText={ctaText}
+                                    imageHero={imageHero}
+                                    title={title} />
+                            </>
+                        }
+                        {
+                            listHero?.map((lh, i) => (
+                                <div className='relative space-y-4' key={i}>
+                                    {
+                                        heroLayout === lh?.id ?
+                                            <div className={`flex items-center gap-2 cursor-pointer ${isDarkMode ? "text-white" : "text-slate-900"}`}>
+                                                <CircleCheckBigIcon />
+                                                <label className="text-[12px] font-bold uppercase tracking-[0.3em] text-slate-500 block">{lh?.id}. {lh?.name}</label>
+                                            </div> :
+                                            <div className={`flex items-center gap-2 cursor-pointer ${isDarkMode ? "text-white" : "text-slate-900"}`} onClick={() => setHeroLayout(lh?.id)}>
+                                                <Circle />
+                                                <label className="text-[12px] font-bold uppercase tracking-[0.3em] text-slate-500 block">{lh?.id}. {lh?.name}</label>
+                                            </div>
+                                    }
+                                    <HeroConfig
+                                        theme={lh?.id}
+                                        isDarkMode={isDarkMode}
+                                        headline={headline}
+                                        subHeadline={subHeadline}
+                                        ctaText={ctaText}
+                                        imageHero={imageHero}
+                                        title={title} />
+                                </div>
+                            ))
+                        }
+
+                    </div>
+
                 </div>
             </div>
             {
@@ -566,6 +566,6 @@ export default function HeroPage() {
                 <Alert type={showAlert?.type} message={showAlert?.message} onClose={() => setShowAlert(null)} />
             }
             {loading && <Loading title='Sedang Proses' />}
-        </MainLayout>
+        </div>
     );
 }

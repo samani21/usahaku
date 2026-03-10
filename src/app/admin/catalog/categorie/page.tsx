@@ -1,6 +1,6 @@
 'use client'
-import React, { useState, useEffect, useRef } from 'react';
-import { Palette, Home, Utensils, Cpu, Sparkles, Pipette, HeartPulse, Shirt, Coffee, GraduationCap, Upload, CircleCheckBigIcon, Circle, Sun, Moon, Check, SunMoon } from 'lucide-react';
+import React, { useState, useEffect, useRef, Dispatch, SetStateAction } from 'react';
+import { Palette, Home, Utensils, Cpu, Sparkles, Pipette, HeartPulse, Shirt, Coffee, GraduationCap, Upload, CircleCheckBigIcon, Circle, Sun, Moon, Check, SunMoon, CheckCircleIcon } from 'lucide-react';
 import HeaderConfig from '@/Components/Config/Theme/Header';
 import NavIcons from '@/Components/Config/Theme/Header/NavIcons';
 import MainLayout from '@/Components/Layout/MainLayout';
@@ -13,6 +13,7 @@ import { AlertType } from '@/types/Alert';
 import Alert from '@/Components/Component/Alert';
 import Loading from '@/Components/Component/Loading';
 import { Post } from '@/utils/Post';
+import { CategoryType } from '@/types/Admin/Catalog/Categories';
 
 const BUSINESS_THEMES = [
     {
@@ -99,38 +100,35 @@ const listCategorie = [
     { id: 15, name: "Modern Split Slides" },
 ]
 
-export default function HeroPage() {
+type Props = {
+    categoriesData: CategoryType | null;
+    categories: CategoriesType[] | [];
+    isDarkMode: boolean;
+    setIsDarkMode: Dispatch<SetStateAction<boolean>>;
+    getCalog: () => void;
+}
+
+export default function CategoriesPage({ categoriesData, categories, isDarkMode, setIsDarkMode, getCalog }: Props) {
     const [selectedColor, setSelectedColor] = useState(BUSINESS_THEMES[0].hex);
     const [activeTab, setActiveTab] = useState<any>();
     const [categorieLayout, setCategorieLayout] = useState<number>();
-    const [isDarkMode, setIsDarkMode] = useState(false);
     const [displayMode, setDisplayMode] = useState('auto');
     const [showAlert, setShowAlert] = useState<AlertType | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
     const [categorie, setCategorie] = useState<CategoriesType[]>();
 
     useEffect(() => {
-        getCalog()
-    }, []);
-    const getCalog = async () => {
-        try {
-            setLoading(true);
-            const res = await Get<{ success: boolean; data: Catalog }>('/catalog');
-
-            if (res?.success) {
-
-                setCategorieLayout(res?.data?.category?.layout_categories);
-                if (res?.data?.category?.color) {
-                    setSelectedColor(res?.data?.category?.color);
-                }
-                setDisplayMode(res?.data?.category?.mode);
-                setIsDarkMode(res?.data?.category?.mode == 'dark');
-                setCategorie(res?.data?.categories);
+        if (categoriesData) {
+            setCategorieLayout(categoriesData?.layout_categories);
+            if (categoriesData?.color) {
+                setSelectedColor(categoriesData?.color);
             }
-        } finally {
-            setLoading(false);
+            setDisplayMode(categoriesData?.mode);
+            setIsDarkMode(categoriesData?.mode == 'dark');
         }
-    };
+        setCategorie(categories);
+    }, [categories, categoriesData]);
+
     const getContrastColor = (hex: string) => {
         if (!hex) return '#1e293b';
         const r = parseInt(hex.slice(1, 3), 16);
@@ -182,6 +180,7 @@ export default function HeroPage() {
             const res = await Post('catalog/categorie', formData)
             if (res) {
                 setLoading(false);
+                getCalog()
                 setShowAlert({
                     isOpen: true,
                     type: 'success',
@@ -199,162 +198,164 @@ export default function HeroPage() {
         }
     }
     return (
-        <MainLayout>
-
-            <div className='bg-slate-100 rounded-xl'>
-                <div className='bg-gray-200 w-full  rounded-t-xl flex items-center gap-2 py-2 px-6'>
-                    <div className='bg-red-500 rounded-full h-4 w-4' />
-                    <div className='bg-yellow-500 rounded-full h-4 w-4' />
-                    <div className='bg-green-500 rounded-full h-4 w-4' />
-                </div>
-                <div className={`${isDarkMode ? 'bg-slate-950 text-white' : 'bg-slate-50 text-slate-900'} rounded-b-xl`}>
-                    <div className="min-h-screen font-sans ">
-                        <div className="space-y-6">
-                            <div className="space-y-2 p-4">
-                                <label className="text-sm font-semibold uppercase tracking-wider text-gray-400">Pilih Kategori Warna</label>
-                                {/* Business Presets */}
-                                <div className="space-y-3">
-                                    <div className="flex gap-2 max-h-[500px] overflow-x-auto pr-2  no-scrollbar rounded-xl">
-                                        {BUSINESS_THEMES.map((theme) => (
-                                            <button
-                                                key={theme.id}
-                                                onClick={() => {
-                                                    setSelectedColor(theme.hex);
-                                                    setActiveTab(theme.id);
-                                                }}
-                                                className={`w-full flex whitespace-nowrap items-center gap-3 p-3 rounded-xl border-2 transition-all ${activeTab === theme.id
-                                                    ? 'border-indigo-600 bg-white shadow-md'
-                                                    : 'border-transparent bg-gray-100 hover:bg-gray-200'
-                                                    }`}
+        <div>
+            <div className={`${isDarkMode ? 'text-white' : 'text-slate-900'} `}>
+                <div className="min-h-screen font-sans ">
+                    <div className="space-y-6">
+                        <div className="space-y-2 p-4">
+                            <label className="text-sm font-semibold uppercase tracking-wider text-gray-400">Pilih Kategori Warna</label>
+                            {/* Business Presets */}
+                            <div className="space-y-3">
+                                <div className="flex gap-2 max-h-[500px] overflow-x-auto pr-2  no-scrollbar rounded-xl">
+                                    {BUSINESS_THEMES.map((theme) => (
+                                        <button
+                                            key={theme.id}
+                                            onClick={() => {
+                                                setSelectedColor(theme.hex);
+                                                setActiveTab(theme.id);
+                                            }}
+                                            className={`w-full flex whitespace-nowrap items-center gap-3 p-3 rounded-xl border-2 transition-all ${activeTab === theme.id
+                                                ? 'border-indigo-600 bg-white shadow-md'
+                                                : 'border-transparent bg-gray-100 hover:bg-gray-200'
+                                                }`}
+                                        >
+                                            <div
+                                                className="p-2 rounded-lg text-white shrink-0"
+                                                style={{ backgroundColor: theme.hex }}
                                             >
-                                                <div
-                                                    className="p-2 rounded-lg text-white shrink-0"
-                                                    style={{ backgroundColor: theme.hex }}
-                                                >
-                                                    {theme.icon}
-                                                </div>
-                                                <div className="text-left">
-                                                    <div className="font-bold text-slate-900 text-sm">{theme.name}</div>
-                                                    <div className="text-xs text-gray-500 leading-tight line-clamp-1">{theme.description}</div>
-                                                </div>
-                                            </button>
-                                        ))}
+                                                {theme.icon}
+                                            </div>
+                                            <div className="text-left">
+                                                <div className="font-bold text-slate-900 text-sm">{theme.name}</div>
+                                                <div className="text-xs text-gray-500 leading-tight line-clamp-1">{theme.description}</div>
+                                            </div>
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* Custom Picker */}
+                            <div className="p-4 bg-white rounded-2xl shadow-sm border border-gray-100 space-y-3">
+                                <div className="flex items-center gap-2 text-sm font-semibold text-gray-700">
+                                    <Pipette size={16} />
+                                    <span>Custom Warna Sendiri</span>
+                                </div>
+                                <div className="flex items-center gap-4">
+                                    <input
+                                        type="color"
+                                        value={selectedColor}
+                                        onChange={(e) => {
+                                            setSelectedColor(e.target.value);
+                                            setActiveTab('custom');
+                                        }}
+                                        className="h-12 w-12  rounded-lg cursor-pointer border-none bg-transparent"
+                                    />
+                                    <div className="flex-1 px-3 py-2 bg-gray-50 text-slate-900 rounded-lg border border-gray-200 font-mono text-sm">
+                                        {selectedColor?.toUpperCase()}
                                     </div>
                                 </div>
-
-                                {/* Custom Picker */}
-                                <div className="p-4 bg-white rounded-2xl shadow-sm border border-gray-100 space-y-3">
-                                    <div className="flex items-center gap-2 text-sm font-semibold text-gray-700">
-                                        <Pipette size={16} />
-                                        <span>Custom Warna Sendiri</span>
-                                    </div>
-                                    <div className="flex items-center gap-4">
-                                        <input
-                                            type="color"
-                                            value={selectedColor}
-                                            onChange={(e) => {
-                                                setSelectedColor(e.target.value);
-                                                setActiveTab('custom');
-                                            }}
-                                            className="h-12 w-12  rounded-lg cursor-pointer border-none bg-transparent"
-                                        />
-                                        <div className="flex-1 px-3 py-2 bg-gray-50 text-slate-900 rounded-lg border border-gray-200 font-mono text-sm">
-                                            {selectedColor?.toUpperCase()}
-                                        </div>
-                                    </div>
-                                    <div className="sm:flex items-center gap-4">
-                                        <div className="space-y-1 w-full">
-                                            <div className='sm:flex items-center gap-4'>
-                                                <div className="space-y-2 w-full">
-                                                    <span className="text-[10px] font-bold uppercase text-gray-500 block">Mode Tampilan Aplikasi:</span>
-                                                    <div className="grid grid-cols-3 gap-2 bg-gray-100 p-1 rounded-xl">
-                                                        <button
-                                                            onClick={() => {
-                                                                setDisplayMode('light')
-                                                                setIsDarkMode(false)
-                                                            }}
-                                                            className={`flex items-center justify-center gap-2 py-2 rounded-lg text-xs font-semibold transition-all ${displayMode === 'light' ? 'bg-white text-orange-500 shadow-sm' : 'text-gray-500'
-                                                                }`}
-                                                        >
-                                                            <Sun size={14} /> Light
-                                                        </button>
-                                                        <button
-                                                            onClick={() => {
-                                                                setDisplayMode('dark')
-                                                                setIsDarkMode(true)
-                                                            }}
-                                                            className={`flex items-center justify-center gap-2 py-2 rounded-lg text-xs font-semibold transition-all ${displayMode === 'dark' ? 'bg-white text-indigo-600 shadow-sm' : 'text-gray-500'
-                                                                }`}
-                                                        >
-                                                            <Moon size={14} /> Dark
-                                                        </button>
-                                                        <button
-                                                            onClick={() => {
-                                                                setDisplayMode('auto')
-                                                                setIsDarkMode(false)
-                                                            }}
-                                                            className={`flex items-center justify-center gap-2 py-2 rounded-lg text-xs font-semibold transition-all ${displayMode === 'auto' ? 'bg-white text-green-600 shadow-sm' : 'text-gray-500'
-                                                                }`}
-                                                        >
-                                                            <SunMoon size={14} /> Auto
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                                <div className='w-full flex items-center justify-end'>
+                                <div className="sm:flex items-center gap-4">
+                                    <div className="space-y-1 w-full">
+                                        <div className='sm:flex items-center gap-4'>
+                                            <div className="space-y-2 w-full">
+                                                <span className="text-[10px] font-bold uppercase text-gray-500 block">Mode Tampilan Aplikasi:</span>
+                                                <div className="grid grid-cols-3 gap-2 bg-gray-100 p-1 rounded-xl">
                                                     <button
-                                                        onClick={handleSubmit}
-                                                        className="w-full mt-6 flex mb-1 items-center justify-center gap-2 p-2 text-sm bg-green-600 text-white font-semibold hover:bg-green-800 rounded-md transition-colors"
+                                                        onClick={() => {
+                                                            setDisplayMode('light')
+                                                            setIsDarkMode(false)
+                                                        }}
+                                                        className={`flex items-center justify-center gap-2 py-2 rounded-lg text-xs font-semibold transition-all ${displayMode === 'light' ? 'bg-white text-orange-500 shadow-sm' : 'text-gray-500'
+                                                            }`}
                                                     >
-                                                        <Check className="w-4 h-4" /> Simpan Perubahan
+                                                        <Sun size={14} /> Light
+                                                    </button>
+                                                    <button
+                                                        onClick={() => {
+                                                            setDisplayMode('dark')
+                                                            setIsDarkMode(true)
+                                                        }}
+                                                        className={`flex items-center justify-center gap-2 py-2 rounded-lg text-xs font-semibold transition-all ${displayMode === 'dark' ? 'bg-white text-indigo-600 shadow-sm' : 'text-gray-500'
+                                                            }`}
+                                                    >
+                                                        <Moon size={14} /> Dark
+                                                    </button>
+                                                    <button
+                                                        onClick={() => {
+                                                            setDisplayMode('auto')
+                                                            setIsDarkMode(false)
+                                                        }}
+                                                        className={`flex items-center justify-center gap-2 py-2 rounded-lg text-xs font-semibold transition-all ${displayMode === 'auto' ? 'bg-white text-green-600 shadow-sm' : 'text-gray-500'
+                                                            }`}
+                                                    >
+                                                        <SunMoon size={14} /> Auto
                                                     </button>
                                                 </div>
+                                            </div>
+                                            <div className='w-full flex items-center justify-end'>
+                                                <button
+                                                    onClick={handleSubmit}
+                                                    className="w-full mt-6 flex mb-1 items-center justify-center gap-2 p-2 text-sm bg-green-600 text-white font-semibold hover:bg-green-800 rounded-md transition-colors"
+                                                >
+                                                    <Check className="w-4 h-4" /> Simpan Perubahan
+                                                </button>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div className='relative pb-8 space-y-4 px-4'>
-                                {
-                                    categorieLayout &&
-                                    <>
-                                        <label className="text-[12px] font-bold uppercase tracking-[0.3em] text-slate-500 block">Yang anda pilih No.{categorieLayout}</label>
+                        </div>
+                        <div className={`flex px-4 overflow-auto w-full gap-4 thin-scroll ${isDarkMode ? 'bg-slate-950 text-white' : 'bg-slate-50 text-slate-900'}`}>
+                            {
+                                listCategorie?.map((lc, i) => (
+                                    <div key={i} className='whitespace-nowrap text-sm font-medium bg-gray-200 text-gray-600 p-2 rounded-lg cursor-pointer flex items-center gap-2' onClick={() => setCategorieLayout(lc?.id)}>
+                                        {lc?.id === categorieLayout ? <CheckCircleIcon /> : <Circle />}
+                                        <span>{lc?.id}. {lc?.name}</span>
+                                    </div>
+                                ))
+                            }
+                        </div>
+                        <div className='relative pb-8 space-y-4 px-4'>
+                            {
+                                categorieLayout &&
+                                <>
+                                    <label className="text-[12px] font-bold uppercase tracking-[0.3em] text-slate-500 block">Yang anda pilih No.{categorieLayout}</label>
+                                    {
+                                        categorie &&
+                                        <CategorieConfig
+                                            theme={categorieLayout}
+                                            categories={categorie}
+                                            isDarkMode={isDarkMode} />
+                                    }
+                                </>
+                            }
+                            {
+                                listCategorie?.map((lh, i) => (
+                                    <div className='relative space-y-4' key={i}>
+                                        {
+                                            categorieLayout === lh?.id ?
+                                                <div className='flex items-center gap-2 cursor-pointer'>
+                                                    <CircleCheckBigIcon />
+                                                    <label className="text-[12px] font-bold uppercase tracking-[0.3em] text-slate-500 block">{lh?.id}. {lh?.name}</label>
+                                                </div> :
+                                                <div className='flex items-center gap-2 cursor-pointer' onClick={() => setCategorieLayout(lh?.id)}>
+                                                    <Circle />
+                                                    <label className="text-[12px] font-bold uppercase tracking-[0.3em] text-slate-500 block">{lh?.id}. {lh?.name}</label>
+                                                </div>
+                                        }
                                         {
                                             categorie &&
                                             <CategorieConfig
-                                                theme={categorieLayout}
+                                                theme={lh?.id}
                                                 categories={categorie}
                                                 isDarkMode={isDarkMode} />
                                         }
-                                    </>
-                                }
-                                {
-                                    listCategorie?.map((lh, i) => (
-                                        <div className='relative space-y-4' key={i}>
-                                            {
-                                                categorieLayout === lh?.id ?
-                                                    <div className='flex items-center gap-2 cursor-pointer'>
-                                                        <CircleCheckBigIcon />
-                                                        <label className="text-[12px] font-bold uppercase tracking-[0.3em] text-slate-500 block">{lh?.id}. {lh?.name}</label>
-                                                    </div> :
-                                                    <div className='flex items-center gap-2 cursor-pointer' onClick={() => setCategorieLayout(lh?.id)}>
-                                                        <Circle />
-                                                        <label className="text-[12px] font-bold uppercase tracking-[0.3em] text-slate-500 block">{lh?.id}. {lh?.name}</label>
-                                                    </div>
-                                            }
-                                            {
-                                                categorie &&
-                                                <CategorieConfig
-                                                    theme={lh?.id}
-                                                    categories={categorie}
-                                                    isDarkMode={isDarkMode} />
-                                            }
-                                        </div>
-                                    ))
-                                }
-
-                            </div>
+                                    </div>
+                                ))
+                            }
 
                         </div>
+
                     </div>
                 </div>
             </div>
@@ -363,6 +364,6 @@ export default function HeroPage() {
                 <Alert type={showAlert?.type} message={showAlert?.message} onClose={() => setShowAlert(null)} />
             }
             {loading && <Loading title='Sedang Proses' />}
-        </MainLayout>
+        </div>
     );
 }

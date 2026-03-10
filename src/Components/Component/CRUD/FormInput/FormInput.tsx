@@ -1,7 +1,13 @@
 import { SelectOption } from "@/types/Public";
-import { AlertTriangle, Eye, EyeOff } from "lucide-react";
+import { EditorContent, useEditor } from "@tiptap/react";
+import StarterKit from "@tiptap/starter-kit";
+import { AlertTriangle, Eye, EyeOff, Underline } from "lucide-react";
 import React, { ChangeEvent, useMemo, useState } from "react";
 import { useEffect, useRef } from "react";
+import Link from "@tiptap/extension-link";
+import TextAlign from '@tiptap/extension-text-align';
+import TiptapImage from '@tiptap/extension-image';
+import TiptapUnderline from '@tiptap/extension-underline';
 type Props = {
     label: string;
     type:
@@ -16,7 +22,8 @@ type Props = {
     | "switch"
     | "color"
     | "image"
-    | "password";
+    | "password"
+    | "wysiwyg";
 
     name: string;
     value?: any;
@@ -52,7 +59,7 @@ const FormInput = ({
     const [preview, setPreview] = useState<string | null>(null);
     const [showPassword, setShowPassword] = useState(false);
 
-
+    const isWysiwyg = type === "wysiwyg";
     const isFile = type === "file";
     const isTextArea = type === "textarea";
     const isSelect = type === "select";
@@ -142,9 +149,88 @@ const FormInput = ({
     }, [search, options, open]);
 
     /* ============================= */
+    /* TIPTAP EDITOR CONFIG */
+    /* ============================= */
+    const editor = useEditor({
+        extensions: [
+            StarterKit,
+            TiptapUnderline,
+            TiptapImage, // Gunakan nama alias di sini
+            TextAlign.configure({ types: ['heading', 'paragraph'] }),
+        ],
+        immediatelyRender: false,
+        content: value || '',
+        editorProps: {
+            attributes: {
+                // Tambahkan 'prose-p:my-1' atau cukup gunakan CSS manual di atas untuk kontrol penuh
+                class: `prose prose-sm focus:outline-none max-w-none min-h-[150px] p-3 border rounded-b-lg bg-white ${error ? "border-red-500" : "border-gray-300"
+                    }`,
+            },
+        },
+        onUpdate: ({ editor }) => {
+            // Hanya kirim perubahan jika user memang sedang mengetik di editor ini
+            if (editor.isFocused) {
+                const html = editor.getHTML();
+                onChange({
+                    target: {
+                        name: name,
+                        value: html,
+                        type: 'wysiwyg'
+                    }
+                } as any);
+            }
+        },
+    });
+    useEffect(() => {
+        if (editor && value !== editor.getHTML()) {
+            editor.commands.setContent(value || '');
+        }
+    }, [value, editor]);
+    /* ============================= */
     /* RENDER INPUT */
     /* ============================= */
     const renderInput = () => {
+        if (isWysiwyg) {
+            return (
+                <div className="flex flex-col">
+                    {/* Toolbar Sederhana */}
+                    <div className="flex flex-wrap gap-1 p-2 bg-gray-50 border border-b-0 border-gray-300 rounded-t-lg">
+                        {/* Group: Text Style */}
+                        <button type="button" onClick={() => editor?.chain().focus().toggleBold().run()} className={`p-1.5 rounded ${editor?.isActive('bold') ? 'bg-green-600 text-white' : 'hover:bg-gray-200'}`}><b>B</b></button>
+                        <button type="button" onClick={() => editor?.chain().focus().toggleItalic().run()} className={`p-1.5 rounded ${editor?.isActive('italic') ? 'bg-green-600 text-white' : 'hover:bg-gray-200'}`}><i>I</i></button>
+                        <button type="button" onClick={() => editor?.chain().focus().toggleUnderline().run()} className={`p-1.5 rounded ${editor?.isActive('underline') ? 'bg-green-600 text-white' : 'hover:bg-gray-200'}`}><u>U</u></button>
+                        <button type="button" onClick={() => editor?.chain().focus().toggleStrike().run()} className={`p-1.5 rounded ${editor?.isActive('strike') ? 'bg-green-600 text-white' : 'hover:bg-gray-200'}`}><s>S</s></button>
+
+                        <div className="w-[1px] h-6 bg-gray-300 mx-1" /> {/* Divider */}
+
+                        {/* Group: Alignment */}
+                        <button type="button" onClick={() => editor?.chain().focus().setTextAlign('left').run()} className={`p-1.5 rounded ${editor?.isActive({ textAlign: 'left' }) ? 'bg-green-600 text-white' : 'hover:bg-gray-200'}`}>L</button>
+                        <button type="button" onClick={() => editor?.chain().focus().setTextAlign('center').run()} className={`p-1.5 rounded ${editor?.isActive({ textAlign: 'center' }) ? 'bg-green-600 text-white' : 'hover:bg-gray-200'}`}>C</button>
+                        <button type="button" onClick={() => editor?.chain().focus().setTextAlign('right').run()} className={`p-1.5 rounded ${editor?.isActive({ textAlign: 'right' }) ? 'bg-green-600 text-white' : 'hover:bg-gray-200'}`}>R</button>
+
+                        <div className="w-[1px] h-6 bg-gray-300 mx-1" />
+
+                        {/* Group: Lists */}
+                        <button type="button" onClick={() => editor?.chain().focus().toggleBulletList().run()} className={`p-1.5 rounded ${editor?.isActive('bulletList') ? 'bg-green-600 text-white' : 'hover:bg-gray-200'}`}>• List</button>
+                        <button type="button" onClick={() => editor?.chain().focus().toggleOrderedList().run()} className={`p-1.5 rounded ${editor?.isActive('orderedList') ? 'bg-green-600 text-white' : 'hover:bg-gray-200'}`}>1. List</button>
+
+                        <div className="w-[1px] h-6 bg-gray-300 mx-1" />
+
+                        {/* Group: Extra */}
+                        <button type="button" onClick={() => {
+                            const url = window.prompt('Masukkan URL Link:');
+                            if (url) editor?.chain().focus().setLink({ href: url }).run();
+                        }} className={`p-1.5 rounded ${editor?.isActive('link') ? 'bg-green-600 text-white' : 'hover:bg-gray-200'}`}>Link</button>
+
+                        <button type="button" onClick={() => editor?.chain().focus().undo().run()} className="p-1.5 hover:bg-gray-200 rounded">Undo</button>
+                        <button type="button" onClick={() => editor?.chain().focus().redo().run()} className="p-1.5 hover:bg-gray-200 rounded">Redo</button>
+                    </div>
+
+                    {/* Area Editor */}
+                    <EditorContent editor={editor} />
+                </div>
+            );
+        }
         if (isPrice) {
             return (
                 <div className="relative">
@@ -409,7 +495,45 @@ const FormInput = ({
             />
         );
     };
+    {
+        isWysiwyg && (
+            <style jsx global>{`
+        /* 1. Paksa tinggi baris dan margin paragraf jadi minimal */
+        .prose p, .tiptap p {
+            margin-top: 0px !important;
+            margin-bottom: 0px !important;
+            line-height: 1.4 !important; /* Mengatur kerapatan teks */
+        }
 
+        /* 2. Atur List agar sangat rapat */
+        .prose ul, .tiptap ul, 
+        .prose ol, .tiptap ol { 
+            list-style-type: disc !important; 
+            padding-left: 1.2rem !important; 
+            margin-top: 2px !important; 
+            margin-bottom: 2px !important;
+        }
+
+        /* 3. Hilangkan jarak antar item list */
+        .prose li, .tiptap li { 
+            margin-top: 0px !important;
+            margin-bottom: 0px !important;
+            padding-left: 0px !important;
+        }
+
+        /* 4. Khusus untuk paragraf di dalam list item (sering bikin renggang) */
+        .prose li > p, .tiptap li > p {
+            margin: 0 !important;
+            display: inline; /* Menghilangkan block behavior yang bikin jarak */
+        }
+
+        /* 5. Area editor utama */
+        .tiptap.prose {
+            font-size: 0.875rem !important; /* Ukuran teks 14px agar proporsional */
+        }
+    `}</style>
+        )
+    }
     return (
         <div className="flex flex-col space-y-1">
             <label className="text-sm font-medium text-gray-800 uppercase font-semibold">

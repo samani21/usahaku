@@ -14,7 +14,7 @@ const Sevent = ({ isDarkMode, isBuild, totalCart, summary }: Props) => {
     const router = useRouter();
     return (
         <div className="space-y-4">
-            <div className={`sticky bottom-0 ${isDarkMode ? "bg-slate-800 border-slate-900" : "bg-white border-slate-100"} border-t-2 px-2 sm:px-6 py-4 flex justify-between items-center`}>
+            <div className={`sticky bottom-0 ${isDarkMode ? "bg-slate-800 border-slate-900 text-white" : "bg-white border-slate-100 text-slate-900"} border-t-2 px-2 sm:px-6 py-4 flex justify-between items-center`}>
                 <p className="text-sm">
                     <span className="text-slate-400">Total: </span>
                     <span className="font-bold">{formatIDR(summary)}</span>

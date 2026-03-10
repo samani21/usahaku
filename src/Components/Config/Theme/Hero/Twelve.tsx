@@ -14,12 +14,12 @@ type Props = {
 const Twelve = ({ isDarkMode, headline, subHeadline, ctaText, imageHero }: Props) => {
     return (
         <section>
-            <div className={`h-[400px] rounded-3xl overflow-hidden relative group ${isDarkMode && 'border-2 border-gray-600'}`}>
-                <div className={isDarkMode ? "hidden" : `absolute inset-0 transition-transform duration-[2000ms] group-hover:scale-125 bg-gradient-to-r from-[var(--hero-secondary-color)] to-[var(--hero-primary-color)]`} />
-                <div className="absolute inset-0 flex items-center justify-between p-12">
+            <div className={`h-[300px] sm:h-[400px] rounded-3xl overflow-hidden relative group ${isDarkMode && 'border-2 border-gray-600'}`}>
+                <div className={isDarkMode ? "hidden" : `absolute inset-0 transition-transform duration-[2000ms] group-hover:scale-125 bg-gradient-to-r from-white to-[var(--hero-primary-color)]`} />
+                <div className="absolute inset-0 flex items-center justify-between p-6 sm:p-12">
                     <div className="max-w-md">
-                        <h2 className="text-5xl md:text-6xl font-black mb-6 uppercase text-[var(--hero-primary-color)] tracking-tighter leading-none italic">{headline}</h2>
-                        <p className=" mb-8 text-[var(--hero-primary-color)]">{subHeadline}</p>
+                        <h2 className={`text-3xl md:text-6xl font-black mb-6 uppercase  tracking-tighter leading-none italic ${isDarkMode ? "text-white" : "text-slate-900"}`}>{headline}</h2>
+                        <p className={`mb-8 ${isDarkMode ? "text-white" : "text-slate-900"}`}>{subHeadline}</p>
                         <button className={`px-8 py-3 bg-[var(--hero-primary-color)] text-[var(--hero-secondary-color)] rounded-full font-bold flex items-center gap-3`}>
                             {ctaText}
                         </button>

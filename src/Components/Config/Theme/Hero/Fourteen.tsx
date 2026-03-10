@@ -22,7 +22,7 @@ const Fourteen = ({ headline, subHeadline, ctaText, isDarkMode }: Props) => {
                 </h2>
                 <p className="text-xl md:text-2xl text-slate-400 font-light max-w-2xl mx-auto leading-relaxed">{subHeadline}</p>
                 <div className="pt-4">
-                    <button className={`px-12 py-5 rounded-full text-white font-bold text-lg hover:shadow-2xl transition-all bg-[var(--hero-primary-color)]`} >
+                    <button className={`px-12 py-3 rounded-full text-white font-bold text-lg hover:shadow-2xl transition-all bg-[var(--hero-primary-color)]`} >
                         {ctaText}
                     </button>
                 </div>

@@ -1,5 +1,5 @@
 'use client'
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, SetStateAction, Dispatch } from 'react';
 import { Palette, Home, Utensils, Cpu, Sparkles, Pipette, HeartPulse, Shirt, Coffee, GraduationCap, Upload, CircleCheckBigIcon, Circle, Sun, Moon, Check, CheckCircleIcon, SunMoon } from 'lucide-react';
 import HeaderConfig from '@/Components/Config/Theme/Header';
 import NavIcons from '@/Components/Config/Theme/Header/NavIcons';
@@ -16,6 +16,7 @@ import { Post } from '@/utils/Post';
 import Alert from '@/Components/Component/Alert';
 import Loading from '@/Components/Component/Loading';
 import { AlertType } from '@/types/Alert';
+import { SummaryType } from '@/types/Admin/Catalog/Summary';
 
 const BUSINESS_THEMES = [
     {
@@ -102,35 +103,29 @@ const ListSummary = [
     { id: 15, name: "Split Action" },
 ]
 
-
-export default function SummaryPage() {
+type Props = {
+    summaryData: SummaryType | null;
+    isDarkMode: boolean;
+    setIsDarkMode: Dispatch<SetStateAction<boolean>>;
+    getCalog: () => void;
+}
+export default function SummaryPage({ summaryData, isDarkMode, setIsDarkMode, getCalog }: Props) {
     const [selectedColor, setSelectedColor] = useState(BUSINESS_THEMES[0].hex);
     const [activeTab, setActiveTab] = useState<any>();
     const [summaryLayout, setSummaryLayout] = useState<number | null>(null);
-    const [isDarkMode, setIsDarkMode] = useState(false);
     const [displayMode, setDisplayMode] = useState('auto');
     const [showAlert, setShowAlert] = useState<AlertType | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
     useEffect(() => {
-        getCalog()
-    }, []);
-    const getCalog = async () => {
-        try {
-            setLoading(true);
-            const res = await Get<{ success: boolean; data: Catalog }>('/catalog');
-
-            if (res?.success) {
-                setSummaryLayout(res?.data?.summary?.layout_summary);
-                if (res?.data?.summary?.color) {
-                    setSelectedColor(res?.data?.summary?.color);
-                }
-                setDisplayMode(res?.data?.summary?.mode);
-                setIsDarkMode(res?.data?.summary?.mode == 'dark');
+        if (summaryData) {
+            setSummaryLayout(summaryData?.layout_summary);
+            if (summaryData?.color) {
+                setSelectedColor(summaryData?.color);
             }
-        } finally {
-            setLoading(false);
+            setDisplayMode(summaryData?.mode);
+            setIsDarkMode(summaryData?.mode == 'dark');
         }
-    };
+    }, [summaryData]);
     const getContrastColor = (hex: string) => {
         if (!hex) return '#1e293b';
         const r = parseInt(hex.slice(1, 3), 16);
@@ -181,6 +176,7 @@ export default function SummaryPage() {
             const res = await Post('catalog/summary', formData)
             if (res) {
                 setLoading(false);
+                getCalog()
                 setShowAlert({
                     isOpen: true,
                     type: 'success',
@@ -198,152 +194,144 @@ export default function SummaryPage() {
         }
     }
     return (
-        <MainLayout>
-
-            <div className='bg-slate-100 rounded-xl'>
-                <div className='bg-gray-200 w-full  rounded-t-xl flex items-center gap-2 py-2 px-6'>
-                    <div className='bg-red-500 rounded-full h-4 w-4' />
-                    <div className='bg-yellow-500 rounded-full h-4 w-4' />
-                    <div className='bg-green-500 rounded-full h-4 w-4' />
-                </div>
-                <div className={`${isDarkMode ? 'bg-slate-950 text-white' : 'bg-slate-50 text-slate-900'} rounded-b-xl`}>
-                    <div className="min-h-screen font-sans ">
-                        <div className="space-y-6">
-                            <div className="space-y-2 p-4">
-                                <label className="text-sm font-semibold uppercase tracking-wider text-gray-400">Pilih Kategori Warna</label>
-                                {/* Business Presets */}
-                                <div className="space-y-3">
-                                    <div className="flex gap-2 max-h-[500px] overflow-x-auto pr-2  no-scrollbar rounded-xl">
-                                        {BUSINESS_THEMES.map((theme) => (
-                                            <button
-                                                key={theme.id}
-                                                onClick={() => {
-                                                    setSelectedColor(theme.hex);
-                                                    setActiveTab(theme.id);
-                                                }}
-                                                className={`w-full flex whitespace-nowrap items-center gap-3 p-3 rounded-xl border-2 transition-all ${activeTab === theme.id
-                                                    ? 'border-indigo-600 bg-white shadow-md'
-                                                    : 'border-transparent bg-gray-100 hover:bg-gray-200'
-                                                    }`}
-                                            >
-                                                <div
-                                                    className="p-2 rounded-lg text-white shrink-0"
-                                                    style={{ backgroundColor: theme.hex }}
-                                                >
-                                                    {theme.icon}
-                                                </div>
-                                                <div className="text-left">
-                                                    <div className="font-bold text-slate-900 text-sm">{theme.name}</div>
-                                                    <div className="text-xs text-gray-500 leading-tight line-clamp-1">{theme.description}</div>
-                                                </div>
-                                            </button>
-                                        ))}
-                                    </div>
-                                </div>
-
-                                {/* Custom Picker */}
-                                <div className="p-4 bg-white rounded-2xl shadow-sm border border-gray-100 space-y-3">
-                                    <div className="flex items-center gap-2 text-sm font-semibold text-gray-700">
-                                        <Pipette size={16} />
-                                        <span>Custom Warna Sendiri</span>
-                                    </div>
-                                    <div className="flex items-center gap-4">
-                                        <input
-                                            type="color"
-                                            value={selectedColor}
-                                            onChange={(e) => {
-                                                setSelectedColor(e.target.value);
-                                                setActiveTab('custom');
+        <div>
+            <div className={`${isDarkMode ? 'text-white' : 'text-slate-900'}`}>
+                <div className="min-h-screen font-sans ">
+                    <div className="space-y-4">
+                        <div className="space-y-2 pt-4 px-4">
+                            <label className="text-sm font-semibold uppercase tracking-wider text-gray-400">Pilih Kategori Warna</label>
+                            {/* Business Presets */}
+                            <div className="space-y-3">
+                                <div className="flex gap-2 max-h-[500px] overflow-x-auto pr-2  no-scrollbar rounded-xl">
+                                    {BUSINESS_THEMES.map((theme) => (
+                                        <button
+                                            key={theme.id}
+                                            onClick={() => {
+                                                setSelectedColor(theme.hex);
+                                                setActiveTab(theme.id);
                                             }}
-                                            className="h-12 w-12  rounded-lg cursor-pointer border-none bg-transparent"
-                                        />
-                                        <div className="flex-1 px-3 py-2 bg-gray-50 text-slate-900 rounded-lg border border-gray-200 font-mono text-sm">
-                                            {selectedColor.toUpperCase()}
-                                        </div>
-                                    </div>
-                                    <div className="sm:flex items-center gap-4">
-                                        <div className="space-y-1 w-full">
-                                            <div className='sm:flex items-center gap-4'>
-                                                <div className="space-y-2 w-full">
-                                                    <span className="text-[10px] font-bold uppercase text-gray-500 block">Mode Tampilan Aplikasi:</span>
-                                                    <div className="grid grid-cols-3 gap-2 bg-gray-100 p-1 rounded-xl">
-                                                        <button
-                                                            onClick={() => {
-                                                                setDisplayMode('light')
-                                                                setIsDarkMode(false)
-                                                            }}
-                                                            className={`flex items-center justify-center gap-2 py-2 rounded-lg text-xs font-semibold transition-all ${displayMode === 'light' ? 'bg-white text-orange-500 shadow-sm' : 'text-gray-500'
-                                                                }`}
-                                                        >
-                                                            <Sun size={14} /> Light
-                                                        </button>
-                                                        <button
-                                                            onClick={() => {
-                                                                setDisplayMode('dark')
-                                                                setIsDarkMode(true)
-                                                            }}
-                                                            className={`flex items-center justify-center gap-2 py-2 rounded-lg text-xs font-semibold transition-all ${displayMode === 'dark' ? 'bg-white text-indigo-600 shadow-sm' : 'text-gray-500'
-                                                                }`}
-                                                        >
-                                                            <Moon size={14} /> Dark
-                                                        </button>
-                                                        <button
-                                                            onClick={() => {
-                                                                setDisplayMode('auto')
-                                                                setIsDarkMode(false)
-                                                            }}
-                                                            className={`flex items-center justify-center gap-2 py-2 rounded-lg text-xs font-semibold transition-all ${displayMode === 'auto' ? 'bg-white text-green-600 shadow-sm' : 'text-gray-500'
-                                                                }`}
-                                                        >
-                                                            <SunMoon size={14} /> Auto
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                                <button
-                                                    onClick={handleSubmit}
-                                                    className="w-full mt-6  flex mb-1 items-center justify-center gap-2 p-2 text-sm bg-green-600 text-white font-semibold hover:bg-green-800 rounded-md transition-colors"
-                                                >
-                                                    <Check className="w-4 h-4" /> Simpan Perubahan
-                                                </button>
+                                            className={`w-full flex whitespace-nowrap items-center gap-3 p-3 rounded-xl border-2 transition-all ${activeTab === theme.id
+                                                ? 'border-indigo-600 bg-white shadow-md'
+                                                : 'border-transparent bg-gray-100 hover:bg-gray-200'
+                                                }`}
+                                        >
+                                            <div
+                                                className="p-2 rounded-lg text-white shrink-0"
+                                                style={{ backgroundColor: theme.hex }}
+                                            >
+                                                {theme.icon}
                                             </div>
+                                            <div className="text-left">
+                                                <div className="font-bold text-slate-900 text-sm">{theme.name}</div>
+                                                <div className="text-xs text-gray-500 leading-tight line-clamp-1">{theme.description}</div>
+                                            </div>
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* Custom Picker */}
+                            <div className="p-4 bg-white rounded-2xl shadow-sm border border-gray-100 space-y-3">
+                                <div className="flex items-center gap-2 text-sm font-semibold text-gray-700">
+                                    <Pipette size={16} />
+                                    <span>Custom Warna Sendiri</span>
+                                </div>
+                                <div className="flex items-center gap-4">
+                                    <input
+                                        type="color"
+                                        value={selectedColor}
+                                        onChange={(e) => {
+                                            setSelectedColor(e.target.value);
+                                            setActiveTab('custom');
+                                        }}
+                                        className="h-12 w-12  rounded-lg cursor-pointer border-none bg-transparent"
+                                    />
+                                    <div className="flex-1 px-3 py-2 bg-gray-50 text-slate-900 rounded-lg border border-gray-200 font-mono text-sm">
+                                        {selectedColor.toUpperCase()}
+                                    </div>
+                                </div>
+                                <div className="sm:flex items-center gap-4">
+                                    <div className="space-y-1 w-full">
+                                        <div className='sm:flex items-center gap-4'>
+                                            <div className="space-y-2 w-full">
+                                                <span className="text-[10px] font-bold uppercase text-gray-500 block">Mode Tampilan Aplikasi:</span>
+                                                <div className="grid grid-cols-3 gap-2 bg-gray-100 p-1 rounded-xl">
+                                                    <button
+                                                        onClick={() => {
+                                                            setDisplayMode('light')
+                                                            setIsDarkMode(false)
+                                                        }}
+                                                        className={`flex items-center justify-center gap-2 py-2 rounded-lg text-xs font-semibold transition-all ${displayMode === 'light' ? 'bg-white text-orange-500 shadow-sm' : 'text-gray-500'
+                                                            }`}
+                                                    >
+                                                        <Sun size={14} /> Light
+                                                    </button>
+                                                    <button
+                                                        onClick={() => {
+                                                            setDisplayMode('dark')
+                                                            setIsDarkMode(true)
+                                                        }}
+                                                        className={`flex items-center justify-center gap-2 py-2 rounded-lg text-xs font-semibold transition-all ${displayMode === 'dark' ? 'bg-white text-indigo-600 shadow-sm' : 'text-gray-500'
+                                                            }`}
+                                                    >
+                                                        <Moon size={14} /> Dark
+                                                    </button>
+                                                    <button
+                                                        onClick={() => {
+                                                            setDisplayMode('auto')
+                                                            setIsDarkMode(false)
+                                                        }}
+                                                        className={`flex items-center justify-center gap-2 py-2 rounded-lg text-xs font-semibold transition-all ${displayMode === 'auto' ? 'bg-white text-green-600 shadow-sm' : 'text-gray-500'
+                                                            }`}
+                                                    >
+                                                        <SunMoon size={14} /> Auto
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <button
+                                                onClick={handleSubmit}
+                                                className="w-full mt-6  flex mb-1 items-center justify-center gap-2 p-2 text-sm bg-green-600 text-white font-semibold hover:bg-green-800 rounded-md transition-colors"
+                                            >
+                                                <Check className="w-4 h-4" /> Simpan Perubahan
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div className={`flex p-4 overflow-auto w-full gap-4 thin-scroll ${isDarkMode ? 'bg-slate-950 text-white' : 'bg-slate-50 text-slate-900'}`}>
-                                {
-                                    ListSummary?.map((ls, i) => (
-                                        <div key={i} className='whitespace-nowrap text-sm font-medium bg-gray-200 text-gray-600 p-2 rounded-lg cursor-pointer flex items-center gap-2' onClick={() => setSummaryLayout(ls?.id)}>
-                                            {ls?.id === summaryLayout ? <CheckCircleIcon /> : <Circle />}
-                                            <span>{ls?.id}. {ls?.name}</span>
-                                        </div>
-                                    ))
-                                }
-                            </div>
-                            <div className={`py-4 px-2 ${isDarkMode ? 'bg-slate-950 text-white' : 'bg-slate-50 text-slate-900'}`}>
-                                <div className={`${isDarkMode ? "bg-slate-900" : "bg-slate-100"} rounded-lg`}>
+                        </div>
+                        <div className={`flex px-4 overflow-auto w-full gap-4 thin-scroll ${isDarkMode ? 'bg-slate-950 text-white' : 'bg-slate-50 text-slate-900'}`}>
+                            {
+                                ListSummary?.map((ls, i) => (
+                                    <div key={i} className='whitespace-nowrap text-sm font-medium bg-gray-200 text-gray-600 p-2 rounded-lg cursor-pointer flex items-center gap-2' onClick={() => setSummaryLayout(ls?.id)}>
+                                        {ls?.id === summaryLayout ? <CheckCircleIcon /> : <Circle />}
+                                        <span>{ls?.id}. {ls?.name}</span>
+                                    </div>
+                                ))
+                            }
+                        </div>
+                        <div className={`px-2 ${isDarkMode ? 'bg-slate-950 text-white' : 'bg-slate-50 text-slate-900'}`}>
+                            <div className={`${isDarkMode ? "bg-slate-900" : "bg-slate-100"} rounded-lg`}>
 
-                                    <div className='w-full flex items-center justify-center'>
-                                        <div className='w-full max-w-6xl pb-4 pt-1 relative '>
-                                            <div className='w-full space-y-2'>
-                                                <div className={`${isDarkMode ? "bg-slate-600" : "bg-slate-200"} rounded-full  h-[42px] flex items-center px-4`}>
-                                                    <p className={`${isDarkMode ? "text-slate-100" : "text-gray-600"} font-semibold opacity-40`}>Logo</p>
-                                                </div>
-                                                <div className={`h-[160px] ${isDarkMode ? "bg-gray-700" : "bg-gray-300"} rounded-lg`} />
-                                                <div className='grid grid-cols-2 sm:grid-cols-4 gap-2'>
-                                                    <div className={`h-[160px] ${isDarkMode ? "bg-gray-700" : "bg-gray-200"} rounded-lg`} />
-                                                    <div className={`h-[160px] ${isDarkMode ? "bg-gray-700" : "bg-gray-200"} rounded-lg`} />
-                                                    <div className={`h-[160px] ${isDarkMode ? "bg-gray-700" : "bg-gray-200"} rounded-lg`} />
-                                                    <div className={`h-[160px] ${isDarkMode ? "bg-gray-700" : "bg-gray-200"} rounded-lg`} />
-                                                    <div className={`h-[160px] ${isDarkMode ? "bg-gray-700" : "bg-gray-200"} rounded-lg`} />
-                                                    <div className={`h-[160px] ${isDarkMode ? "bg-gray-700" : "bg-gray-200"} rounded-lg`} />
-                                                    <div className={`h-[160px] ${isDarkMode ? "bg-gray-700" : "bg-gray-200"} rounded-lg`} />
-                                                    <div className={`h-[160px] ${isDarkMode ? "bg-gray-700" : "bg-gray-200"} rounded-lg`} />
-                                                </div>
+                                <div className='w-full flex items-center justify-center'>
+                                    <div className='w-full max-w-6xl pb-4 pt-1 relative '>
+                                        <div className='w-full space-y-2'>
+                                            <div className={`${isDarkMode ? "bg-slate-600" : "bg-slate-200"} rounded-full  h-[42px] flex items-center px-4`}>
+                                                <p className={`${isDarkMode ? "text-slate-100" : "text-gray-600"} font-semibold opacity-40`}>Logo</p>
                                             </div>
-                                            <div className='absolute bottom-0 w-full'>
-                                                <SummaryConfig theme={summaryLayout} isDarkMode={isDarkMode} totalCart={3} summary={100000} isBuild={true} />
+                                            <div className={`h-[160px] ${isDarkMode ? "bg-gray-700" : "bg-gray-300"} rounded-lg`} />
+                                            <div className='grid grid-cols-2 sm:grid-cols-4 gap-2'>
+                                                <div className={`h-[160px] ${isDarkMode ? "bg-gray-700" : "bg-gray-200"} rounded-lg`} />
+                                                <div className={`h-[160px] ${isDarkMode ? "bg-gray-700" : "bg-gray-200"} rounded-lg`} />
+                                                <div className={`h-[160px] ${isDarkMode ? "bg-gray-700" : "bg-gray-200"} rounded-lg`} />
+                                                <div className={`h-[160px] ${isDarkMode ? "bg-gray-700" : "bg-gray-200"} rounded-lg`} />
+                                                <div className={`h-[160px] ${isDarkMode ? "bg-gray-700" : "bg-gray-200"} rounded-lg`} />
+                                                <div className={`h-[160px] ${isDarkMode ? "bg-gray-700" : "bg-gray-200"} rounded-lg`} />
+                                                <div className={`h-[160px] ${isDarkMode ? "bg-gray-700" : "bg-gray-200"} rounded-lg`} />
+                                                <div className={`h-[160px] ${isDarkMode ? "bg-gray-700" : "bg-gray-200"} rounded-lg`} />
                                             </div>
+                                        </div>
+                                        <div className='absolute bottom-0 w-full'>
+                                            <SummaryConfig theme={summaryLayout} isDarkMode={isDarkMode} totalCart={3} summary={100000} isBuild={true} />
                                         </div>
                                     </div>
                                 </div>
@@ -357,6 +345,6 @@ export default function SummaryPage() {
                 <Alert type={showAlert?.type} message={showAlert?.message} onClose={() => setShowAlert(null)} />
             }
             {loading && <Loading title='Sedang Proses' />}
-        </MainLayout>
+        </div>
     );
 }

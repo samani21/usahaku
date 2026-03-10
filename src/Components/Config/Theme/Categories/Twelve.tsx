@@ -12,11 +12,11 @@ const Twelve = ({ categories, isDarkMode }: Props) => {
         <section>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
                 {categories.map((cat, i) => (
-                    <div key={i} className="relative aspect-square rounded-[2rem] overflow-hidden group">
+                    <div key={i} className="relative aspect-square rounded-[1rem] overflow-hidden group">
                         {
                             cat?.icon ? (
                                 cat.icon.startsWith("http") ? (
-                                    <img src={cat.icon} className={`absolute inset-0 w-full  ${isDarkMode && "bg-white"} object-cover opacity-50`} alt="" />
+                                    <img src={cat.icon} className={`absolute inset-0 w-full ${isDarkMode && "bg-white"} object-cover opacity-50`} alt="" />
                                 ) : (
                                     <div className={`absolute inset-0 w-full  ${isDarkMode && "bg-white"} object-cover opacity-50"}`} >
                                         <Icon color={cat?.color} icon={cat?.icon} className='w-full h-full' />
@@ -32,14 +32,14 @@ const Twelve = ({ categories, isDarkMode }: Props) => {
                             {
                                 cat?.icon ? (
                                     cat.icon.startsWith("http") ? (
-                                        <img src={cat?.icon} className='h-[80%] rounded-xl w-full w-full object-cover' />
+                                        <img src={cat?.icon} className='h-[70%] sm:h-[80%] rounded-xl w-full w-full object-cover' />
                                     ) : (
-                                        <div className={`h-[80%] w-full w-full rounded-xl object-cover`} >
+                                        <div className={`h-[70%] sm:h-[80%] w-full w-full rounded-xl object-cover`} >
                                             <Icon color={cat?.color} icon={cat?.icon} className='w-full h-full' />
                                         </div>
                                     )
                                 ) : (
-                                    <div className={`text-[var(--category-primary-color)] rounded-xl h-[80%] w-full w-full object-cover `} >
+                                    <div className={`text-[var(--category-primary-color)] rounded-xl h-[70%] sm:h-[80%] w-full w-full object-cover `} >
                                         <Icon icon={'arcticons:defaultdarktheme'} className='w-full h-full' />
                                     </div>
                                 )

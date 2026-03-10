@@ -17,15 +17,15 @@ const Two = ({ categories, isDarkMode }: Props) => {
                             {
                                 cat?.icon ? (
                                     cat.icon.startsWith("http") ? (
-                                        <img src={cat.icon} className={`w-full h-full object-cover rounded-full shadow-lg ${isDarkMode && "bg-white"}`} alt="" />
+                                        <img src={cat.icon} className={`w-full h-full object-cover rounded-full shadow-lg bg-white `} alt="" />
                                     ) : (
-                                        <div className={`w-full  h-full p-4  object-cover rounded-full shadow-lg text-[var(--category-primary-color)] ${isDarkMode && "bg-white "}`} >
+                                        <div className={`w-full  h-full p-4  object-cover rounded-full shadow-lg text-[var(--category-primary-color)] bg-white `} >
                                             <Icon color={cat?.color} icon={cat?.icon} className='w-full h-full' />
                                         </div>
                                     )
                                 ) : (
-                                    <div className={`w-full h-full p-4 object-cover rounded-full shadow-lg text-[var(--category-primary-color)] ${isDarkMode && "bg-white "}`} >
-                                        <Icon  icon={'arcticons:defaultdarktheme'} className='w-full h-full' />
+                                    <div className={`w-full h-full p-4 object-cover rounded-full shadow-lg text-[var(--category-primary-color)] bg-white`} >
+                                        <Icon icon={'arcticons:defaultdarktheme'} className='w-full h-full' />
                                     </div>
                                 )
                             }

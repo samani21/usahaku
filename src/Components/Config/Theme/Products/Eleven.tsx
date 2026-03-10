@@ -6,6 +6,7 @@ import { Check, Plus, ShoppingCart, Zap } from 'lucide-react';
 import AlertWrapper from './AlertWrapper';
 import { ProductsType, Variants } from '@/types/Admin/ProductsType';
 import { formatIDR } from '@/types/FormtRupiah';
+import ExpandableHTML from './ExpandableHTML';
 
 type Props = {
     products: ProductsType[];
@@ -45,12 +46,28 @@ const Eleven = ({ products, isDarkMode }: Props) => {
             return () => clearTimeout(timer);
         }
     }, [activeAlert]);
+    useEffect(() => {
+        if (product) {
+            // Jika modal aktif (product tidak null), kunci scroll
+            document.body.style.overflow = 'hidden';
+        } else {
+            // Jika modal tutup, kembalikan scroll
+            document.body.style.overflow = 'unset';
+        }
+
+        // Cleanup function untuk memastikan scroll kembali normal jika komponen unmount
+        return () => {
+            document.body.style.overflow = 'unset';
+        };
+    }, [product]);
     return (
         <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 h-full'>
             {products?.map((p, i) => (
-                <div onClick={() => setProduct(p)} key={i} className="p-1 rounded-[3rem] bg-gradient-to-br from-indigo-400 via-pink-400 to-amber-300 cursor-pointer group h-80">
-                    <div className={`h-full w-full rounded-[2.9rem] p-8 flex flex-col items-center text-center justify-center space-y-4 ${isDarkMode ? 'bg-slate-900/90' : 'bg-white/90'}`}>
-                        <div className="w-24 h-24 rounded-full bg-slate-100 overflow-hidden ring-4 ring-white shadow-xl"><img src={p?.image} className="w-full h-full object-cover" alt="" /></div>
+                <div onClick={() => setProduct(p)} key={i} className="p-1 rounded-[1rem] bg-gradient-to-br from-indigo-400 via-pink-400 to-amber-300 cursor-pointer group h-80">
+                    <div className={`h-full w-full rounded-[0.9rem] p-4 flex flex-col items-center text-center justify-center space-y-4 ${isDarkMode ? 'bg-slate-900/90 text-white' : 'bg-white/90 text-slate-900'}`}>
+                        <div className="rounded-full bg-slate-100 overflow-hidden ring-4 ring-white shadow-xl">
+                            <img src={p?.image} className="w-full h-full object-cover" alt="" />
+                        </div>
                         <div>
                             {
                                 p?.category &&
@@ -86,7 +103,12 @@ const Eleven = ({ products, isDarkMode }: Props) => {
                             <div className={`text-xl font-bold text-[var(--product-primary-color)] mb-6 `}>{formatIDR(selectedVariant?.price ?? product?.price ?? 0)}</div>
                     }
                     <div className="flex-1 overflow-y-auto pr-2 mb-6 space-y-4">
-                        <p className="text-sm opacity-60 leading-relaxed">{product?.description}</p>
+                        <ExpandableHTML
+                            htmlContent={product?.description}
+                            className={'text-sm opacity-60 leading-relaxed'}
+                            maxLines="line-clamp-[2]" // Bisa diganti line-clamp-5 dll
+                            maxHeight='max-h-[200px]'
+                        />
                         {/* <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800 text-xs italic opacity-80">
                             "Kopi terenak yang pernah saya beli di aplikasi ini! Roastingnya pas." - Andi S.
                         </div> */}

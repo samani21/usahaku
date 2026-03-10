@@ -6,6 +6,7 @@ import { Check, Zap } from 'lucide-react';
 import AlertWrapper from './AlertWrapper';
 import { ProductsType, Variants } from '@/types/Admin/ProductsType';
 import { formatIDR } from '@/types/FormtRupiah';
+import ExpandableHTML from './ExpandableHTML';
 
 type Props = {
     products: ProductsType[];
@@ -45,6 +46,20 @@ const Four = ({ products, isDarkMode }: Props) => {
             return () => clearTimeout(timer);
         }
     }, [activeAlert]);
+    useEffect(() => {
+        if (product) {
+            // Jika modal aktif (product tidak null), kunci scroll
+            document.body.style.overflow = 'hidden';
+        } else {
+            // Jika modal tutup, kembalikan scroll
+            document.body.style.overflow = 'unset';
+        }
+
+        // Cleanup function untuk memastikan scroll kembali normal jika komponen unmount
+        return () => {
+            document.body.style.overflow = 'unset';
+        };
+    }, [product]);
     return (
         <div className='grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-2 h-full'>
             {products?.map((p, i) => (
@@ -77,7 +92,7 @@ const Four = ({ products, isDarkMode }: Props) => {
                     </div>
                     <div className={`${isDarkMode ? "bg-slate-800" : "bg-slate-100"} rounded-[2.5rem]   flex flex-col justify-between`}>
                         <div className="space-y-4 p-4">
-                            <div className={` ${isDarkMode ? "bg-slate-800" : "bg-slate-50"} rounded-[2rem]`}>
+                            <div className={` ${isDarkMode ? "bg-slate-800" : "bg-slate-50"} rounded-2xl p-2`}>
                                 {
                                     product?.category &&
                                     <div>
@@ -86,7 +101,11 @@ const Four = ({ products, isDarkMode }: Props) => {
                                     </div>
                                 }
                                 <h3 className="text-xl font-black mb-2">{product?.name}</h3>
-                                <p className="text-xs opacity-50 line-clamp-3">{product?.description}</p>
+                                <ExpandableHTML
+                                    htmlContent={product?.description}
+                                    className={`text-xs opacity-50`}
+                                    maxLines="line-clamp-[2]" // Bisa diganti line-clamp-5 dll
+                                />
                             </div>
                             {product?.percent_discount &&
                                 <div className="p-4 bg-blue-500 text-white rounded-[2rem] flex flex-row justify-start gap-2">

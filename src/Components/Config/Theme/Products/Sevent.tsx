@@ -6,6 +6,7 @@ import { ShoppingCart } from 'lucide-react';
 import AlertWrapper from './AlertWrapper';
 import { ProductsType, Variants } from '@/types/Admin/ProductsType';
 import { formatIDR } from '@/types/FormtRupiah';
+import ExpandableHTML from './ExpandableHTML';
 
 type Props = {
     products: ProductsType[];
@@ -48,6 +49,20 @@ const Sevent = ({ products, isDarkMode }: Props) => {
             return () => clearTimeout(timer);
         }
     }, [activeAlert]);
+    useEffect(() => {
+        if (product) {
+            // Jika modal aktif (product tidak null), kunci scroll
+            document.body.style.overflow = 'hidden';
+        } else {
+            // Jika modal tutup, kembalikan scroll
+            document.body.style.overflow = 'unset';
+        }
+
+        // Cleanup function untuk memastikan scroll kembali normal jika komponen unmount
+        return () => {
+            document.body.style.overflow = 'unset';
+        };
+    }, [product]);
     return (
         <div className='grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6 h-full'>
             {products?.map((p, i) => (
@@ -97,10 +112,15 @@ const Sevent = ({ products, isDarkMode }: Props) => {
                                     product?.discount_price &&
                                     <div className="text-1xl font-black line-through opacity-60">{formatIDR(selectedVariant?.price ?? product?.price ?? 0)}</div>
                                 }
-                                <div className="text-4xl font-black">{formatIDR(selectedVariant?.final_price ?? product?.final_price ?? 0)}</div>
+                                <div className="text-2xl sm:text-4xl font-black">{formatIDR(selectedVariant?.final_price ?? product?.final_price ?? 0)}</div>
                             </div>
                             <div className="space-y-2">
-                                <p className="text-xs leading-loose opacity-70">{product?.description}</p>
+                                <ExpandableHTML
+                                    htmlContent={product?.description}
+                                    className={`text-xs leading-loose opacity-70`}
+                                    maxLines="line-clamp-[2]" // Bisa diganti line-clamp-5 dll
+                                    maxHeight='max-h-[200px]'
+                                />
                                 {product?.variants && product?.variants?.length > 0 ?
                                     <VariantPicker variants={product?.variants} selectedVariant={selectedVariant} setSelectedVariant={setSelectedVariant} isDarkMode={isDarkMode} /> : ""
                                 }

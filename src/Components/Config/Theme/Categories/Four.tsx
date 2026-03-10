@@ -13,7 +13,7 @@ const Four = ({ categories, isDarkMode }: Props) => {
         <section>
             <div className="space-y-4">
                 {categories.map((cat, i) => (
-                    <div key={i} className={`group flex items-center p-4 rounded-2xl transition-all cursor-pointer hover:pl-8 ${isDarkMode ? 'bg-slate-900' : 'bg-white border border-slate-100'}`}>
+                    <div key={i} className={`group flex items-center p-4 rounded-2xl transition-all cursor-pointer hover:pl-8 ${isDarkMode ? 'bg-slate-900 text-white' : 'bg-white border border-slate-100 text-slate-900'}`}>
                         <div className="w-16 h-16 rounded-xl overflow-hidden mr-6">
                             {
                                 cat?.icon ? (

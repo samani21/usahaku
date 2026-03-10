@@ -22,7 +22,7 @@ const Thirteen = ({ isDarkMode, headline, subHeadline, ctaText, imageHero }: Pro
                 </div>
                 {
                     imageHero &&
-                    <div className="md:col-span-2 h-80 md:h-[350px] rounded-2xl overflow-hidden">
+                    <div className="md:col-span-2 h-40 md:h-[350px] rounded-2xl overflow-hidden">
                         <img src={imageHero} alt="Hero" className="w-full h-full object-cover" />
                     </div>
                 }

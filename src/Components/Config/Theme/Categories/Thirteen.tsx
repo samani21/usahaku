@@ -11,9 +11,8 @@ const Thirteen = ({ categories, isDarkMode }: Props) => {
         <section>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-0">
                 {categories.map((cat, i) => (
-                    <div key={i} className={`p-12 border transition-colors hover:bg-[var(--category-primary-color)]/5  ${isDarkMode ? 'border-slate-800' : 'border-slate-200'}  ${isDarkMode && 'hover:text-gray-700'}`}>
-                        <h3 className="text-xs font-bold uppercase tracking-[0.4em] text-slate-400 mb-6">Kategori {i + 1}</h3>
-                        <h2 className={`text-3xl font-bold mb-8`}>{cat.name}</h2>
+                    <div key={i} className={`p-3 sm:p-6 border transition-colors hover:bg-[var(--category-primary-color)]/5  ${isDarkMode ? 'border-slate-800' : 'border-slate-200'}  ${isDarkMode && 'hover:text-gray-700'}`}>
+                        <h3 className="text-md font-bold uppercase tracking-[0.4em]  mb-6">{cat.name}</h3>
                         <div className="w-full h-40 rounded-lg overflow-hidden mb-8">
                             {
                                 cat?.icon ? (
