@@ -30,7 +30,7 @@ const ModalMaps = ({ openMapId, setOpenMapId, updateAddress, addresses, dataAddr
 
         >
 
-            <div className='w-lg'>
+            <div className='sm:w-lg'>
                 <MapWithSearch onSelect={(lat, lng) => {
                     updateAddress(dataAddress?.id || openMapId, "lat", lat);
                     updateAddress(dataAddress?.id || openMapId, "lng", lng);

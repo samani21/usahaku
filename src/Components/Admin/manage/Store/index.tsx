@@ -176,7 +176,7 @@ export default function BusinessProfile() {
                 </div>
 
                 <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-                    <Card className="rounded-2xl p-6 shadow-sm">
+                    <Card className="rounded-2xl sm:p-6 shadow-sm">
                         <CardContent className="space-y-6 p-0">
                             <div className="flex items-center gap-6">
                                 <Avatar className="w-24 h-24 border-2 border-white shadow-md">
@@ -248,27 +248,12 @@ export default function BusinessProfile() {
                             {addresses?.map((addr, i) => (
                                 <div key={addr.id} className="flex flex-col gap-2 p-4 border border-zinc-200 rounded-xl bg-zinc-50">
                                     <Label>Nama Outlite</Label>
-                                    <Input value={addr.name} onChange={(e) => updateAddress(addr.id, "name", e.target.value)} />
+                                    <Input value={addr.name} onChange={(e) => updateAddress(addr.id, "name", e.target.value)} disabled />
                                     <Label>Alamat</Label>
-                                    <Textarea value={addr.address} onChange={(e) => updateAddress(addr.id, "address", e.target.value)} />
-                                    <div className="flex justify-between gap-2">
-                                        <Button variant="outline" onClick={() => {
-                                            setOpenMapId(i + 1)
-                                            setDataAddress(addr)
-                                        }} className="flex items-center gap-2">
-                                            <MapPin size={16} /> Pilih Lokasi
-                                        </Button>
+                                    <Textarea value={addr.address} onChange={(e) => updateAddress(addr.id, "address", e.target.value)} disabled />
 
-                                        <Button variant="outline" className="text-zinc-700" onClick={() => removeAddress(addr.id)}>
-                                            Hapus
-                                        </Button>
-                                    </div>
                                 </div>
                             ))}
-
-                            <Button variant="outline" className="w-full" onClick={addAddress}>
-                                + Tambah Alamat
-                            </Button>
                         </div>
 
                         {addresses?.find((a) => a?.lat != 0 && a?.lng != 0) ?

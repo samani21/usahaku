@@ -2,7 +2,7 @@
 import { getToken } from "@/store/authStore";
 import axios, { AxiosInstance } from "axios";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api";
 
 // Buat instance axios dengan baseURL
 export const apiClient: AxiosInstance = axios.create({

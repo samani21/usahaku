@@ -18,7 +18,7 @@ type Props = {
 
 const MapPreview = ({ addresses }: Props) => {
     return (
-        <main className="p-6">
+        <main className="sm:p-6">
             <MultiPinMap data={addresses} />
         </main>
     );
