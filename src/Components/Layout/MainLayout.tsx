@@ -84,7 +84,7 @@ const MainLayout = ({ children }: Props) => {
         router?.push('/auth/login')
     }
     return (
-        <div className="flex h-screen overflow-hidden bg-[#f7f9fc]">
+        <div className="flex h-screen overflow-hidden bg-[#f7f9fc] ">
             <div className="fixed bottom-0 right-0 p-4 sm:p-6 z-99999 flex flex-col items-end pointer-events-none">
                 {/* {currentAlert && (
                     <div className="pointer-events-auto">
@@ -127,12 +127,12 @@ const MainLayout = ({ children }: Props) => {
                     handleLogout={handleLogout}
                 />
 
-                <main className="flex-1 overflow-x-hidden overflow-y-auto p-4 md:p-6 md:pt-0">
+                <main className="flex-1 overflow-x-hidden overflow-y-auto p-4 md:p-6 md:pt-0  inter">
                     <nav className="text-sm pb-4">
-                        <ol className="flex items-center text-gray-600">
+                        <ol className="flex items-center text-gray-600 mt-2">
                             {breadcrumb.map((p, i) => (
                                 <li key={i} className="flex items-center">
-                                    <a href="#" className={`${i === breadcrumb.length - 1 ? 'font-medium text-gray-900' : 'hover:text-gray-900'}`}>{p}</a>
+                                    <a href="#" className={`${i === breadcrumb.length - 1 ? 'font-semibold text-emerald-600' : 'font-reguler text-[#6B7280]'}`}>{p}</a>
                                     {i < breadcrumb.length - 1 && (
                                         <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mx-3 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />

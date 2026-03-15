@@ -33,6 +33,10 @@ export const menuSidebar: menuSide[] = [
                 href: '/store'
             },
             {
+                label: 'Outlet',
+                href: '/outlets'
+            },
+            {
                 label: 'Kategori',
                 href: '/categories'
             },
@@ -46,11 +50,6 @@ export const menuSidebar: menuSide[] = [
             },
 
         ]
-    },
-    {
-        Icon: Store,
-        label: "Outlite",
-        href: '/outlite'
     },
     {
         Icon: Globe,

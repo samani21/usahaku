@@ -49,7 +49,7 @@ const Header = ({ setIsSidebarOpen, isSidebarOpen, setIsMobileActionMenuOpen, ha
   ];
   const user = getUserInfo();
   return (
-    <header className="flex items-center justify-between p-4 md:p-6 bg-[#f7f9fc] sticky top-0 z-10 border-b border-gray-100">
+    <header className="flex items-center justify-between px-4 py-2 md:py-4 md:px-6 bg-[#ffffff] sticky top-0 z-10 border-b border-gray-100">
       <h1 className="text-2xl font-bold text-gray-800 hidden md:block">{label}</h1>
 
       <button
@@ -60,12 +60,9 @@ const Header = ({ setIsSidebarOpen, isSidebarOpen, setIsMobileActionMenuOpen, ha
       </button>
 
       <div className="hidden md:flex items-center space-x-4">
-        <button className="p-2 text-gray-500 hover:text-gray-700 rounded-full hover:bg-gray-100 transition">
-          <Search className="w-5 h-5" />
-        </button>
         <button id="notif-btn" onClick={() => setNotifOpen(!notifOpen)} className="p-2 hover:bg-gray-100 rounded-full relative">
           <Bell className="w-5 h-5 text-gray-600" />
-          <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+          <span className="absolute top-1 right-1 w-2 h-2 bg-[#EF4444] rounded-full"></span>
         </button>
         {notifOpen && (
           <div id="notif-menu" className="absolute top-16 right-24 bg-white border border-gray-200 rounded-xl shadow-lg w-64 sm:w-72 z-40">

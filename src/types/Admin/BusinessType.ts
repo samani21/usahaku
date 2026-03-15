@@ -1,10 +1,4 @@
-export interface store {
-    address: string,
-    id: number,
-    lat: number,
-    lng: number,
-    name: string
-}
+import { OutletsType } from "./OutletType"
 
 export interface BusinessType {
     banner_url: string,
@@ -17,5 +11,5 @@ export interface BusinessType {
     slug: string,
     start_time: string,
     verified_status: number,
-    store: store[]
+    outlet: OutletsType[]
 }

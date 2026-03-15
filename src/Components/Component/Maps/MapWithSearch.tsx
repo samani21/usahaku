@@ -8,10 +8,10 @@ type Props = {
     onSelect: (lat: number, lng: number) => void;
     lat: number;
     lng: number;
-    close: () => void
+    // close: () => void
 };
 
-export default function MapWithSearch({ onSelect, lat, lng, close }: Props) {
+export default function MapWithSearch({ onSelect, lat, lng }: Props) {
     const [query, setQuery] = useState("");
     const [results, setResults] = useState<any[]>([]);
     const [position, setPosition] = useState<[number, number] | null>(null);
@@ -82,9 +82,9 @@ export default function MapWithSearch({ onSelect, lat, lng, close }: Props) {
                         </div>
                     )}
                 </div>
-                <Button variant="outline" className="w-1/4" onClick={close} >
+                {/* <Button variant="outline" className="w-1/4" onClick={close} >
                     Batal
-                </Button>
+                </Button> */}
             </div>
             {/* MAP */}
             <div className="flex justify-center items-center w-full">

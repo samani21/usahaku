@@ -13,12 +13,12 @@ import ModalDelete from '@/Components/Component/CRUD/ModalDelete'
 import Alert from '@/Components/Component/Alert'
 import { Edit, Trash2Icon } from 'lucide-react'
 import { AlertType } from '@/types/Alert'
-import { ProductStockType } from '@/types/Admin/ProductStockType'
-import CreateOrUpdateProductStock from './CreateOrUpdateProductStock'
+import { OutletsType } from '@/types/Admin/OutletType'
+import CreateOrUpdateOutlet from './CreateOrUpdateOutlet'
 
 type Props = {}
 
-const ProductStockComponent = (props: Props) => {
+const OutletsComponent = (props: Props) => {
     const [search, setSearch] = useState("");
     const [dateRangeText, setDateRangeText] = useState("");
     const [page, setPage] = useState(1);
@@ -35,9 +35,9 @@ const ProductStockComponent = (props: Props) => {
     const [debouncedSearch, setDebouncedSearch] = useState('');
     const [showAlert, setShowAlert] = useState<AlertType | null>(null)
 
-    const [dataUpdate, setDataUpdate] = useState<ProductStockType | null>(null)
-    const [deleteData, setDeleteData] = useState<ProductStockType | null>(null)
-    const [categorie, setProductStock] = useState<ProductStockType[]>([]);
+    const [dataUpdate, setDataUpdate] = useState<OutletsType | null>(null)
+    const [deleteData, setDeleteData] = useState<OutletsType | null>(null)
+    const [categorie, setProductStock] = useState<OutletsType[]>([]);
 
     useEffect(() => {
         setTimeout(() => {
@@ -91,11 +91,11 @@ const ProductStockComponent = (props: Props) => {
         );
     }, [parsedDate, page, debouncedSearch, itemsPerPage]);
 
-    const fetchProductStock = useCallback(async () => {
+    const fetchOutlet = useCallback(async () => {
         try {
             setLoading(true)
-            const res = await Get<{ success: boolean; data: ProductStockType[]; meta: Meta }>(
-                `/product-stock${queryString}`
+            const res = await Get<{ success: boolean; data: OutletsType[]; meta: Meta }>(
+                `/outlet${queryString}`
             );
 
             if (res?.success) {
@@ -111,17 +111,17 @@ const ProductStockComponent = (props: Props) => {
     }, [queryString]);
 
     useEffect(() => {
-        fetchProductStock();
-    }, [fetchProductStock, page]);
+        fetchOutlet();
+    }, [fetchOutlet, page]);
 
     // Komponen (handleFormSubmit) (Perbaikan: Kirim formData asli)
 
     const handleFormSubmit = async (formData: FormData, id: number | null) => {
         try {
             if (id) {
-                const res = await Post(`/product-stock/${id}`, formData);
+                const res = await Post(`/outlet/${id}`, formData);
                 if (res) {
-                    fetchProductStock()
+                    fetchOutlet()
                     setDataUpdate(null)
                     setIsModalOpen(false);
                     setShowAlert({
@@ -131,9 +131,9 @@ const ProductStockComponent = (props: Props) => {
                     })
                 }
             } else {
-                const res = await Post('/product-stock', formData);
+                const res = await Post('/outlet', formData);
                 if (res) {
-                    fetchProductStock()
+                    fetchOutlet()
                     setIsModalOpen(false);
                     setShowAlert({
                         type: 'success',
@@ -153,9 +153,9 @@ const ProductStockComponent = (props: Props) => {
     const onDelete = async (id: number | null) => {
         try {
 
-            const res = await Delete(`/product-stock/${id}`);
+            const res = await Delete(`/outlet/${id}`);
             if (res) {
-                fetchProductStock();
+                fetchOutlet();
                 setDeleteData(null)
                 setIsModalOpen(false);
                 setShowAlert({
@@ -178,32 +178,62 @@ const ProductStockComponent = (props: Props) => {
         setDateRangeText("");
     };
 
-    const handleEdit = (row: ProductStockType) => {
+    const handleEdit = (row: OutletsType) => {
         setIsModalOpen(true)
         setDataUpdate(row)
     }
-    const handleDelete = (row: ProductStockType) => {
+    const handleDelete = (row: OutletsType) => {
         setIsModalOpen(true)
         setDeleteData(row)
     }
 
-    const columns: Column<ProductStockType>[] = useMemo(
+    const columns: Column<OutletsType>[] = useMemo(
         () => [
 
             {
-                key: "name_product",
-                label: "Nama Produk",
+                key: "name",
+                label: "Nama Outlet",
             },
             {
-                key: "name_variant",
-                label: "Nama Variant",
-                render: (row) => row?.name_variant ?? ''
+                key: "address",
+                label: "Alamat",
             },
             {
-                key: "stock",
-                label: "stock",
-                render: (row) => row?.stock ?? ''
+                key: "day_open",
+                label: "Buka Dari",
             },
+            {
+                key: "day_close",
+                label: "Sampai Hari",
+            },
+            {
+                key: "time_open",
+                label: "Jam Buka",
+            },
+            {
+                key: "time_close",
+                label: "Jam Tutup",
+            },
+            {
+                key: "lat",
+                label: "Maps",
+                render: (row) => (
+                    row?.lat && row?.lng &&
+                    <button
+                        onClick={() => {
+                            if (row?.lat && row?.lng) {
+                                window.open(
+                                    `https://www.google.com/maps/search/?api=1&query=${row.lat},${row.lng}`,
+                                    "_blank"
+                                );
+                            }
+                        }}
+                    >
+                        Lihat di Maps
+                    </button>
+                )
+            },
+
             {
                 key: "actions",
                 label: "Aksi",
@@ -245,7 +275,7 @@ const ProductStockComponent = (props: Props) => {
             />
 
             <div className="mt-6">
-                <DataTable<ProductStockType>
+                <DataTable<OutletsType>
                     data={categorie}
                     columns={columns}
                     page={page}
@@ -268,11 +298,11 @@ const ProductStockComponent = (props: Props) => {
                         }}
                         deleteData={deleteData}
                         handleDelete={onDelete} /> :
-                    <ModalCrud isOpen={isModalOpen} title={dataUpdate ? "Edit" : "Tambah" + ' Stok Produk'} onClose={() => {
+                    <ModalCrud isOpen={isModalOpen} title={(dataUpdate ? "Edit" : "Tambah") + ' Outlet'} onClose={() => {
                         setIsModalOpen(false)
                         setDataUpdate(null)
                     }}>
-                        <CreateOrUpdateProductStock handleFormSubmit={handleFormSubmit} data={dataUpdate} />
+                        <CreateOrUpdateOutlet handleFormSubmit={handleFormSubmit} data={dataUpdate} />
                     </ModalCrud>
             }
 
@@ -284,4 +314,4 @@ const ProductStockComponent = (props: Props) => {
     )
 }
 
-export default ProductStockComponent
+export default OutletsComponent

@@ -37,8 +37,7 @@ const ModalMaps = ({ openMapId, setOpenMapId, updateAddress, addresses, dataAddr
                     setOpenMapId(null);
                 }}
                     lat={addresses[Number(openMapId) - 1]?.lat}
-                    lng={addresses[Number(openMapId) - 1]?.lng}
-                    close={() => setOpenMapId(null)} />
+                    lng={addresses[Number(openMapId) - 1]?.lng} />
             </div>
         </Modal>
     )

@@ -22,6 +22,7 @@ type Props = {
     | "switch"
     | "color"
     | "image"
+    | "time"
     | "password"
     | "wysiwyg";
 
