@@ -65,6 +65,7 @@ export interface Variants {
     discount_price?: number,
     percent_discount?: number,
     final_price: number,
+    customValue?: string,
 }
 
 export interface Services {
@@ -75,6 +76,10 @@ export interface Services {
 
 export interface ProductsType {
     id: number,
+    promo_id?: number,
+    name_promo?: string,
+    type?: string,
+    is_global?: boolean,
     product_category_id?: number,
     name: string,
     description: string,

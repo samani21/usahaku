@@ -15,6 +15,9 @@ import Alert from "@/Components/Component/Alert";
 import { AlertType } from "@/types/Alert";
 import { Column } from "@/types/Admin/CRUD";
 import { Edit, Trash2Icon } from "lucide-react";
+import FormInput from "@/Components/Component/CRUD/FormInput/FormInput";
+import ModalConfirmPromo from "./ModalConfirmPromo";
+import ConfirmPromo from "./ConfirmPromo";
 
 export default function ListProductPage() {
     const [search, setSearch] = useState("");
@@ -27,6 +30,8 @@ export default function ListProductPage() {
     const [deleteData, setDeleteData] = useState<ProductsType | null>(null)
     const [products, setProducts] = useState<ProductsType[]>([]);
     const [error, setError] = useState<string>('');
+    const [openModalConfirm, setOpenModalConfirm] = useState<ProductsType | null>(null);
+    const [stepsPromo, setStepsPromo] = useState<number | null>(null);
     const [meta, setMeta] = useState<Meta>({
         last_page: 1,
         limit: 10,
@@ -35,7 +40,6 @@ export default function ListProductPage() {
     });
     const [debouncedSearch, setDebouncedSearch] = useState('');
     const [showAlert, setShowAlert] = useState<AlertType | null>(null)
-    const [openModal, setOpenModal] = useState<boolean>(false)
     useEffect(() => {
         const handler = setTimeout(() => {
             setDebouncedSearch(search);
@@ -92,7 +96,6 @@ export default function ListProductPage() {
                 setLoading(false)
             }
         } catch (err: any) {
-            setOpenModal(true)
             setError(err?.message)
             setLoading(false)
         }
@@ -114,16 +117,30 @@ export default function ListProductPage() {
                     fetchProducts()
                     setDataUpdate(null)
                     setIsModalOpen(false);
+                    setShowAlert({
+                        type: 'success',
+                        message: 'Berhasil update data',
+                        isOpen: true
+                    })
                 }
             } else {
                 const res = await Post('/products', formData);
                 if (res) {
                     fetchProducts()
                     setIsModalOpen(false);
+                    setShowAlert({
+                        type: 'success',
+                        message: 'Berhasil simpan data',
+                        isOpen: true
+                    })
                 }
             }
         } catch (err: any) {
-
+            setShowAlert({
+                type: 'error',
+                message: 'Gagal proses data ' + err.message,
+                isOpen: true
+            })
             console.log(err.message || "Gagal mengambil data");
         }
     };
@@ -135,8 +152,19 @@ export default function ListProductPage() {
                 fetchProducts();
                 setDeleteData(null)
                 setIsModalOpen(false);
+                setShowAlert({
+                    type: 'success',
+                    message: 'Berhasil hapus data',
+                    isOpen: true
+                })
+
             }
         } catch (err: any) {
+            setShowAlert({
+                type: 'error',
+                message: 'Gagal proses data ' + err.message,
+                isOpen: true
+            })
             console.log(err.message || "Gagal mengambil data");
         }
     };
@@ -207,7 +235,7 @@ export default function ListProductPage() {
                 key: "price",
                 label: "Harga",
                 align: "right",
-                width: "150",
+                width: "200",
                 render: (row) => `Rp ${row.price.toLocaleString("id-ID")}`,
             },
 
@@ -220,7 +248,7 @@ export default function ListProductPage() {
                 key: "qrcode",
                 label: "qrcode",
                 width: "200",
-                render: (row) => <img src={row.qrcode} className="w-32 rounded-md" />,
+                render: (row) => <img src={row.qrcode} className="w-12 rounded-md" />,
             },
             {
                 key: "is_active",
@@ -240,6 +268,34 @@ export default function ListProductPage() {
                         </span>
                     )
                 }
+            },
+            {
+                key: "is_promo",
+                label: "Promo",
+                align: "center",
+                render: (row) => (
+                    <FormInput
+                        type="switch"
+                        label=""
+                        name="is_active"
+                        value={row?.discount_price}
+                        onChange={() => setOpenModalConfirm(row)}
+                    />
+                ),
+            },
+            {
+                key: "is_available",
+                label: "Tersedia",
+                align: "center",
+                render: (row) => (
+                    <FormInput
+                        type="switch"
+                        label=""
+                        name="is_active"
+                        value={true}
+                        onChange={() => { }}
+                    />
+                ),
             },
             {
                 key: "actions",
@@ -266,8 +322,9 @@ export default function ListProductPage() {
         [handleEdit, handleDelete]
     );
 
-
-
+    if (stepsPromo === 2) {
+        return <ConfirmPromo productInfo={openModalConfirm} onBack={() => { setStepsPromo(1), setOpenModalConfirm(null) }} />
+    }
     return (
         <div>
             <FilterComponent
@@ -320,6 +377,9 @@ export default function ListProductPage() {
                     </ModalCrud>
             }
 
+            {
+                openModalConfirm && <ModalConfirmPromo isOpen={openModalConfirm} closeModal={() => setOpenModalConfirm(null)} confirmAction={() => setStepsPromo(2)} />
+            }
             {
                 showAlert?.isOpen &&
                 <Alert type={showAlert?.type} message={showAlert?.message} onClose={() => setShowAlert(null)} />

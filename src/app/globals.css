@@ -177,3 +177,14 @@ body {
 button {
   cursor: pointer;
 }
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Menghilangkan panah di Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
