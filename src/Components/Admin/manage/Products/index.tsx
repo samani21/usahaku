@@ -18,6 +18,7 @@ import { Edit, Trash2Icon } from "lucide-react";
 import FormInput from "@/Components/Component/CRUD/FormInput/FormInput";
 import ModalConfirmPromo from "./ModalConfirmPromo";
 import ConfirmPromo from "./ConfirmPromo";
+import Loading from "@/Components/Component/Loading";
 
 export default function ListProductPage() {
     const [search, setSearch] = useState("");
@@ -109,8 +110,8 @@ export default function ListProductPage() {
     // Komponen (handleFormSubmit) (Perbaikan: Kirim formData asli)
 
     const handleFormSubmit = async (formData: FormData, id: number | null) => {
+        setLoading(true)
         try {
-
             if (id) {
                 const res = await Post(`/products/${id}`, formData);
                 if (res) {
@@ -122,6 +123,7 @@ export default function ListProductPage() {
                         message: 'Berhasil update data',
                         isOpen: true
                     })
+                    setLoading(false)
                 }
             } else {
                 const res = await Post('/products', formData);
@@ -133,6 +135,7 @@ export default function ListProductPage() {
                         message: 'Berhasil simpan data',
                         isOpen: true
                     })
+                    setLoading(false)
                 }
             }
         } catch (err: any) {
@@ -141,12 +144,15 @@ export default function ListProductPage() {
                 message: 'Gagal proses data ' + err.message,
                 isOpen: true
             })
+            setLoading(false)
             console.log(err.message || "Gagal mengambil data");
         }
     };
     const onDelete = async (id: number | null) => {
+        setLoading(true)
+        setIsModalOpen(false)
+        setDeleteData(null)
         try {
-
             const res = await Delete(`/products/${id}`);
             if (res) {
                 fetchProducts();
@@ -158,6 +164,7 @@ export default function ListProductPage() {
                     isOpen: true
                 })
 
+                setLoading(false)
             }
         } catch (err: any) {
             setShowAlert({
@@ -165,6 +172,7 @@ export default function ListProductPage() {
                 message: 'Gagal proses data ' + err.message,
                 isOpen: true
             })
+            setLoading(false)
             console.log(err.message || "Gagal mengambil data");
         }
     };
@@ -323,7 +331,7 @@ export default function ListProductPage() {
     );
 
     if (stepsPromo === 2) {
-        return <ConfirmPromo productInfo={openModalConfirm} onBack={() => { setStepsPromo(1), setOpenModalConfirm(null) }} />
+        return <ConfirmPromo productInfo={openModalConfirm} onBack={() => { setStepsPromo(1), setOpenModalConfirm(null) }} fetchProducts={fetchProducts} />
     }
     return (
         <div>
@@ -373,12 +381,17 @@ export default function ListProductPage() {
                             }}
                             onSubmit={handleFormSubmit}
                             dataUpdate={dataUpdate}
+                            loading={loading}
+                            setLoading={setLoading}
                         />
                     </ModalCrud>
             }
 
             {
                 openModalConfirm && <ModalConfirmPromo isOpen={openModalConfirm} closeModal={() => setOpenModalConfirm(null)} confirmAction={() => setStepsPromo(2)} />
+            }
+            {
+                loading && <Loading />
             }
             {
                 showAlert?.isOpen &&

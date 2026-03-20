@@ -15,6 +15,7 @@ import { Edit, Trash2Icon } from 'lucide-react'
 import { AlertType } from '@/types/Alert'
 import { ProductStockType } from '@/types/Admin/ProductStockType'
 import CreateOrUpdateProductStock from './CreateOrUpdateProductStock'
+import Loading from '@/Components/Component/Loading'
 
 type Props = {}
 
@@ -117,6 +118,7 @@ const ProductStockComponent = (props: Props) => {
     // Komponen (handleFormSubmit) (Perbaikan: Kirim formData asli)
 
     const handleFormSubmit = async (formData: FormData, id: number | null) => {
+        setLoading(true)
         try {
             if (id) {
                 const res = await Post(`/product-stock/${id}`, formData);
@@ -129,6 +131,7 @@ const ProductStockComponent = (props: Props) => {
                         message: 'Berhasil update data',
                         isOpen: true
                     })
+                    setLoading(false)
                 }
             } else {
                 const res = await Post('/product-stock', formData);
@@ -140,6 +143,7 @@ const ProductStockComponent = (props: Props) => {
                         message: 'Berhasil simpan data',
                         isOpen: true
                     })
+                    setLoading(false)
                 }
             }
         } catch (err: any) {
@@ -148,11 +152,14 @@ const ProductStockComponent = (props: Props) => {
                 message: 'Gagal proses data ' + err.message,
                 isOpen: true
             })
+            setLoading(false)
         }
     };
     const onDelete = async (id: number | null) => {
+        setLoading(true)
+        setIsModalOpen(false)
+        setDeleteData(null)
         try {
-
             const res = await Delete(`/product-stock/${id}`);
             if (res) {
                 fetchProductStock();
@@ -163,6 +170,7 @@ const ProductStockComponent = (props: Props) => {
                     message: 'Berhasil hapus data',
                     isOpen: true
                 })
+                setLoading(false)
             }
         } catch (err: any) {
             setShowAlert({
@@ -170,6 +178,7 @@ const ProductStockComponent = (props: Props) => {
                 message: 'Gagal proses data ' + err.message,
                 isOpen: true
             })
+            setLoading(false)
         }
     };
 
@@ -272,10 +281,12 @@ const ProductStockComponent = (props: Props) => {
                         setIsModalOpen(false)
                         setDataUpdate(null)
                     }}>
-                        <CreateOrUpdateProductStock handleFormSubmit={handleFormSubmit} data={dataUpdate} />
+                        <CreateOrUpdateProductStock handleFormSubmit={handleFormSubmit} data={dataUpdate} loading={loading} setLoading={setLoading} />
                     </ModalCrud>
             }
-
+            {
+                loading && <Loading />
+            }
             {
                 showAlert?.isOpen &&
                 <Alert type={showAlert?.type} message={showAlert?.message} onClose={() => setShowAlert(null)} />

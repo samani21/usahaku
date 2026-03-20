@@ -5,19 +5,20 @@ import { ProductsType } from '@/types/Admin/ProductsType'
 import { AlertType } from '@/types/Alert';
 import { Get } from '@/utils/Get';
 import { Post } from '@/utils/Post';
-import { ArrowLeft, Banknote, Calendar, Check, History, Info, Sparkles, Tag, TrendingDown } from 'lucide-react'
+import { ArrowLeft, Banknote, Calendar, Check, Clock, History, Info, Sparkles, Tag, TrendingDown } from 'lucide-react'
 import React, { useEffect, useState } from 'react'
 
 type Props = {
     productInfo: ProductsType | null;
     onBack: () => void;
+    fetchProducts: () => void;
 }
 const formatDate = (dateString: string) => {
     const options = { day: 'numeric', month: 'long', year: 'numeric' } as any;
     return new Date(dateString).toLocaleDateString('id-ID', options);
 };
 
-const ConfirmPromo = ({ productInfo, onBack }: Props) => {
+const ConfirmPromo = ({ productInfo, onBack, fetchProducts }: Props) => {
     const [promoName, setPromoName] = useState('');
     const [promoType, setPromoType] = useState<'percentage' | 'nominal'>('percentage');
     const [selectedHistory, setSelectedHistory] = useState<number | null>(null);
@@ -28,7 +29,8 @@ const ConfirmPromo = ({ productInfo, onBack }: Props) => {
     const [variants, setVariants] = useState(productInfo?.variants);
     const [showAlert, setShowAlert] = useState<AlertType | null>(null)
     const [promoHistories, setPromoHistories] = useState<ProductPromoHistoryType[]>();
-    console.log('globalValue', globalValue);
+    const [startDate, setStartDate] = useState('');
+    const [endDate, setEndDate] = useState('');
     useEffect(() => {
         getPromoHistory();
         setUseGlobal(productInfo?.variants && productInfo?.variants?.length > 0 ? (productInfo?.is_global ?? false) : true)
@@ -40,6 +42,8 @@ const ConfirmPromo = ({ productInfo, onBack }: Props) => {
 
         if (productInfo?.promo_id) {
             setSelectedHistory(productInfo?.promo_id);
+            setStartDate(productInfo?.start_date ?? '');
+            setEndDate(productInfo?.end_date ?? '');
             setPromoName(productInfo.name_promo ?? '');
             setPromoType(productInfo.type as 'percentage' | 'nominal');
             if (productInfo?.is_global) {
@@ -50,6 +54,8 @@ const ConfirmPromo = ({ productInfo, onBack }: Props) => {
 
     const handleApplyHistory = (item: ProductPromoHistoryType) => {
         setSelectedHistory(item.id);
+        setEndDate(item?.end_date ?? '');
+        setStartDate(item.start_date ?? '');
         setPromoName(item.name_promo);
         setPromoType(item.type as 'percentage' | 'nominal');
         setGlobalValue(item.type === 'percentage' ? String(item?.percent) : String(item.price));
@@ -92,6 +98,8 @@ const ConfirmPromo = ({ productInfo, onBack }: Props) => {
             formData.append('product_id', String(productInfo?.id));
             formData.append('name_promo', promoName);
             formData.append('type', promoType);
+            formData.append('start_date', startDate);
+            formData.append('end_date', endDate);
             if (useGlobal) {
                 formData.append('is_global', "1");
                 if (promoType == 'percentage') {
@@ -140,9 +148,20 @@ const ConfirmPromo = ({ productInfo, onBack }: Props) => {
             const res = await Post<any, FormData>('product-promo-history', formData);
             if (res) {
                 getPromoHistory()
+                fetchProducts()
                 setSelectedHistory(res?.data?.id)
+                setShowAlert({
+                    type: 'success',
+                    message: 'Berhasil update data',
+                    isOpen: true
+                })
             }
         } catch (e: any) {
+            setShowAlert({
+                type: 'error',
+                message: 'Gagal proses data, ' + e.message,
+                isOpen: true
+            })
             setLoading(false)
             console.log(e.message || "Gagal mengambil data");
         }
@@ -245,7 +264,36 @@ const ConfirmPromo = ({ productInfo, onBack }: Props) => {
                                         <span className="heading-font font-bold text-slate-800 text-xs">Nominal</span>
                                     </button>
                                 </div>
-
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+                                    <div>
+                                        <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 block ml-1">Tanggal Mulai</label>
+                                        <div className="relative">
+                                            <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300">
+                                                <Calendar className="w-4 h-4" />
+                                            </div>
+                                            <input
+                                                type="date"
+                                                value={startDate}
+                                                onChange={(e) => setStartDate(e.target.value)}
+                                                className="w-full bg-slate-50 border border-slate-100 rounded-xl py-3 pl-11 pr-4 focus:bg-white focus:border-emerald-500 outline-none text-xs font-semibold text-slate-900 transition-all"
+                                            />
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 block ml-1">Tanggal Berakhir</label>
+                                        <div className="relative">
+                                            <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300">
+                                                <Clock className="w-4 h-4" />
+                                            </div>
+                                            <input
+                                                type="date"
+                                                value={endDate}
+                                                onChange={(e) => setEndDate(e.target.value)}
+                                                className="w-full bg-slate-50 border border-slate-100 rounded-xl py-3 pl-11 pr-4 focus:bg-white focus:border-emerald-500 outline-none text-xs font-semibold text-slate-900 transition-all"
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
                                 {(useGlobal || !(productInfo?.variants && productInfo?.variants?.length > 0)) && (
                                     <div className="space-y-6 animate-in fade-in duration-300">
                                         <div>
@@ -273,14 +321,14 @@ const ConfirmPromo = ({ productInfo, onBack }: Props) => {
                                                 <div>
                                                     <p className="text-[12px] font-bold text-slate-400 uppercase tracking-widest mb-1">Simulasi Harga Final</p>
                                                     <h5 className="heading-font text-2xl font-bold text-emerald-400">
-                                                        Rp {calculateDiscount((productInfo?.price ?? 0), globalValue).price.toLocaleString()}
+                                                        Rp {calculateDiscount((productInfo?.price ?? 0), globalValue).price?.toLocaleString()}
                                                     </h5>
                                                 </div>
                                                 <div className="md:text-right flex flex-col md:items-end gap-1">
                                                     <div className="inline-flex items-center gap-1.5 bg-emerald-500/20 text-emerald-400 px-3 py-1 rounded-lg text-[10px] font-bold border border-emerald-500/20">
-                                                        <TrendingDown className="w-3.5 h-3.5" /> Hemat Rp {calculateDiscount((productInfo?.price ?? 0), globalValue).savings.toLocaleString()}
+                                                        <TrendingDown className="w-3.5 h-3.5" /> Hemat Rp {calculateDiscount((productInfo?.price ?? 0), globalValue).savings?.toLocaleString()}
                                                     </div>
-                                                    <p className="text-[10px] text-slate-500 font-medium">Awal: Rp {(productInfo?.price ?? 0).toLocaleString()}</p>
+                                                    <p className="text-[10px] text-slate-500 font-medium">Awal: Rp {(productInfo?.price ?? 0)?.toLocaleString()}</p>
                                                 </div>
                                             </div>
                                             <div className="mt-5 h-1.5 bg-white/5 rounded-full overflow-hidden">
@@ -324,13 +372,13 @@ const ConfirmPromo = ({ productInfo, onBack }: Props) => {
                                                             </td>
                                                             <td className="py-4 px-4">
                                                                 <span className="font-bold text-slate-800 block text-xs"> {v.name}</span>
-                                                                <span className="text-[10px] text-slate-400 font-medium">Rp {v.price.toLocaleString()}</span>
+                                                                <span className="text-[10px] text-slate-400 font-medium">Rp {v.price?.toLocaleString()}</span>
                                                             </td>
                                                             <td className="py-4 px-4 text-center">
                                                                 {isSelected ? (
                                                                     useGlobal ? (
                                                                         <div className="bg-slate-100 text-slate-600 text-[12px] font-bold px-3 py-1 rounded-md inline-block">
-                                                                            {promoType === 'percentage' ? `${globalValue || 0}%` : `Rp ${Number(globalValue || 0).toLocaleString()}`}
+                                                                            {promoType === 'percentage' ? `${globalValue || 0}%` : `Rp ${Number(globalValue || 0)?.toLocaleString()}`}
                                                                         </div>
                                                                     ) : (
                                                                         <input
@@ -346,7 +394,7 @@ const ConfirmPromo = ({ productInfo, onBack }: Props) => {
 
                                                             <td className="py-4 px-6 text-right">
                                                                 <span className={`heading-font font-bold text-lg ${isSelected && currentVal ? 'text-emerald-600' : 'text-slate-800'}`}>
-                                                                    Rp {isSelected ? res.price.toLocaleString() : v.price.toLocaleString()}
+                                                                    Rp {isSelected ? res.price?.toLocaleString() : v.price?.toLocaleString()}
                                                                 </span>
                                                                 {isSelected && res.percent > 0 && (
                                                                     <div className="text-[8px] font-bold text-emerald-500 uppercase mt-0.5 tracking-tighter">
@@ -386,7 +434,7 @@ const ConfirmPromo = ({ productInfo, onBack }: Props) => {
                                                 <span className="font-bold text-xs block mb-3 leading-none">{item.name_promo}</span>
                                                 <div className="flex items-center justify-between gap-3">
                                                     <span className="text-[10px] font-bold">
-                                                        {item.type === 'percentage' ? `${item.percent}% OFF` : `Rp ${item.price.toLocaleString()}`}
+                                                        {item.type === 'percentage' ? `${item.percent}% OFF` : `Rp ${item.price?.toLocaleString()}`}
                                                     </span>
                                                     <div className="flex-1 h-1 rounded-full bg-black/5 overflow-hidden">
                                                         <div className={`h-full rounded-full ${selectedHistory === item.id ? 'bg-white' : 'bg-emerald-500'}`} style={{ width: `${percent}%` }}></div>

@@ -7,7 +7,7 @@ import { Errors, initialErrors, initialProductState, ProductForm, ProductsType, 
 import { getCroppedImg } from '@/utils/cropImage';
 import { Get } from '@/utils/Get';
 import { Check, ImageIcon, NotebookPen, Plus, PlusCircle, Save, Scissors, Trash2, XCircle } from 'lucide-react';
-import React, { ChangeEvent, FormEvent, useCallback, useEffect, useState } from 'react'
+import React, { ChangeEvent, Dispatch, FormEvent, SetStateAction, useCallback, useEffect, useState } from 'react'
 import Cropper from 'react-easy-crop';
 import { json } from 'stream/consumers';
 
@@ -16,12 +16,14 @@ type Props = {
     onClose: () => void;
     onSubmit: (formData: FormData, id: number | null) => void;
     dataUpdate?: ProductsType | null;
+    loading: boolean;
+    setLoading: Dispatch<SetStateAction<boolean>>;
 }
 interface OptionsType {
     label: string;
     value: number;
 }
-const ProductFormModalContent = ({ isOpen, onClose, onSubmit, dataUpdate }: Props) => {
+const ProductFormModalContent = ({ isOpen, onClose, onSubmit, dataUpdate, loading }: Props) => {
     const [productData, setProductData] = useState<ProductForm>(initialProductState);
     const [errors, setErrors] = useState<Errors>(initialErrors);
     const [deleteVariants, setDeleteVariants] = useState<number[]>([]);
@@ -540,8 +542,8 @@ const ProductFormModalContent = ({ isOpen, onClose, onSubmit, dataUpdate }: Prop
                         </button>
                         <button
                             type="submit"
-                            className="flex items-center cursor-pointer space-x-2 px-8 py-3 bg-zinc-700 text-white font-extrabold rounded-lg shadow-xl shadow-zinc-500/50 hover:bg-zinc-800 transition duration-200 disabled:from-gray-400 disabled:to-gray-500 disabled:shadow-none"
-                            disabled={isSaveDisabled}
+                            className="disabled:bg-gray-300 disabled:text-slate-600 flex items-center cursor-pointer space-x-2 px-8 py-3 bg-zinc-700 text-white font-extrabold rounded-lg shadow-xl shadow-zinc-500/50 hover:bg-zinc-800 transition duration-200 disabled:from-gray-400 disabled:to-gray-500 disabled:shadow-none"
+                            disabled={loading || isSaveDisabled}
                         >
                             <Save size={20} />
                             <span>Simpan</span>

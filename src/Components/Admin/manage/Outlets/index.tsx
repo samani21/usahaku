@@ -15,6 +15,7 @@ import { Edit, Trash2Icon } from 'lucide-react'
 import { AlertType } from '@/types/Alert'
 import { OutletsType } from '@/types/Admin/OutletType'
 import CreateOrUpdateOutlet from './CreateOrUpdateOutlet'
+import Loading from '@/Components/Component/Loading'
 
 type Props = {}
 
@@ -38,7 +39,6 @@ const OutletsComponent = (props: Props) => {
     const [dataUpdate, setDataUpdate] = useState<OutletsType | null>(null)
     const [deleteData, setDeleteData] = useState<OutletsType | null>(null)
     const [categorie, setProductStock] = useState<OutletsType[]>([]);
-
     useEffect(() => {
         setTimeout(() => {
             setShowAlert({
@@ -46,7 +46,7 @@ const OutletsComponent = (props: Props) => {
                 message: '',
                 type: 'success'
             });
-        }, 3000)
+        }, 5000)
     }, [showAlert])
     useEffect(() => {
         const handler = setTimeout(() => {
@@ -117,6 +117,7 @@ const OutletsComponent = (props: Props) => {
     // Komponen (handleFormSubmit) (Perbaikan: Kirim formData asli)
 
     const handleFormSubmit = async (formData: FormData, id: number | null) => {
+        setLoading(true)
         try {
             if (id) {
                 const res = await Post(`/outlet/${id}`, formData);
@@ -129,6 +130,7 @@ const OutletsComponent = (props: Props) => {
                         message: 'Berhasil update data',
                         isOpen: true
                     })
+                    setLoading(false)
                 }
             } else {
                 const res = await Post('/outlet', formData);
@@ -140,6 +142,7 @@ const OutletsComponent = (props: Props) => {
                         message: 'Berhasil simpan data',
                         isOpen: true
                     })
+                    setLoading(false)
                 }
             }
         } catch (err: any) {
@@ -148,16 +151,20 @@ const OutletsComponent = (props: Props) => {
                 message: 'Gagal proses data ' + err.message,
                 isOpen: true
             })
+            setLoading(false)
         }
     };
     const onDelete = async (id: number | null) => {
+        setLoading(true)
+        setIsModalOpen(false)
+        setDeleteData(null)
         try {
-
             const res = await Delete(`/outlet/${id}`);
             if (res) {
                 fetchOutlet();
                 setDeleteData(null)
                 setIsModalOpen(false);
+                setLoading(false)
                 setShowAlert({
                     type: 'success',
                     message: 'Berhasil hapus data',
@@ -170,6 +177,7 @@ const OutletsComponent = (props: Props) => {
                 message: 'Gagal proses data ' + err.message,
                 isOpen: true
             })
+            setLoading(false)
         }
     };
 
@@ -302,10 +310,11 @@ const OutletsComponent = (props: Props) => {
                         setIsModalOpen(false)
                         setDataUpdate(null)
                     }}>
-                        <CreateOrUpdateOutlet handleFormSubmit={handleFormSubmit} data={dataUpdate} />
+                        <CreateOrUpdateOutlet handleFormSubmit={handleFormSubmit} data={dataUpdate} loading={loading} setLoading={setLoading} />
                     </ModalCrud>
             }
 
+            {loading && <Loading />}
             {
                 showAlert?.isOpen &&
                 <Alert type={showAlert?.type} message={showAlert?.message} onClose={() => setShowAlert(null)} />

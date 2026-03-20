@@ -1,6 +1,6 @@
 "use client";
 import FormInput from "@/Components/Component/CRUD/FormInput/FormInput";
-import React, { ChangeEvent, useCallback, useEffect, useState } from "react";
+import React, { ChangeEvent, Dispatch, SetStateAction, useCallback, useEffect, useState } from "react";
 import IconAutocomplete from "./IconAutocomplete";
 import { AlertTriangle, Check, ImageIcon, Scissors } from "lucide-react";
 import Cropper from "react-easy-crop";
@@ -12,6 +12,8 @@ import Alert, { AlertComponent } from "@/Components/Component/Alert";
 type Props = {
     handleFormSubmit: (form: FormData, id: number | null) => void;
     data: CategoriesType | null;
+    loading: boolean;
+    setLoading: Dispatch<SetStateAction<boolean>>;
 }
 
 interface AlertType {
@@ -26,7 +28,7 @@ interface OptionsType {
 }
 
 
-const CreateOrUpdateCategorie = ({ handleFormSubmit, data }: Props) => {
+const CreateOrUpdateCategorie = ({ handleFormSubmit, data, loading, setLoading }: Props) => {
     const [form, setForm] = useState<any>({
         name: "",
     });
@@ -34,7 +36,6 @@ const CreateOrUpdateCategorie = ({ handleFormSubmit, data }: Props) => {
         name: null
     })
     const [icon, setIcon] = useState<string>('')
-    const [loading, setLoading] = useState(false);
 
     const [imageToCrop, setImageToCrop] = useState<string | null>(null);
     const [crop, setCrop] = useState({ x: 0, y: 0 });
@@ -117,7 +118,6 @@ const CreateOrUpdateCategorie = ({ handleFormSubmit, data }: Props) => {
             formData.append('color', form.color);
         }
         handleFormSubmit(formData, data?.id ?? null)
-        setLoading(false);
     };
     const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files ? e.target.files[0] : null;

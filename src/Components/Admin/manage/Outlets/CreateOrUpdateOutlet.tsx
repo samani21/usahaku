@@ -1,6 +1,6 @@
 "use client";
 import FormInput from "@/Components/Component/CRUD/FormInput/FormInput";
-import React, { useEffect, useState } from "react";
+import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { SelectOption } from "@/types/Public";
 import { OutletsType } from "@/types/Admin/OutletType";
 import dynamic from "next/dynamic";
@@ -10,6 +10,8 @@ const MapWithSearch = dynamic(() => import('@/Components/Component/Maps/MapWithS
 type Props = {
     handleFormSubmit: (form: FormData, id: number | null) => void;
     data: OutletsType | null;
+    loading: boolean;
+    setLoading: Dispatch<SetStateAction<boolean>>;
 }
 
 
@@ -22,7 +24,7 @@ const selectOptions: SelectOption[] = [
     { label: "Sabtu", value: "Sabtu" },
     { label: "Minggu", value: "Minggu" },
 ];
-const CreateOrUpdateOutlet = ({ handleFormSubmit, data }: Props) => {
+const CreateOrUpdateOutlet = ({ handleFormSubmit, data, loading, setLoading }: Props) => {
     const [form, setForm] = useState<any>({
         name: "",
         address: "",
@@ -39,7 +41,6 @@ const CreateOrUpdateOutlet = ({ handleFormSubmit, data }: Props) => {
         time_open: null,
         time_close: null,
     })
-    const [loading, setLoading] = useState(false);
     const [latLng, setLatLng] = useState<{
         lat: number,
         lng: number,
@@ -154,7 +155,6 @@ const CreateOrUpdateOutlet = ({ handleFormSubmit, data }: Props) => {
 
         }
         handleFormSubmit(formData, data?.id ?? null)
-        setLoading(false);
     };
 
 

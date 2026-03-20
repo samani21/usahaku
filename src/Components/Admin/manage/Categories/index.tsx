@@ -15,6 +15,7 @@ import ModalDelete from '@/Components/Component/CRUD/ModalDelete'
 import Alert from '@/Components/Component/Alert'
 import { Edit, Edit2, Trash2Icon } from 'lucide-react'
 import { AlertType } from '@/types/Alert'
+import Loading from '@/Components/Component/Loading'
 
 type Props = {}
 
@@ -46,7 +47,7 @@ const CategoriesComponent = (props: Props) => {
                 message: '',
                 type: 'success'
             });
-        }, 3000)
+        }, 5000)
     }, [showAlert])
     useEffect(() => {
         const handler = setTimeout(() => {
@@ -117,6 +118,7 @@ const CategoriesComponent = (props: Props) => {
     // Komponen (handleFormSubmit) (Perbaikan: Kirim formData asli)
 
     const handleFormSubmit = async (formData: FormData, id: number | null) => {
+        setLoading(true);
         try {
             if (id) {
                 const res = await Post(`/categorie/${id}`, formData);
@@ -129,6 +131,7 @@ const CategoriesComponent = (props: Props) => {
                         message: 'Berhasil update data',
                         isOpen: true
                     })
+                    setLoading(false)
                 }
             } else {
                 const res = await Post('/categorie', formData);
@@ -140,6 +143,7 @@ const CategoriesComponent = (props: Props) => {
                         message: 'Berhasil simpan data',
                         isOpen: true
                     })
+                    setLoading(false)
                 }
             }
         } catch (err: any) {
@@ -148,11 +152,14 @@ const CategoriesComponent = (props: Props) => {
                 message: 'Gagal proses data ' + err.message,
                 isOpen: true
             })
+            setLoading(false)
         }
     };
     const onDelete = async (id: number | null) => {
+        setLoading(true);
+        setIsModalOpen(false)
+        setDeleteData(null)
         try {
-
             const res = await Delete(`/categorie/${id}`);
             if (res) {
                 fetchCategorie();
@@ -163,6 +170,7 @@ const CategoriesComponent = (props: Props) => {
                     message: 'Berhasil hapus data',
                     isOpen: true
                 })
+                setLoading(false)
             }
         } catch (err: any) {
             setShowAlert({
@@ -170,6 +178,7 @@ const CategoriesComponent = (props: Props) => {
                 message: 'Gagal proses data ' + err.message,
                 isOpen: true
             })
+            setLoading(false)
         }
     };
 
@@ -281,10 +290,11 @@ const CategoriesComponent = (props: Props) => {
                         setIsModalOpen(false)
                         setDataUpdate(null)
                     }}>
-                        <CreateOrUpdateCategorie handleFormSubmit={handleFormSubmit} data={dataUpdate} />
+                        <CreateOrUpdateCategorie handleFormSubmit={handleFormSubmit} data={dataUpdate} loading={loading} setLoading={setLoading} />
                     </ModalCrud>
             }
 
+            {loading && <Loading />}
             {
                 showAlert?.isOpen &&
                 <Alert type={showAlert?.type} message={showAlert?.message} onClose={() => setShowAlert(null)} />

@@ -48,7 +48,10 @@ export const menuSidebar: menuSide[] = [
                 label: 'Stok',
                 href: '/product-stock'
             },
-
+            {
+                label: 'Riwayat Promo',
+                href: '/promo-histories'
+            },
         ]
     },
     {

@@ -1,6 +1,6 @@
 "use client";
 import FormInput from "@/Components/Component/CRUD/FormInput/FormInput";
-import React, { ChangeEvent, useCallback, useEffect, useMemo, useState } from "react";
+import React, { ChangeEvent, Dispatch, SetStateAction, useCallback, useEffect, useMemo, useState } from "react";
 import { Get } from "@/utils/Get";
 import { ProductStockType } from "@/types/Admin/ProductStockType";
 import { ProductsType } from "@/types/Admin/ProductsType";
@@ -8,6 +8,8 @@ import { ProductsType } from "@/types/Admin/ProductsType";
 type Props = {
     handleFormSubmit: (form: FormData, id: number | null) => void;
     data: ProductStockType | null;
+    loading: boolean;
+    setLoading: Dispatch<SetStateAction<boolean>>;
 }
 
 interface OptionsType {
@@ -20,7 +22,7 @@ const selectOptions: OptionsType[] = [
     { label: "Option 3", value: 3 },
 ];
 
-const CreateOrUpdateProductStock = ({ handleFormSubmit, data }: Props) => {
+const CreateOrUpdateProductStock = ({ handleFormSubmit, data, loading, setLoading }: Props) => {
     const [form, setForm] = useState<any>({
         product_id: "",
         product_varian_id: "",
@@ -32,7 +34,6 @@ const CreateOrUpdateProductStock = ({ handleFormSubmit, data }: Props) => {
         stock: null,
     })
     const [icon, setIcon] = useState<string>('')
-    const [loading, setLoading] = useState(false);
 
     const [productOption, setProductOptions] = useState<OptionsType[]>()
     const [products, setProducts] = useState<ProductsType[]>()
@@ -126,7 +127,6 @@ const CreateOrUpdateProductStock = ({ handleFormSubmit, data }: Props) => {
         formData.append('product_variant_id', form?.product_variant_id ?? null);
         formData.append('stock', form?.stock);
         handleFormSubmit(formData, data?.id ?? null)
-        setLoading(false);
     };
 
 

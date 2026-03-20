@@ -66,6 +66,10 @@ export interface Variants {
     percent_discount?: number,
     final_price: number,
     customValue?: string,
+    pivot?: {
+        percent: number;
+        price: number;
+    }
 }
 
 export interface Services {
@@ -79,6 +83,8 @@ export interface ProductsType {
     promo_id?: number,
     name_promo?: string,
     type?: string,
+    start_date?: string,
+    end_date?: string,
     is_global?: boolean,
     product_category_id?: number,
     name: string,

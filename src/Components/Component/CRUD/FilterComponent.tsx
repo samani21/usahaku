@@ -11,10 +11,11 @@ type Props = {
     setPage: Dispatch<SetStateAction<number>>;
     handleReset: () => void;
     setDateRangeText: Dispatch<SetStateAction<string>>;
-    setIsModalOpenForm: (value: boolean) => void
+    setIsModalOpenForm: (value: boolean) => void;
+    hiddenAdd?: boolean
 }
 
-const FilterComponent = ({ search, setSearch, dateRangeText, itemsPerPage, setItemsPerPage, setPage, handleReset, setDateRangeText, setIsModalOpenForm }: Props) => {
+const FilterComponent = ({ search, setSearch, dateRangeText, itemsPerPage, setItemsPerPage, setPage, handleReset, setDateRangeText, setIsModalOpenForm, hiddenAdd }: Props) => {
     const [isModalOpen, setIsModalOpen] = useState(false)
     return (
         <>
@@ -57,10 +58,13 @@ const FilterComponent = ({ search, setSearch, dateRangeText, itemsPerPage, setIt
                         </button>
                     </div>
                     <div className="flex items-end">
-                        <button className="flex items-center bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-xl shadow-lg transition duration-300 transform hover:scale-[1.02] active:scale-[0.98] h-[40px] cursor-pointer" onClick={() => setIsModalOpenForm(true)}>
-                            <Plus className='w-5 h-5 mr-2' />
-                            Tambah
-                        </button>
+                        {
+                            !hiddenAdd &&
+                            <button className="flex items-center bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-xl shadow-lg transition duration-300 transform hover:scale-[1.02] active:scale-[0.98] h-[40px] cursor-pointer" onClick={() => setIsModalOpenForm(true)}>
+                                <Plus className='w-5 h-5 mr-2' />
+                                Tambah
+                            </button>
+                        }
                     </div>
                 </div>
             </div>
