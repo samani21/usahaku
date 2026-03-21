@@ -122,6 +122,15 @@ export default function CatalogPage() {
         return <PreviewPage onClose={() => setActiveMenu("Header")} />
     }
 
+    useEffect(() => {
+        const primary = isDarkMode ? '#020617' : '#f8fafc';   // slate-950 / slate-50
+        const secondary = isDarkMode ? '#f8fafc' : '#020617'; // kebalikannya
+
+        const root = document.documentElement;
+        root.style.setProperty('--mode-primary', primary);
+        root.style.setProperty('--mode-secondary', secondary);
+    }, [isDarkMode]);
+
     return (
         <div className={`min-h-[120vh] transition-colors duration-500 ${isDarkMode ? 'bg-[#020617]' : 'bg-[#f8fafc]'} font-sans`}>
 

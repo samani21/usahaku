@@ -1,3 +1,4 @@
+import { ChevronDown, ChevronUp } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
 
 type Props = {
@@ -43,11 +44,16 @@ const ExpandableHTML = ({
             {isOverflowing && (
                 <button
                     onClick={() => setExpanded(!expanded)}
-                    className="mt-2 text-sm text-white hover:underline"
+                    className="text-[var(--product-primary-color)] font-bold text-[10px] mt-1 flex items-center gap-1 uppercase tracking-wider"
                 >
-                    {expanded ? "Sembunyikan" : "Selengkapnya"}
+                    {expanded ? (
+                        <>Sembunyikan <ChevronUp size={12} /></>
+                    ) : (
+                        <>Selengkapnya <ChevronDown size={12} /></>
+                    )}
                 </button>
             )}
+
         </div>
     );
 };

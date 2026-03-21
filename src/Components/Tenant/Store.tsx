@@ -53,6 +53,14 @@ export default function Store({ tenant }: Props) {
         document.documentElement.style.setProperty(`--${type}-secondary-rgb`, contrastRgb);
     }, []);
 
+    useEffect(() => {
+        const primary = isDarkTheme ? '#020617' : '#f8fafc';   // slate-950 / slate-50
+        const secondary = isDarkTheme ? '#f8fafc' : '#020617'; // kebalikannya
+
+        const root = document.documentElement;
+        root.style.setProperty('--mode-primary', primary);
+        root.style.setProperty('--mode-secondary', secondary);
+    }, [isDarkTheme]);
     const fetchCatalog = async () => {
         try {
             setLoading(true);
