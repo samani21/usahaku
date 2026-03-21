@@ -75,7 +75,7 @@ const Fourteen = ({ products, isDarkMode, handleCart }: Props) => {
         }
     }
     return (
-        <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 h-full ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>
+        <div  className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 h-full ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>
             {products?.map((p, i) => {
                 const { finalPrice, label } = getPromoDetails(p);
                 const bgColor = isDarkMode ? 'bg-slate-800' : 'bg-white';
@@ -143,7 +143,7 @@ const Fourteen = ({ products, isDarkMode, handleCart }: Props) => {
                 isDarkMode={isDarkMode}
             >
                 {/* Bagian Gambar: Di Mobile tingginya terbatas agar tidak menutupi seluruh layar */}
-                <div className="w-full md:w-1/2 h-[40vh] md:h-[80vh] relative bg-black/20 shrink-0">
+                <div className="w-full md:w-1/2 h-[30vh] md:h-[80vh] relative bg-black/20 shrink-0">
                     <img
                         src={selectedVariant?.image ?? product?.image}
                         className='h-full w-full object-cover transition-all duration-500'

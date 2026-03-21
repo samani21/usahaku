@@ -44,7 +44,7 @@ const ExpandableHTML = ({
             {isOverflowing && (
                 <button
                     onClick={() => setExpanded(!expanded)}
-                    className="text-[var(--product-primary-color)] font-bold text-[10px] mt-1 flex items-center gap-1 uppercase tracking-wider"
+                    className=" font-bold text-[12px] mt-1 flex items-center gap-1 uppercase tracking-wider"
                 >
                     {expanded ? (
                         <>Sembunyikan <ChevronUp size={12} /></>

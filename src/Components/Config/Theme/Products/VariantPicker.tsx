@@ -19,7 +19,7 @@ const VariantPicker = ({ variants, selectedVariant, setSelectedVariant, isDarkMo
                 <button
                     key={i}
                     onClick={() => setSelectedVariant(v)}
-                    className={`px-4 py-2 rounded-xl text-xs font-bold transition-all border-2 ${selectedVariant === v && 'border-current shadow-md scale-105'} ${isDarkMode ? `${selectedVariant === v ? 'border-[var(--product-primary-color)]' : 'border-[var(--product-primary-color)]/35'} text-[var(--product-primary-color)]` : `${selectedVariant === v ? 'border-[var(--product-primary-color)]' : 'border-[var(--product-primary-color)]/35'} text-[var(--product-primary-color)]`}`}
+                    className={`px-4 py-2 rounded-xl border-2 transition-all font-bold text-xs ${selectedVariant?.id === v.id ? 'border-[var(--product-primary-color)] bg-[var(--product-primary-color)] text-white shadow-md' : 'border-white/10 hover:border-white/30'}`}
                 >
                     {v?.name}
                 </button>

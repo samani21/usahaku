@@ -12,13 +12,23 @@ type Props = {
 
 
 const Thirteen = ({ isDarkMode, headline, subHeadline, ctaText, imageHero }: Props) => {
+
+    const handleScroll = () => {
+        const el = document.getElementById("product-section");
+        if (el) {
+            el.scrollIntoView({
+                behavior: "smooth",
+                block: "start"
+            });
+        }
+    };
     return (
         <section>
             <div className="grid md:grid-cols-3 gap-8 items-stretch">
-                <div className={`p-8 rounded-2xl ${!imageHero && 'col-span-3'} flex flex-col justify-center ${isDarkMode ? 'bg-slate-900' : 'bg-[var(--hero-primary-color)]/5'}`}>
+                <div className={`p-8 rounded-2xl ${!imageHero && 'col-span-3'} flex flex-col justify-center ${isDarkMode ? 'bg-slate-900 text-white' : 'bg-[var(--hero-primary-color)]/5 text-slate-900'}`}>
                     <h2 className="text-3xl font-serif font-bold mb-4">{headline}</h2>
                     <p className="text-sm opacity-60 leading-relaxed mb-6">{subHeadline}</p>
-                    <button className={`text-xs font-bold tracking-[0.2em] uppercase border-b-2 inline-block self-start pb-1 border-[var(--hero-primary-color)]`} >{ctaText}</button>
+                    <button onClick={handleScroll} className={`text-xs font-bold tracking-[0.2em] uppercase border-b-2 inline-block self-start pb-1 border-[var(--hero-primary-color)]`} >{ctaText}</button>
                 </div>
                 {
                     imageHero &&

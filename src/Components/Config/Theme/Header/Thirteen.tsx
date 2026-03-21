@@ -29,7 +29,7 @@ const Thirteen = ({ themeMode, spanOne, spanTwo, toggleTheme, frameType, frameTh
                     }
                     <h2 className="text-lg font-bold">
                         <span className={'text-[var(--header-primary-color)]'}>{spanOne}</span>
-                        <span className="text-slate-300 ml-1 font-medium">{spanTwo}</span>
+                        <span className="ml-1 font-medium">{spanTwo}</span>
                     </h2>
                 </div>
                 <NavIcons isBuild={isBuild} displayMode={displayMode} colorClass={`text-[var(--header-primary-color)]`} toggleTheme={toggleTheme} themeMode={themeMode} />

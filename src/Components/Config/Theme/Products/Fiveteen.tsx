@@ -72,7 +72,7 @@ const Fiveteen = ({ products, isDarkMode, handleCart }: Props) => {
     }
 
     return (
-        <div id="product-section" className='grid grid-cols-2 md:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 gap-4 h-full'>
+        <div className='grid grid-cols-2 md:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 gap-4 h-full'>
             {products?.map((p, i) => {
                 const { finalPrice, label } = getPromoDetails(p);
                 return (
@@ -143,8 +143,6 @@ const Fiveteen = ({ products, isDarkMode, handleCart }: Props) => {
                             <ExpandableHTML
                                 htmlContent={product?.description}
                                 className={`text-sm opacity-70 leading-relaxed font-light`}
-                            //  // Bisa diganti line-clamp-5 dll
-                            // maxHeight='max-h-[200px]'
                             />
                             <div className="flex flex-col gap-4">
                                 {
@@ -152,7 +150,7 @@ const Fiveteen = ({ products, isDarkMode, handleCart }: Props) => {
                                         <div className='flex '>
                                             <div className="text-2xl font-black line-through">{formatIDR(selectedVariant?.price ?? product?.price ?? 0)}</div>
                                             <div className='mt-[-12px] text-[12px]'>
-                                                <span className='bg-red-500 font-semibold p-1 rounded-full'>
+                                                <span className='text-rose-500 px-2 font-bold bg-red-50 p-1 rounded-full'>
                                                     - {Promo(product, selectedVariant)}
                                                 </span>
                                             </div>

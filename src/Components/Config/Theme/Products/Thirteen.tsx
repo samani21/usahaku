@@ -2,11 +2,12 @@ import ModalWrapper from './ModalWrapper';
 import { useEffect, useMemo, useState } from 'react';
 import QtySelector from './QtySelector';
 import VariantPicker from './VariantPicker';
-import { X } from 'lucide-react';
+import { Tag, X } from 'lucide-react';
 import AlertWrapper from './AlertWrapper';
 import { ProductsType, Variants } from '@/types/Admin/ProductsType';
 import { formatIDR } from '@/types/FormtRupiah';
 import ExpandableHTML from './ExpandableHTML';
+import { getPromoDetails, Promo } from './PromoType';
 
 type Props = {
     products: ProductsType[];
@@ -60,23 +61,67 @@ const Thirteen = ({ products, isDarkMode }: Props) => {
             document.body.style.overflow = 'unset';
         };
     }, [product]);
+
+    const currentPrice = selectedVariant?.price ?? product?.price ?? 0;
+    const currentFinalPrice = selectedVariant?.final_price ?? product?.final_price ?? 0;
+    const currentDiscount = currentPrice - currentFinalPrice;
     return (
         <div className='grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4 h-full'>
-            {products?.map((p, i) => (
-                <div onClick={() => setProduct(p)} key={i} className="text-center cursor-pointer group">
-                    <div className={`aspect-[4/5] ${isDarkMode ? "bg-slate-900" : "bg-slate-100 "} mb-6 overflow-hidden relative`}>
-                        <img src={p?.image} className={`w-full h-full object-cover ${isDarkMode ? "mix-blend-normal" : "mix-blend-multiply"} opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all duration-700`} alt="" />
-                        <div className="absolute inset-0 border border-current m-6 opacity-0 group-hover:opacity-30 transition-opacity" />
+            {products?.map((p, i) => {
+                const { finalPrice, label } = getPromoDetails(p);
+                return (
+                    <div
+                        key={p.id}
+                        onClick={() => setProduct(p)}
+                        className="text-center cursor-pointer group flex flex-col items-center"
+                    >
+                        {/* Frame Gambar */}
+                        <div className={`aspect-[4/5] w-full ${isDarkMode ? "bg-slate-900" : "bg-slate-50"} mb-8 overflow-hidden relative`}>
+                            <img
+                                src={p.image}
+                                className={`w-full h-full object-cover transition-all duration-[1.5s] ease-out
+                      ${isDarkMode ? "mix-blend-normal opacity-70" : "mix-blend-multiply opacity-80"} 
+                      group-hover:opacity-100 group-hover:scale-110`}
+                                alt={p.name}
+                            />
+
+                            {/* Border Accent on Hover */}
+                            <div className="absolute inset-0 border border-current m-4 sm:m-6 opacity-0 group-hover:opacity-30 transition-all duration-700 pointer-events-none" />
+
+                            {/* Info Diskon yang diperbaiki (Lebih Kontras) */}
+                            {label && (
+                                <div className="absolute top-0 right-0 bg-red-600 text-white px-4 py-2 text-[10px] tracking-[0.2em] font-black z-10 shadow-lg">
+                                    {label}
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Info Produk Minimalist */}
+                        {p.category && (
+                            <p className="text-[9px] sm:text-[10px] tracking-[0.6em] uppercase opacity-40 mb-4 transition-opacity group-hover:opacity-100">
+                                {p.category}
+                            </p>
+                        )}
+
+                        <h3 className="text-md sm:text-lg font-light tracking-[0.2em] uppercase leading-relaxed mb-4 line-clamp-1">
+                            {p.name}
+                        </h3>
+
+                        {/* Decorative Line */}
+                        <div className="w-10 h-px bg-current opacity-20 group-hover:w-20 group-hover:opacity-50 transition-all duration-700 mb-4" />
+
+                        {/* Price Display dengan Info Promo */}
+                        <div className="flex flex-col items-center gap-1">
+                            {label && (
+                                <span className="text-[10px] opacity-30 line-through tracking-widest uppercase">
+                                    {formatIDR(p.price)}
+                                </span>
+                            )}
+                            <span className="font-bold text-sm tracking-widest">{formatIDR(p?.final_price ?? 0)}</span>
+                        </div>
                     </div>
-                    {
-                        p?.category &&
-                        <p className="text-[10px] sm:text-[12px] tracking-[0.8em] uppercase opacity-70 mb-3">{p?.category}</p>
-                    }
-                    <h3 className="text-md sm:text-lg font-light tracking-widest uppercase">{p?.name}</h3>
-                    <div className="w-10 h-px bg-current mx-auto my-4 opacity-20" />
-                    <span className="font-bold text-sm tracking-widest">{formatIDR(p?.final_price ?? 0)}</span>
-                </div>
-            ))}
+                )
+            })}
 
             <ModalWrapper
                 activeModal={product ? true : false}
@@ -88,7 +133,7 @@ const Thirteen = ({ products, isDarkMode }: Props) => {
                 isDarkMode={isDarkMode}>
                 <div className="w-full flex flex-col md:flex-row">
                     <div className="md:w-1/2 p-6 md:p-12 space-y-12 overflow-auto no-scrollbar">
-                        <img src={selectedVariant?.image ?? product?.image} className="sm:hidden rounded-[24px] w-full h-full object-cover" alt="" />
+                        <img src={selectedVariant?.image ?? product?.image} className="sm:hidden max-h-50 rounded-[24px] w-full h-full object-cover" alt="" />
                         <div className="space-y-4">
                             {
                                 product?.category &&
@@ -100,34 +145,55 @@ const Thirteen = ({ products, isDarkMode }: Props) => {
                             {/* <p className="text-2xl font-serif italic leading-relaxed opacity-80">"Kualitas bukan sekadar janji, tapi sebuah warisan yang kami tuangkan dalam setiap produk."</p> */}
                             <ExpandableHTML
                                 htmlContent={product?.description}
-                                className={`text-sm opacity-50 leading-relaxed max-w-sm`}
-                                // Bisa diganti line-clamp-5 dll
-                                maxHeight='max-h-[200px]'
+                                className={`text-sm opacity-70 leading-relaxed font-light`}
                             />
                         </div>
                         <div className="space-y-8">
-                            <div className="grid sm:flex items-baseline gap-4">
-                                <span className="text-5xl font-black tracking-tighter">{formatIDR(selectedVariant?.final_price ?? product?.final_price ?? 0)}</span>
-                                {
-                                    product?.discount_price &&
-                                    <span className="text-xl opacity-30 line-through italic">{formatIDR(selectedVariant?.price ?? product?.price ?? 0)}</span>
-                                }
-                            </div>
-                            <div>
-                                {product?.variants && product?.variants?.length > 0 ?
-                                    <VariantPicker variants={product?.variants} selectedVariant={selectedVariant} setSelectedVariant={setSelectedVariant} isDarkMode={isDarkMode} /> : ""
-                                }
-                                <div className='flex items-end justify-between gap-2'>
-                                    {
-                                        product && product?.is_qty ?
-                                            <QtySelector quantity={quantity} setQuantity={setQuantity} isDarkMode={isDarkMode} /> : ""
-                                    }
-                                    <div className='mt-2'>
-                                        <p className={`font-semibold ${isDarkMode ? "text-gray-100" : "text-gray-700"}`}>Total</p>
-                                        <p className='text-1xl sm:text-2xl font-bold'>{formatIDR((selectedVariant?.final_price || (product?.final_price ?? 0)) * quantity)}</p>
+                            <div className="space-y-8 bg-black/5 dark:bg-white/5 p-6 md:p-8 rounded-[2.5rem] border border-black/5 dark:border-white/5">
+                                <div className="space-y-2">
+                                    <div className="grid md:flex md:flex-wrap items-baseline md:gap-3">
+                                        <span className="text-xl md:text-3xl font-black tracking-tighter text-rose-500 italic">
+                                            {formatIDR(currentFinalPrice)}
+                                        </span>
+                                        {currentDiscount > 0 && (
+                                            <span className="text-lg md:text-xl opacity-20 line-through italic font-black">
+                                                {formatIDR(currentPrice)}
+                                            </span>
+                                        )}
+                                    </div>
+
+                                    {currentDiscount > 0 && (
+                                        <div className="flex items-center gap-2 text-emerald-500 font-black italic text-sm animate-pulse">
+                                            <Tag size={16} />
+                                            HEMAT {formatIDR(currentDiscount)} {product?.percent_discount && `(${Promo(product, selectedVariant)})`}
+                                        </div>
+                                    )}
+                                </div>
+
+                                <div className="space-y-8">
+                                    {product?.variants && product?.variants?.length > 0 && (
+                                        <VariantPicker
+                                            variants={product?.variants}
+                                            selectedVariant={selectedVariant}
+                                            setSelectedVariant={setSelectedVariant}
+                                            isDarkMode={isDarkMode}
+                                        />
+                                    )}
+
+                                    <div className='flex items-center justify-between gap-4'>
+                                        {product?.is_qty ? (
+                                            <QtySelector quantity={quantity} setQuantity={setQuantity} isDarkMode={isDarkMode} />
+                                        ) : <div></div>}
+                                        <div className='text-right'>
+                                            <p className={`text-[10px] font-bold uppercase opacity-40 ${isDarkMode ? "text-gray-100" : "text-gray-700"}`}>Subtotal</p>
+                                            <p className='text-lg md:text-xl font-black italic tracking-tighter'>
+                                                {formatIDR((currentFinalPrice) * quantity)}
+                                            </p>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
+
                             <button disabled={disableButton} onClick={() => setActiveAlert(true)} className={`px-12 disabled:bg-gray-600  py-6 ${isDarkMode ? "bg-white text-black" : "bg-black text-white"} rounded-full font-black uppercase italic tracking-widest text-sm hover:scale-105 transition-transform active:scale-95`}>Mulai Pesan</button>
                         </div>
                     </div>

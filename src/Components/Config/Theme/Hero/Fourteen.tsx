@@ -12,6 +12,16 @@ type Props = {
 
 
 const Fourteen = ({ headline, subHeadline, ctaText, isDarkMode }: Props) => {
+
+    const handleScroll = () => {
+        const el = document.getElementById("product-section");
+        if (el) {
+            el.scrollIntoView({
+                behavior: "smooth",
+                block: "start"
+            });
+        }
+    };
     return (
         <section>
             <div className="py-10 text-center space-y-8 max-w-4xl mx-auto">
@@ -22,7 +32,7 @@ const Fourteen = ({ headline, subHeadline, ctaText, isDarkMode }: Props) => {
                 </h2>
                 <p className={`text-md md:text-xl font-light max-w-2xl mx-auto leading-relaxed`}>{subHeadline}</p>
                 <div className="pt-4">
-                    <button className={`px-12 py-3 rounded-full text-white font-bold text-lg hover:shadow-2xl transition-all bg-[var(--hero-primary-color)]`} >
+                    <button onClick={handleScroll} className={`px-12 py-3 rounded-full text-white font-bold text-lg hover:shadow-2xl transition-all bg-[var(--hero-primary-color)]`} >
                         {ctaText}
                     </button>
                 </div>

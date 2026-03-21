@@ -152,14 +152,16 @@ export default function Store({ tenant }: Props) {
                             isDarkMode={category?.mode === 'light' ? false : isDarkTheme || category?.mode == 'dark'}
                             onClick={(e) => setSeletctCategorie(e)} />
                     }
-                    {
-                        product && products &&
-                        <ProductConfig
-                            theme={product?.layout_products}
-                            products={products}
-                            isDarkMode={category?.mode === 'light' ? false : isDarkTheme || category?.mode == 'dark'}
-                            handleCart={handleCart} />
-                    }
+                    <section id="product-section">
+                        {
+                            product && products &&
+                            <ProductConfig
+                                theme={product?.layout_products}
+                                products={products}
+                                isDarkMode={category?.mode === 'light' ? false : isDarkTheme || category?.mode == 'dark'}
+                                handleCart={handleCart} />
+                        }
+                    </section>
                     <div className='fixed bottom-0 w-full flex z-3 items-center justify-center left-0'>
                         <div className='max-w-7xl w-full'>
                             {
