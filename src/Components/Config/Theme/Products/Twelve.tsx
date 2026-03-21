@@ -109,7 +109,7 @@ const Twelve = ({ products, isDarkMode }: Props) => {
                                     <ExpandableHTML
                                         htmlContent={product?.description}
                                         className={`text-xs leading-relaxed opacity-60`}
-                                        maxLines="line-clamp-[2]" // Bisa diganti line-clamp-5 dll
+                                        // Bisa diganti line-clamp-5 dll
                                         maxHeight='max-h-[200px]'
                                     />
                                 </div>

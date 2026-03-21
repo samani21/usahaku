@@ -99,7 +99,7 @@ const Ten = ({ products, isDarkMode }: Props) => {
                     <ExpandableHTML
                         htmlContent={product?.description}
                         className={`text-sm opacity-60 font-medium`}
-                        maxLines="line-clamp-[2]" // Bisa diganti line-clamp-5 dll
+                        // Bisa diganti line-clamp-5 dll
                         maxHeight='max-h-[200px]'
                     />
                     <div className={`flex items-center justify-between gap-8 border-y ${isDarkMode ? "border-slate-800" : "border-slate-300"} py-8`}>

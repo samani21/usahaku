@@ -101,7 +101,7 @@ const Thirteen = ({ products, isDarkMode }: Props) => {
                             <ExpandableHTML
                                 htmlContent={product?.description}
                                 className={`text-sm opacity-50 leading-relaxed max-w-sm`}
-                                maxLines="line-clamp-[2]" // Bisa diganti line-clamp-5 dll
+                                // Bisa diganti line-clamp-5 dll
                                 maxHeight='max-h-[200px]'
                             />
                         </div>

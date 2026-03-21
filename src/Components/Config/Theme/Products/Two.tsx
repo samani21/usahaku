@@ -96,7 +96,7 @@ const Two = ({ products, isDarkMode }: Props) => {
                     <ExpandableHTML
                         htmlContent={product?.description}
                         className={`opacity-80 text-sm text-left`}
-                        maxLines="line-clamp-[2]" // Bisa diganti line-clamp-5 dll
+                    // Bisa diganti line-clamp-5 dll
                     />
                     {product?.variants && product?.variants?.length > 0 &&
                         <VariantPicker variants={product?.variants} selectedVariant={selectedVariant} setSelectedVariant={setSelectedVariant} isDarkMode={isDarkMode} />

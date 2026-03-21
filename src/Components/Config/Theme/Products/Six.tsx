@@ -102,7 +102,7 @@ const Six = ({ products, isDarkMode }: Props) => {
                         <ExpandableHTML
                             htmlContent={product?.description}
                             className={`font-bold text-sn text-[var(--product-secondary-color)]  leading-tight border-l-8 border-black pl-6`}
-                            maxLines="line-clamp-[2]" // Bisa diganti line-clamp-5 dll
+                            // Bisa diganti line-clamp-5 dll
                             maxHeight='max-h-[200px]'
                         />
                         {product?.variants && product?.variants?.length > 0 ?

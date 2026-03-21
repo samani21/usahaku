@@ -104,7 +104,7 @@ const Four = ({ products, isDarkMode }: Props) => {
                                 <ExpandableHTML
                                     htmlContent={product?.description}
                                     className={`text-xs opacity-50`}
-                                    maxLines="line-clamp-[2]" // Bisa diganti line-clamp-5 dll
+                                // Bisa diganti line-clamp-5 dll
                                 />
                             </div>
                             {product?.percent_discount &&

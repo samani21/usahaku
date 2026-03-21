@@ -106,7 +106,7 @@ const Eleven = ({ products, isDarkMode }: Props) => {
                         <ExpandableHTML
                             htmlContent={product?.description}
                             className={'text-sm opacity-60 leading-relaxed'}
-                            maxLines="line-clamp-[2]" // Bisa diganti line-clamp-5 dll
+                            // Bisa diganti line-clamp-5 dll
                             maxHeight='max-h-[200px]'
                         />
                         {/* <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800 text-xs italic opacity-80">

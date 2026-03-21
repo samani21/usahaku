@@ -110,7 +110,7 @@ const Three = ({ products, isDarkMode }: Props) => {
                         <ExpandableHTML
                             htmlContent={product?.description}
                             className={`opacity-50 text-sm`}
-                            maxLines="line-clamp-[2]" // Bisa diganti line-clamp-5 dll
+                        // Bisa diganti line-clamp-5 dll
                         />
                         {/* <div className="space-y-4">
                             <span className="text-[10px] font-black uppercase opacity-30 tracking-widest">Pilih Paket Layanan</span>

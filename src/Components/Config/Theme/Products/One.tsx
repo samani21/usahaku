@@ -103,7 +103,7 @@ const One = ({ products, isDarkMode }: Props) => {
                     <ExpandableHTML
                         htmlContent={product?.description}
                         className={`${isDarkMode ? "text-slate-400" : "text-slate-500"} text-sm leading-relaxed`}
-                        maxLines="line-clamp-[2]" // Bisa diganti line-clamp-5 dll
+                    // Bisa diganti line-clamp-5 dll
                     />
                     <div className={`space-y-4 pt-4 border-t ${isDarkMode ? 'border-slate-800' : 'border-slate-400'}`}>
                         <div className='md:flex justify-between'>
