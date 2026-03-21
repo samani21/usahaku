@@ -1,16 +1,6 @@
 'use client'
 import React, { useState, useEffect, useRef, SetStateAction, Dispatch } from 'react';
 import { Palette, Home, Utensils, Cpu, Sparkles, Pipette, HeartPulse, Shirt, Coffee, GraduationCap, Upload, CircleCheckBigIcon, Circle, Sun, Moon, Check, CheckCircleIcon, SunMoon } from 'lucide-react';
-import HeaderConfig from '@/Components/Config/Theme/Header';
-import NavIcons from '@/Components/Config/Theme/Header/NavIcons';
-import MainLayout from '@/Components/Layout/MainLayout';
-import HeroConfig from '@/Components/Config/Theme/Hero';
-import { CategoriesType } from '@/types/Admin/CategoriesType';
-import { Get } from '@/utils/Get';
-import { Catalog } from '@/types/Admin/Catalog/Catalog';
-import CategorieConfig from '@/Components/Config/Theme/Categories';
-import { ProductsType } from '@/types/Admin/ProductsType';
-import ProductConfig from '@/Components/Config/Theme/Products';
 import SummaryConfig from '@/Components/Config/Theme/Summary';
 import { Post } from '@/utils/Post';
 import Alert from '@/Components/Component/Alert';
@@ -165,7 +155,7 @@ export default function SummaryPage({ summaryData, isDarkMode, setIsDarkMode, ge
                 setShowAlert({
                     isOpen: true,
                     type: 'error',
-                    message: "Harap pilih salah satu header dibawah"
+                    message: "Harap pilih salah satu summary dibawah"
                 })
                 return;
             }

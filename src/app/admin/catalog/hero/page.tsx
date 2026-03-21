@@ -1,9 +1,6 @@
 'use client'
 import React, { useState, useEffect, useRef, useCallback, Dispatch, SetStateAction } from 'react';
 import { Palette, Home, Utensils, Cpu, Sparkles, Pipette, HeartPulse, Shirt, Coffee, GraduationCap, Upload, CircleCheckBigIcon, Circle, Sun, Moon, Check, SunMoon, X, Trash2, CheckCircleIcon } from 'lucide-react';
-import HeaderConfig from '@/Components/Config/Theme/Header';
-import NavIcons from '@/Components/Config/Theme/Header/NavIcons';
-import MainLayout from '@/Components/Layout/MainLayout';
 import HeroConfig from '@/Components/Config/Theme/Hero';
 import Cropper, { Area } from 'react-easy-crop';
 import { AlertType } from '@/types/Alert';
@@ -241,7 +238,7 @@ export default function HeroPage({ heroData, isDarkMode, setIsDarkMode, getCalog
                 setShowAlert({
                     isOpen: true,
                     type: 'error',
-                    message: "Harap pilih salah satu header dibawah"
+                    message: "Harap pilih salah satu banner dibawah"
                 })
                 return;
             }

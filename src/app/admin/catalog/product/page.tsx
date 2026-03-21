@@ -162,7 +162,7 @@ export default function ProductPage({ productData, productsData, isDarkMode, set
                 setShowAlert({
                     isOpen: true,
                     type: 'error',
-                    message: "Harap pilih salah satu header dibawah"
+                    message: "Harap pilih salah satu produk dibawah"
                 })
                 return;
             }

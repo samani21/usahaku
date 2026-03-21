@@ -109,7 +109,7 @@ export default function Store({ tenant }: Props) {
     }
     return (
         <div className={`flex flex-col  items-center justify-center ${isDarkTheme ? 'bg-slate-950 text-white' : 'bg-slate-50 text-slate-900'}`}>
-            <div className='max-w-7xl w-full space-y-6 relative'>
+            <div className='max-w-7xl  min-h-screen w-full space-y-6 relative'>
                 <div className='fixed z-40  w-full max-w-7xl'>
                     {header && (
                         <HeaderConfig
