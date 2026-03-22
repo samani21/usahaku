@@ -12,9 +12,10 @@ import { getPromoDetails, Promo } from './PromoType';
 type Props = {
     products: ProductsType[];
     isDarkMode: boolean;
+    handleCart?: (p: ProductsType | null, v: Variants | null, qty: number) => void;
 }
 
-const Thirteen = ({ products, isDarkMode }: Props) => {
+const Thirteen = ({ products, isDarkMode, handleCart }: Props) => {
     const [product, setProduct] = useState<ProductsType | null>(null);
     const [selectedVariant, setSelectedVariant] = useState<Variants | null>(null);
     const [quantity, setQuantity] = useState<number>(1);
@@ -61,7 +62,13 @@ const Thirteen = ({ products, isDarkMode }: Props) => {
             document.body.style.overflow = 'unset';
         };
     }, [product]);
-
+    const addCart = () => {
+        setActiveAlert(true);
+        setProduct(null);
+        if (handleCart) {
+            handleCart(product, selectedVariant, quantity)
+        }
+    }
     const currentPrice = selectedVariant?.price ?? product?.price ?? 0;
     const currentFinalPrice = selectedVariant?.final_price ?? product?.final_price ?? 0;
     const currentDiscount = currentPrice - currentFinalPrice;
@@ -90,7 +97,7 @@ const Thirteen = ({ products, isDarkMode }: Props) => {
 
                             {/* Info Diskon yang diperbaiki (Lebih Kontras) */}
                             {label && (
-                                <div className="absolute top-0 right-0 bg-red-600 text-white px-4 py-2 text-[10px] tracking-[0.2em] font-black z-10 shadow-lg">
+                                <div className="absolute top-0 right-0 bg-red-600 text-white px-4 py-2 text-[10px] tracking-[0.2em] font-black z-1 shadow-lg">
                                     {label}
                                 </div>
                             )}
@@ -194,7 +201,7 @@ const Thirteen = ({ products, isDarkMode }: Props) => {
                                 </div>
                             </div>
 
-                            <button disabled={disableButton} onClick={() => setActiveAlert(true)} className={`px-12 disabled:bg-gray-600  py-6 ${isDarkMode ? "bg-white text-black" : "bg-black text-white"} rounded-full font-black uppercase italic tracking-widest text-sm hover:scale-105 transition-transform active:scale-95`}>Mulai Pesan</button>
+                            <button disabled={disableButton} onClick={() => addCart()} className={`px-12 disabled:bg-gray-600  py-6 ${isDarkMode ? "bg-white text-black" : "bg-black text-white"} rounded-full font-black uppercase italic tracking-widest text-sm hover:scale-105 transition-transform active:scale-95`}>Mulai Pesan</button>
                         </div>
                     </div>
                     <div className="hidden sm:grid md:w-1/2 relative min-h-[400px]">
