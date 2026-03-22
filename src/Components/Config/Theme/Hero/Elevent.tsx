@@ -11,9 +11,18 @@ type Props = {
 
 
 const Elevent = ({ isDarkMode, headline, subHeadline, ctaText, imageHero }: Props) => {
+    const handleScroll = () => {
+        const el = document.getElementById("product-section");
+        if (el) {
+            el.scrollIntoView({
+                behavior: "smooth",
+                block: "start"
+            });
+        }
+    };
     return (
         <section>
-            <div className={`p-8 rounded-[1rem] transition-all flex flex-col md:flex-row items-center gap-8 ${isDarkMode ? 'bg-slate-900 shadow-inner' : `shadow-sm bg-[var(--hero-primary-color)]/5`}`}>
+            <div className={`p-8 rounded-[1rem] transition-all flex flex-col md:flex-row items-center gap-8 ${isDarkMode ? 'bg-slate-900 shadow-inner text-white' : `shadow-sm bg-[var(--hero-primary-color)]/5 text-slate-900`}`}>
 
                 {
                     imageHero &&
@@ -25,7 +34,7 @@ const Elevent = ({ isDarkMode, headline, subHeadline, ctaText, imageHero }: Prop
                     <h2 className={`text-4xl md:text-5xl font-black  mb-4`}> {headline}</h2>
                     <p className={`text-lg mb-8`}>{subHeadline}</p>
                     <div className="flex gap-4 justify-center md:justify-start">
-                        <button className={`px-8 py-4 bg-[var(--hero-primary-color)] text-white rounded-full font-bold shadow-lg`}>{ctaText}</button>
+                        <button onClick={handleScroll} className={`px-8 py-4 bg-[var(--hero-primary-color)] text-white rounded-full font-bold shadow-lg`}>{ctaText}</button>
                         {/* <button className="p-4 bg-white dark:bg-slate-800 rounded-full text-orange-600 shadow-sm"><Heart /></button> */}
                     </div>
                 </div>
