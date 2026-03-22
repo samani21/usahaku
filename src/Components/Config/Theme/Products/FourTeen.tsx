@@ -70,12 +70,14 @@ const Fourteen = ({ products, isDarkMode, handleCart }: Props) => {
     const addCart = () => {
         setActiveAlert(true);
         setProduct(null);
+        setSelectedVariant(null);
+        setQuantity(1)
         if (handleCart) {
             handleCart(product, selectedVariant, quantity)
         }
     }
     return (
-        <div  className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 h-full ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>
+        <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 h-full ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>
             {products?.map((p, i) => {
                 const { finalPrice, label } = getPromoDetails(p);
                 const bgColor = isDarkMode ? 'bg-slate-800' : 'bg-white';

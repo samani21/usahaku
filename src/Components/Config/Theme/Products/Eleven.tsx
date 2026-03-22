@@ -65,6 +65,8 @@ const Eleven = ({ products, isDarkMode, handleCart }: Props) => {
     const addCart = () => {
         setActiveAlert(true);
         setProduct(null);
+        setSelectedVariant(null);
+        setQuantity(1)
         if (handleCart) {
             handleCart(product, selectedVariant, quantity)
         }

@@ -14,6 +14,15 @@ type Props = {
 
 
 const Nine = ({ headline, subHeadline, ctaText, imageHero, title }: Props) => {
+    const handleScroll = () => {
+        const el = document.getElementById("product-section");
+        if (el) {
+            el.scrollIntoView({
+                behavior: "smooth",
+                block: "start"
+            });
+        }
+    };
     return (
         <section>
             <div className="bg-slate-900 text-white rounded-xl overflow-hidden grid md:grid-cols-12">
@@ -25,7 +34,7 @@ const Nine = ({ headline, subHeadline, ctaText, imageHero, title }: Props) => {
                     <div className="space-y-4 mb-8">
                         <div className="flex items-center gap-3">{subHeadline}</div>
                     </div>
-                    <button className={`w-full md:w-auto px-10 py-4 font-bold rounded-lg  transition-colors hover:brightness-110 bg-[var(--hero-primary-color)] text-[var(--hero-secondary-color)]`}>
+                    <button onClick={handleScroll} className={`w-full md:w-auto px-10 py-4 font-bold rounded-lg  transition-colors hover:brightness-110 bg-[var(--hero-primary-color)] text-[var(--hero-secondary-color)]`}>
                         {ctaText}
                     </button>
                 </div>

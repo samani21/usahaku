@@ -27,7 +27,7 @@ export const getPromoDetails = (p: ProductsType) => {
     } else if (p.discount_price) {
         return {
             finalPrice: p.price - p.discount_price,
-            label: `-${formatIDR(p.discount_price)}`,
+            label: `-${p.discount_price / 1000}K`,
             info: `Potongan ${formatIDR(p.discount_price)}`
         };
     }

@@ -20,7 +20,7 @@ const Teen = ({ categories, isDarkMode, onClick }: Props) => {
         }
     };
     return (
-        <section className="py-12 px-6 max-w-5xl mx-auto">
+        <section className="py-12 px-6  mx-auto">
             <div className="flex flex-col">
                 <div
                     onClick={() => {
@@ -32,7 +32,7 @@ const Teen = ({ categories, isDarkMode, onClick }: Props) => {
                     {/* Title Section */}
                     <div className="flex items-center gap-6 z-1">
                         <span className={`hidden sm:block font-mono text-sm opacity-40`}>
-                            0
+                            01
                         </span>
                         <h2 className={`text-4xl md:text-7xl font-bold uppercase tracking-tighter transition-all duration-500  ${isDarkMode ? " stroke-white stroke-1 group-hover:italic" : " border-black group-hover:italic"
                             }`}
