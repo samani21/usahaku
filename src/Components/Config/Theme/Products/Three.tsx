@@ -2,18 +2,22 @@ import ModalWrapper from './ModalWrapper';
 import { useEffect, useMemo, useState } from 'react';
 import QtySelector from './QtySelector';
 import VariantPicker from './VariantPicker';
-import { ArrowRight, CircleCheckBig, CircleCheckIcon, Sparkles } from 'lucide-react';
+import { ArrowRight, CircleCheckBig, CircleCheckIcon, Sparkles, Tag } from 'lucide-react';
 import AlertWrapper from './AlertWrapper';
 import { ProductsType, Variants } from '@/types/Admin/ProductsType';
 import { formatIDR } from '@/types/FormtRupiah';
 import ExpandableHTML from './ExpandableHTML';
+import { getPromoDetails, Promo } from './PromoType';
 
 type Props = {
     products: ProductsType[];
     isDarkMode: boolean;
+    handleCart?: (p: ProductsType | null, v: Variants | null, qty: number) => void;
+
+
 }
 
-const Three = ({ products, isDarkMode }: Props) => {
+const Three = ({ products, isDarkMode, handleCart }: Props) => {
     const [product, setProduct] = useState<ProductsType | null>(null);
     const [selectedVariant, setSelectedVariant] = useState<Variants | null>(null);
     const [quantity, setQuantity] = useState<number>(1);
@@ -52,17 +56,66 @@ const Three = ({ products, isDarkMode }: Props) => {
             document.body.style.overflow = 'unset';
         };
     }, [product]);
+    const addCart = () => {
+        setActiveAlert(true);
+        setProduct(null);
+        setSelectedVariant(null);
+        setQuantity(1)
+        if (handleCart) {
+            handleCart(product, selectedVariant, quantity)
+        }
+    }
     return (
         <div className='grid grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-6 md:gap-2 h-full'>
-            {products?.map((p, i) => (
-                <div onClick={() => setProduct(p)} key={i} className="group cursor-pointer flex flex-col items-center justify-center">
-                    <div className={`w-48 h-48 rounded-full overflow-hidden shadow-2xl group-hover:-translate-y-4 transition-transform border-8 ${isDarkMode ? "border-slate-800" : "border-white"}`}>
-                        <img src={p?.image} className="w-full h-full object-cover" alt="" />
+            {products?.map((p, i) => {
+                const { finalPrice, label } = getPromoDetails(p);
+
+                return (
+                    <div
+                        onClick={() => setProduct(p)}
+                        key={p.id}
+                        className="group cursor-pointer flex flex-col items-center justify-center"
+                    >
+                        {/* Image Container Circle */}
+                        <div className={`relative w-48 h-48 sm:w-56 sm:h-56 rounded-full shadow-2xl transition-transform duration-500 group-hover:-translate-y-4 border-[10px] ${isDarkMode ? "border-slate-800" : "border-white"}`}>
+
+                            {/* Badge Diskon - Permanen (Tidak perlu hover) */}
+                            {label && (
+                                <div className="absolute top-2 right-2 z-1 bg-red-600 text-white text-[10px] sm:text-xs font-black px-3 py-1.5 rounded-full uppercase italic shadow-lg border-2 border-white animate-bounce-slow">
+                                    {label}
+                                </div>
+                            )}
+
+                            <div className="w-full h-full rounded-full overflow-hidden">
+                                <img
+                                    src={p?.image}
+                                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                                    alt={p.name}
+                                />
+                            </div>
+                        </div>
+
+                        {/* Content Area */}
+                        <div className="mt-8 flex flex-col items-center text-center space-y-2">
+                            <span className="text-[10px] font-bold opacity-40 uppercase tracking-[0.2em]">{p.category}</span>
+                            <h3 className="font-black text-xl uppercase italic leading-tight group-hover:text-[var(--product-primary-color)] transition-colors">
+                                {p.name}
+                            </h3>
+
+                            <div className="flex flex-col items-center gap-1">
+                                {label && (
+                                    <span className="text-[10px] line-through opacity-30 font-bold">
+                                        {formatIDR(p.price)}
+                                    </span>
+                                )}
+                                <div className="px-6 py-2 rounded-full font-black text-sm transition-all bg-[var(--product-primary-color)] text-white group-hover:px-8 group-hover:bg-black group-hover:shadow-lg">
+                                    {formatIDR(finalPrice)}
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <h3 className="mt-6 font-bold text-center">{p?.name}</h3>
-                    <div className="mt-2 text-xs font-black px-4 py-1 rounded-full bg-[var(--product-primary-color)] text-[var(--product-secondary-color)]">{formatIDR(p?.final_price ?? 0)}</div>
-                </div>
-            ))}
+                );
+            })}
 
             <ModalWrapper
                 activeModal={product ? true : false}
@@ -103,8 +156,13 @@ const Three = ({ products, isDarkMode }: Props) => {
                                 </div>
                             </div>
                             {
-                                product?.percent_discount &&
-                                <div className="bg-red-500 text-white px-4 py-2 rounded-2xl font-black italic">-{product?.percent_discount}%</div>
+                                product?.discount_price &&
+                                <div className="bg-emerald-500 flex items-center gap-2 text-white px-4 py-2 rounded-2xl font-black italic">
+                                    <span className='mt-1'>
+                                        <Tag />
+                                    </span>
+                                    -{Promo(product, selectedVariant)}
+                                </div>
                             }
                         </div>
                         <ExpandableHTML
@@ -132,18 +190,18 @@ const Three = ({ products, isDarkMode }: Props) => {
                                     <span className="text-3xl font-black">{formatIDR((product?.final_price ?? 0) * quantity)}</span>
                             }
                         </div>
-                        <button disabled={disableButton} onClick={() => setActiveAlert(true)} className={`py-5 w-full bg-[var(--product-primary-color)] disabled:bg-gray-400 text-white rounded-3xl font-black flex items-center justify-center gap-3`}>
+                        <button disabled={disableButton} onClick={() => addCart()} className={`py-5 w-full bg-[var(--product-primary-color)] disabled:bg-gray-400 text-white rounded-3xl font-black flex items-center justify-center gap-3`}>
                             Order <ArrowRight size={20} />
                         </button>
                     </div>
                 </div>
             </ModalWrapper>
             <AlertWrapper activeAlert={activeAlert} position="bottom-center">
-                <div className={`backdrop-blur-xl bg-[var(--product-primary-color)] border border-emerald-500/20 p-4 rounded-full flex items-center gap-4 px-6 shadow-2xl`}>
+                <div className={`backdrop-blur-xl bg-[var(--product-primary-color)] border border-emerald-500/20 p-4 rounded-full flex items-center justify-between gap-4 px-6 shadow-2xl`}>
                     <Sparkles className={'text-[var(--product-secondary-color)]'} size={20} />
                     <p className="text-sm font-bold">Produk masuk keranjang!</p>
                     <div className="w-px h-4 bg-emerald-500/20" />
-                    <button className={`text-[10px]  uppercase text-[var(--product-secondary-color)]`}>Checkout Now</button>
+                    <button onClick={() => setActiveAlert(false)} className={`text-[10px] text-end  uppercase text-[var(--product-secondary-color)]`}>Tutup</button>
                 </div>
             </AlertWrapper>
         </div>
