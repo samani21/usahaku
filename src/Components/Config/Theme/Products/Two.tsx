@@ -8,14 +8,17 @@ import { col } from 'framer-motion/client';
 import { ProductsType, Variants } from '@/types/Admin/ProductsType';
 import { formatIDR } from '@/types/FormtRupiah';
 import ExpandableHTML from './ExpandableHTML';
+import { getPromoDetails } from './PromoType';
 
 type Props = {
     products: ProductsType[];
     isDarkMode: boolean;
+    handleCart?: (p: ProductsType | null, v: Variants | null, qty: number) => void;
 }
 
-const Two = ({ products, isDarkMode }: Props) => {
+const Two = ({ products, isDarkMode, handleCart }: Props) => {
     const [product, setProduct] = useState<ProductsType | null>(null)
+    const [productAlert, setProductAlert] = useState<ProductsType | null>(null)
     const [selectedVariant, setSelectedVariant] = useState<Variants | null>(null)
     const [quantity, setQuantity] = useState<number>(1);
     const [activeAlert, setActiveAlert] = useState<boolean>(false);
@@ -34,10 +37,10 @@ const Two = ({ products, isDarkMode }: Props) => {
     }, [product, selectedVariant])
     const mockItem = useMemo(() => {
         return {
-            name: product?.name,
-            price: product?.final_price,
-            image: product?.image,
-            category: product?.category,
+            name: productAlert?.name,
+            price: productAlert?.final_price,
+            image: productAlert?.image,
+            category: productAlert?.category,
             quantity: quantity
         }
     }, [activeAlert])
@@ -61,18 +64,67 @@ const Two = ({ products, isDarkMode }: Props) => {
             document.body.style.overflow = 'unset';
         };
     }, [product]);
+    const addCart = () => {
+        setActiveAlert(true);
+        setProduct(null);
+        setSelectedVariant(null);
+        setQuantity(1)
+        if (handleCart) {
+            handleCart(product, selectedVariant, quantity)
+        }
+    }
     return (
         <div className='grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-2 h-full'>
-            {products?.map((p, i) => (
-                <div key={i} onClick={() => setProduct(p)} className="group cursor-pointer text-center flex flex-col items-center">
-                    <div className="w-full aspect-[6/4] sm:aspect-[3/4] rounded-[3rem] overflow-hidden mb-2">
-                        <img src={p?.image} className="w-full h-full object-cover group-hover:scale-110 transition-transform" alt="" />
-                    </div>
-                    <h3 className="font-black italic uppercase text-sm ">{p?.name}</h3>
-                    <p className="opacity-50 text-xs">{formatIDR(p?.final_price ?? 0)}</p>
-                </div>
+            {products?.map((p, i) => {
+                const { finalPrice, label } = getPromoDetails(p);
 
-            ))}
+                return (
+                    <div
+                        key={p.id}
+                        onClick={() => {
+                            setProduct(p)
+                            setProductAlert(p)
+                        }}
+                        className="group cursor-pointer text-center flex flex-col items-center"
+                    >
+                        {/* Image Container with Custom Aspect Ratio */}
+                        <div className="relative w-full aspect-[6/4] sm:aspect-[3/4] rounded-[3rem] overflow-hidden mb-4 shadow-xl border-4 border-transparent group-hover:border-[var(--product-primary-color)] transition-all duration-500">
+                            {/* Label Diskon Permanen */}
+                            {label && (
+                                <div className="absolute top-4 right-4 z-1 bg-red-600 text-white text-[10px] font-black px-3 py-1.5 rounded-full uppercase italic shadow-lg">
+                                    {label}
+                                </div>
+                            )}
+
+                            <img
+                                src={p?.image}
+                                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                                alt={p.name}
+                            />
+
+                            {/* Bottom Gradient Overlay for readability on hover */}
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                        </div>
+
+                        {/* Text Content */}
+                        <div className="px-2">
+                            <h3 className="font-black italic uppercase text-sm tracking-tight mb-1 group-hover:text-[var(--product-primary-color)] transition-colors">
+                                {p?.name}
+                            </h3>
+                            <div className="flex flex-col items-center">
+                                {label && (
+                                    <span className="text-[10px] line-through opacity-30 font-bold -mb-1">
+                                        {formatIDR(p.price)}
+                                    </span>
+                                )}
+                                <p className={`font-black text-sm ${label ? 'text-red-500' : 'opacity-60'}`}>
+                                    {formatIDR(finalPrice)}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                );
+            })}
 
             <ModalWrapper
                 activeModal={product ? true : false}
@@ -96,7 +148,6 @@ const Two = ({ products, isDarkMode }: Props) => {
                     <ExpandableHTML
                         htmlContent={product?.description}
                         className={`opacity-80 text-sm text-left`}
-                    // Bisa diganti line-clamp-5 dll
                     />
                     {product?.variants && product?.variants?.length > 0 &&
                         <VariantPicker variants={product?.variants} selectedVariant={selectedVariant} setSelectedVariant={setSelectedVariant} isDarkMode={isDarkMode} />
@@ -120,12 +171,12 @@ const Two = ({ products, isDarkMode }: Props) => {
                                 product && product.is_qty ?
                                     <div className="text-4xl font-black">{formatIDR((product?.final_price ?? 0) * quantity)}</div> : ""
                         }
-                        <button disabled={disableButton} onClick={() => setActiveAlert(true)} className={`w-full py-5 disabled:bg-gray-600  ${isDarkMode ? "bg-white text-black" : "bg-black text-white"} rounded-full font-black uppercase tracking-widest text-sm`}>Masukkan Keranjang</button>
+                        <button disabled={disableButton} onClick={() => addCart()} className={`w-full py-5 disabled:bg-gray-600  ${isDarkMode ? "bg-white text-black" : "bg-black text-white"} rounded-full font-black uppercase tracking-widest text-sm`}>Masukkan Keranjang</button>
                     </div>
                 </div>
             </ModalWrapper>
             <AlertWrapper activeAlert={activeAlert} position="top-right">
-                <div className={`rounded-3xl shadow-2xl border-2 ${isDarkMode ? "bg-slate-900 border-slate-800" : "bg-white border-slate-100"} overflow-hidden`}>
+                <div className={`rounded-3xl shadow-2xl border-2 ${isDarkMode ? "bg-slate-900 border-slate-800 text-white" : "bg-white border-slate-100 text-slate-900"} overflow-hidden`}>
                     <div className={`p-5 ${isDarkMode ? "bg-slate-800/50" : "bg-slate-50"} flex justify-between items-center`}>
                         <span className="text-xs font-black uppercase italic">Isi Keranjang (1)</span>
                         <X size={16} className="cursor-pointer opacity-30" onClick={() => setActiveAlert(false)} />

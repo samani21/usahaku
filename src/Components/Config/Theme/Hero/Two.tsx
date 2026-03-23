@@ -11,6 +11,15 @@ type Props = {
 
 
 const Two = ({ headline, subHeadline, ctaText, imageHero }: Props) => {
+    const handleScroll = () => {
+        const el = document.getElementById("product-section");
+        if (el) {
+            el.scrollIntoView({
+                behavior: "smooth",
+                block: "start"
+            });
+        }
+    };
     return (
         <section>
             <div className="relative h-[500px] rounded-3xl overflow-hidden group">
@@ -26,7 +35,7 @@ const Two = ({ headline, subHeadline, ctaText, imageHero }: Props) => {
                     <p className="text-white/80 max-w-lg mb-8">
                         {subHeadline}
                     </p>
-                    <button className="px-10 py-3 bg-white text-black font-bold tracking-widest uppercase text-sm hover:bg-slate-100 transition-colors">
+                    <button onClick={handleScroll} className="px-10 py-3 bg-white text-black font-bold tracking-widest uppercase text-sm hover:bg-slate-100 transition-colors">
                         {ctaText}
                     </button>
                 </div>
