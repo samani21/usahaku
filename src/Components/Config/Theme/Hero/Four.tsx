@@ -11,9 +11,18 @@ type Props = {
 
 
 const Four = ({ isDarkMode, headline, subHeadline, ctaText }: Props) => {
+    const handleScroll = () => {
+        const el = document.getElementById("product-section");
+        if (el) {
+            el.scrollIntoView({
+                behavior: "smooth",
+                block: "start"
+            });
+        }
+    };
     return (
         <section>
-            <div className={`p-8 md:p-16 rounded-2xl border-2 border-dashed transition-all ${isDarkMode ? 'bg-slate-900 border-slate-700 ' : `bg-[var(--hero-primary-color)]/5 border-[var(--hero-primary-color)] `}`}>
+            <div className={`p-8 md:p-16 rounded-2xl border-2 border-dashed transition-all ${isDarkMode ? 'bg-slate-900 border-slate-700 text-white' : `bg-[var(--hero-primary-color)]/5 border-[var(--hero-primary-color)] text-slate-900`}`}>
                 <div className="max-w-3xl mx-auto text-center">
                     <h2 className={`text-4xl md:text-6xl font-serif ${isDarkMode ? 'text-[var(--hero-secondary-color)]' : 'text-[var(--hero-primary-color)]'} mb-6`}>{headline}</h2>
                     <div className="flex items-center justify-center gap-4 mb-8">
@@ -24,7 +33,7 @@ const Four = ({ isDarkMode, headline, subHeadline, ctaText }: Props) => {
                     <p className={` text-lg mb-10 leading-relaxed font-serif`}>{subHeadline}</p>
                     <div className="relative inline-block group">
                         <div className={`absolute inset-0 translate-x-1 translate-y-1 transition-transform group-hover:translate-x-0 group-hover:translate-y-0 bg-[var(--hero-primary-color)]`} />
-                        <button className="relative px-8 py-3 bg-white border-2 border-current text-black font-bold uppercase tracking-widest">{ctaText}</button>
+                        <button onClick={handleScroll} className="relative px-8 py-3 bg-white border-2 border-current text-black font-bold uppercase tracking-widest">{ctaText}</button>
                     </div>
                 </div>
             </div>
