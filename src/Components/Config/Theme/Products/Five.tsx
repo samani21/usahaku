@@ -8,14 +8,17 @@ import AlertWrapper from './AlertWrapper';
 import { ProductsType, Variants } from '@/types/Admin/ProductsType';
 import { formatIDR } from '@/types/FormtRupiah';
 import ExpandableHTML from './ExpandableHTML';
+import { getPromoDetails } from './PromoType';
 
 type Props = {
     products: ProductsType[];
     isDarkMode: boolean;
+    handleCart?: (p: ProductsType | null, v: Variants | null, qty: number) => void;
 }
 
-const Five = ({ products, isDarkMode }: Props) => {
+const Five = ({ products, isDarkMode, handleCart }: Props) => {
     const [product, setProduct] = useState<ProductsType | null>(null);
+    const [productAlert, setProductAlert] = useState<ProductsType | null>(null);
     const [selectedVariant, setSelectedVariant] = useState<Variants | null>(null);
     const [quantity, setQuantity] = useState<number>(1);
     const [activeAlert, setActiveAlert] = useState<boolean>(false);
@@ -34,10 +37,10 @@ const Five = ({ products, isDarkMode }: Props) => {
     }, [product, selectedVariant])
     const mockItem = useMemo(() => {
         return {
-            name: product?.name,
-            price: product?.final_price,
-            image: product?.image,
-            category: product?.category,
+            name: productAlert?.name,
+            price: productAlert?.final_price,
+            image: productAlert?.image,
+            category: productAlert?.category,
             quantity: quantity
         }
     }, [activeAlert])
@@ -62,18 +65,68 @@ const Five = ({ products, isDarkMode }: Props) => {
             document.body.style.overflow = 'unset';
         };
     }, [product]);
+
+    const addCart = () => {
+        setActiveAlert(true);
+        setProduct(null);
+        setSelectedVariant(null);
+        setQuantity(1)
+        if (handleCart) {
+            handleCart(product, selectedVariant, quantity)
+        }
+    }
+
     return (
         <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 h-full'>
-            {products?.map((p, i) => (
-                <div onClick={() => setProduct(p)} key={i} className=" bg-white p-4 pb-8 shadow-2xl -rotate-2 hover:rotate-0 transition-transform cursor-pointer">
-                    <div className="aspect-square bg-slate-200 mb-6 overflow-hidden"><img src={p?.image} className="w-full h-full object-cover" alt="" /></div>
-                    <div className="px-2">
-                        <p className="font-serif text-slate-800 text-lg font-black italic tracking-tighter">{p?.name}</p>
-                        <p className="font-serif text-slate-800 text-lg font-black italic tracking-tighter">{formatIDR(p?.final_price ?? 0)}</p>
-                    </div>
-                </div>
+            {products?.map((p, i) => {
+                const { finalPrice, label } = getPromoDetails(p);
 
-            ))}
+                return (
+                    <div
+                        onClick={() => {
+                            setProduct(p)
+                            setProductAlert(p)
+                        }}
+                        key={p.id}
+                        className={`group relative p-4 pb-10 transition-all duration-500 cursor-pointer shadow-2xl hover:shadow-black/20 ${i % 2 === 0 ? '-rotate-2 hover:rotate-0' : 'rotate-2 hover:rotate-0'
+                            } ${isDarkMode ? 'bg-zinc-900 border border-white/10' : 'bg-white'}`}
+                    >
+                        {/* Polaroid Frame Image */}
+                        <div className={`aspect-square mb-6 overflow-hidden ${isDarkMode ? 'bg-zinc-800' : 'bg-slate-100'}`}>
+                            <img
+                                src={p.image}
+                                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                                alt={p.name}
+                            />
+                        </div>
+
+                        {/* Info Text with Serif Style */}
+                        <div className="px-2 space-y-1">
+                            {label && (
+                                <span className="md:hidden text-[10px] font-black bg-red-600 text-white px-2 py-0.5 rounded italic">
+                                    {label}
+                                </span>
+                            )}
+                            <p className={`font-serif text-xl font-black italic tracking-tighter transition-colors ${isDarkMode ? 'text-white' : 'text-slate-800'}`}>
+                                {p.name}
+                            </p>
+                            <div className="flex items-center justify-between">
+                                <p className={`font-serif text-lg font-black italic tracking-tighter ${isDarkMode ? 'text-red-400' : 'text-red-600'}`}>
+                                    {formatIDR(finalPrice)}
+                                </p>
+                                {label && (
+                                    <span className="hidden text-[10px] font-black bg-red-600 text-white px-2 py-0.5 rounded italic">
+                                        {label}
+                                    </span>
+                                )}
+                            </div>
+                        </div>
+
+                        {/* Decorative Elements */}
+                        <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-16 h-6 bg-white/20 backdrop-blur-sm border border-white/10 rotate-1 opacity-0 group-hover:opacity-100 transition-opacity" />
+                    </div>
+                );
+            })}
 
             <ModalWrapper
                 activeModal={product ? true : false}
@@ -88,7 +141,7 @@ const Five = ({ products, isDarkMode }: Props) => {
                         <img src={selectedVariant?.image ?? product?.image} className="w-full h-full object-cover" alt="" />
                         <div className={`absolute inset-0 bg-gradient-to-t ${isDarkMode ? "from-slate-900" : "from-white"} to-transparent`} />
                     </div>
-                    <div className="px-8 pb-12 -mt-20 relative space-y-6 text-center">
+                    <div className="px-8 overflow-x-hidden no-scrollbar pb-12 -mt-20 relative space-y-6 text-center">
                         <div className={`inline-flex p-4 rounded-3xl ${isDarkMode ? "bg-slate-800 border border-slate-700" : "bg-white"} shadow-xl  `}>
                             <h2 className="text-2xl font-black tracking-tight">{product?.name}</h2>
                         </div>
@@ -103,6 +156,12 @@ const Five = ({ products, isDarkMode }: Props) => {
                                 <div className="text-1xl font-black line-through">{formatIDR(selectedVariant?.price ?? product?.price ?? 0)}</div>
                             }
                             <div className={`text-3xl font-black ${isDarkMode ? "text-[var(--product-primary-color)]" : "text-[var(--product-primary-color)]"}`}>{formatIDR(selectedVariant?.final_price ?? product?.final_price ?? 0)}</div>
+                        </div>
+                        <div>
+                            <ExpandableHTML
+                                htmlContent={product?.description}
+                                className="text-md text-left opacity-60 leading-relaxed  font-medium"
+                            />
                         </div>
                         <div className="flex flex-col items-center gap-6">
                             {product?.variants && product?.variants?.length > 0 ?
@@ -119,21 +178,21 @@ const Five = ({ products, isDarkMode }: Props) => {
                                 }
                                 <div className="text-4xl font-black">{formatIDR((selectedVariant?.final_price ?? product?.final_price ?? 0) * quantity)}</div>
                             </div>
-                            <button disabled={disableButton} onClick={() => setActiveAlert(true)} className={`w-full disabled:bg-gray-600 max-w-md py-4 rounded-2xl text-white ${isDarkMode ? 'bg-[var(--product-primary-color)]' : 'bg-[var(--product-primary-color)]'} font-bold uppercase tracking-widest flex items-center justify-center gap-3`}>
-                                <ShoppingCart size={18} /> Tambah Ke Tas
+                            <button disabled={disableButton} onClick={() => addCart()} className={`w-full disabled:bg-gray-600 max-w-md py-4 rounded-2xl text-white ${isDarkMode ? 'bg-[var(--product-primary-color)]' : 'bg-[var(--product-primary-color)]'} font-bold uppercase tracking-widest flex items-center justify-center gap-3`}>
+                                <ShoppingCart size={18} /> Tambah Ke Keranjang
                             </button>
                         </div>
                     </div>
                 </div>
-            </ModalWrapper>
+            </ModalWrapper >
             <AlertWrapper activeAlert={activeAlert} position="top-center">
-                <div className={`${isDarkMode ? "bg-slate-900" : "bg-white"} px-6 py-4 rounded-full shadow-2xl flex items-center gap-4 border-b-4 border-[var(--product-primary-color)]`}>
+                <div className={`${isDarkMode ? "bg-slate-900 text-white" : "text-slate-900 bg-white"} px-6 py-4 rounded-full shadow-2xl flex items-center gap-4 border-b-4 border-[var(--product-primary-color)]`}>
                     <ShoppingBag size={18} className="text-emerald-500" />
                     <span className="text-sm font-medium">{mockItem?.name} dimasukkan ke keranjang</span>
                     <ArrowRight size={16} />
                 </div>
             </AlertWrapper>
-        </div>
+        </div >
     )
 }
 
