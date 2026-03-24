@@ -88,7 +88,7 @@ const Five = ({ products, isDarkMode, handleCart }: Props) => {
                             setProductAlert(p)
                         }}
                         key={p.id}
-                        className={`group relative p-4 pb-10 transition-all duration-500 cursor-pointer shadow-2xl hover:shadow-black/20 ${i % 2 === 0 ? '-rotate-2 hover:rotate-0' : 'rotate-2 hover:rotate-0'
+                        className={`group relative p-4 pb-4 transition-all duration-500 cursor-pointer shadow-2xl hover:shadow-black/20 ${i % 2 === 0 ? '-rotate-2 hover:rotate-0' : 'rotate-2 hover:rotate-0'
                             } ${isDarkMode ? 'bg-zinc-900 border border-white/10' : 'bg-white'}`}
                     >
                         {/* Polaroid Frame Image */}
@@ -103,7 +103,7 @@ const Five = ({ products, isDarkMode, handleCart }: Props) => {
                         {/* Info Text with Serif Style */}
                         <div className="px-2 space-y-1">
                             {label && (
-                                <span className="md:hidden text-[10px] font-black bg-red-600 text-white px-2 py-0.5 rounded italic">
+                                <span className="md:hidden text-[10px] font-black bg-[var(--product-primary-color)] text-white px-2 py-0.5 rounded italic">
                                     {label}
                                 </span>
                             )}
@@ -111,11 +111,11 @@ const Five = ({ products, isDarkMode, handleCart }: Props) => {
                                 {p.name}
                             </p>
                             <div className="flex items-center justify-between">
-                                <p className={`font-serif text-lg font-black italic tracking-tighter ${isDarkMode ? 'text-red-400' : 'text-red-600'}`}>
+                                <p className={`font-serif text-lg font-black italic tracking-tighter ${isDarkMode ? 'text-rose-400' : 'text-rose-600'}`}>
                                     {formatIDR(finalPrice)}
                                 </p>
                                 {label && (
-                                    <span className="hidden text-[10px] font-black bg-red-600 text-white px-2 py-0.5 rounded italic">
+                                    <span className="hidden md:grid text-[10px] font-black bg-[var(--product-primary-color)] text-white px-2 py-0.5 rounded italic">
                                         {label}
                                     </span>
                                 )}
