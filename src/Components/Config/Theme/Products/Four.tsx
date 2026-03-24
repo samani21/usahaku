@@ -149,10 +149,10 @@ const Four = ({ products, isDarkMode, handleCart }: Props) => {
                     setQuantity(1)
                 }}
                 isDarkMode={isDarkMode}>
-                <div className="w-full p-4 sm:p-8 grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="w-full p-4 sm:p-8 grid grid-cols-1 md:grid-cols-4 gap-6">
 
                     {/* Kolom 1 & 2: Main Image Area */}
-                    <div className="md:col-span-2 space-y-6">
+                    <div className="col-span-2 space-y-6">
                         <div className="rounded-[2rem] overflow-hidden bg-slate-100 dark:bg-slate-800 aspect-[4/3] md:aspect-auto md:h-full">
                             <img
                                 src={selectedVariant?.image ?? product?.image}
@@ -163,7 +163,7 @@ const Four = ({ products, isDarkMode, handleCart }: Props) => {
                     </div>
 
                     {/* Kolom 3: Order Sidebar Panel */}
-                    <div className={`${isDarkMode ? "bg-slate-800" : "bg-slate-100"} rounded-[2.5rem] overflow-x-hidden no-scrollbar shadow-xl`}>
+                    <div className={`${isDarkMode ? "bg-slate-800" : "bg-slate-100"} col-span-2 rounded-[2.5rem] overflow-x-hidden no-scrollbar shadow-xl`}>
                         <div className="space-y-4 p-6">
                             {/* Product Info Card */}
                             <div className={`${isDarkMode ? "bg-slate-800" : "bg-slate-50"} rounded-2xl`}>
@@ -188,7 +188,7 @@ const Four = ({ products, isDarkMode, handleCart }: Props) => {
 
                             {/* Discount Badge */}
                             {product?.discount_price && (
-                                <div className={`p-2 bg-green-600 text-white rounded-lg flex items-center flex  gap-3 shadow-lg `}>
+                                <div className={`p-2 rounded-lg flex items-end flex  gap-3 text-[var(--product-primary-color)] `}>
                                     <Tag size={24} />
                                     <div className="text-xl font-black italic tracking-tighter">
                                         - {Promo(product, selectedVariant)}
@@ -208,7 +208,7 @@ const Four = ({ products, isDarkMode, handleCart }: Props) => {
                                 )}
 
                                 <div className=''>
-                                    <div className={`flex w-full items-center gap-4 ${isDarkMode ? "bg-slate-600" : "bg-slate-100"} p-1 rounded-2xl w-fit`}>
+                                    <div className={`flex w-full items-center gap-4 ${isDarkMode ? "bg-slate-600" : "bg-slate-200"} p-1 rounded-2xl w-fit`}>
                                         <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className={` p-2 ${isDarkMode ? 'hover:bg-slate-700 text-white' : "hover:bg-white text-slate-900"} rounded-xl transition-all shadow-sm `}>
                                             <Minus size={16} />
                                         </button>

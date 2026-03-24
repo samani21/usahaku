@@ -22,7 +22,7 @@ const Four = ({ isDarkMode, headline, subHeadline, ctaText }: Props) => {
     };
     return (
         <section>
-            <div className={`p-8 md:p-16 rounded-2xl border-2 border-dashed transition-all ${isDarkMode ? 'bg-slate-900 border-slate-700 text-white' : `bg-[var(--hero-primary-color)]/5 border-[var(--hero-primary-color)] text-slate-900`}`}>
+            <div className={`p-8 md:p-16 rounded-2xl border-2 border-dashed transition-all ${isDarkMode ? 'bg-slate-900 border-slate-700 text-white' : `bg-[var(--hero-primary-color)]/5 border-[var(--hero-primary-color)]`}`}>
                 <div className="max-w-3xl mx-auto text-center">
                     <h2 className={`text-4xl md:text-6xl font-serif ${isDarkMode ? 'text-[var(--hero-secondary-color)]' : 'text-[var(--hero-primary-color)]'} mb-6`}>{headline}</h2>
                     <div className="flex items-center justify-center gap-4 mb-8">
