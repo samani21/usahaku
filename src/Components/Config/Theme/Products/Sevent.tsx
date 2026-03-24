@@ -17,6 +17,7 @@ type Props = {
 
 const Sevent = ({ products, isDarkMode, handleCart }: Props) => {
     const [product, setProduct] = useState<ProductsType | null>(null);
+    const [productAlert, setProductAlert] = useState<ProductsType | null>(null);
     const [selectedVariant, setSelectedVariant] = useState<Variants | null>(null);
     const [quantity, setQuantity] = useState<number>(1);
     const [activeAlert, setActiveAlert] = useState<boolean>(false);
@@ -35,10 +36,10 @@ const Sevent = ({ products, isDarkMode, handleCart }: Props) => {
     }, [product, selectedVariant])
     const mockItem = useMemo(() => {
         return {
-            name: product?.name,
-            price: product?.final_price,
-            image: product?.image,
-            category: product?.category,
+            name: productAlert?.name,
+            price: productAlert?.final_price,
+            image: productAlert?.image,
+            category: productAlert?.category,
             quantity: quantity
         }
     }, [activeAlert])
@@ -85,7 +86,10 @@ const Sevent = ({ products, isDarkMode, handleCart }: Props) => {
                 return (
                     <div
                         key={i}
-                        onClick={() => setProduct(p)}
+                        onClick={() => {
+                            setProduct(p)
+                            setProductAlert(p)
+                        }}
                         className={`group cursor-pointer relative overflow-hidden rounded-2xl border transition-all duration-500 ${isDarkMode
                             ? "bg-slate-900 border-white/10 text-white hover:border-cyan-500/50 hover:shadow-[0_0_30px_-10px_rgba(6,182,212,0.3)]"
                             : "bg-white/80 border-black/5 shadow-lg hover:shadow-xl hover:border-cyan-500/30"
@@ -129,7 +133,7 @@ const Sevent = ({ products, isDarkMode, handleCart }: Props) => {
                             <div className="pt-2 border-t border-white/5">
                                 <div className="flex flex-col mb-2">
                                     {label ? (
-                                        <p className="text-[10px] font-medium line-through opacity-40 italic mb-0.5">
+                                        <p className={`text-[10px] font-medium  line-through  ${isDarkMode ? "text-white" : "text-slate-900"}  italic mb-0.5`}>
                                             {formatIDR(p.price)}
                                         </p>
                                     ) : <p className="text-[10px] h-4 font-medium line-through opacity-40 italic mb-0.5">
@@ -138,7 +142,7 @@ const Sevent = ({ products, isDarkMode, handleCart }: Props) => {
                                         <p className={`text-xl font-black font-mono tracking-tighter ${isDarkMode ? "text-white" : "text-slate-900"}`}>
                                             {formatIDR(p?.final_price ?? 0)}
                                         </p>
-                                        <div className="w-8 h-8 rounded-full border border-cyan-500/30 flex items-center justify-center group-hover:bg-cyan-500 group-hover:text-black transition-all">
+                                        <div className={`w-8 h-8 rounded-full border border-cyan-500/30  ${isDarkMode ? " text-white" : "text-slate-900"} flex items-center justify-center group-hover:bg-cyan-500 group-hover:text-black transition-all`}>
                                             <ArrowRight size={14} />
                                         </div>
                                     </div>
@@ -193,7 +197,7 @@ const Sevent = ({ products, isDarkMode, handleCart }: Props) => {
                                     selectedVariant={selectedVariant}
                                     setSelectedVariant={setSelectedVariant}
                                     isDarkMode={isDarkMode}
-                                    color={'#06b6d4'}
+                                    // color={'#06b6d4'}
                                 />
                             )}
 
@@ -221,7 +225,7 @@ const Sevent = ({ products, isDarkMode, handleCart }: Props) => {
                     </div>
                 </div>
             </AlertWrapper>
-        </div>
+        </div >
     )
 }
 
