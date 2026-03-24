@@ -84,7 +84,7 @@ const Nine = ({ products, isDarkMode, handleCart }: Props) => {
                         <div className="w-2/5 h-full relative overflow-hidden">
                             <img src={p.image} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt={p.name} />
                             {label && (
-                                <div className="absolute top-2 left-2 bg-red-600 text-white text-[8px] sm:text-[10px] font-black px-2 py-0.5 rounded-lg">
+                                <div className="absolute top-2 left-2 bg-rose-600 text-white text-[8px] sm:text-[10px] font-black px-2 py-0.5 rounded-lg">
                                     {label}
                                 </div>
                             )}
@@ -101,7 +101,7 @@ const Nine = ({ products, isDarkMode, handleCart }: Props) => {
                             <div className="flex items-center justify-between mt-auto sm:mt-2">
                                 <div className="flex flex-col">
                                     {label && <span className="text-[10px] line-through opacity-30 font-bold -mb-1">{formatIDR(p.price)}</span>}
-                                    <p className="font-black text-lg sm:text-2xl text-red-500 italic leading-none">{formatIDR(finalPrice)}</p>
+                                    <p className="font-black text-lg sm:text-2xl text-[var(--product-primary-color)] italic leading-none">{formatIDR(finalPrice)}</p>
                                 </div>
                                 <div className={`p-2 sm:p-3 rounded-xl sm:rounded-2xl transition-colors ${isDarkMode ? 'bg-white text-black' : 'bg-black text-white'}`}>
                                     <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 sm:w-6 sm:h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
