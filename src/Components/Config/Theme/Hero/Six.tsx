@@ -23,7 +23,7 @@ const Six = ({ isDarkMode, headline, subHeadline, ctaText, imageHero, title }: P
     };
     return (
         <section>
-            <div className={`rounded-3xl p-8 md:p-12 overflow-hidden relative border-4 border-black transition-all ${isDarkMode ? 'bg-slate-800 text-white' : '[var(--hero-primary-color)]/5 text-slate-900'}`} >
+            <div className={`rounded-3xl p-8 md:p-12 overflow-hidden relative border-4 border-black transition-all ${isDarkMode ? 'bg-slate-800 text-white' : '[var(--hero-primary-color)]/5'}`} >
                 <div className="grid md:grid-cols-5 gap-8 items-center">
                     <div className="md:col-span-3 space-y-6">
                         <div className="inline-block px-4 py-1 bg-black text-white rounded-full text-xs font-bold uppercase italic tracking-tighter shadow-[4px_4px_0px_#000]">{title}</div>

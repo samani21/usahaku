@@ -139,7 +139,7 @@ const Six = ({ products, isDarkMode, handleCart }: Props) => {
 
                             {/* Badge Diskon Brutalist */}
                             {label && (
-                                <div className="absolute -top-4 -left-4 z-1 bg-red-500 text-white text-xs font-black px-4 py-2 border-4 border-black rotate-[-5deg]">
+                                <div className="absolute -top-4 -left-4 z-1 bg-[var(--product-primary-color)] text-[var(--product-secondary-color)] text-xs font-black px-4 py-2 border-4 border-black rotate-[-5deg]">
                                     {label}
                                 </div>
                             )}
@@ -169,7 +169,7 @@ const Six = ({ products, isDarkMode, handleCart }: Props) => {
                                             {formatIDR(finalPrice)}
                                         </span>
                                     </div>
-                                    <div className="w-10 h-10 border-4 border-black flex items-center justify-center bg-black text-white group-hover:bg-red-500 transition-colors">
+                                    <div className="w-10 h-10 border-4 border-black flex items-center justify-center bg-black text-white group-hover:bg-[var(--product-primary-color)] transition-colors">
                                         <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={4} d="M12 4v16m8-8H4" />
                                         </svg>
