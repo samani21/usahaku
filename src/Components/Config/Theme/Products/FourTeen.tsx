@@ -145,7 +145,7 @@ const Fourteen = ({ products, isDarkMode, handleCart }: Props) => {
                 isDarkMode={isDarkMode}
             >
                 {/* Bagian Gambar: Di Mobile tingginya terbatas agar tidak menutupi seluruh layar */}
-                <div className="w-full md:w-1/2 h-[30vh] md:h-[80vh] relative bg-black/20 shrink-0">
+                <div className="w-full h-[30vh] md:h-[40vh] relative bg-black/20 shrink-0">
                     <img
                         src={selectedVariant?.image ?? product?.image}
                         className='h-full w-full object-cover transition-all duration-500'
@@ -159,9 +159,10 @@ const Fourteen = ({ products, isDarkMode, handleCart }: Props) => {
                 </div>
 
                 {/* Bagian Detail: Scrollable di mobile */}
-                <div className="w-full md:w-1/2 p-6 md:p-10 flex flex-col gap-4 relative overflow-y-auto no-scrollbar">
+                <div className="w-full p-6 md:p-10 flex flex-col gap-4 relative overflow-y-auto no-scrollbar">
                     {/* Ornamen Lingkaran Tiket (Hanya Desktop) */}
                     <div className="hidden md:block absolute top-1/2 -left-4 w-8 h-8 rounded-full bg-slate-950 -translate-y-1/2 shadow-inner" />
+                    <div className="hidden md:block absolute top-1/2 -right-4 w-8 h-8 rounded-full bg-slate-950 -translate-y-1/2 shadow-inner" />
 
                     <div className="space-y-1">
                         {product?.category && (

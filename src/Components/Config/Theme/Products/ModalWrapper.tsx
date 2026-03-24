@@ -63,7 +63,7 @@ const ModalWrapper = ({ children, activeModal, closeModal, isDarkMode }: Props) 
                         </button>
 
                         {/* 3. Scrollable Content (Area Children) */}
-                        <div className="flex-1 overflow-y-auto custom-scrollbar">
+                        <div className="flex-1 overflow-y-auto no-scrollbar">
                             {children}
                         </div>
                     </motion.div>
