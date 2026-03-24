@@ -96,7 +96,7 @@ const Twelve = ({ products, isDarkMode, handleCart }: Props) => {
 
                             {/* Badge Diskon di Gambar */}
                             {label && (
-                                <div className="absolute top-3 left-3 z-1 bg-red-600 text-white text-[9px] font-black px-2 py-0.5 rounded-lg shadow-lg">
+                                <div className="absolute top-3 left-3 z-1 bg-rose-600 text-white text-[9px] font-black px-2 py-0.5 rounded-lg shadow-lg">
                                     {label}
                                 </div>
                             )}
@@ -115,7 +115,7 @@ const Twelve = ({ products, isDarkMode, handleCart }: Props) => {
                                             {formatIDR(p.price)}
                                         </span>
                                     )}
-                                    <p className="font-black text-base text-red-600 drop-shadow-sm">
+                                    <p className="font-black text-base text-[var(--product-primary-color)] drop-shadow-sm">
                                         {formatIDR(finalPrice)}
                                     </p>
                                 </div>
@@ -141,7 +141,7 @@ const Twelve = ({ products, isDarkMode, handleCart }: Props) => {
                         </div>
                         <div className="text-left sm:text-right">
                             <div className="flex flex-col">
-                                <span className="text-4xl md:text-5xl font-black text-rose-500 italic tracking-tighter">
+                                <span className="text-4xl md:text-5xl font-black text-[var(--product-primary-color)] italic tracking-tighter">
                                     {formatIDR(currentFinalPrice)}
                                 </span>
                                 {currentDiscount > 0 && (
@@ -211,15 +211,13 @@ const Twelve = ({ products, isDarkMode, handleCart }: Props) => {
                             <button
                                 disabled={disableButton}
                                 onClick={() => addCart()}
-                                className="w-full py-6 md:py-8 bg-rose-500 text-white rounded-[2rem] font-black uppercase italic tracking-[0.2em] text-sm md:text-base shadow-2xl shadow-rose-500/20 hover:scale-[1.02] transition-all active:scale-95 disabled:bg-gray-600 flex items-center justify-center gap-4"
+                                className="w-full py-6 md:py-8 bg-[var(--product-primary-color)] text-white rounded-[2rem] font-black uppercase italic tracking-[0.2em] text-sm md:text-base shadow-2xl shadow-[var(--product-primary-color)]/20 hover:scale-[1.02] transition-all active:scale-95 disabled:bg-gray-600 flex items-center justify-center gap-4"
                             >
                                 Pesan Sekarang
                                 <Plus size={20} />
                             </button>
                         </div>
                     </div>
-
-                    <p className="text-center text-[10px] opacity-20 uppercase font-black tracking-[0.3em] pb-4">Exclusive Collection 2024</p>
                 </div>
             </ModalWrapper>
             <AlertWrapper activeAlert={activeAlert} position="top-right">

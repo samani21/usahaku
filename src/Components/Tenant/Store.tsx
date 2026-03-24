@@ -137,7 +137,7 @@ export default function Store({ tenant }: Props) {
                     {hero && (
                         <HeroConfig
                             theme={hero?.layout_hero}
-                            isDarkMode={hero?.layout_hero == 12 ? isDarkTheme : hero?.mode === 'light' ? false : isDarkTheme || hero?.mode == 'dark'}
+                            isDarkMode={hero?.mode === 'light' ? false : isDarkTheme || hero?.mode == 'dark'}
                             headline={hero?.headline}
                             subHeadline={hero?.sub_headline}
                             ctaText={hero?.cta}
