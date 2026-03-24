@@ -88,18 +88,14 @@ const Thirteen = ({ products, isDarkMode, handleCart }: Props) => {
                         <div className={`aspect-[4/5] w-full ${isDarkMode ? "bg-slate-900" : "bg-slate-50"} mb-8 overflow-hidden relative`}>
                             <img
                                 src={p.image}
-                                className={`w-full h-full object-cover transition-all duration-[1.5s] ease-out
-                      ${isDarkMode ? "mix-blend-normal opacity-70" : "mix-blend-multiply opacity-80"} 
-                      group-hover:opacity-100 group-hover:scale-110`}
+                                className={`w-full h-full object-cover transition-all duration-[1.5s] ease-out ${isDarkMode ? "mix-blend-normal opacity-70" : "mix-blend-multiply opacity-80"}  group-hover:opacity-100 group-hover:scale-110`}
                                 alt={p.name}
                             />
 
-                            {/* Border Accent on Hover */}
                             <div className="absolute inset-0 border border-current m-4 sm:m-6 opacity-0 group-hover:opacity-30 transition-all duration-700 pointer-events-none" />
 
-                            {/* Info Diskon yang diperbaiki (Lebih Kontras) */}
                             {label && (
-                                <div className="absolute top-0 right-0 bg-red-600 text-white px-4 py-2 text-[10px] tracking-[0.2em] font-black z-1 shadow-lg">
+                                <div className="absolute top-0 right-0 bg-rose-600 text-white px-4 py-2 text-[10px] tracking-[0.2em] font-black z-1 shadow-lg">
                                     {label}
                                 </div>
                             )}
