@@ -91,7 +91,7 @@ const Two = ({ products, isDarkMode, handleCart }: Props) => {
                         <div className="relative w-full aspect-[6/4] sm:aspect-[3/4] rounded-[3rem] overflow-hidden mb-4 shadow-xl border-4 border-transparent group-hover:border-[var(--product-primary-color)] transition-all duration-500">
                             {/* Label Diskon Permanen */}
                             {label && (
-                                <div className="absolute top-4 right-4 z-1 bg-red-600 text-white text-[10px] font-black px-3 py-1.5 rounded-full uppercase italic shadow-lg">
+                                <div className="absolute top-4 right-4 z-1 bg-[var(--product-primary-color)] text-white text-[10px] font-black px-3 py-1.5 rounded-full uppercase italic shadow-lg">
                                     {label}
                                 </div>
                             )}
@@ -189,8 +189,8 @@ const Two = ({ products, isDarkMode, handleCart }: Props) => {
                         </div>
                     </div>
                     <div className={`p-4 ${isDarkMode ? "bg-slate-900" : "bg-white"}`}>
-                        <button className={`w-full py-3 ${isDarkMode ? 'bg-[var(--product-primary-color)]' : "bg-slate-900"} text-white rounded-xl text-[10px] font-black uppercase tracking-widest flex items-center justify-center gap-2`}>
-                            Lihat Keranjang <ArrowRight size={14} />
+                        <button onClick={() => setActiveAlert(false)} className={`w-full py-3 ${isDarkMode ? 'bg-[var(--product-primary-color)]' : "bg-slate-900"} text-white rounded-xl text-[10px] font-black uppercase tracking-widest flex items-center justify-center gap-2`}>
+                            Tutup <ArrowRight size={14} />
                         </button>
                     </div>
                 </div>

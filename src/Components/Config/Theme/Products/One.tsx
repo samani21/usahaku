@@ -92,7 +92,7 @@ const One = ({ products, isDarkMode, handleCart }: Props) => {
                         <div className="relative aspect-square overflow-hidden">
                             {/* Label Diskon Permanen */}
                             {label && (
-                                <div className="absolute top-4 right-4 z-10 bg-red-600 text-white text-[10px] font-black px-3 py-1 rounded-full uppercase italic shadow-lg">
+                                <div className="absolute top-4 right-4 z-10 bg-[var(--product-primary-color)] text-white text-[10px] font-black px-3 py-1 rounded-full uppercase italic shadow-lg">
                                     {label}
                                 </div>
                             )}
