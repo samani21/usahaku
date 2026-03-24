@@ -143,7 +143,7 @@ const One = ({ products, isDarkMode, handleCart }: Props) => {
                             }
                             {
                                 product?.discount_price &&
-                                <div className='bg-red-500 flex items-center font-black px-2 py-1 rounded-full text-[12px] gap-2'>
+                                <div className='bg-rose-500 flex text-white items-center font-black px-2 py-1 rounded-full text-[12px] gap-2'>
                                     <Tag size={18} />
                                     <span>- {Promo(product, selectedVariant)}</span>
                                 </div>

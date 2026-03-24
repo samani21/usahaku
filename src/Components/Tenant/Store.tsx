@@ -158,7 +158,7 @@ export default function Store({ tenant }: Props) {
                             <ProductConfig
                                 theme={product?.layout_products}
                                 products={products}
-                                isDarkMode={category?.mode === 'light' ? false : isDarkTheme || category?.mode == 'dark'}
+                                isDarkMode={product?.mode === 'light' ? false : isDarkTheme || product?.mode == 'dark'}
                                 handleCart={handleCart} />
                         }
                     </section>

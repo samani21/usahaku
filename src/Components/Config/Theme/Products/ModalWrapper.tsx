@@ -49,8 +49,8 @@ const ModalWrapper = ({ children, activeModal, closeModal, isDarkMode }: Props) 
                             onPointerDown={(e) => controls.start(e)} // Memulai drag saat handle ditekan
                             className="absolute  w-full flex flex-col items-center justify-center  cursor-grab active:cursor-grabbing flex-shrink-0 z-30"
                         >
-                            <div className={`w-24 h-4 rounded-full ${isDarkMode ? 'bg-white' : 'bg-slate-700'} flex items-center justify-center`}>
-                                <div className={`w-16 h-1.5 rounded-full ${isDarkMode ? 'bg-slate-700' : 'bg-slate-300'}`} />
+                            <div className={`w-24 h-4 rounded-full ${isDarkMode ? 'bg-slate-700' : 'bg-slate-100'} flex items-center justify-center`}>
+                                <div className={`w-16 h-1.5 rounded-full ${isDarkMode ? 'bg-white' : 'bg-slate-700'}`} />
                             </div>
                         </div>
 
