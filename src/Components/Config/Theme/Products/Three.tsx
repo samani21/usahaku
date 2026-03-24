@@ -81,7 +81,7 @@ const Three = ({ products, isDarkMode, handleCart }: Props) => {
 
                             {/* Badge Diskon - Permanen (Tidak perlu hover) */}
                             {label && (
-                                <div className="absolute top-2 right-2 z-1 bg-red-600 text-white text-[10px] sm:text-xs font-black px-3 py-1.5 rounded-full uppercase italic shadow-lg border-2 border-white animate-bounce-slow">
+                                <div className="absolute top-2 right-2 z-1 bg-[var(--product-primary-color)] text-white text-[10px] sm:text-xs font-black px-3 py-1.5 rounded-full uppercase italic shadow-lg border-2 border-white animate-bounce-slow">
                                     {label}
                                 </div>
                             )}
@@ -125,74 +125,79 @@ const Three = ({ products, isDarkMode, handleCart }: Props) => {
                     setQuantity(1)
                 }}
                 isDarkMode={isDarkMode}>
-                <div className={`md:w-2/5 p-6 sm:p-12 ${isDarkMode ? "bg-slate-800" : "bg-slate-50"} flex flex-col gap-8`}>
-                    <img src={selectedVariant?.image ?? product?.image} className="w-full aspect-square rounded-3xl object-cover shadow-xl" alt="" />
-                    <div className="space-y-4">
-                        {
-                            product?.service && product?.service?.length > 0 && product?.service?.map((s, i) => (
-                                <div key={i} className={`flex items-center gap-3 text-sm font-bold opacity-60`}>
-                                    <CircleCheckBig size={24} className={isDarkMode ? 'text-[var(--product-secondary-color)]' : 'text-[var(--product-primary-color)]'} />{s?.title}
-                                </div>
-                            ))
-                        }
-                    </div>
-                </div>
-                <div className="md:w-3/5 p-6 sm:p-12 flex flex-col justify-between">
-                    <div className="space-y-6">
-                        <div className="flex justify-between items-start">
-                            <div>
-                                <h2 className="text-3xl font-black">{product?.name}</h2>
-                                {
-                                    product?.is_service ?
-                                        <p className={`text-[var(--product-primary-color)] font-bold mt-1`}>Layanan Jasa Tersedia</p> :
-                                        <p className={`text-[var(--product-primary-color)] font-bold mt-1`}>{product?.category}</p>
-                                }
-                                <div className='sm:flex items-center'>
-                                    {
-                                        product?.discount_price &&
-                                        <p className="text-1xl font-black mr-4 line-through">{formatIDR(selectedVariant?.price ?? product?.price ?? 0)}</p>
-                                    }
-                                    <p className="text-3xl font-black">{formatIDR(selectedVariant?.final_price ?? product?.final_price ?? 0)}</p>
-                                </div>
-                            </div>
+                <div className='md:flex overflow-auto'>
+                    <div className={`md:w-2/5 p-6 sm:p-12 ${isDarkMode ? "bg-slate-800" : "bg-slate-50"} flex flex-col gap-8`}>
+                        <img src={selectedVariant?.image ?? product?.image} className="w-full aspect-square rounded-3xl object-cover shadow-xl" alt="" />
+                        <div className="space-y-4">
                             {
-                                product?.discount_price &&
-                                <div className="bg-emerald-500 flex items-center gap-2 text-white px-4 py-2 rounded-2xl font-black italic">
-                                    <span className='mt-1'>
-                                        <Tag />
-                                    </span>
-                                    -{Promo(product, selectedVariant)}
-                                </div>
+                                product?.service && product?.service?.length > 0 && product?.service?.map((s, i) => (
+                                    <div key={i} className={`flex items-center gap-3 text-sm font-bold opacity-60`}>
+                                        <CircleCheckBig size={24} className={isDarkMode ? 'text-[var(--product-secondary-color)]' : 'text-[var(--product-primary-color)]'} />{s?.title}
+                                    </div>
+                                ))
                             }
                         </div>
-                        <ExpandableHTML
-                            htmlContent={product?.description}
-                            className={`opacity-50 text-sm`}
-                        // Bisa diganti line-clamp-5 dll
-                        />
-                        {/* <div className="space-y-4">
+                    </div>
+                    <div className="md:w-3/5 p-6 sm:p-12 flex flex-col justify-between">
+                        <div className="space-y-6">
+                            <div className="grid ">
+                                <div className='flex items-center justify-end w-full'>
+                                    {
+                                        product?.discount_price &&
+                                        <div className="bg-emerald-500 flex items-center gap-2 text-[12px] text-white px-4 py-2 rounded-2xl font-black italic">
+                                            <span className='mt-1'>
+                                                <Tag size={16} />
+                                            </span>
+                                            -{Promo(product, selectedVariant)}
+                                        </div>
+                                    }
+                                </div>
+                                <div>
+                                    <h2 className="text-3xl font-black">{product?.name}</h2>
+                                    {
+                                        product?.is_service ?
+                                            <p className={`text-[var(--product-primary-color)] font-bold mt-1`}>Layanan Jasa Tersedia</p> :
+                                            <p className={`text-[var(--product-primary-color)] font-bold mt-1`}>{product?.category}</p>
+                                    }
+                                    <div className='sm:flex items-center'>
+                                        {
+                                            product?.discount_price &&
+                                            <p className="text-1xl font-black mr-4 line-through">{formatIDR(selectedVariant?.price ?? product?.price ?? 0)}</p>
+                                        }
+                                        <p className="text-3xl font-black">{formatIDR(selectedVariant?.final_price ?? product?.final_price ?? 0)}</p>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <ExpandableHTML
+                                htmlContent={product?.description}
+                                className={`opacity-50 text-sm`}
+                            // Bisa diganti line-clamp-5 dll
+                            />
+                            {/* <div className="space-y-4">
                             <span className="text-[10px] font-black uppercase opacity-30 tracking-widest">Pilih Paket Layanan</span>
                             <VariantButtons items={product?.variants} />
                         </div> */}
-                        {product?.variants && product?.variants?.length > 0 ?
-                            <VariantPicker variants={product?.variants} selectedVariant={selectedVariant} setSelectedVariant={setSelectedVariant} isDarkMode={isDarkMode} /> : ""
-                        }
-                        {
-                            product && product.is_qty ?
-                                <QtySelector quantity={quantity} setQuantity={setQuantity} isDarkMode={isDarkMode} /> : ""
-                        }
-                    </div>
-                    <div className="sm:flex items-center gap-6 pt-4 " >
-                        <div className="flex flex-col mb-4 sm:mb-0">
-                            <span className="text-[10px] font-bold opacity-40 uppercase">Total</span>
+                            {product?.variants && product?.variants?.length > 0 ?
+                                <VariantPicker variants={product?.variants} selectedVariant={selectedVariant} setSelectedVariant={setSelectedVariant} isDarkMode={isDarkMode} /> : ""
+                            }
                             {
-                                selectedVariant ? <span className="text-3xl font-black">{formatIDR((selectedVariant?.final_price ?? 0) * quantity)}</span> :
-                                    <span className="text-3xl font-black">{formatIDR((product?.final_price ?? 0) * quantity)}</span>
+                                product && product.is_qty ?
+                                    <QtySelector quantity={quantity} setQuantity={setQuantity} isDarkMode={isDarkMode} /> : ""
                             }
                         </div>
-                        <button disabled={disableButton} onClick={() => addCart()} className={`py-5 w-full bg-[var(--product-primary-color)] disabled:bg-gray-400 text-white rounded-3xl font-black flex items-center justify-center gap-3`}>
-                            Order <ArrowRight size={20} />
-                        </button>
+                        <div className="sm:flex items-center gap-6 pt-4 " >
+                            <div className="flex flex-col mb-4 sm:mb-0">
+                                <span className="text-[10px] font-bold opacity-40 uppercase">Total</span>
+                                {
+                                    selectedVariant ? <span className="text-3xl font-black">{formatIDR((selectedVariant?.final_price ?? 0) * quantity)}</span> :
+                                        <span className="text-3xl font-black">{formatIDR((product?.final_price ?? 0) * quantity)}</span>
+                                }
+                            </div>
+                            <button disabled={disableButton} onClick={() => addCart()} className={`py-5 w-full bg-[var(--product-primary-color)] disabled:bg-gray-400 text-white rounded-3xl font-black flex items-center justify-center gap-3`}>
+                                Order <ArrowRight size={20} />
+                            </button>
+                        </div>
                     </div>
                 </div>
             </ModalWrapper>
