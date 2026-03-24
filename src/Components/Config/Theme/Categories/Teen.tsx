@@ -63,7 +63,7 @@ const Teen = ({ categories, isDarkMode, onClick }: Props) => {
                                 {totalItems}
                             </span>
                         </div>
-                        <div className={`p-3 rounded-full transition-all duration-500 ${isDarkMode ? "bg-white text-black group-hover:bg-blue-500 group-hover:text-white" : "bg-black text-white group-hover:bg-blue-600"}`}>
+                        <div className={`p-3 rounded-full transition-all duration-500 ${isDarkMode ? "bg-white text-black group-hover:bg-[var(--category-primary-color)] group-hover:text-white" : "bg-black text-white group-hover:bg-[var(--category-primary-color)]"}`}>
                             <ArrowUpRight size={20} className="group-hover:rotate-45 transition-transform duration-500" />
                         </div>
                     </div>
@@ -139,7 +139,7 @@ const Teen = ({ categories, isDarkMode, onClick }: Props) => {
                                 </span>
                             </div>
                             <div className={`p-3 rounded-full transition-all duration-500 
-                ${isDarkMode ? "bg-white text-black group-hover:bg-blue-500 group-hover:text-white" : "bg-black text-white group-hover:bg-blue-600"}
+                ${isDarkMode ? "bg-white text-black group-hover:bg-[var(--category-primary-color)] group-hover:text-white" : "bg-black text-white group-hover:bg-[var(--category-primary-color)]"}
               `}>
                                 <ArrowUpRight size={20} className="group-hover:rotate-45 transition-transform duration-500" />
                             </div>

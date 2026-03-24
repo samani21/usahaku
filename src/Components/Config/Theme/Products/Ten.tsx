@@ -79,12 +79,12 @@ const Ten = ({ products, isDarkMode, handleCart }: Props) => {
                     <div
                         onClick={() => setProduct(p)}
                         key={i}
-                        className={`relative border-[6px] ${isDarkMode ? "border-white bg-slate-900 text-white" : "border-black bg-white text-slate-900"} p-6 flex flex-col items-center cursor-pointer group hover:bg-black hover:text-white hover:border-rose-500 transition-all duration-300 shadow-[12px_12px_0px_0px_rgba(0,0,0,0.1)]`}
+                        className={`relative border-[6px] ${isDarkMode ? "border-white bg-slate-900 text-white" : "border-black bg-white text-slate-900"} p-6 flex flex-col items-center cursor-pointer group hover:bg-black hover:text-white hover:border-[var(--product-primary-color)] transition-all duration-300 shadow-[12px_12px_0px_0px_rgba(0,0,0,0.1)]`}
                     >
                         {/* Badge Persen Modern */}
                         {label && (
-                            <div className="absolute -top-4 -right-1 bg-rose-500 text-white font-black italic px-4 py-2 transform rotate-12 shadow-lg z-1 border-2 border-white">
-                                -{label}
+                            <div className="absolute -top-4 -right-1 bg-[var(--product-primary-color)] text-white font-black italic px-4 py-2 transform rotate-12 shadow-lg z-1 border-2 border-white">
+                                {label}
                             </div>
                         )}
 
@@ -111,7 +111,7 @@ const Ten = ({ products, isDarkMode, handleCart }: Props) => {
                             {p?.category && (
                                 <span className="opacity-60">{p?.category}</span>
                             )}
-                            <span className="text-lg text-rose-500 group-hover:text-white transition-colors">
+                            <span className="text-lg text-[var(--product-primary-color)] group-hover:text-white transition-colors">
                                 &gt;&gt; {formatIDR(p?.final_price ?? 0)}
                             </span>
                         </div>
@@ -127,60 +127,62 @@ const Ten = ({ products, isDarkMode, handleCart }: Props) => {
                     setQuantity(1)
                 }}
                 isDarkMode={isDarkMode}>
-                <div className="md:w-3/5 p-6 sm:p-12 space-y-8 flex flex-col justify-start md:overflow-auto md:overflow-x-hidden no-scrollbar">
-                    <img src={selectedVariant?.image ?? product?.image} className="md:hidden w-full h-full object-cover rounded-[24px]" alt="" />
-                    <div className="space-y-4">
-                        <div className="flex flex-wrap gap-2">
-                            <span className={`px-5 py-1.5 rounded-full ${isDarkMode ? "bg-slate-800" : "bg-slate-100"} text-[10px] font-black uppercase tracking-widest italic`}>
-                                {product?.category}
-                            </span>
-                            {product?.discount_price && (
-                                <span className="px-5 py-1.5 rounded-full bg-rose-500 text-white text-[10px] font-black uppercase tracking-widest shadow-lg shadow-rose-500/20">
-                                    - {Promo(product, selectedVariant)}
+                <div className='md:flex'>
+                    <div className="md:w-3/5 p-6 sm:p-12 space-y-8 flex flex-col justify-start md:overflow-auto md:overflow-x-hidden no-scrollbar">
+                        <img src={selectedVariant?.image ?? product?.image} className="md:hidden w-full h-full object-cover rounded-[24px]" alt="" />
+                        <div className="space-y-4">
+                            <div className="flex flex-wrap gap-2">
+                                <span className={`px-5 py-1.5 rounded-full ${isDarkMode ? "bg-slate-800" : "bg-slate-100"} text-[10px] font-black uppercase tracking-widest italic`}>
+                                    {product?.category}
                                 </span>
-                            )}
+                                {product?.discount_price && (
+                                    <span className="px-5 py-1.5 rounded-full bg-[var(--product-primary-color)] text-white text-[10px] font-black uppercase tracking-widest shadow-lg shadow-[var(--product-primary-color)]/20">
+                                        - {Promo(product, selectedVariant)}
+                                    </span>
+                                )}
+                            </div>
+                            <h2 className="text-5xl font-black tracking-tight leading-none">{product?.name}</h2>
                         </div>
-                        <h2 className="text-5xl font-black tracking-tight leading-none">{product?.name}</h2>
-                    </div>
-                    <ExpandableHTML
-                        htmlContent={product?.description}
-                        className={`text-sm opacity-60 font-medium`}
-                    />
-                    <div className={`flex items-center justify-between gap-8 border-y ${isDarkMode ? "border-slate-800" : "border-slate-300"} py-8`}>
-                        <div className="space-y-1">
-                            <span className="text-[10px] font-black opacity-70 uppercase tracking-widest">Harga Per Item</span>
-                            {
-                                product?.discount_price ?
-                                    <div className="text-2xl font-black line-through">{formatIDR(selectedVariant?.price ?? product?.price ?? 0)}</div> :
-                                    <div className="text-2xl font-black ">{formatIDR(selectedVariant?.price ?? product?.price ?? 0)}</div>
-                            }
-                        </div>
-                        <div className="space-y-1">
-                            <span className="text-[10px] font-black opacity-70 uppercase tracking-widest">Ketersediaan</span>
-                            <div className="text-2xl font-black flex items-center gap-2"><Check size={20} className="text-emerald-500" /> {product?.stock} Unit</div>
-                        </div>
-                    </div>
-                    <div className="grid gap-4">
-                        <div>
-                            {product?.variants && product?.variants?.length > 0 ?
-                                <VariantPicker variants={product?.variants} selectedVariant={selectedVariant} setSelectedVariant={setSelectedVariant} isDarkMode={isDarkMode} /> : ""
-                            }
-                            <div className='flex items-end justify-between gap-2'>
+                        <ExpandableHTML
+                            htmlContent={product?.description}
+                            className={`text-sm opacity-60 font-medium`}
+                        />
+                        <div className={`flex items-center justify-between gap-8 border-y ${isDarkMode ? "border-slate-800" : "border-slate-300"} py-8`}>
+                            <div className="space-y-1">
+                                <span className="text-[10px] font-black opacity-70 uppercase tracking-widest">Harga Per Item</span>
                                 {
-                                    product && product?.is_qty ?
-                                        <QtySelector quantity={quantity} setQuantity={setQuantity} isDarkMode={isDarkMode} /> : ""
+                                    product?.discount_price ?
+                                        <div className="text-2xl font-black line-through">{formatIDR(selectedVariant?.price ?? product?.price ?? 0)}</div> :
+                                        <div className="text-2xl font-black ">{formatIDR(selectedVariant?.price ?? product?.price ?? 0)}</div>
                                 }
-                                <div className='mt-2'>
-                                    <p className={`font-semibold ${isDarkMode ? "text-gray-100" : "text-gray-700"}`}>Total</p>
-                                    <p className='text-1xl sm:text-2xl font-bold'>{formatIDR((selectedVariant?.final_price || (product?.final_price ?? 0)) * quantity)}</p>
-                                </div>
+                            </div>
+                            <div className="space-y-1">
+                                <span className="text-[10px] font-black opacity-70 uppercase tracking-widest">Ketersediaan</span>
+                                <div className="text-2xl font-black flex items-center gap-2"><Check size={20} className="text-emerald-500" /> {product?.stock} Unit</div>
                             </div>
                         </div>
-                        <button disabled={disableButton} onClick={() => addCart()} className={`flex-1 disabled:bg-gray-600 py-5 ${isDarkMode ? "bg-white text-black" : "bg-slate-900 text-white"} rounded-3xl font-black uppercase tracking-widest shadow-2xl`}>Confirm Order</button>
+                        <div className="grid gap-4">
+                            <div>
+                                {product?.variants && product?.variants?.length > 0 ?
+                                    <VariantPicker variants={product?.variants} selectedVariant={selectedVariant} setSelectedVariant={setSelectedVariant} isDarkMode={isDarkMode} /> : ""
+                                }
+                                <div className='flex items-end justify-between gap-2'>
+                                    {
+                                        product && product?.is_qty ?
+                                            <QtySelector quantity={quantity} setQuantity={setQuantity} isDarkMode={isDarkMode} /> : ""
+                                    }
+                                    <div className='mt-2'>
+                                        <p className={`font-semibold ${isDarkMode ? "text-gray-100" : "text-gray-700"}`}>Total</p>
+                                        <p className='text-1xl sm:text-2xl font-bold'>{formatIDR((selectedVariant?.final_price || (product?.final_price ?? 0)) * quantity)}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <button disabled={disableButton} onClick={() => addCart()} className={`flex-1 disabled:bg-gray-600 py-5 ${isDarkMode ? "bg-white text-black" : "bg-slate-900 text-white"} rounded-3xl font-black uppercase tracking-widest shadow-2xl`}>Confirm Order</button>
+                        </div>
                     </div>
-                </div>
-                <div className="hidden md:grid md:w-2/5 h-80 md:h-auto">
-                    <img src={selectedVariant?.image ?? product?.image} className="w-full h-full object-cover" alt="" />
+                    <div className="hidden md:grid md:w-2/5 h-80 md:h-auto">
+                        <img src={selectedVariant?.image ?? product?.image} className="w-full h-full object-cover" alt="" />
+                    </div>
                 </div>
             </ModalWrapper>
             <AlertWrapper activeAlert={activeAlert} position="top-center">
