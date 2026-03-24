@@ -22,7 +22,7 @@ const Elevent = ({ isDarkMode, headline, subHeadline, ctaText, imageHero }: Prop
     };
     return (
         <section>
-            <div className={`p-8 rounded-[1rem] transition-all flex flex-col md:flex-row items-center gap-8 ${isDarkMode ? 'bg-slate-900 shadow-inner text-white' : `shadow-sm bg-[var(--hero-primary-color)]/5 text-slate-900`}`}>
+            <div className={`p-8 rounded-[1rem] transition-all flex flex-col md:flex-row items-center gap-8 ${isDarkMode ? 'bg-slate-900 shadow-inner text-white' : `shadow-sm bg-[var(--hero-primary-color)]/5`}`}>
 
                 {
                     imageHero &&

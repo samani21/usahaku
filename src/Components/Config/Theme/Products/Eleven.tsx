@@ -98,7 +98,7 @@ const Eleven = ({ products, isDarkMode, handleCart }: Props) => {
                             <div className="relative w-full aspect-square rounded-[1.5rem] bg-slate-100 overflow-hidden ring-4 ring-white/10 shadow-inner group-hover:scale-105 transition-transform duration-500">
                                 <img src={p?.image} className="w-full h-full object-cover" alt={p.name} />
                                 {label && (
-                                    <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-rose-600/80 to-transparent p-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-[var(--product-primary-color)]/80 to-transparent p-4 opacity-0 group-hover:opacity-100 transition-opacity">
                                         <p className="text-white text-[10px] font-black uppercase tracking-tighter italic">Potongan {formatIDR(finalPrice)}</p>
                                     </div>
                                 )}
@@ -106,12 +106,12 @@ const Eleven = ({ products, isDarkMode, handleCart }: Props) => {
 
                             <div className="space-y-2">
                                 {p?.category && (
-                                    <span className="text-[10px] font-black opacity-30 tracking-[0.3em] uppercase italic border-b border-rose-500/20 pb-1">{p?.category}</span>
+                                    <span className="text-[10px] font-black opacity-30 tracking-[0.3em] uppercase italic border-b border-[var(--product-primary-color)]/20 pb-1">{p?.category}</span>
                                 )}
-                                <h3 className="font-black text-xl italic tracking-tighter uppercase leading-tight group-hover:text-rose-500 transition-colors">{p?.name}</h3>
+                                <h3 className="font-black text-xl italic tracking-tighter uppercase leading-tight group-hover:text-[var(--product-primary-color)] transition-colors">{p?.name}</h3>
 
                                 <div className="flex flex-col items-center gap-0">
-                                    <p className="text-2xl font-black italic tracking-tighter text-rose-500">
+                                    <p className="text-2xl font-black italic tracking-tighter text-[var(--product-primary-color)]">
                                         {formatIDR(p?.final_price ?? 0)}
                                     </p>
                                     {label && (
@@ -123,7 +123,7 @@ const Eleven = ({ products, isDarkMode, handleCart }: Props) => {
                             </div>
 
                             <div className="w-full pt-2">
-                                <div className="w-full py-3 rounded-xl border border-white/5 bg-white/5 font-black uppercase italic text-[10px] tracking-widest group-hover:bg-rose-500 group-hover:text-white transition-all">
+                                <div className="w-full py-3 rounded-xl border border-white/5 bg-white/5 font-black uppercase italic text-[10px] tracking-widest group-hover:bg-[var(--product-primary-color)] group-hover:text-white transition-all">
                                     View Details
                                 </div>
                             </div>
@@ -145,7 +145,7 @@ const Eleven = ({ products, isDarkMode, handleCart }: Props) => {
                     <div className="md:w-3/5 h-[400px] md:h-auto relative md:overflow-hidden">
                         <img src={selectedVariant?.image ?? product?.image} className="w-full h-full object-cover transition-transform duration-700 hover:scale-105" alt="" />
                         {product?.discount_price && (
-                            <div className="absolute top-8 left-8 bg-rose-600 text-white px-6 py-3 rounded-2xl font-black italic shadow-2xl border border-white/20 scale-110">
+                            <div className="absolute top-8 left-8 bg-[var(--product-primary-color)] text-white px-6 py-3 rounded-2xl font-black italic shadow-2xl border border-white/20 scale-110">
                                 -{Promo(product, selectedVariant)}
                             </div>
                         )}
@@ -165,7 +165,7 @@ const Eleven = ({ products, isDarkMode, handleCart }: Props) => {
                         <div className="mb-8">
                             {product?.discount_price ? (
                                 <div className="space-y-1">
-                                    <div className="text-3xl font-black text-rose-500 italic tracking-tighter">
+                                    <div className="text-3xl font-black text-[var(--product-primary-color)] italic tracking-tighter">
                                         {formatIDR(selectedVariant?.final_price || (product?.final_price ?? 0))}
                                     </div>
                                     <div className="flex items-center gap-2">
@@ -176,7 +176,7 @@ const Eleven = ({ products, isDarkMode, handleCart }: Props) => {
                                     </div>
                                 </div>
                             ) : (
-                                <div className="text-3xl font-black text-rose-500 italic tracking-tighter">
+                                <div className="text-3xl font-black text-[var(--product-primary-color)] italic tracking-tighter">
                                     {formatIDR(currentPrice)}
                                 </div>
                             )}
@@ -204,9 +204,9 @@ const Eleven = ({ products, isDarkMode, handleCart }: Props) => {
                                 )}
 
                                 <div className="flex items-end justify-between gap-4 mt-2">
-                                    {product?.is_qty && (
+                                    {product?.is_qty ? (
                                         <QtySelector quantity={quantity} setQuantity={setQuantity} isDarkMode={isDarkMode} />
-                                    )}
+                                    ) : <div></div>}
                                     <div className="text-right">
                                         <p className={`text-[10px] font-black uppercase opacity-40 tracking-widest ${isDarkMode ? "text-gray-100" : "text-gray-700"}`}>Subtotal</p>
                                         <p className="text-xl font-black italic tracking-tighter">
@@ -229,7 +229,7 @@ const Eleven = ({ products, isDarkMode, handleCart }: Props) => {
                 </div>
             </ModalWrapper>
             <AlertWrapper activeAlert={activeAlert} position="top-right">
-                <div className={`${isDarkMode ? "bg-slate-900" : "bg-white"} p-5 rounded-2xl shadow-2xl border-l-4 border-[var(--product-primary-color)]`}>
+                <div className={`${isDarkMode ? "bg-slate-900 text-white" : "bg-white text-slate-900"} p-5 rounded-2xl shadow-2xl border-l-4 border-[var(--product-primary-color)]`}>
                     <h4 className="text-sm font-bold">Lanjutkan Belanja?</h4>
                     <p className="text-[10px] opacity-50 mt-1">{mockItem?.name} masuk keranjang belanja Anda.</p>
                     <div className="flex gap-2 mt-4">
