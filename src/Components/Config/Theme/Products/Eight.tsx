@@ -17,6 +17,7 @@ type Props = {
 
 const Eight = ({ products, isDarkMode, handleCart }: Props) => {
     const [product, setProduct] = useState<ProductsType | null>(null);
+    const [productAlert, setProductAlert] = useState<ProductsType | null>(null);
     const [selectedVariant, setSelectedVariant] = useState<Variants | null>(null);
     const [quantity, setQuantity] = useState<number>(1);
     const [activeAlert, setActiveAlert] = useState<boolean>(false);
@@ -35,10 +36,10 @@ const Eight = ({ products, isDarkMode, handleCart }: Props) => {
     }, [product, selectedVariant])
     const mockItem = useMemo(() => {
         return {
-            name: product?.name,
-            price: product?.final_price,
-            image: product?.image,
-            category: product?.category,
+            name: productAlert?.name,
+            price: productAlert?.final_price,
+            image: productAlert?.image,
+            category: productAlert?.category,
             quantity: quantity
         }
     }, [activeAlert])
@@ -78,13 +79,16 @@ const Eight = ({ products, isDarkMode, handleCart }: Props) => {
 
                 return (
                     <div
-                        onClick={() => setProduct(p)}
+                        onClick={() => {
+                            setProduct(p)
+                            setProductAlert(p)
+                        }}
                         key={p.id}
                         className='relative cursor-pointer group'
                     >
                         {/* Badge Diskon Float */}
                         {label && (
-                            <div className="absolute top-4 left-4 z-1 bg-red-600 text-white text-[10px] font-black px-3 py-1 rounded-full shadow-lg">
+                            <div className="absolute top-4 left-4 z-1 bg-rose-600 text-white text-[10px] font-black px-3 py-1 rounded-full shadow-lg">
                                 {label}
                             </div>
                         )}
@@ -111,7 +115,7 @@ const Eight = ({ products, isDarkMode, handleCart }: Props) => {
                                                 {formatIDR(p.price)}
                                             </span>
                                         )}
-                                        <p className="text-2xl font-black text-red-500">{formatIDR(finalPrice)}</p>
+                                        <p className="text-2xl font-black text-[var(--product-primary-color)]">{formatIDR(finalPrice)}</p>
                                     </div>
                                 </div>
                             </div>
@@ -181,12 +185,12 @@ const Eight = ({ products, isDarkMode, handleCart }: Props) => {
                             </div>
                         </div>
                         <div className="flex gap-4 pt-4">
-                            <button disabled={disableButton} onClick={() => addCart()} className={`flex-1 disabled:bg-gray-600 py-5 rounded-[2rem] font-black uppercase tracking-widest text-blue-500 transition-all active:scale-95 ${isDarkMode ? 'shadow-[6px_6px_12px_#0b111e,-6px_-6px_12px_#1e293b]' : 'shadow-[6px_6px_12px_#d1d5db,-6px_-6px_12px_#ffffff]'}`}>Add to Cart</button>
+                            <button disabled={disableButton} onClick={() => addCart()} className={`flex-1 disabled:bg-gray-600 py-5 rounded-[2rem] font-black uppercase tracking-widest text-[var(--product-primary-color)] transition-all active:scale-95 ${isDarkMode ? 'shadow-[6px_6px_12px_#0b111e,-6px_-6px_12px_#1e293b]' : 'shadow-[6px_6px_12px_#d1d5db,-6px_-6px_12px_#ffffff]'}`}>Add to Cart</button>
                         </div>
                     </div>
                 </div>
             </ModalWrapper>
-            <AlertWrapper activeAlert={activeAlert} position="bottom-right">
+            <AlertWrapper activeAlert={activeAlert} position="top-center">
                 <div className={`${isDarkMode ? "bg-slate-900 border border-slate-800 text-white" : "bg-white text-slate-900"} p-2 rounded-3xl shadow-2xl flex justify-between gap-4 pr-6 `}>
                     <div className='flex items-center gap-4'>
                         {/* <img src={mockItem.image} className="w-16 h-16 rounded-2xl object-cover" alt="" /> */}

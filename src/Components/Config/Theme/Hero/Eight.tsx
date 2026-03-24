@@ -22,7 +22,7 @@ const Eight = ({ isDarkMode, headline, subHeadline, ctaText }: Props) => {
     };
     return (
         <section>
-            <div className={`relative overflow-x-hidden p-8 md:p-16 border-8 transition-all ${isDarkMode ? 'bg-slate-900 border-slate-800 text-white' : `bg-[var(--hero-primary-color)]/5 border-double border-slate-900 shadow-2xl text-slate-900`}`}>
+            <div className={`relative overflow-x-hidden p-8 md:p-16 border-8 transition-all ${isDarkMode ? 'bg-slate-900 border-slate-800 text-white' : `bg-[var(--hero-primary-color)]/5 border-double border-slate-900 shadow-2xl`}`}>
                 <div className="flex flex-col items-center text-center">
                     {/* <div className="w-20 h-20 border-4 border-current mb-8 flex items-center justify-center rounded-full" style={{ color: colors.find(c => c.name === accentColor)?.hex }}>
                         <Scissors className="w-10 h-10" />
