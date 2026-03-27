@@ -169,7 +169,7 @@ export const TemaOne = {
             "category": "Sayur & Buah Segar",
             "name": "Apel Fuji Impor",
             "price": 45000,
-            "final_price": 45000,
+            "final_price": 30000,
             "discount_price": 30000,
             "image": "https://img.sayurbox.com/dcea4650aebbb67570956386664149ff?tr=f-auto,w-360",
             "description": "<ul><li>Apel segar manis dan renyah.</li></ul>",

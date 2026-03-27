@@ -77,7 +77,7 @@ const Fourteen = ({ products, isDarkMode, handleCart }: Props) => {
         }
     }
     return (
-        <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 h-full ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>
+        <div className={`grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4 h-full ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>
             {products?.map((p, i) => {
                 const { finalPrice, label } = getPromoDetails(p);
                 const bgColor = isDarkMode ? 'bg-slate-800' : 'bg-white';
@@ -85,7 +85,7 @@ const Fourteen = ({ products, isDarkMode, handleCart }: Props) => {
                     <div
                         key={i}
                         onClick={() => setProduct(p)}
-                        className={`relative flex flex-col h-[420px] rounded-[2rem] overflow-hidden cursor-pointer shadow-xl group hover:-translate-y-2 transition-all duration-300 ${bgColor}`}
+                        className={`relative flex flex-col rounded-[2rem] overflow-hidden cursor-pointer shadow-xl group hover:-translate-y-2 transition-all duration-300 ${bgColor}`}
                     >
                         {/* Bagian Gambar */}
                         <div className="relative h-1/2 overflow-hidden">
@@ -122,8 +122,8 @@ const Fourteen = ({ products, isDarkMode, handleCart }: Props) => {
                                     </span>
                                 )}
                                 <div className="w-full flex justify-between items-center">
-                                    <p className="text-2xl font-black tracking-tighter">{formatIDR(finalPrice)}</p>
-                                    <div className="w-8 h-8 rounded-full bg-slate-900 dark:bg-white flex items-center justify-center text-white dark:text-black">
+                                    <p className="text-lg sm:text-2xl font-black tracking-tighter">{formatIDR(finalPrice)}</p>
+                                    <div className="w-6 sm:w-8 h-6 sm:h-8 rounded-full bg-slate-900 dark:bg-white flex items-center justify-center text-white dark:text-black">
                                         <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M12 4v16m8-8H4" />
                                         </svg>

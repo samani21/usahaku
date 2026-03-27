@@ -41,7 +41,7 @@ const ModalWrapper = ({ children, activeModal, closeModal, isDarkMode }: Props) 
                         onDragEnd={(_, info) => {
                             if (info.offset.y > 150) closeModal();
                         }}
-                        className={`relative w-full max-w-5xl h-[92vh] md:h-auto md:max-h-[85vh] flex flex-col shadow-2xl rounded-t-[2.5rem] md:rounded-[2.5rem] overflow-hidden transition-colors duration-300 ${isDarkMode ? 'bg-slate-900 text-white' : 'bg-white text-slate-900'
+                        className={`relative w-full max-w-5xl h-[79vh] md:h-auto md:max-h-[85vh] flex flex-col shadow-2xl rounded-t-[2.5rem] md:rounded-[2.5rem] overflow-hidden transition-colors duration-300 ${isDarkMode ? 'bg-slate-900 text-white' : 'bg-white text-slate-900'
                             }`}
                     >
                         {/* 1. Drag Handle (Hanya area ini yang bisa ditarik untuk menutup) */}
