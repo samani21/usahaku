@@ -3,7 +3,7 @@ export const TemaOne = {
         color: "#059669",
         color_frame: "dark",
         layout_header: 1,
-        logo: "http://192.168.1.128:9000/usahaku/header/69bcdf4dad6c2.webp",
+        logo: "https://usahaku-kappa.vercel.app/image/tema_satu/market-logo_848918-4791.avif",
         mode: "auto",
         span_one: "MiniMarket",
         span_two: "",
