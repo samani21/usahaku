@@ -53,7 +53,7 @@ const Five = ({ categories, isDarkMode, onClick }: Props) => {
                                     )
                                 ) : (
                                     <div className={`w-full h-full   flex items-center justify-center p-2`}>
-                                        <Icon icon={'arcticons:defaultdarktheme'} className='w-full h-full' />
+                                        <Icon icon={'material-symbols:local-mall'} className='w-full h-full' />
                                     </div>
                                 )
                             }
@@ -88,7 +88,7 @@ const Five = ({ categories, isDarkMode, onClick }: Props) => {
                     <div className="relative z-1 w-10 h-10 rounded-full overflow-hidden flex-shrink-0 transition-transform duration-500 group-hover:scale-110 shadow-inner">
 
                         <div className={`w-full h-full   flex items-center justify-center p-2`}>
-                            <Icon icon={'arcticons:defaultdarktheme'} className='w-full h-full' />
+                            <Icon icon={'material-symbols:local-mall'} className='w-full h-full' />
                         </div>
                     </div>
 

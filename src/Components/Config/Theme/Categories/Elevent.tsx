@@ -36,7 +36,7 @@ const Elevent = ({ categories, isDarkMode, onClick }: Props) => {
                     {/* Container Foto (Main Image/Icon) */}
                     <div className="relative aspect-square overflow-hidden bg-slate-100 mb-4 md:mb-6">
                         <div className="w-full h-full flex items-center justify-center p-8 transition-transform duration-500 group-hover:scale-110">
-                            <Icon icon={'arcticons:defaultdarktheme'} className='w-full h-full' />
+                            <Icon icon={'material-symbols:local-mall'} className='w-full h-full' />
                         </div>
 
                         {/* Overlay Tekstur Kertas Tua */}
@@ -89,7 +89,7 @@ const Elevent = ({ categories, isDarkMode, onClick }: Props) => {
                                         )
                                     ) : (
                                         <div className="w-full h-full flex items-center justify-center p-8 transition-transform duration-500 group-hover:scale-110">
-                                            <Icon icon={'arcticons:defaultdarktheme'} className='w-full h-full' />
+                                            <Icon icon={'material-symbols:local-mall'} className='w-full h-full' />
                                         </div>
                                     )
                                 }

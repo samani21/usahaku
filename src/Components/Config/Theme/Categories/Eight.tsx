@@ -38,7 +38,7 @@ const Eight = ({ categories, isDarkMode, onClick }: Props) => {
                     <div className="absolute inset-0 w-full h-full p-2">
                         <div className="relative w-full h-full rounded-[2rem] overflow-hidden">
                             <div className={`w-full h-full flex items-center bg-white justify-center bg-white/50 p-8`}>
-                                <Icon icon={'arcticons:defaultdarktheme'} className='w-full h-full' />
+                                <Icon icon={'material-symbols:local-mall'} className='w-full h-full' />
                             </div>
                             {/* Gradient Overlay agar teks terbaca */}
                             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-60 group-hover:opacity-80 transition-opacity" />
@@ -96,7 +96,7 @@ const Eight = ({ categories, isDarkMode, onClick }: Props) => {
                                         )
                                     ) : (
                                         <div className={`w-full h-full flex items-center bg-white justify-center bg-white/50 p-8`}>
-                                            <Icon icon={'arcticons:defaultdarktheme'} className='w-full h-full' />
+                                            <Icon icon={'material-symbols:local-mall'} className='w-full h-full' />
                                         </div>
                                     )
                                 }

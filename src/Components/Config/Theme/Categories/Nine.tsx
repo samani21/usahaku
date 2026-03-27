@@ -29,7 +29,7 @@ const Nine = ({ categories, isDarkMode, onClick }: Props) => {
                 }} className={`relative overflow-hidden rounded-3xl flex h-24 sm:h-48 ${isDarkMode ? 'bg-slate-900 text-white' : 'bg-white text-slate-900 shadow-lg'}`}>
                     <div className="w-1/3 h-full">
                         <div className={`text-[var(--category-primary-color)] w-full h-full object-cover ${isDarkMode && "bg-white"} `} >
-                            <Icon icon={'arcticons:defaultdarktheme'} className='w-full h-full' />
+                            <Icon icon={'material-symbols:local-mall'} className='w-full h-full' />
                         </div>
                     </div>
                     <div className="flex-1 p-4 sm:p-8 flex flex-col justify-center">
@@ -56,7 +56,7 @@ const Nine = ({ categories, isDarkMode, onClick }: Props) => {
                                     )
                                 ) : (
                                     <div className={`text-[var(--category-primary-color)] w-full h-full object-cover ${isDarkMode && "bg-white"} `} >
-                                        <Icon icon={'arcticons:defaultdarktheme'} className='w-full h-full' />
+                                        <Icon icon={'material-symbols:local-mall'} className='w-full h-full' />
                                     </div>
                                 )
                             }

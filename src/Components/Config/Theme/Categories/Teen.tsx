@@ -46,7 +46,7 @@ const Teen = ({ categories, isDarkMode, onClick }: Props) => {
                     <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none opacity-0 group-hover:opacity-100 group-hover:scale-110 transition-all duration-500 z-0">
                         <div className="w-48 h-32 md:w-64 md:h-40 rounded-2xl overflow-hidden shadow-2xl rotate-[-5deg] group-hover:rotate-[5deg] transition-transform duration-700">
                             <div className="w-full h-full bg-slate-100 flex items-center justify-center p-8">
-                                <Icon icon={'arcticons:defaultdarktheme'}
+                                <Icon icon={'material-symbols:local-mall'}
                                     className="w-full h-full text-[var(--category-primary-color)]"
                                 />
                             </div>
@@ -119,7 +119,7 @@ const Teen = ({ categories, isDarkMode, onClick }: Props) => {
                                         )
                                     ) : (
                                         <div className="w-full h-full bg-slate-100 flex items-center justify-center p-8">
-                                            <Icon icon={'arcticons:defaultdarktheme'}
+                                            <Icon icon={'material-symbols:local-mall'}
                                                 className="w-full h-full text-[var(--category-primary-color)]"
                                             />
                                         </div>

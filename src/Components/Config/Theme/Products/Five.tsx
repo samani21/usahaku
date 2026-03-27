@@ -87,7 +87,7 @@ const Five = ({ products, isDarkMode, handleCart }: Props) => {
                             setProduct(p)
                             setProductAlert(p)
                         }}
-                        key={p.id}
+                        key={i}
                         className={`group relative p-4 pb-4 transition-all duration-500 cursor-pointer shadow-2xl hover:shadow-black/20 ${i % 2 === 0 ? '-rotate-2 hover:rotate-0' : 'rotate-2 hover:rotate-0'
                             } ${isDarkMode ? 'bg-zinc-900 border border-white/10' : 'bg-white'}`}
                     >

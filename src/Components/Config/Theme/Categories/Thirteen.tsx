@@ -29,7 +29,7 @@ const Thirteen = ({ categories, isDarkMode, onClick }: Props) => {
                     <h3 className="text-md font-bold uppercase tracking-[0.4em]  mb-6">Semua</h3>
                     <div className="w-full h-40 rounded-lg overflow-hidden mb-8">
                         <div className={`text-[var(--category-primary-color)] w-full h-full object-cover ${isDarkMode && "bg-white"} `} >
-                            <Icon icon={'arcticons:defaultdarktheme'} className='w-full h-full' />
+                            <Icon icon={'material-symbols:local-mall'} className='w-full h-full' />
                         </div>
                     </div>
                     <button className={`flex items-center gap-2 font-bold group text-[var(--category-primary-color)]`}>
@@ -55,7 +55,7 @@ const Thirteen = ({ categories, isDarkMode, onClick }: Props) => {
                                     )
                                 ) : (
                                     <div className={`text-[var(--category-primary-color)] w-full h-full object-cover ${isDarkMode && "bg-white"} `} >
-                                        <Icon icon={'arcticons:defaultdarktheme'} className='w-full h-full' />
+                                        <Icon icon={'material-symbols:local-mall'} className='w-full h-full' />
                                     </div>
                                 )
                             }

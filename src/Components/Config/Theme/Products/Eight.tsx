@@ -83,7 +83,7 @@ const Eight = ({ products, isDarkMode, handleCart }: Props) => {
                             setProduct(p)
                             setProductAlert(p)
                         }}
-                        key={p.id}
+                        key={i}
                         className='relative cursor-pointer group'
                     >
                         {/* Badge Diskon Float */}

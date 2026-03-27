@@ -25,7 +25,7 @@ const FourTen = ({ categories, isDarkMode, onClick }: Props) => {
                     <div className={`absolute inset-0 rounded-2xl translate-x-3 translate-y-3 opacity-20 group-hover:translate-x-0 group-hover:translate-y-0 transition-transform bg-[var(--category-primary-color)]`} />
                     <div className={`relative p-8 rounded-2xl border-2 flex flex-col items-center text-center transition-all ${isDarkMode ? 'bg-slate-950 border-slate-800' : 'bg-white border-slate-900 shadow-sm group-hover:shadow-none'}`}>
                         <div className={`text-[var(--category-primary-color)] absolute inset-0 w-full h-full object-cover rounded-2xl  top-0 ${isDarkMode && 'bg-white'} `} >
-                            <Icon icon={'arcticons:defaultdarktheme'} className='w-full h-full' />
+                            <Icon icon={'material-symbols:local-mall'} className='w-full h-full' />
                         </div>
                         <div onClick={() => {
                             onClick && onClick(null)
@@ -51,7 +51,7 @@ const FourTen = ({ categories, isDarkMode, onClick }: Props) => {
                                     )
                                 ) : (
                                     <div className={`text-[var(--category-primary-color)] absolute inset-0 w-full h-full object-cover rounded-2xl  top-0 ${isDarkMode && 'bg-white'} `} >
-                                        <Icon icon={'arcticons:defaultdarktheme'} className='w-full h-full' />
+                                        <Icon icon={'material-symbols:local-mall'} className='w-full h-full' />
                                     </div>
                                 )
                             }

@@ -128,7 +128,7 @@ const Six = ({ products, isDarkMode, handleCart }: Props) => {
                             setProduct(p)
                             setProductAlert(p)
                         }}
-                        key={p.id}
+                        key={i}
                         className={`relative group cursor-pointer h-96 ${isDarkMode ? "text-white" : "text-slate-900"}`}
                     >
                         {/* Bayangan Solid (Offset) */}

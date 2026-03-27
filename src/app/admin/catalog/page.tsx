@@ -118,10 +118,6 @@ export default function CatalogPage() {
 
     }
 
-    if (activeMenu === 'Preview') {
-        return <PreviewPage onClose={() => setActiveMenu("Header")} />
-    }
-
     useEffect(() => {
         const primary = isDarkMode ? '#020617' : '#f8fafc';   // slate-950 / slate-50
         const secondary = isDarkMode ? '#f8fafc' : '#020617'; // kebalikannya

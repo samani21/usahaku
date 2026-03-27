@@ -1,5 +1,5 @@
 "use client"
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import Loading from '@/Components/Component/Loading';
 import HeaderConfig from '@/Components/Config/Theme/Header';
 import { Catalog } from '@/types/Admin/Catalog/Catalog';
@@ -9,6 +9,7 @@ import CategorieConfig from '@/Components/Config/Theme/Categories';
 import ProductConfig from '@/Components/Config/Theme/Products';
 import SummaryConfig from '@/Components/Config/Theme/Summary';
 import { ArrowLeft, Eye } from 'lucide-react';
+import { ProductsType, Variants } from '@/types/Admin/ProductsType';
 
 const getContrastColor = (hex: string | undefined) => {
     if (!hex) return '#1e293b';
@@ -34,7 +35,14 @@ export default function PreviewPage({ onClose }: Props) {
     const [loading, setLoading] = useState<boolean>(true);
     const [catalogData, setCatalogData] = useState<Catalog | null>(null);
     const [isDarkTheme, setIsDarkTheme] = useState<boolean>(false);
-
+    const [selectCategorie, setSeletctCategorie] = useState<string | null>(null);
+    const [cartItem, setCartItem] = useState<{
+        item: number,
+        amount: number
+    }>({
+        item: 0,
+        amount: 0
+    })
     const updateCssVariables = useCallback((type: 'header' | 'hero' | 'category' | 'product' | 'summary', color: string) => {
         const contrast = getContrastColor(color);
         const rgb = hexToRgb(color);
@@ -72,16 +80,35 @@ export default function PreviewPage({ onClose }: Props) {
         fetchCatalog();
     }, [updateCssVariables]);
 
-    if (loading) return <Loading title='Sedang memuat halaman' />;
 
     const header = catalogData?.header;
     const hero = catalogData?.hero;
     const category = catalogData?.category;
     const categories = catalogData?.categories;
-    const product = catalogData?.product;
-    const products = catalogData?.products;
+    const product = catalogData?.product
+    const products = useMemo(() => {
+        if (!catalogData?.products) return []
+
+        if (selectCategorie) {
+            return catalogData.products.filter(
+                (p) => p?.category === selectCategorie
+            )
+        }
+
+        return catalogData.products
+    }, [catalogData, selectCategorie])
     const summary = catalogData?.summary;
 
+    if (loading) return <Loading title='Sedang memuat halaman' />;
+
+    const handleCart = (p: ProductsType | null, v: Variants | null, qty: number) => {
+        console.log(p, v)
+        const amount = v ? v?.final_price : p?.final_price;
+        setCartItem({
+            item: cartItem?.item + qty,
+            amount: cartItem?.amount + (qty * (amount ?? 0))
+        })
+    }
     return (
         <div className={`flex flex-col items-center justify-center ${isDarkTheme ? 'bg-slate-950 text-white' : 'bg-slate-50 text-slate-900'}`}>
             <div className='max-w-7xl w-full space-y-6 relative'>
@@ -96,8 +123,8 @@ export default function PreviewPage({ onClose }: Props) {
                             toggleTheme={() => setIsDarkTheme(!isDarkTheme)}
                             spanOne={header.span_one}
                             spanTwo={header.span_two}
-                            isBuild={true}
                             displayMode={header.mode}
+                            isBuild={true}
                         />
                     )}
                 </div>
@@ -139,7 +166,7 @@ export default function PreviewPage({ onClose }: Props) {
                         <div className={`${(hero?.mode != "light" && isDarkTheme) || hero?.mode == 'dark' ? 'text-white' : 'text-slate-900'}`}>
                             <HeroConfig
                                 theme={hero?.layout_hero}
-                                isDarkMode={(hero?.mode != "light" && isDarkTheme) || hero?.mode == 'dark'}
+                                isDarkMode={hero?.mode === 'light' ? false : isDarkTheme || hero?.mode == 'dark'}
                                 headline={hero?.headline}
                                 subHeadline={hero?.sub_headline}
                                 ctaText={hero?.cta}
@@ -152,7 +179,8 @@ export default function PreviewPage({ onClose }: Props) {
                         <CategorieConfig
                             theme={category?.layout_categories}
                             categories={categories}
-                            isDarkMode={(category?.mode != "light" && isDarkTheme) || category?.mode == 'dark'} />
+                            isDarkMode={category?.mode === 'light' ? false : isDarkTheme || category?.mode == 'dark'}
+                            onClick={(e) => setSeletctCategorie(e)} />
                     }
                     {
                         product && products &&
@@ -160,7 +188,8 @@ export default function PreviewPage({ onClose }: Props) {
                             <ProductConfig
                                 theme={product?.layout_products}
                                 products={products}
-                                isDarkMode={(product?.mode != "light" && isDarkTheme) || product?.mode == 'dark'} />
+                                isDarkMode={product?.mode === 'light' ? false : isDarkTheme || product?.mode == 'dark'}
+                                handleCart={handleCart} />
                         </div>
                     }
                     <div className='fixed bottom-0 w-full flex items-center justify-center left-0'>
@@ -169,9 +198,9 @@ export default function PreviewPage({ onClose }: Props) {
                                 summary &&
                                 <SummaryConfig
                                     theme={summary?.layout_summary}
-                                    isDarkMode={(summary?.mode != "light" && isDarkTheme) || summary?.mode == 'dark'}
-                                    totalCart={3}
-                                    summary={100000}
+                                    isDarkMode={summary?.mode === 'light' ? false : isDarkTheme || category?.mode == 'dark'}
+                                    totalCart={cartItem?.item}
+                                    summary={cartItem?.amount}
                                     isBuild={true} />
                             }
                         </div>

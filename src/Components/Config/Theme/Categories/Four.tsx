@@ -30,7 +30,7 @@ const Four = ({ categories, isDarkMode, onClick }: Props) => {
                 }} className={`group flex items-center p-4 rounded-2xl transition-all cursor-pointer hover:pl-8 ${isDarkMode ? 'bg-slate-900 text-white' : 'bg-white border border-slate-100 text-slate-900'}`}>
                     <div className="w-16 h-16 rounded-xl overflow-hidden mr-6">
                         <div className={`text-[var(--category-primary-color)] w-full h-full object-cover ${isDarkMode && "bg-white"} `} >
-                            <Icon icon={'arcticons:defaultdarktheme'} className='w-full h-full' />
+                            <Icon icon={'material-symbols:local-mall'} className='w-full h-full' />
                         </div>
                     </div>
                     <div className="flex-1">
@@ -58,7 +58,7 @@ const Four = ({ categories, isDarkMode, onClick }: Props) => {
                                     )
                                 ) : (
                                     <div className={`text-[var(--category-primary-color)] w-full h-full object-cover ${isDarkMode && "bg-white"} `} >
-                                        <Icon icon={'arcticons:defaultdarktheme'} className='w-full h-full' />
+                                        <Icon icon={'material-symbols:local-mall'} className='w-full h-full' />
                                     </div>
                                 )
                             }

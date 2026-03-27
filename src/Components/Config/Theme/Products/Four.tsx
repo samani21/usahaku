@@ -84,7 +84,7 @@ const Four = ({ products, isDarkMode, handleCart }: Props) => {
                             setProduct(p)
                             setProductAlert(p)
                         }}
-                        key={p.id}
+                        key={i}
                         className="relative h-80 rounded-[2.5rem] overflow-hidden group cursor-pointer shadow-2xl"
                     >
                         {/* Background Image Grayscale */}

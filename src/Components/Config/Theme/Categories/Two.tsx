@@ -36,7 +36,7 @@ const Two = ({ categories, isDarkMode, onClick }: Props) => {
                         <div className={`relative w-full h-full rounded-full overflow-hidden p-1 transition-all duration-500 ${isDarkMode ? 'bg-slate-800' : 'bg-white shadow-xl shadow-slate-200'}`}>
                             <div className="w-full h-full rounded-full overflow-hidden">
                                 <div className="w-full h-full p-6 bg-white text-[var(--category-primary-color)] flex items-center justify-center">
-                                    <Icon icon={'arcticons:defaultdarktheme'} className='w-full h-full' />
+                                    <Icon icon={'material-symbols:local-mall'} className='w-full h-full' />
                                 </div>
                             </div>
                         </div>
@@ -88,7 +88,7 @@ const Two = ({ categories, isDarkMode, onClick }: Props) => {
                                             )
                                         ) : (
                                             <div className="w-full h-full p-6 bg-white text-[var(--category-primary-color)] flex items-center justify-center">
-                                                <Icon icon={'arcticons:defaultdarktheme'} className='w-full h-full' />
+                                                <Icon icon={'material-symbols:local-mall'} className='w-full h-full' />
                                             </div>
                                         )
                                     }

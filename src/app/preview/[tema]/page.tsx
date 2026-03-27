@@ -1,0 +1,167 @@
+'use client'; // Wajib untuk Client Component
+
+import CategorieConfig from '@/Components/Config/Theme/Categories';
+import HeaderConfig from '@/Components/Config/Theme/Header';
+import HeroConfig from '@/Components/Config/Theme/Hero';
+import ProductConfig from '@/Components/Config/Theme/Products';
+import { TemaOne } from '@/data/TemaOne';
+import { CategoryType } from '@/types/Admin/Catalog/Categories';
+import { CatalogHeaderType } from '@/types/Admin/Catalog/Header';
+import { HeroType } from '@/types/Admin/Catalog/Hero';
+import { ProductType } from '@/types/Admin/Catalog/Products';
+import { CategoriesType } from '@/types/Admin/CategoriesType';
+import { ProductsType, Variants } from '@/types/Admin/ProductsType';
+import { useParams } from 'next/navigation';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+const getContrastColor = (hex: string | undefined) => {
+    if (!hex) return '#1e293b';
+    const r = parseInt(hex.slice(1, 3), 16);
+    const g = parseInt(hex.slice(3, 5), 16);
+    const b = parseInt(hex.slice(5, 7), 16);
+    const yiq = (r * 299 + g * 587 + b * 114) / 1000;
+    return yiq >= 128 ? '#1e293b' : '#ffffff';
+};
+
+const hexToRgb = (hex: string) => {
+    const r = parseInt(hex.slice(1, 3), 16);
+    const g = parseInt(hex.slice(3, 5), 16);
+    const b = parseInt(hex.slice(5, 7), 16);
+    return `${r}, ${g}, ${b}`;
+};
+
+function PreviewPage() {
+    const params = useParams();
+    const [isDarkTheme, setIsDarkTheme] = useState<boolean>(false);
+    const [header, setHeader] = useState<CatalogHeaderType>();
+    const [hero, setHero] = useState<HeroType>();
+    const [category, setCategory] = useState<CategoryType>();
+    const [categories, setCategories] = useState<CategoriesType[]>();
+    const [product, setProduct] = useState<ProductType>();
+    const [dataProducts, setDataProducts] = useState<ProductsType[]>();
+    const [selectCategorie, setSeletctCategorie] = useState<string | null>(null);
+    const tema = params.tema;
+    const updateCssVariables = useCallback((type: 'header' | 'hero' | 'category' | 'product' | 'summary', color: string) => {
+        const contrast = getContrastColor(color);
+        const rgb = hexToRgb(color);
+        const contrastRgb = hexToRgb(contrast);
+
+        document.documentElement.style.setProperty(`--${type}-primary-color`, color);
+        document.documentElement.style.setProperty(`--${type}-secondary-color`, contrast);
+        document.documentElement.style.setProperty(`--${type}-primary-rgb`, rgb);
+        document.documentElement.style.setProperty(`--${type}-secondary-rgb`, contrastRgb);
+    }, []);
+    const [cartItem, setCartItem] = useState<{
+        item: number,
+        amount: number
+    }>({
+        item: 0,
+        amount: 0
+    })
+    const handleCart = (p: ProductsType | null, v: Variants | null, qty: number) => {
+        console.log(p, v)
+        const amount = v ? v?.final_price : p?.final_price;
+        setCartItem({
+            item: cartItem?.item + qty,
+            amount: cartItem?.amount + (qty * (amount ?? 0))
+        })
+    }
+    useEffect(() => {
+        setHeader(TemaOne?.header)
+        setHero(TemaOne?.hero)
+        setCategory(TemaOne?.category)
+        setCategories(TemaOne?.categories);
+        setProduct(TemaOne?.product);
+        setDataProducts(TemaOne?.products as any);
+        if (TemaOne?.header?.color) updateCssVariables('header', TemaOne?.header.color);
+        if (TemaOne?.hero?.color) updateCssVariables('hero', TemaOne?.hero.color);
+        if (TemaOne?.category?.color) updateCssVariables('category', TemaOne?.category.color);
+        if (TemaOne?.product?.color) updateCssVariables('product', TemaOne?.product.color);
+    }, [])
+
+    useEffect(() => {
+        const primary = isDarkTheme ? '#020617' : '#f8fafc';   // slate-950 / slate-50
+        const secondary = isDarkTheme ? '#f8fafc' : '#020617'; // kebalikannya
+
+        const root = document.documentElement;
+        root.style.setProperty('--mode-primary', primary);
+        root.style.setProperty('--mode-secondary', secondary);
+    }, [isDarkTheme]);
+    const products = useMemo(() => {
+        if (!dataProducts) return []
+
+        if (selectCategorie) {
+            return dataProducts.filter(
+                (p) => p?.category === selectCategorie
+            )
+        }
+
+        return dataProducts
+    }, [dataProducts, selectCategorie])
+    return (
+        <div className={`flex flex-col overflow-hidden  items-center justify-center ${isDarkTheme ? 'bg-slate-950 text-white' : 'bg-slate-50 text-slate-900'}`}>
+            <div className='max-w-7xl  min-h-screen w-full space-y-6 relative'>
+                <div className='fixed z-40  w-full max-w-7xl'>
+                    {header && (
+                        <HeaderConfig
+                            layout={header.layout_header}
+                            themeMode={isDarkTheme || header?.mode == 'dark' ? "dark" : "light"}
+                            logoImage={header.logo}
+                            frameType={header.type_frame}
+                            frameTheme={header.color_frame}
+                            toggleTheme={() => setIsDarkTheme(!isDarkTheme)}
+                            spanOne={header.span_one}
+                            spanTwo={header.span_two}
+                            displayMode={header.mode}
+                        />
+                    )}
+                </div>
+                <div className={`mt-12 space-y-6 ${header?.layout_header === 3 ? "pt-26" : 'pt-16'} pb-18 px-2 `}>
+                    {hero && (
+                        <HeroConfig
+                            theme={hero?.layout_hero}
+                            isDarkMode={hero?.mode === 'light' ? false : isDarkTheme || hero?.mode == 'dark'}
+                            headline={hero?.headline}
+                            subHeadline={hero?.sub_headline}
+                            ctaText={hero?.cta}
+                            imageHero={hero?.image ?? null}
+                            title={hero?.title} />
+                    )}
+                    {
+                        categories && category &&
+                        <CategorieConfig
+                            theme={category?.layout_categories}
+                            categories={categories}
+                            isDarkMode={category?.mode === 'light' ? false : isDarkTheme || category?.mode == 'dark'}
+                            onClick={(e) => setSeletctCategorie(e)} />
+                    }
+                    <section id="product-section">
+                        {
+                            product && products &&
+                            <ProductConfig
+                                theme={product?.layout_products}
+                                products={products}
+                                isDarkMode={product?.mode === 'light' ? false : isDarkTheme || product?.mode == 'dark'}
+                                handleCart={handleCart} />
+                        }
+                    </section>
+                    {/* <div className='fixed bottom-0 w-full flex z-3 items-center justify-center left-0'>
+                        <div className='max-w-7xl w-full'>
+                            {
+                                summary && cartItem?.item > 0 &&
+                                <SummaryConfig
+                                    theme={summary?.layout_summary}
+                                    isDarkMode={summary?.mode === 'light' ? false : isDarkTheme || category?.mode == 'dark'}
+                                    totalCart={cartItem?.item}
+                                    summary={cartItem?.amount}
+                                />
+                            }
+                        </div>
+                    </div> */}
+                </div>
+            </div>
+            {/* Tambahkan Section Hero di sini menggunakan catalogData?.hero */}
+        </div>
+    );
+}
+
+export default PreviewPage;

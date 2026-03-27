@@ -83,7 +83,7 @@ const Fourteen = ({ products, isDarkMode, handleCart }: Props) => {
                 const bgColor = isDarkMode ? 'bg-slate-800' : 'bg-white';
                 return (
                     <div
-                        key={p.id}
+                        key={i}
                         onClick={() => setProduct(p)}
                         className={`relative flex flex-col h-[420px] rounded-[2rem] overflow-hidden cursor-pointer shadow-xl group hover:-translate-y-2 transition-all duration-300 ${bgColor}`}
                     >
@@ -110,7 +110,7 @@ const Fourteen = ({ products, isDarkMode, handleCart }: Props) => {
                                 {p.category && (
                                     <span className="text-[12px] font-black opacity-40 uppercase tracking-widest">{p.category}</span>
                                 )}
-                                <h3 className="font-black text-lg mt-1 leading-tight uppercase italic line-clamp-2 group-hover:text-red-500 transition-colors">
+                                <h3 className="font-black text-lg mt-1 leading-tight uppercase italic line-clamp-2 group-hover:text-[var(--product-primary-color)] transition-colors">
                                     {p.name}
                                 </h3>
                             </div>
