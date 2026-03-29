@@ -95,7 +95,7 @@ const Nine = ({ products, isDarkMode, handleCart }: Props) => {
                                     {p.category}
                                 </span>
                             )}
-                            <h3 className="font-black text-base sm:text-2xl uppercase italic leading-none mb-2 line-clamp-1">
+                            <h3 className="font-black text-[12px] sm:text-lg uppercase italic leading-none mb-2 line-clamp-1">
                                 {p.name}
                             </h3>
                             <div className="flex items-center justify-between mt-auto sm:mt-2">
@@ -132,7 +132,7 @@ const Nine = ({ products, isDarkMode, handleCart }: Props) => {
                         <div className="max-w-5xl w-full flex flex-col md:flex-row items-center gap-12 md:gap-20">
 
                             {/* Bagian Gambar (Bingkai Tebal) */}
-                            <div className="w-full md:w-1/2 aspect-[4/5] rounded-[3rem] md:rounded-[4rem] overflow-hidden shadow-2xl border-8 border-white/10 dark:border-white/5 relative">
+                            <div className={`w-full md:w-1/2 aspect-[4/5] rounded-[3rem] md:rounded-[4rem] overflow-hidden shadow-2xl border-8 ${isDarkMode ? "border-white/5" : "border-white/10"} relative`}>
                                 <img
                                     src={selectedVariant?.image ?? product?.image}
                                     className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
@@ -157,7 +157,7 @@ const Nine = ({ products, isDarkMode, handleCart }: Props) => {
                                         )}
                                     </div>
                                     <div className="space-y-2">
-                                        <h2 className="text-4xl sm:text-6xl font-black italic tracking-tighter leading-[0.9] uppercase">
+                                        <h2 className="text-lg sm:text-2xl font-black italic tracking-tighter leading-[0.9] uppercase">
                                             {product?.name}
                                         </h2>
                                         <div className={`h-2 w-24 bg-[var(--product-primary-color)] rounded-full shadow-lg shadow-blue-500/20`} />
@@ -186,7 +186,7 @@ const Nine = ({ products, isDarkMode, handleCart }: Props) => {
                                     </div>
 
                                     {/* Varian & Qty Area */}
-                                    <div className="pt-6 border-t border-black/5 dark:border-white/5 space-y-8">
+                                    <div className={`pt-6 border-t ${isDarkMode ? "border-white/5" : "border-black/5"} space-y-8`}>
                                         {product?.variants && product?.variants?.length > 0 && (
                                             <VariantPicker
                                                 variants={product?.variants}
@@ -196,7 +196,7 @@ const Nine = ({ products, isDarkMode, handleCart }: Props) => {
                                             />
                                         )}
 
-                                        <div className='flex items-end justify-between gap-4 bg-black/5 dark:bg-white/5 p-6 rounded-[2.5rem]'>
+                                        <div className={`flex items-end justify-between gap-4 ${isDarkMode ? 'bg-white/5' : 'bg-black/5 '} p-6 rounded-[2.5rem]`}>
                                             {product?.is_qty ? (
                                                 <QtySelector quantity={quantity} setQuantity={setQuantity} isDarkMode={isDarkMode} />
                                             ) : <div></div>}
@@ -213,7 +213,7 @@ const Nine = ({ products, isDarkMode, handleCart }: Props) => {
                                     <button
                                         disabled={disableButton}
                                         onClick={() => addCart()}
-                                        className={`w-full py-6 md:py-8 bg-[var(--product-primary-color)] text-white rounded-[2.5rem] font-black uppercase italic tracking-[0.2em] text-sm md:text-base shadow-2xl shadow-blue-600/40 hover:scale-[1.02] transition-all active:scale-95 disabled:bg-gray-600 flex items-center justify-center gap-4`}
+                                        className={`w-full py-6 md:py-8 bg-[var(--product-primary-color)] text-white rounded-[2.5rem] font-black uppercase italic tracking-[0.2em] text-sm md:text-base shadow-2xl  hover:scale-[1.02] transition-all active:scale-95 disabled:bg-gray-600 flex items-center justify-center gap-4`}
                                     >
                                         <Zap size={24} fill="white" />
                                         Order Sekarang

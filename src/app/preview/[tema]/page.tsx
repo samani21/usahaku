@@ -4,11 +4,14 @@ import CategorieConfig from '@/Components/Config/Theme/Categories';
 import HeaderConfig from '@/Components/Config/Theme/Header';
 import HeroConfig from '@/Components/Config/Theme/Hero';
 import ProductConfig from '@/Components/Config/Theme/Products';
+import SummaryConfig from '@/Components/Config/Theme/Summary';
 import { TemaOne } from '@/data/TemaOne';
+import { ThemePreview } from '@/data/TemaRouter';
 import { CategoryType } from '@/types/Admin/Catalog/Categories';
 import { CatalogHeaderType } from '@/types/Admin/Catalog/Header';
 import { HeroType } from '@/types/Admin/Catalog/Hero';
 import { ProductType } from '@/types/Admin/Catalog/Products';
+import { SummaryType } from '@/types/Admin/Catalog/Summary';
 import { CategoriesType } from '@/types/Admin/CategoriesType';
 import { ProductsType, Variants } from '@/types/Admin/ProductsType';
 import { useParams } from 'next/navigation';
@@ -38,6 +41,7 @@ function PreviewPage() {
     const [categories, setCategories] = useState<CategoriesType[]>();
     const [product, setProduct] = useState<ProductType>();
     const [dataProducts, setDataProducts] = useState<ProductsType[]>();
+    const [summary, setSummary] = useState<SummaryType>();
     const [selectCategorie, setSeletctCategorie] = useState<string | null>(null);
     const tema = params.tema;
     const updateCssVariables = useCallback((type: 'header' | 'hero' | 'category' | 'product' | 'summary', color: string) => {
@@ -49,6 +53,21 @@ function PreviewPage() {
         document.documentElement.style.setProperty(`--${type}-secondary-color`, contrast);
         document.documentElement.style.setProperty(`--${type}-primary-rgb`, rgb);
         document.documentElement.style.setProperty(`--${type}-secondary-rgb`, contrastRgb);
+    }, []);
+    const [isDark, setIsDark] = useState(false);
+
+    useEffect(() => {
+        const media = window.matchMedia("(prefers-color-scheme: dark)");
+
+        setIsDark(media.matches);
+
+        const listener = (e: MediaQueryListEvent) => {
+            setIsDark(e.matches);
+        };
+
+        media.addEventListener("change", listener);
+
+        return () => media.removeEventListener("change", listener);
     }, []);
     const [cartItem, setCartItem] = useState<{
         item: number,
@@ -66,17 +85,23 @@ function PreviewPage() {
         })
     }
     useEffect(() => {
-        setHeader(TemaOne?.header)
-        setHero(TemaOne?.hero)
-        setCategory(TemaOne?.category)
-        setCategories(TemaOne?.categories);
-        setProduct(TemaOne?.product);
-        setDataProducts(TemaOne?.products as any);
-        if (TemaOne?.header?.color) updateCssVariables('header', TemaOne?.header.color);
-        if (TemaOne?.hero?.color) updateCssVariables('hero', TemaOne?.hero.color);
-        if (TemaOne?.category?.color) updateCssVariables('category', TemaOne?.category.color);
-        if (TemaOne?.product?.color) updateCssVariables('product', TemaOne?.product.color);
-    }, [])
+        const theme = ThemePreview(Number(tema));
+        setHeader(theme?.header as any)
+        if (theme?.header?.mode === 'auto') {
+            setIsDarkTheme(isDark)
+        }
+        setHero(theme?.hero)
+        setCategory(theme?.category)
+        setCategories(theme?.categories);
+        setProduct(theme?.product);
+        setDataProducts(theme?.products as any);
+        setSummary(theme?.summary);
+        if (theme?.header?.color) updateCssVariables('header', theme?.header.color);
+        if (theme?.hero?.color) updateCssVariables('hero', theme?.hero.color);
+        if (theme?.category?.color) updateCssVariables('category', theme?.category.color);
+        if (theme?.product?.color) updateCssVariables('product', theme?.product.color);
+        if (theme?.summary?.color) updateCssVariables('summary', theme?.summary.color);
+    }, [tema, isDark])
 
     useEffect(() => {
         const primary = isDarkTheme ? '#020617' : '#f8fafc';   // slate-950 / slate-50
@@ -144,7 +169,7 @@ function PreviewPage() {
                                 handleCart={handleCart} />
                         }
                     </section>
-                    {/* <div className='fixed bottom-0 w-full flex z-3 items-center justify-center left-0'>
+                    <div className='fixed bottom-0 w-full flex z-3 items-center justify-center left-0'>
                         <div className='max-w-7xl w-full'>
                             {
                                 summary && cartItem?.item > 0 &&
@@ -153,10 +178,11 @@ function PreviewPage() {
                                     isDarkMode={summary?.mode === 'light' ? false : isDarkTheme || category?.mode == 'dark'}
                                     totalCart={cartItem?.item}
                                     summary={cartItem?.amount}
+                                    isBuild={true}
                                 />
                             }
                         </div>
-                    </div> */}
+                    </div>
                 </div>
             </div>
             {/* Tambahkan Section Hero di sini menggunakan catalogData?.hero */}
