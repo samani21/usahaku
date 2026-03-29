@@ -1,10 +1,11 @@
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+const layout = 1;
 export const TemaTwo = {
     header: {
         color: "#64748B",
         color_frame: "dark",
-        layout_header: 10,
-        // logo: "https://usahaku-kappa.vercel.app/image/tema_satu/market-logo_848918-4791.avif",
+        layout_header: layout,
+        logo: "https://usahaku-kappa.vercel.app/image/tema_satu/market-logo_848918-4791.avif",
         mode: "auto",
         span_one: "Laundry",
         span_two: "& Cuci Sepatu",
@@ -14,7 +15,7 @@ export const TemaTwo = {
         business_id: 13,
         color: "#64748B",
         id: 1,
-        layout_summary: 8,
+        layout_summary: layout,
         mode: "auto",
     },
     hero: {
@@ -24,17 +25,26 @@ export const TemaTwo = {
         cta: "Ambil Laundry",
         headline: "Cuci Bersih & Wangi",
         image: "",
-        layout_hero: 10,
+        layout_hero: layout,
         mode: "auto",
         sub_headline: "Layanan ekspres 1 hari selesai dengan jaminan kebersihan maksimal.",
-        title: "",
+        title: "Prmo hari ini",
     },
     category: {
         business_id: 13,
         color: "#64748B",
         id: 1,
-        layout_categories: 3,
+        layout_categories: layout,
         mode: "auto",
+    },
+    product: {
+        business_id: 13,
+        color: "#64748B",
+        created_at: "2026-03-20T07:33:24.000000Z",
+        id: 1,
+        layout_products: layout,
+        mode: "auto",
+        updated_at: "2026-03-24T03:33:49.000000Z",
     },
     categories: [
         {
@@ -98,15 +108,7 @@ export const TemaTwo = {
             "updated_at": "2026-03-15T22:03:19.000000Z"
         }
     ],
-    product: {
-        business_id: 13,
-        color: "#64748B",
-        created_at: "2026-03-20T07:33:24.000000Z",
-        id: 1,
-        layout_products: 9,
-        mode: "auto",
-        updated_at: "2026-03-24T03:33:49.000000Z",
-    },
+
     products: [{
         "business_id": 13,
         "product_category_id": 1,

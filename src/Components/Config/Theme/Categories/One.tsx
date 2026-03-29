@@ -22,20 +22,20 @@ const One = ({ categories, isDarkMode, onClick }: Props) => {
     };
     return (
         <section className="py-12 px-6 max-w-7xl mx-auto">
-            <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 ${isDarkMode ? "text-white" : "text-slate-900"}`}>
+            <div className={`grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-6 ${isDarkMode ? "text-white" : "text-slate-900"}`}>
                 <div onClick={() => {
                     onClick && onClick(null)
                     handleScroll()
                 }} className={`relative group overflow-hidden rounded-[2rem] h-64 cursor-pointer shadow-xl ${isDarkMode ? "shadow-black/20" : "shadow-slate-200/50 "}`}>
                     <div className={`absolute flex items-center justify-center inset-0 w-full h-full ${isDarkMode ? "bg-slate-800 " : "bg-slate-100"} group-hover:scale-110 transition-transform duration-700`}>
-                        <p className="text-6xl font-black italic opacity-10 uppercase tracking-tighter select-none">
+                        <p className="text-2xl sm:text-6xl font-black italic  uppercase tracking-tighter select-none">
                             Semua
                         </p>
                     </div>
 
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent group-hover:via-black/20 transition-colors p-8 flex flex-col justify-end">
                         <div className="transform translate-y-2 group-hover:translate-y-0 transition-transform duration-500">
-                            <h3 className="text-2xl font-black text-white uppercase tracking-tight italic">
+                            <h3 className="text-md sm:text-2xl font-black text-white uppercase tracking-tight italic">
                                 Semua
                             </h3>
                             <div className="flex items-center gap-3 mt-1">
@@ -63,11 +63,11 @@ const One = ({ categories, isDarkMode, onClick }: Props) => {
                                 cat.icon.startsWith("http") ? (
                                     <img
                                         src={cat.icon}
-                                        className="absolute inset-0 w-full bg-white h-full object-cover group-hover:scale-110 transition-transform duration-700 bg-white"
+                                        className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                                         alt={cat.name}
                                     />
                                 ) : (
-                                    <div className={`absolute flex items-center bg-white justify-center inset-0 w-full h-full ${isDarkMode ? "bg-slate-800" : "bg-slate-100"} group-hover:scale-110 transition-transform duration-700`}>
+                                    <div className={`absolute flex items-center justify-center inset-0 w-full h-full ${isDarkMode ? "bg-slate-800" : "bg-slate-100"} group-hover:scale-110 transition-transform duration-700`}>
                                         <div className="w-24 h-24 opacity-20">
                                             <Icon icon={cat?.icon} className='w-full h-full' color={cat?.color} />
                                         </div>
@@ -75,7 +75,7 @@ const One = ({ categories, isDarkMode, onClick }: Props) => {
                                 )
                             ) : (
                                 <div className={`absolute flex items-center justify-center inset-0 w-full h-full ${isDarkMode ? "bg-slate-800 " : "bg-slate-100"} group-hover:scale-110 transition-transform duration-700`}>
-                                    <p className="text-6xl font-black italic opacity-10 uppercase tracking-tighter select-none">
+                                    <p className="text-2xl sm:text-6xl font-black italic uppercase tracking-tighter select-none">
                                         {cat?.name}
                                     </p>
                                 </div>
@@ -85,7 +85,7 @@ const One = ({ categories, isDarkMode, onClick }: Props) => {
                         {/* Overlay & Text Content */}
                         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent group-hover:via-black/20 transition-colors p-8 flex flex-col justify-end">
                             <div className="transform translate-y-2 group-hover:translate-y-0 transition-transform duration-500">
-                                <h3 className="text-2xl font-black text-white uppercase tracking-tight italic">
+                                <h3 className="text-md sm:text-2xl font-black text-white uppercase tracking-tight italic">
                                     {cat.name}
                                 </h3>
                                 <div className="flex items-center gap-3 mt-1">

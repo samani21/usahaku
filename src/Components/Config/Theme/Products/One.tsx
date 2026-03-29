@@ -79,12 +79,12 @@ const One = ({ products, isDarkMode, handleCart }: Props) => {
 
                 return (
                     <div
-                        key={p.id}
+                        key={i}
                         onClick={() => {
                             setProduct(p)
                             setProductAlert(p)
                         }}
-                        className={`group cursor-pointer rounded-3xl overflow-hidden border-2 transition-all ${isDarkMode
+                        className={`group flex-col justify-end cursor-pointer rounded-3xl overflow-hidden border-2 transition-all ${isDarkMode
                             ? 'bg-zinc-900 border-zinc-800 text-white'
                             : 'bg-white border-slate-100 shadow-xl text-slate-900'
                             }`}
@@ -92,7 +92,7 @@ const One = ({ products, isDarkMode, handleCart }: Props) => {
                         <div className="relative aspect-square overflow-hidden">
                             {/* Label Diskon Permanen */}
                             {label && (
-                                <div className="absolute top-4 right-4 z-10 bg-[var(--product-primary-color)] text-white text-[10px] font-black px-3 py-1 rounded-full uppercase italic shadow-lg">
+                                <div className="absolute top-4 right-4 z-10 bg-rose-500 text-white text-[10px] font-black px-3 py-1 rounded-full uppercase italic shadow-lg">
                                     {label}
                                 </div>
                             )}
@@ -103,17 +103,19 @@ const One = ({ products, isDarkMode, handleCart }: Props) => {
                             />
                         </div>
 
-                        <div className="py-4 px-6">
-                            <span className="text-[10px] font-bold uppercase opacity-40 tracking-widest">{p.category}</span>
-                            <h3 className="font-bold text-lg mt-1 group-hover:text-[var(--product-primary-color)] transition-colors line-clamp-1">
+                        <div className="py-4 px-4 sm:px-6">
+                            <span className="text-[8px] sm:text-[10px] font-bold uppercase opacity-40 tracking-widest">{p.category}</span>
+                            <h3 className="font-bold text-[12px] sm:text-lg mt-1 group-hover:text-[var(--product-primary-color)] transition-colors line-clamp-1">
                                 {p?.name}
                             </h3>
-                            <div className="mt-2 flex flex-col">
-                                {label && (
-                                    <span className="text-[10px] line-through opacity-30 font-bold -mb-1">
-                                        {formatIDR(p.price)}
-                                    </span>
-                                )}
+                            <div className="mt-2 flex-col">
+                                <div className='h-6'>
+                                    {label && (
+                                        <span className="text-[10px] line-through opacity-30 font-bold -mb-1">
+                                            {formatIDR(p.price)}
+                                        </span>
+                                    )}
+                                </div>
                                 <p className="font-black text-xl text-[var(--product-primary-color)]">
                                     {formatIDR(finalPrice)}
                                 </p>
@@ -183,11 +185,6 @@ const One = ({ products, isDarkMode, handleCart }: Props) => {
                                 }
                             </div>
                             <div className='flex items-center gap-4'>
-                                <button onClick={() => {
-                                    setProduct(null)
-                                    setSelectedVariant(null)
-                                    setQuantity(1)
-                                }} className={`w-full disabled:bg-gray-600 py-4 bg-[var(--product-primary-color)] text-white rounded-2xl font-black shadow-lg shadow-[var(--product-primary-color)]`}>BATAL</button>
                                 <button disabled={disableButton} onClick={() => addCart()} className={`w-full disabled:bg-gray-600 py-4 bg-[var(--product-primary-color)] text-white rounded-2xl font-black shadow-lg shadow-[var(--product-primary-color)]`}>BELI SEKARANG</button>
                             </div>
                         </div>
