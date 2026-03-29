@@ -3,7 +3,7 @@ import ModalWrapper from './ModalWrapper';
 import { useEffect, useMemo, useState } from 'react';
 import QtySelector from './QtySelector';
 import VariantPicker from './VariantPicker';
-import { ArrowRight, ShoppingBag, ShoppingCart } from 'lucide-react';
+import { ArrowRight, ShoppingBag, ShoppingCart, X } from 'lucide-react';
 import AlertWrapper from './AlertWrapper';
 import { ProductsType, Variants } from '@/types/Admin/ProductsType';
 import { formatIDR } from '@/types/FormtRupiah';
@@ -102,20 +102,22 @@ const Five = ({ products, isDarkMode, handleCart }: Props) => {
 
                         {/* Info Text with Serif Style */}
                         <div className="px-2 space-y-1">
-                            {label && (
-                                <span className="md:hidden text-[10px] font-black bg-[var(--product-primary-color)] text-white px-2 py-0.5 rounded italic">
-                                    {label}
-                                </span>
-                            )}
-                            <p className={`font-serif text-xl font-black italic tracking-tighter transition-colors ${isDarkMode ? 'text-white' : 'text-slate-800'}`}>
+                            <div className='h-6'>
+                                {label && (
+                                    <span className="md:hidden text-[10px] font-black bg-rose-500 text-white px-2 py-0.5 rounded italic">
+                                        {label}
+                                    </span>
+                                )}
+                            </div>
+                            <p className={`font-serif text-md sm:text-xl font-black italic tracking-tighter h-12 sm:h-14 transition-colors line-clamp-2 ${isDarkMode ? 'text-white' : 'text-slate-800'}`}>
                                 {p.name}
                             </p>
                             <div className="flex items-center justify-between">
-                                <p className={`font-serif text-lg font-black italic tracking-tighter ${isDarkMode ? 'text-rose-400' : 'text-rose-600'}`}>
+                                <p className={`font-serif text-lg font-black italic tracking-tighter ${isDarkMode ? 'text-slate-300' : 'text-[var(--product-primary-color)]'}`}>
                                     {formatIDR(finalPrice)}
                                 </p>
                                 {label && (
-                                    <span className="hidden md:grid text-[10px] font-black bg-[var(--product-primary-color)] text-white px-2 py-0.5 rounded italic">
+                                    <span className="hidden md:grid text-[10px] font-black bg-rose-500 text-white px-2 py-0.5 rounded italic">
                                         {label}
                                     </span>
                                 )}
@@ -143,7 +145,7 @@ const Five = ({ products, isDarkMode, handleCart }: Props) => {
                     </div>
                     <div className="px-8 overflow-x-hidden no-scrollbar pb-12 -mt-20 relative space-y-6 text-center">
                         <div className={`inline-flex p-4 rounded-3xl ${isDarkMode ? "bg-slate-800 border border-slate-700" : "bg-white"} shadow-xl  `}>
-                            <h2 className="text-2xl font-black tracking-tight">{product?.name}</h2>
+                            <h2 className="text-lg sm:text-2xl font-black tracking-tight">{product?.name}</h2>
                         </div>
                         <div className="flex justify-center gap-4 text-sm font-bold opacity-60">
                             <span>{product?.category}</span>
@@ -189,7 +191,7 @@ const Five = ({ products, isDarkMode, handleCart }: Props) => {
                 <div className={`${isDarkMode ? "bg-slate-900 text-white" : "text-slate-900 bg-white"} px-6 py-4 rounded-full shadow-2xl flex items-center gap-4 border-b-4 border-[var(--product-primary-color)]`}>
                     <ShoppingBag size={18} className="text-emerald-500" />
                     <span className="text-sm font-medium">{mockItem?.name} dimasukkan ke keranjang</span>
-                    <ArrowRight size={16} />
+                    <X size={16} onClick={() => setActiveAlert(false)} />
                 </div>
             </AlertWrapper>
         </div >

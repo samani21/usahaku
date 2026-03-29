@@ -1,5 +1,5 @@
 import { formatIDR } from '@/types/FormtRupiah';
-import { Zap } from 'lucide-react';
+import { ShoppingBag, Zap } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import React from 'react'
 
@@ -17,7 +17,7 @@ const Five = ({ isBuild, totalCart, summary }: Props) => {
             <div className="sticky bottom-0 bg-slate-900 text-white p-5 rounded-t-3xl flex items-center justify-between shadow-2xl">
                 <div className="flex gap-4 items-center">
                     <div className="bg-white/10 p-2 rounded-full">
-                        <Zap size={16} className={'text-[var(--summary-primary-color)]'} />
+                        <ShoppingBag size={16} className={'text-text'} />
                     </div>
                     <div>
                         <p className="text-xs opacity-50 font-medium">{totalCart} Item terpilih</p>
