@@ -178,7 +178,7 @@ export const TemaOne = {
             "name": "Apel Fuji Impor",
             "price": 45000,
             "final_price": 30000,
-            "discount_price": 30000,
+            "discount_price": 15000,
             "image": "https://img.sayurbox.com/dcea4650aebbb67570956386664149ff?tr=f-auto,w-360",
             "description": "<ul><li>Apel segar manis dan renyah.</li></ul>",
             "has_variant": 0,
