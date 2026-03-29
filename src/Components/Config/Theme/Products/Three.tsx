@@ -66,14 +66,14 @@ const Three = ({ products, isDarkMode, handleCart }: Props) => {
         }
     }
     return (
-        <div className='grid grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-6 md:gap-2 h-full'>
+        <div className='grid grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-6 md:gap-4 h-full'>
             {products?.map((p, i) => {
                 const { finalPrice, label } = getPromoDetails(p);
 
                 return (
                     <div
                         onClick={() => setProduct(p)}
-                        key={p.id}
+                        key={i}
                         className="group cursor-pointer flex flex-col items-center justify-center"
                     >
                         {/* Image Container Circle */}
@@ -98,16 +98,18 @@ const Three = ({ products, isDarkMode, handleCart }: Props) => {
                         {/* Content Area */}
                         <div className="mt-8 flex flex-col items-center text-center space-y-2">
                             <span className="text-[10px] font-bold opacity-40 uppercase tracking-[0.2em]">{p.category}</span>
-                            <h3 className="font-black text-xl uppercase italic leading-tight group-hover:text-[var(--product-primary-color)] transition-colors">
+                            <h3 className="font-black text-sm sm:text-lg h-8 sm:h-12 uppercase italic leading-tight group-hover:text-[var(--product-primary-color)] transition-colors line-clamp-2">
                                 {p.name}
                             </h3>
 
                             <div className="flex flex-col items-center gap-1">
-                                {label && (
-                                    <span className="text-[10px] line-through opacity-30 font-bold">
-                                        {formatIDR(p.price)}
-                                    </span>
-                                )}
+                                <div className='h-6'>
+                                    {label && (
+                                        <span className="text-[12px] line-through opacity-30 font-bold">
+                                            {formatIDR(p.price)}
+                                        </span>
+                                    )}
+                                </div>
                                 <div className="px-6 py-2 rounded-full font-black text-sm transition-all bg-[var(--product-primary-color)] text-white group-hover:px-8 group-hover:bg-black group-hover:shadow-lg">
                                     {formatIDR(finalPrice)}
                                 </div>
@@ -144,7 +146,7 @@ const Three = ({ products, isDarkMode, handleCart }: Props) => {
                                 <div className='flex items-center justify-end w-full'>
                                     {
                                         product?.discount_price &&
-                                        <div className="bg-emerald-500 flex items-center gap-2 text-[12px] text-white px-4 py-2 rounded-2xl font-black italic">
+                                        <div className="bg-rose-500 flex items-center gap-2 text-[12px] text-white px-4 py-2 rounded-2xl font-black italic">
                                             <span className='mt-1'>
                                                 <Tag size={16} />
                                             </span>
@@ -153,7 +155,7 @@ const Three = ({ products, isDarkMode, handleCart }: Props) => {
                                     }
                                 </div>
                                 <div>
-                                    <h2 className="text-3xl font-black">{product?.name}</h2>
+                                    <h2 className="text-xl sm:text-3xl font-black">{product?.name}</h2>
                                     {
                                         product?.is_service ?
                                             <p className={`text-[var(--product-primary-color)] font-bold mt-1`}>Layanan Jasa Tersedia</p> :

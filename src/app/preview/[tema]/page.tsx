@@ -140,7 +140,7 @@ function PreviewPage() {
                         />
                     )}
                 </div>
-                <div className={`mt-12 space-y-6 ${header?.layout_header === 3 ? "pt-26" : 'pt-16'} pb-18 px-2 `}>
+                <div className={`mt-12 space-y-6 ${header?.layout_header === 3 ? "pt-35 sm:pt-28" : 'pt-16'} pb-18 px-2 `}>
                     {hero && (
                         <HeroConfig
                             theme={hero?.layout_hero}
