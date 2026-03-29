@@ -23,7 +23,7 @@ const Six = ({ categories, isDarkMode, onClick }: Props) => {
     };
     return (
         <section>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 <div
                     onClick={() => {
                         onClick && onClick(null)
@@ -40,7 +40,7 @@ const Six = ({ categories, isDarkMode, onClick }: Props) => {
                         className="absolute inset-0 opacity-0 group-hover:opacity-30 transition-opacity duration-700 pointer-events-none bg-[var(--category-primary-color)]" />
                     <div className="absolute inset-0 flex flex-col items-center justify-center text-white z-1">
                         <div className="relative overflow-hidden px-4 ">
-                            <h3 className="text-3xl md:text-4xl font-black uppercase italic tracking-tighter transform translate-y-2 group-hover:translate-y-0 transition-transform duration-500 ease-out">
+                            <h3 className="text-md md:text-xl font-black uppercase italic tracking-tighter transform translate-y-2 group-hover:translate-y-0 transition-transform duration-500 ease-out">
                                 Semua
                             </h3>
                             <div className="w-full h-1 bg-white mt-1 scale-x-0 scale-x-100 transition-transform duration-500 origin-center" />
@@ -86,7 +86,7 @@ const Six = ({ categories, isDarkMode, onClick }: Props) => {
                             className="absolute inset-0 opacity-0 group-hover:opacity-30 transition-opacity duration-700 pointer-events-none bg-[var(--category-primary-color)]" />
                         <div className="absolute inset-0 flex flex-col items-center justify-center text-white z-1">
                             <div className="relative overflow-hidden px-4 ">
-                                <h3 className="text-3xl md:text-4xl font-black uppercase italic tracking-tighter transform translate-y-2 group-hover:translate-y-0 transition-transform duration-500 ease-out">
+                                <h3 className="text-md md:text-xl font-black uppercase italic tracking-tighter transform translate-y-2 group-hover:translate-y-0 transition-transform duration-500 ease-out">
                                     {cat.name}
                                 </h3>
                                 <div className="w-full h-1 bg-white mt-1 scale-x-0 scale-x-100 transition-transform duration-500 origin-center" />

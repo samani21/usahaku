@@ -1,6 +1,6 @@
 import ModalWrapper from './ModalWrapper';
 import { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react';
-import { Minus, Plus, ShoppingCart, Zap } from 'lucide-react';
+import { Minus, Plus, ShoppingCart, X, Zap } from 'lucide-react';
 import AlertWrapper from './AlertWrapper';
 import { ProductsType, Variants } from '@/types/Admin/ProductsType';
 import { formatIDR } from '@/types/FormtRupiah';
@@ -118,7 +118,7 @@ const Six = ({ products, isDarkMode, handleCart }: Props) => {
         }
     }
     return (
-        <div className='grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6 h-full'>
+        <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 h-full'>
             {products?.map((p, i) => {
                 const { finalPrice, label } = getPromoDetails(p);
 
@@ -129,7 +129,7 @@ const Six = ({ products, isDarkMode, handleCart }: Props) => {
                             setProductAlert(p)
                         }}
                         key={i}
-                        className={`relative group cursor-pointer h-96 ${isDarkMode ? "text-white" : "text-slate-900"}`}
+                        className={`relative group cursor-pointer sm:h-96 ${isDarkMode ? "text-white" : "text-slate-900"}`}
                     >
                         {/* Bayangan Solid (Offset) */}
                         <div className={`absolute inset-0 translate-x-3 translate-y-3 transition-transform group-hover:translate-x-5 group-hover:translate-y-5 ${isDarkMode ? 'bg-white/10' : 'bg-black'}`} />
@@ -155,21 +155,23 @@ const Six = ({ products, isDarkMode, handleCart }: Props) => {
                             <div className="space-y-2">
                                 <div className="flex flex-col">
                                     <span className="text-[10px] font-black uppercase opacity-60 mb-1">[{p.category}]</span>
-                                    <h3 className="font-black text-lg uppercase leading-tight italic line-clamp-1">{p.name}</h3>
+                                    <h3 className="font-black text-sm sm:text-md uppercase leading-tight italic line-clamp-2">{p.name}</h3>
                                 </div>
 
                                 <div className="flex justify-between items-end pt-2 border-t-2 border-black/10">
                                     <div className="flex flex-col">
-                                        {label && (
-                                            <span className="text-[10px] line-through font-bold opacity-40">
-                                                {formatIDR(p.price)}
-                                            </span>
-                                        )}
+                                        <div className='h-6'>
+                                            {label && (
+                                                <span className="text-[10px] text-rose-500 line-through font-bold ">
+                                                    {formatIDR(p.price)}
+                                                </span>
+                                            )}
+                                        </div>
                                         <span className="text-xl font-black italic tracking-tighter text-[var(--product-primary-color)]" >
                                             {formatIDR(finalPrice)}
                                         </span>
                                     </div>
-                                    <div className="w-10 h-10 border-4 border-black flex items-center justify-center bg-black text-white group-hover:bg-[var(--product-primary-color)] transition-colors">
+                                    <div className="hidden sm:grid w-10 h-10 border-4 border-black flex items-center justify-center bg-black text-white group-hover:bg-[var(--product-primary-color)] transition-colors">
                                         <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={4} d="M12 4v16m8-8H4" />
                                         </svg>
@@ -206,7 +208,7 @@ const Six = ({ products, isDarkMode, handleCart }: Props) => {
                             <p className="font-black text-sm uppercase tracking-tighter border-b-4 border-black inline-block">
                                 {product?.category}
                             </p>
-                            <h2 className="text-5xl md:text-6xl font-black uppercase italic tracking-tighter leading-none">
+                            <h2 className="text-xl md:text-2xl font-black uppercase italic tracking-tighter leading-none">
                                 {product?.name}
                             </h2>
                         </div>
@@ -274,7 +276,12 @@ const Six = ({ products, isDarkMode, handleCart }: Props) => {
             </ModalWrapper>
             <AlertWrapper activeAlert={activeAlert} position="top-right">
                 <div className="bg-white border-4 border-black p-4 shadow-[8px_8px_0px_rgba(0,0,0,1)] ml-12">
-                    <div className="bg-black text-white px-2 py-1 text-[10px] font-black uppercase w-fit mb-2">UPDATE</div>
+                    <div className='flex items-center justify-between'>
+                        <div className="bg-black text-white px-2 py-1 text-[10px] font-black uppercase w-fit mb-2">
+                            UPDATE
+                        </div>
+                        <X className='text-black cursor-pointer' onClick={() => setActiveAlert(false)} />
+                    </div>
                     <h4 className="font-black text-xl text-black italic uppercase leading-none">KERANJANG DIISI!</h4>
                     <p className="text-xs font-bold text-black mt-2">{mockItem?.name}, segera checkout.</p>
                 </div>
