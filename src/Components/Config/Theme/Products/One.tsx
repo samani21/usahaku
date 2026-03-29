@@ -105,13 +105,13 @@ const One = ({ products, isDarkMode, handleCart }: Props) => {
 
                         <div className="py-4 px-4 sm:px-6">
                             <span className="text-[8px] sm:text-[10px] font-bold uppercase opacity-40 tracking-widest">{p.category}</span>
-                            <h3 className="font-bold text-[12px] sm:text-lg mt-1 group-hover:text-[var(--product-primary-color)] transition-colors line-clamp-1">
+                            <h3 className="font-bold text-[12px] h-10 sm:h-14 sm:text-lg mt-1 group-hover:text-[var(--product-primary-color)] transition-colors line-clamp-2">
                                 {p?.name}
                             </h3>
                             <div className="mt-2 flex-col">
                                 <div className='h-6'>
                                     {label && (
-                                        <span className="text-[10px] line-through opacity-30 font-bold -mb-1">
+                                        <span className="text-[12px] line-through opacity-30 font-bold -mb-1">
                                             {formatIDR(p.price)}
                                         </span>
                                     )}

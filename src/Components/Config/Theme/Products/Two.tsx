@@ -74,13 +74,13 @@ const Two = ({ products, isDarkMode, handleCart }: Props) => {
         }
     }
     return (
-        <div className='grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-2 h-full'>
+        <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 h-full'>
             {products?.map((p, i) => {
                 const { finalPrice, label } = getPromoDetails(p);
 
                 return (
                     <div
-                        key={p.id}
+                        key={i}
                         onClick={() => {
                             setProduct(p)
                             setProductAlert(p)
@@ -88,7 +88,7 @@ const Two = ({ products, isDarkMode, handleCart }: Props) => {
                         className="group cursor-pointer text-center flex flex-col items-center"
                     >
                         {/* Image Container with Custom Aspect Ratio */}
-                        <div className="relative w-full aspect-[6/4] sm:aspect-[3/4] rounded-[3rem] overflow-hidden mb-4 shadow-xl border-4 border-transparent group-hover:border-[var(--product-primary-color)] transition-all duration-500">
+                        <div className="relative w-full aspect-[6/6] sm:aspect-[3/4] rounded-[3rem] overflow-hidden mb-4 shadow-xl border-4 border-transparent group-hover:border-[var(--product-primary-color)] transition-all duration-500">
                             {/* Label Diskon Permanen */}
                             {label && (
                                 <div className="absolute top-4 right-4 z-1 bg-[var(--product-primary-color)] text-white text-[10px] font-black px-3 py-1.5 rounded-full uppercase italic shadow-lg">
@@ -108,15 +108,17 @@ const Two = ({ products, isDarkMode, handleCart }: Props) => {
 
                         {/* Text Content */}
                         <div className="px-2">
-                            <h3 className="font-black italic uppercase text-sm tracking-tight mb-1 group-hover:text-[var(--product-primary-color)] transition-colors">
+                            <h3 className="font-black italic h-10 uppercase text-sm tracking-tight mb-1 group-hover:text-[var(--product-primary-color)] transition-colors line-clamp-2">
                                 {p?.name}
                             </h3>
                             <div className="flex flex-col items-center">
-                                {label && (
-                                    <span className="text-[10px] line-through opacity-30 font-bold -mb-1">
-                                        {formatIDR(p.price)}
-                                    </span>
-                                )}
+                                <div className='h-6'>
+                                    {label && (
+                                        <span className="text-[10px] line-through opacity-30 font-bold -mb-1">
+                                            {formatIDR(p.price)}
+                                        </span>
+                                    )}
+                                </div>
                                 <p className={`font-black text-sm ${label ? 'text-red-500' : 'opacity-60'}`}>
                                     {formatIDR(finalPrice)}
                                 </p>

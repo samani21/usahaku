@@ -1,5 +1,5 @@
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
-const layout = 1;
+const layout = 3;
 export const TemaTwo = {
     header: {
         color: "#64748B",
@@ -24,8 +24,8 @@ export const TemaTwo = {
         color: "#64748B",
         cta: "Ambil Laundry",
         headline: "Cuci Bersih & Wangi",
-        image: "",
         layout_hero: layout,
+        image: baseUrl + '/image/tema_dua/16.jpg',
         mode: "auto",
         sub_headline: "Layanan ekspres 1 hari selesai dengan jaminan kebersihan maksimal.",
         title: "Prmo hari ini",
