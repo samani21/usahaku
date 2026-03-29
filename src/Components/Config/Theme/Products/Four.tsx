@@ -74,7 +74,7 @@ const Four = ({ products, isDarkMode, handleCart }: Props) => {
     }
 
     return (
-        <div className='grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-2 h-full'>
+        <div className='grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-2 h-full'>
             {products?.map((p, i) => {
                 const { finalPrice, label } = getPromoDetails(p);
 
@@ -95,7 +95,7 @@ const Four = ({ products, isDarkMode, handleCart }: Props) => {
                         />
 
                         {/* Floating Glass Container */}
-                        <div className={`absolute inset-4 backdrop-blur-xl border border-white/30 rounded-[2rem] flex flex-col justify-start text-white overflow-hidden shadow-lg transition-transform group-hover:-translate-y-2 ${isDarkMode ? "bg-black/40" : "bg-black/20"}`}>
+                        <div className={`absolute inset-4 backdrop-blur-xl border border-white/30 rounded-[2rem] flex flex-col justify-start text-white overflow-hidden shadow-lg transition-transform group-hover:-translate-y-2 ${isDarkMode ? "bg-black/40 text-white" : "bg-black/20 text-slate-900"}`}>
 
                             {/* Internal Image */}
                             <div className="w-full h-1/2 overflow-hidden">
@@ -107,10 +107,10 @@ const Four = ({ products, isDarkMode, handleCart }: Props) => {
                             </div>
 
                             {/* Content Area */}
-                            <div className='px-6 py-5 h-1/2 bg-gradient-to-t from-black/80 to-transparent flex flex-col justify-between'>
+                            <div className='px-6 py-5 h-1/2 to-transparent flex flex-col justify-between'>
                                 <div>
                                     {p.category && (
-                                        <span className="text-[10px] font-bold uppercase tracking-widest text-blue-400 mb-1 block">
+                                        <span className={`text-[10px] font-bold uppercase tracking-widest mb-1 block`}>
                                             {p.category}
                                         </span>
                                     )}
@@ -176,7 +176,7 @@ const Four = ({ products, isDarkMode, handleCart }: Props) => {
                                     </div>
                                 )}
 
-                                <h3 className="text-2xl font-black mb-2 leading-tight uppercase italic tracking-tighter">
+                                <h3 className="text-lg sm:text-2xl font-black mb-2 leading-tight uppercase italic tracking-tighter">
                                     {product?.name}
                                 </h3>
 
@@ -188,7 +188,7 @@ const Four = ({ products, isDarkMode, handleCart }: Props) => {
 
                             {/* Discount Badge */}
                             {product?.discount_price && (
-                                <div className={`p-2 rounded-lg flex items-end flex  gap-3 text-[var(--product-primary-color)] `}>
+                                <div className={`p-2 rounded-lg flex items-end flex  gap-3 text-rose-500 `}>
                                     <Tag size={24} />
                                     <div className="text-xl font-black italic tracking-tighter">
                                         - {Promo(product, selectedVariant)}
@@ -207,17 +207,21 @@ const Four = ({ products, isDarkMode, handleCart }: Props) => {
                                     />
                                 )}
 
-                                <div className=''>
-                                    <div className={`flex w-full items-center gap-4 ${isDarkMode ? "bg-slate-600" : "bg-slate-200"} p-1 rounded-2xl w-fit`}>
-                                        <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className={` p-2 ${isDarkMode ? 'hover:bg-slate-700 text-white' : "hover:bg-white text-slate-900"} rounded-xl transition-all shadow-sm `}>
-                                            <Minus size={16} />
-                                        </button>
-                                        <span className={` w-full text-center font-bold ${isDarkMode ? "text-white" : "text-slate-900"}`}>{quantity}</span>
-                                        <button onClick={() => setQuantity(quantity + 1)} className={` p-2 ${isDarkMode ? 'hover:bg-slate-700 text-white' : "hover:bg-white text-slate-900"} rounded-xl transition-all shadow-sm`}>
-                                            <Plus size={16} />
-                                        </button>
-                                    </div>
-                                </div>
+                                {
+                                    product?.is_qty && (
+                                        <div className=''>
+                                            <div className={`flex w-full items-center gap-4 ${isDarkMode ? "bg-slate-600" : "bg-slate-200"} p-1 rounded-2xl w-fit`}>
+                                                <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className={` p-2 ${isDarkMode ? 'hover:bg-slate-700 text-white' : "hover:bg-white text-slate-900"} rounded-xl transition-all shadow-sm `}>
+                                                    <Minus size={16} />
+                                                </button>
+                                                <span className={` w-full text-center font-bold ${isDarkMode ? "text-white" : "text-slate-900"}`}>{quantity}</span>
+                                                <button onClick={() => setQuantity(quantity + 1)} className={` p-2 ${isDarkMode ? 'hover:bg-slate-700 text-white' : "hover:bg-white text-slate-900"} rounded-xl transition-all shadow-sm`}>
+                                                    <Plus size={16} />
+                                                </button>
+                                            </div>
+                                        </div>
+                                    )
+                                }
                             </div>
                         </div>
 
@@ -230,7 +234,7 @@ const Four = ({ products, isDarkMode, handleCart }: Props) => {
                                         {formatIDR((selectedVariant?.price ?? product?.price ?? 0) * quantity)}
                                     </div>
                                 )}
-                                <div className="text-4xl font-black italic tracking-tighter text-[var(--product-primary-color)]">
+                                <div className="text-4xl font-black italic tracking-tighter ">
                                     {formatIDR((selectedVariant?.final_price ?? product?.final_price ?? 0) * quantity)}
                                 </div>
                             </div>

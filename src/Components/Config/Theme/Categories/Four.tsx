@@ -23,7 +23,7 @@ const Four = ({ categories, isDarkMode, onClick }: Props) => {
     };
     return (
         <section>
-            <div className="space-y-4">
+            <div className="space-y-4 grid md:grid-cols-2 gap-2">
                 <div onClick={() => {
                     onClick && onClick(null)
                     handleScroll()
