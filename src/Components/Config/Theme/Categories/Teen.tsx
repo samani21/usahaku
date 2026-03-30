@@ -34,7 +34,7 @@ const Teen = ({ categories, isDarkMode, onClick }: Props) => {
                         <span className={`hidden sm:block font-mono text-sm opacity-40`}>
                             01
                         </span>
-                        <h2 className={`text-4xl md:text-7xl font-bold uppercase tracking-tighter transition-all duration-500  ${isDarkMode ? " stroke-white stroke-1 group-hover:italic" : " border-black group-hover:italic"
+                        <h2 className={`text-2xl md:text-4xl font-bold uppercase tracking-tighter transition-all duration-500  ${isDarkMode ? " stroke-white stroke-1 group-hover:italic" : " border-black group-hover:italic"
                             }`}
                             style={{ WebkitTextStroke: isDarkMode ? '1px rgba(255,255,255,0.3)' : '1px rgba(0,0,0,0.2)' }}
                         >
@@ -88,7 +88,7 @@ const Teen = ({ categories, isDarkMode, onClick }: Props) => {
                             <span className={`hidden sm:block font-mono text-sm opacity-40`}>
                                 0{i + 2}
                             </span>
-                            <h2 className={`text-4xl md:text-7xl font-bold uppercase tracking-tighter transition-all duration-500 
+                            <h2 className={`text-2xl md:text-4xl font-bold uppercase tracking-tighter transition-all duration-500 
                 ${isDarkMode
                                     ? " stroke-white stroke-1 group-hover:italic"
                                     : " border-black group-hover:italic"

@@ -88,7 +88,7 @@ const Ten = ({ products, isDarkMode, handleCart }: Props) => {
                             </div>
                         )}
 
-                        <h3 className={`font-black italic text-2xl uppercase tracking-tighter mb-4 text-center line-through decoration-[var(--product-primary-color)] decoration-4 group-hover:no-underline transition-all duration-500`}>
+                        <h3 className={`font-black italic text-md sm:text-2xl uppercase tracking-tighter mb-4 text-center sm:line-through decoration-[var(--product-primary-color)] decoration-4 group-hover:no-underline transition-all duration-500`}>
                             {p?.name}
                         </h3>
 
@@ -111,9 +111,9 @@ const Ten = ({ products, isDarkMode, handleCart }: Props) => {
                             {p?.category && (
                                 <span className="opacity-60">{p?.category}</span>
                             )}
-                            <span className="text-lg text-[var(--product-primary-color)] group-hover:text-white transition-colors">
+                            <p className="text-lg text-[var(--product-primary-color)] group-hover:text-white transition-colors">
                                 &gt;&gt; {formatIDR(p?.final_price ?? 0)}
-                            </span>
+                            </p>
                         </div>
                     </div>
                 );
@@ -141,7 +141,7 @@ const Ten = ({ products, isDarkMode, handleCart }: Props) => {
                                     </span>
                                 )}
                             </div>
-                            <h2 className="text-5xl font-black tracking-tight leading-none">{product?.name}</h2>
+                            <h2 className="text-lg sm:text-3xl font-black tracking-tight leading-none">{product?.name}</h2>
                         </div>
                         <ExpandableHTML
                             htmlContent={product?.description}
