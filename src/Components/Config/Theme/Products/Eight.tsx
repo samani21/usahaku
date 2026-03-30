@@ -2,7 +2,7 @@ import ModalWrapper from './ModalWrapper';
 import { useEffect, useMemo, useState } from 'react';
 import QtySelector from './QtySelector';
 import VariantPicker from './VariantPicker';
-import { ShoppingCart, Tag } from 'lucide-react';
+import { ShoppingCart, Tag, X } from 'lucide-react';
 import AlertWrapper from './AlertWrapper';
 import { ProductsType, Variants } from '@/types/Admin/ProductsType';
 import { formatIDR } from '@/types/FormtRupiah';
@@ -73,7 +73,7 @@ const Eight = ({ products, isDarkMode, handleCart }: Props) => {
         }
     }
     return (
-        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 h-full'>
+        <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 h-full'>
             {products?.map((p, i) => {
                 const { finalPrice, label } = getPromoDetails(p);
 
@@ -93,7 +93,7 @@ const Eight = ({ products, isDarkMode, handleCart }: Props) => {
                             </div>
                         )}
 
-                        <div className='h-80 sm:h-96 rounded-[24px] flex items-center overflow-hidden transition-transform duration-500 group-hover:scale-[1.02]' style={{
+                        <div className='h-80 sm:h-96 rounded-[24px] w-full flex items-center overflow-hidden transition-transform duration-500 group-hover:scale-[1.02]' style={{
                             backgroundImage: `url(${p?.image})`,
                             backgroundSize: "cover",
                             backgroundPosition: "center"
@@ -103,11 +103,11 @@ const Eight = ({ products, isDarkMode, handleCart }: Props) => {
                                 <div className={`w-full h-2 transition-colors duration-500 ${isDarkMode ? "bg-slate-900" : "bg-white"}`} />
 
                                 {/* Overlay Konten */}
-                                <div className={`w-full bg-black/70 backdrop-blur-sm h-1/2 flex flex-col justify-end p-6 text-white`}>
+                                <div className={`w-full bg-black/70 backdrop-blur-sm h-[150px] sm:h-[170px] flex flex-col justify-between p-6 text-white`}>
                                     {p?.category &&
                                         <span className="text-[10px] font-black uppercase opacity-60 tracking-[0.2em]">{p?.category}</span>
                                     }
-                                    <h3 className="text-xl font-bold leading-none mt-1 italic uppercase tracking-tighter line-clamp-1">{p?.name}</h3>
+                                    <h3 className="text-xs sm:text-xl h-12 font-bold leading-none mt-1 italic uppercase tracking-tighter line-clamp-2">{p?.name}</h3>
 
                                     <div className="mt-4">
                                         {label && (
@@ -121,7 +121,6 @@ const Eight = ({ products, isDarkMode, handleCart }: Props) => {
                             </div>
 
                             {/* Garis Vertikal Dekoratif */}
-                            <div className={`${isDarkMode ? "bg-slate-900" : "bg-white"} w-4 h-full transition-colors duration-500`} />
 
                             {/* Blue Tint Overlay */}
                             <div className='absolute inset-0 bg-blue-500 rounded-[24px] opacity-0 group-hover:opacity-10 transition-opacity duration-500 pointer-events-none' />
@@ -145,7 +144,7 @@ const Eight = ({ products, isDarkMode, handleCart }: Props) => {
                     <div className="md:w-1/2 flex flex-col justify-center space-y-8">
                         <div className="space-y-4">
                             <span className="text-[10px] font-black uppercase tracking-[0.3em] opacity-40 italic">{product?.category}</span>
-                            <h2 className="text-4xl md:text-5xl font-black opacity-80 italic tracking-tighter leading-none uppercase">
+                            <h2 className="text-xl md:text-2xl font-black opacity-80 italic tracking-tighter leading-none uppercase">
                                 {product?.name}
                             </h2>
                         </div>
@@ -196,11 +195,13 @@ const Eight = ({ products, isDarkMode, handleCart }: Props) => {
                         {/* <img src={mockItem.image} className="w-16 h-16 rounded-2xl object-cover" alt="" /> */}
                         <div className="flex flex-col justify-center">
                             <span className="text-[10px] font-black text-emerald-500 uppercase">Item berhasil masuk keranjang</span>
-                            <h4 className="text-xs font-bold truncate w-32">{mockItem.name}</h4>
+                            <h4 className="text-xs font-bold truncate">{mockItem.name}</h4>
                         </div>
                     </div>
                     <div className="flex items-center">
-                        <div className={`p-2 ${isDarkMode ? "g-slate-800" : "bg-slate-100"} rounded-xl`}><ShoppingCart size={16} /></div>
+                        <div className={`p-2 ${isDarkMode ? "g-slate-800" : "bg-slate-100"} rounded-xl`}>
+                            <X size={16} onClick={() => setActiveAlert(false)} className='cursor-pointer' />
+                        </div>
                     </div>
                 </div>
             </AlertWrapper>
