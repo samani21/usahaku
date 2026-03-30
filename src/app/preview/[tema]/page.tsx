@@ -136,6 +136,7 @@ function PreviewPage() {
                             toggleTheme={() => setIsDarkTheme(!isDarkTheme)}
                             spanOne={header.span_one}
                             spanTwo={header.span_two}
+                            isBuild={true}
                             displayMode={header.mode}
                         />
                     )}

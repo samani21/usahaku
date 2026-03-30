@@ -95,7 +95,7 @@ const Nine = ({ products, isDarkMode, handleCart }: Props) => {
                                     {p.category}
                                 </span>
                             )}
-                            <h3 className="font-black text-[12px] sm:text-lg uppercase italic leading-none mb-2 line-clamp-1">
+                            <h3 className="font-black text-[12px] sm:text-lg uppercase italic leading-none mb-2 line-clamp-2">
                                 {p.name}
                             </h3>
                             <div className="flex items-center justify-between mt-auto sm:mt-2">
