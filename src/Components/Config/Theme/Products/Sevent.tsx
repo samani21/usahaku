@@ -80,7 +80,7 @@ const Sevent = ({ products, isDarkMode, handleCart }: Props) => {
     const currentFinalPrice = selectedVariant?.final_price ?? product?.final_price ?? 0;
     const currentDiscount = currentPrice - currentFinalPrice;
     return (
-        <div className='grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6 h-full'>
+        <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 h-full'>
             {products?.map((p, i) => {
                 const { finalPrice, label } = getPromoDetails(p);
                 return (
@@ -124,7 +124,7 @@ const Sevent = ({ products, isDarkMode, handleCart }: Props) => {
                                         {p?.category}
                                     </p>
                                 )}
-                                <h3 className={`text-lg font-bold italic tracking-tight transition-colors ${isDarkMode ? "text-slate-100 group-hover:text-cyan-400" : "text-slate-800 group-hover:text-cyan-600"
+                                <h3 className={`text-md sm:text-lg line-clamp-2 font-bold italic tracking-tight transition-colors ${isDarkMode ? "text-slate-100 group-hover:text-cyan-400" : "text-slate-800 group-hover:text-cyan-600"
                                     }`}>
                                     {p?.name}
                                 </h3>
@@ -142,7 +142,7 @@ const Sevent = ({ products, isDarkMode, handleCart }: Props) => {
                                         <p className={`text-xl font-black font-mono tracking-tighter ${isDarkMode ? "text-white" : "text-slate-900"}`}>
                                             {formatIDR(p?.final_price ?? 0)}
                                         </p>
-                                        <div className={`w-8 h-8 rounded-full border border-cyan-500/30  ${isDarkMode ? " text-white" : "text-slate-900"} flex items-center justify-center group-hover:bg-cyan-500 group-hover:text-black transition-all`}>
+                                        <div className={`hidden sm:grid w-8 h-8 rounded-full border border-cyan-500/30  ${isDarkMode ? " text-white" : "text-slate-900"} flex items-center justify-center group-hover:bg-cyan-500 group-hover:text-black transition-all`}>
                                             <ArrowRight size={14} />
                                         </div>
                                     </div>
@@ -175,7 +175,7 @@ const Sevent = ({ products, isDarkMode, handleCart }: Props) => {
                         <div className="p-4 md:p-8 space-y-6">
                             <div>
                                 <span className="text-cyan-400 text-[10px] font-bold tracking-widest uppercase">{product?.category}</span>
-                                <h2 className="text-4xl font-black italic">{product?.name.toUpperCase()}</h2>
+                                <h2 className="text-xl sm:text-4xl font-black italic">{product?.name.toUpperCase()}</h2>
                             </div>
                             <div className="flex flex-wrap items-baseline gap-3">
                                 <span className="text-xl md:text-3xl font-black tracking-tighter text-rose-500 italic">
@@ -197,7 +197,7 @@ const Sevent = ({ products, isDarkMode, handleCart }: Props) => {
                                     selectedVariant={selectedVariant}
                                     setSelectedVariant={setSelectedVariant}
                                     isDarkMode={isDarkMode}
-                                    // color={'#06b6d4'}
+                                // color={'#06b6d4'}
                                 />
                             )}
 
@@ -218,7 +218,10 @@ const Sevent = ({ products, isDarkMode, handleCart }: Props) => {
             </ModalWrapper>
             <AlertWrapper activeAlert={activeAlert} position="top-right">
                 <div className={`${isDarkMode ? "bg-black" : "bg-slate-100"} border border-cyan-500 p-4 shadow-[0_0_15px_rgba(6,182,212,0.3)] font-mono`}>
-                    <div className={`text-[12px] ${isDarkMode ? "text-cyan-400" : "text-gray-800"} mb-1`}>&gt; Item masuk ke keranjang</div>
+                    <div className={`flex items-center justify-between text-[12px] ${isDarkMode ? "text-cyan-400" : "text-gray-800"} mb-1`}>
+                        <p>&gt; Item masuk ke keranjang</p>
+                        <p onClick={() => setActiveAlert(false)}>Tutup</p>
+                    </div>
                     <div className={`${isDarkMode ? 'text-white' : 'text-black'} text-xs font-bold italic uppercase tracking-widest`}>Item: {mockItem.name}</div>
                     <div className="mt-3 h-1 bg-cyan-950 w-full overflow-hidden">
                         <div className="h-full bg-cyan-400 animate-in slide-in-from-left duration-1000 fill-mode-forwards" style={{ width: '100%' }} />
