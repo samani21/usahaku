@@ -77,7 +77,7 @@ const Twelve = ({ products, isDarkMode, handleCart }: Props) => {
     const currentDiscount = currentPrice - currentFinalPrice;
     const discountPercent = Math.round((currentDiscount / currentPrice) * 100);
     return (
-        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4  h-full'>
+        <div className='grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4  h-full'>
             {products?.map((p, i) => {
                 const { finalPrice, label } = getPromoDetails(p);
 
@@ -136,17 +136,17 @@ const Twelve = ({ products, isDarkMode, handleCart }: Props) => {
                 <div className="w-full p-6 sm:p-14 flex flex-col gap-10 overflow-auto overflow-x-hidden no-scrollbar">
                     <div className={`flex flex-col sm:flex-row justify-between sm:items-center pb-8 border-b ${isDarkMode ? "border-slate-800" : "border-slate-200"} gap-4`}>
                         <div className="space-y-1">
-                            <h2 className="text-4xl md:text-5xl font-black tracking-tighter italic uppercase leading-none">{product?.name}</h2>
+                            <h2 className="text-xl md:text-2xl font-black tracking-tighter italic uppercase leading-none">{product?.name}</h2>
                             {product?.category && <p className="text-[10px] font-black uppercase tracking-[0.3em] opacity-30 italic">{product?.category}</p>}
                         </div>
                         <div className="text-left sm:text-right">
                             <div className="flex flex-col">
-                                <span className="text-4xl md:text-5xl font-black text-[var(--product-primary-color)] italic tracking-tighter">
+                                <span className="text-xl md:text-2xl font-black text-[var(--product-primary-color)] italic tracking-tighter">
                                     {formatIDR(currentFinalPrice)}
                                 </span>
                                 {currentDiscount > 0 && (
                                     <div className="flex items-center sm:justify-end gap-2">
-                                        <span className="text-xl font-bold opacity-30 line-through italic">{formatIDR(currentPrice)}</span>
+                                        <span className="text-md sm:text-xl font-bold opacity-30 line-through italic">{formatIDR(currentPrice)}</span>
                                         <span className="bg-rose-500/10 text-rose-500 text-[10px] font-black px-2 py-1 rounded-lg">-{discountPercent}%</span>
                                     </div>
                                 )}
@@ -160,7 +160,7 @@ const Twelve = ({ products, isDarkMode, handleCart }: Props) => {
                         <div className="relative rounded-[2.5rem] overflow-hidden shadow-2xl group aspect-[4/3] md:aspect-video lg:aspect-square">
                             <img src={selectedVariant?.image ?? product?.image} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" alt="" />
                             {currentDiscount > 0 && (
-                                <div className="absolute top-6 left-6 bg-rose-600 text-white px-5 py-2 rounded-2xl font-black italic shadow-xl flex items-center gap-2">
+                                <div className="absolute top-6 text-[10px] left-6 bg-rose-600 text-white px-5 py-2 rounded-2xl font-black italic shadow-xl flex items-center gap-2">
                                     <Tag size={16} /> HEMAT {formatIDR(currentDiscount)}
                                 </div>
                             )}

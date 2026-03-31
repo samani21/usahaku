@@ -82,7 +82,7 @@ const Eleven = ({ products, isDarkMode, handleCart }: Props) => {
                     <div
                         onClick={() => setProduct(p)}
                         key={i}
-                        className="relative p-1 rounded-[2rem] bg-gradient-to-br from-indigo-400 via-pink-400 to-amber-300 cursor-pointer group h-[380px] sm:h-[400px] shadow-xl hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 overflow-hidden"
+                        className="relative p-1 rounded-[2rem] bg-gradient-to-br from-indigo-400 via-pink-400 to-amber-300 cursor-pointer group h-[320px] sm:h-[400px] shadow-xl hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 overflow-hidden"
                     >
 
                         {/* Badge Diskon Float */}
@@ -124,7 +124,7 @@ const Eleven = ({ products, isDarkMode, handleCart }: Props) => {
                                 </div>
                             </div>
 
-                            <div className="w-full pt-2">
+                            <div className="hidden sm:grid w-full pt-2">
                                 <div className="w-full py-3 rounded-xl border border-white/5 bg-white/5 font-black uppercase italic text-[10px] tracking-widest group-hover:bg-[var(--product-primary-color)] group-hover:text-white transition-all">
                                     View Details
                                 </div>

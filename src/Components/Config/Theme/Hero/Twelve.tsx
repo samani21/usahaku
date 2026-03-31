@@ -23,7 +23,7 @@ const Twelve = ({ isDarkMode, headline, subHeadline, ctaText, imageHero }: Props
     };
     return (
         <section>
-            <div className={`min-h-[400px] rounded-3xl overflow-hidden relative group ${isDarkMode ? 'border-2 border-gray-600' : "text-slate-900"}`}>
+            <div className={`min-h-[200px] sm:min-h-[400px] rounded-3xl overflow-hidden relative group ${isDarkMode ? 'border-2 border-gray-600' : "text-slate-900"}`}>
                 <div className={isDarkMode ? "hidden" : `absolute inset-0 transition-transform duration-[2000ms] group-hover:scale-125 bg-gradient-to-r from-white to-[var(--hero-primary-color)]`} />
                 <div className="absolute inset-0 flex items-center justify-between p-6 md:p-12">
                     <div className="max-w-md ">
