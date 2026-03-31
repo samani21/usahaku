@@ -28,14 +28,14 @@ const Elevent = ({ categories, isDarkMode, onClick }: Props) => {
                         onClick && onClick(null)
                         handleScroll()
                     }}
-                    className={`group relative bg-white p-3 pb-8 md:p-4 md:pb-12 shadow-2xl transition-all duration-500 cursor-pointer  rotate-[1deg] hover:rotate-0 hover:scale-110 hover:z-20  ${isDarkMode ? 'ring-1 ring-white/10' : ''}`}
+                    className={`group relative bg-white p-3 pb-8 md:p-4 md:pb-12 shadow-2xl transition-all duration-500 cursor-pointer  rotate-[1deg] hover:rotate-0 hover:scale-110 hover:z-1  ${isDarkMode ? 'ring-1 ring-white/10' : ''}`}
                 >
                     {/* Efek Selotip / Tape di bagian atas */}
-                    <div className="absolute -top-4 left-1/2 -translate-x-1/2 w-16 h-8 bg-white/40 backdrop-blur-sm border border-white/20 rotate-[-5deg] z-10 opacity-60 group-hover:opacity-100 transition-opacity" />
+                    <div className="absolute -top-4 left-1/2 -translate-x-1/2 w-16 h-8 bg-white/40 backdrop-blur-sm border border-white/20 rotate-[-5deg] z-1 opacity-60 group-hover:opacity-100 transition-opacity" />
 
                     {/* Container Foto (Main Image/Icon) */}
                     <div className="relative aspect-square overflow-hidden bg-slate-100 mb-4 md:mb-6">
-                        <div className="w-full h-full flex items-center justify-center p-8 transition-transform duration-500 group-hover:scale-110">
+                        <div className="w-full h-full flex items-center text-slate-900 justify-center p-8 transition-transform duration-500 group-hover:scale-110">
                             <Icon icon={'material-symbols:local-mall'} className='w-full h-full' />
                         </div>
 
@@ -67,7 +67,7 @@ const Elevent = ({ categories, isDarkMode, onClick }: Props) => {
                                 handleScroll()
                             }}
                             key={i}
-                            className={`group relative bg-white p-3 pb-8 md:p-4 md:pb-12 shadow-2xl transition-all duration-500 cursor-pointer  ${randomRotation} hover:rotate-0 hover:scale-110 hover:z-20  ${isDarkMode ? 'ring-1 ring-white/10' : ''}`}
+                            className={`group relative bg-white p-3 pb-8 md:p-4 md:pb-12 shadow-2xl transition-all duration-500 cursor-pointer  ${randomRotation} hover:rotate-0 hover:scale-110 hover:z-1  ${isDarkMode ? 'ring-1 ring-white/10' : ''}`}
                         >
                             {/* Efek Selotip / Tape di bagian atas */}
                             <div className="absolute -top-4 left-1/2 -translate-x-1/2 w-16 h-8 bg-white/40 backdrop-blur-sm border border-white/20 rotate-[-5deg] z-10 opacity-60 group-hover:opacity-100 transition-opacity" />

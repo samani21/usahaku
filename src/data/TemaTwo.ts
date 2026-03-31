@@ -1,5 +1,5 @@
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
-const layout = 10;
+const layout = 11;
 export const TemaTwo = {
     header: {
         color: "#64748B",

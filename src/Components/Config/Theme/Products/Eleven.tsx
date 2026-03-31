@@ -75,14 +75,14 @@ const Eleven = ({ products, isDarkMode, handleCart }: Props) => {
     const currentFinalPrice = selectedVariant?.final_price ?? product?.final_price ?? 0;
     const currentDiscount = currentPrice - currentFinalPrice;
     return (
-        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 h-full'>
+        <div className='grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-6 h-full'>
             {products?.map((p, i) => {
                 const { finalPrice, label } = getPromoDetails(p);
                 return (
                     <div
                         onClick={() => setProduct(p)}
                         key={i}
-                        className="relative p-1 rounded-[2rem] bg-gradient-to-br from-indigo-400 via-pink-400 to-amber-300 cursor-pointer group h-[420px] shadow-xl hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 overflow-hidden"
+                        className="relative p-1 rounded-[2rem] bg-gradient-to-br from-indigo-400 via-pink-400 to-amber-300 cursor-pointer group h-[380px] sm:h-[400px] shadow-xl hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 overflow-hidden"
                     >
 
                         {/* Badge Diskon Float */}
@@ -92,10 +92,10 @@ const Eleven = ({ products, isDarkMode, handleCart }: Props) => {
                             </div>
                         )}
 
-                        <div className={`h-full w-full rounded-[1.8rem] p-6 flex flex-col items-center text-center justify-between space-y-4 ${isDarkMode ? 'bg-slate-900/95 text-white' : 'bg-white/95 text-slate-900'}`}>
+                        <div className={`h-full w-full rounded-[1.8rem] p-4 sm:p-6 flex flex-col items-center text-center justify-between ${isDarkMode ? 'bg-slate-900/95 text-white' : 'bg-white/95 text-slate-900'}`}>
 
                             {/* Image Container */}
-                            <div className="relative w-full aspect-square rounded-[1.5rem] bg-slate-100 overflow-hidden ring-4 ring-white/10 shadow-inner group-hover:scale-105 transition-transform duration-500">
+                            <div className="relative w-full h-32 aspect-square rounded-[1.5rem] bg-slate-100 overflow-hidden ring-4 ring-white/10 shadow-inner group-hover:scale-105 transition-transform duration-500">
                                 <img src={p?.image} className="w-full h-full object-cover" alt={p.name} />
                                 {label && (
                                     <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-[var(--product-primary-color)]/80 to-transparent p-4 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -106,19 +106,21 @@ const Eleven = ({ products, isDarkMode, handleCart }: Props) => {
 
                             <div className="space-y-2">
                                 {p?.category && (
-                                    <span className="text-[10px] font-black opacity-30 tracking-[0.3em] uppercase italic border-b border-[var(--product-primary-color)]/20 pb-1">{p?.category}</span>
+                                    <span className="text-[10px] font-black opacity-30 tracking-[0.3em] uppercase italic border-b border-[var(--product-primary-color)]/20 line-clamp-1 pb-1">{p?.category}</span>
                                 )}
-                                <h3 className="font-black text-xl italic tracking-tighter uppercase leading-tight group-hover:text-[var(--product-primary-color)] transition-colors">{p?.name}</h3>
+                                <h3 className="font-black text-md sm:text-xl h-12 tracking-tighter uppercase leading-tight group-hover:text-[var(--product-primary-color)] transition-colors line-clamp-2">{p?.name}</h3>
 
                                 <div className="flex flex-col items-center gap-0">
-                                    <p className="text-2xl font-black italic tracking-tighter text-[var(--product-primary-color)]">
+                                    <p className="text-md sm:text-2xl font-black italic tracking-tighter text-[var(--product-primary-color)]">
                                         {formatIDR(p?.final_price ?? 0)}
                                     </p>
-                                    {label && (
-                                        <p className="text-xs opacity-30 line-through font-bold italic tracking-wider">
-                                            {formatIDR(p?.price ?? 0)}
-                                        </p>
-                                    )}
+                                    <div className='h-8'>
+                                        {label && (
+                                            <p className="text-xs opacity-30 line-through font-bold italic tracking-wider">
+                                                {formatIDR(p?.price ?? 0)}
+                                            </p>
+                                        )}
+                                    </div>
                                 </div>
                             </div>
 
@@ -157,7 +159,7 @@ const Eleven = ({ products, isDarkMode, handleCart }: Props) => {
                             <span className="text-[10px] font-black uppercase tracking-[0.3em] opacity-30 italic">{product?.category}</span>
                         </div>
 
-                        <h2 className="text-3xl md:text-4xl font-black italic uppercase tracking-tighter mb-2 leading-tight">
+                        <h2 className="text-xl md:text-2xl font-black italic uppercase tracking-tighter mb-2 leading-tight">
                             {product?.name}
                         </h2>
 
