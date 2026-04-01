@@ -22,7 +22,7 @@ const Fiften = ({ categories, isDarkMode, onClick }: Props) => {
 
     return (
         <section>
-            <div className="flex flex-col md:flex-row gap-4 h-[700px] md:h-[400px]">
+            <div className="grid grid-cols-2 md:flex md:flex-row gap-4 h-[700px] md:h-[400px]">
                 <div onClick={() => {
                     onClick && onClick(null)
                     handleScroll()
@@ -33,8 +33,8 @@ const Fiften = ({ categories, isDarkMode, onClick }: Props) => {
                     <div className="absolute inset-0 bg-black/40 group-hover:bg-black/60 transition-colors" />
                     <div className="absolute inset-0 flex items-center justify-center">
                         <div className="text-center md:group-hover:rotate-0 rotate-[-90deg] rotate-[0deg] md:rotate-[-90deg] md:group-hover:rotate-0 transition-all duration-500">
-                            <h3 className="text-white text-2xl md:text-4xl font-black uppercase whitespace-nowrap">Semua</h3>
-                            <p className="text-white/0 group-hover:text-white/60 transition-opacity mt-2">{totalItems} Item</p>
+                            <h3 className="text-white text-lg md:text-4xl font-black uppercase whitespace-nowrap">Semua</h3>
+                            <p className="text-white group-hover:text-white/60 transition-opacity mt-2">{totalItems} Item</p>
                         </div>
                     </div>
                 </div>
@@ -61,7 +61,7 @@ const Fiften = ({ categories, isDarkMode, onClick }: Props) => {
                         <div className="absolute inset-0 bg-black/40 group-hover:bg-black/60 transition-colors" />
                         <div className="absolute inset-0 flex items-center justify-center">
                             <div className="text-center md:group-hover:rotate-0 rotate-[-90deg] rotate-[0deg] md:rotate-[-90deg] md:group-hover:rotate-0 transition-all duration-500">
-                                <h3 className="text-white text-2xl md:text-4xl font-black uppercase whitespace-nowrap">{cat.name}</h3>
+                                <h3 className="text-white text-lg md:text-4xl font-black uppercase whitespace-nowrap">{cat.name}</h3>
                                 <p className="text-white md:text-white/0 group-hover:text-white/60 transition-opacity mt-2">{cat.count} Item</p>
                             </div>
                         </div>

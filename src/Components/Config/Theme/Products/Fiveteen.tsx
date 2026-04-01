@@ -86,24 +86,26 @@ const Fiveteen = ({ products, isDarkMode, handleCart }: Props) => {
                         )}
 
                         <div className={`w-full mt-4 aspect-square rounded-full border-4 border-dashed ${isDarkMode ? "border-slate-700" : "border-slate-300"} p-3 group-hover:rotate-90 transition-transform duration-1000 ease-in-out`}>
-                            <div className={`md:w-full md:h-full rounded-full overflow-hidden border-8 ${isDarkMode ? "border-slate-800" : 'border-white'} shadow-2xl`}>
-                                <img src={p?.image} className="md:w-full md:h-full object-cover group-hover:scale-125 transition-transform duration-1000" alt="" />
+                            <div className={`w-full h-full rounded-full overflow-hidden border-8 ${isDarkMode ? "border-slate-800" : 'border-white'} shadow-2xl`}>
+                                <img src={p?.image} className="w-full h-full object-cover group-hover:scale-125 transition-transform duration-1000" alt="" />
                             </div>
                         </div>
                         <div className="text-center">
                             {
                                 p?.category &&
-                                <span className="text-[14px] font-black opacity-80 tracking-tighter">{p?.category}</span>
+                                <span className="text-[12px] sm:text-[14px] font-black opacity-80 tracking-tighter">{p?.category}</span>
                             }
-                            <h3 className="text-sm md:text-md font-black uppercase italic">{p?.name}</h3>
+                            <h3 className="text-sm line-clamp-2 text-start md:text-md font-black uppercase italic">{p?.name}</h3>
                             <div className="flex justify-between items-end mt-2">
-                                <div className="mt-3 flex flex-col items-center">
+                                <div className="mt-3 flex flex-col items-start">
                                     {/* Harga Coret (Jika ada promo) */}
-                                    {label && (
-                                        <p className="text-xs line-through opacity-40 font-bold mb-0.5">
-                                            {formatIDR(p.price)}
-                                        </p>
-                                    )}
+                                    <div className='h-4'>
+                                        {label && (
+                                            <p className="text-xs line-through opacity-40 font-bold mb-0.5">
+                                                {formatIDR(p.price)}
+                                            </p>
+                                        )}
+                                    </div>
                                     {/* Harga Final */}
                                     <p className="text-lh md:text-2xl font-black">
                                         {formatIDR(finalPrice)}
@@ -139,7 +141,7 @@ const Fiveteen = ({ products, isDarkMode, handleCart }: Props) => {
                         </div>
                         <div className="px-6 pb-4 md:p-0 md:w-1/2 space-y-8">
                             <div className="space-y-2">
-                                <h2 className="text-3xl md:text-4xl font-black italic tracking-tighter leading-none">{product?.name}</h2>
+                                <h2 className="text-xl md:text-2xl font-black italic tracking-tighter leading-none">{product?.name}</h2>
                                 <div className={`h-2 w-20 bg-[var(--product-primary-color)] rounded-full`} />
                             </div>
                             <ExpandableHTML
