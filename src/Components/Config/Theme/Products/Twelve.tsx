@@ -83,7 +83,7 @@ const Twelve = ({ products, isDarkMode, handleCart }: Props) => {
 
                 return (
                     <div
-                        key={p.id}
+                        key={i}
                         onClick={() => setProduct(p)}
                         className="relative h-80 group cursor-pointer flex items-center justify-center"
                     >

@@ -80,7 +80,7 @@ const Thirteen = ({ products, isDarkMode, handleCart }: Props) => {
                 const { finalPrice, label } = getPromoDetails(p);
                 return (
                     <div
-                        key={p.id}
+                        key={i}
                         onClick={() => setProduct(p)}
                         className="text-center cursor-pointer group flex flex-col items-center"
                     >
@@ -144,7 +144,7 @@ const Thirteen = ({ products, isDarkMode, handleCart }: Props) => {
                                 product?.category &&
                                 <span className={`sm:hidden text-md font-black italic opacity-40 tracking-[0.2em] border-b ${isDarkMode ? "border-white/10 " : "border-black/10"} pb-2`}>{product?.category}</span>
                             }
-                            <h2 className="text-3xl sm:text-5xl font-black italic tracking-tighter leading-none">{product?.name}</h2>
+                            <h2 className="text-xl sm:text-3xl font-black italic tracking-tighter leading-none">{product?.name}</h2>
                         </div>
                         <div className="space-y-2">
                             {/* <p className="text-2xl font-serif italic leading-relaxed opacity-80">"Kualitas bukan sekadar janji, tapi sebuah warisan yang kami tuangkan dalam setiap produk."</p> */}

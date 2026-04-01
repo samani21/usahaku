@@ -21,12 +21,12 @@ const Thirteen = ({ categories, isDarkMode, onClick }: Props) => {
 
     return (
         <section>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-0">
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-0">
                 <div onClick={() => {
                     onClick && onClick(null)
                     handleScroll()
                 }} className={`p-3 sm:p-6 border transition-colors hover:bg-[var(--category-primary-color)]/5  ${isDarkMode ? 'border-slate-800' : 'border-slate-200'}  ${isDarkMode && 'hover:text-gray-700'}`}>
-                    <h3 className="text-md font-bold uppercase tracking-[0.4em]  mb-6">Semua</h3>
+                    <h3 className="text-xs sm:text-lg font-bold uppercase tracking-[0.4em]  mb-6">Semua</h3>
                     <div className="w-full h-40 rounded-lg overflow-hidden mb-8">
                         <div className={`text-[var(--category-primary-color)] w-full h-full object-cover ${isDarkMode && "bg-white"} `} >
                             <Icon icon={'material-symbols:local-mall'} className='w-full h-full' />
@@ -42,7 +42,7 @@ const Thirteen = ({ categories, isDarkMode, onClick }: Props) => {
                         onClick && onClick(cat?.name)
                         handleScroll()
                     }} key={i} className={`p-3 sm:p-6 border transition-colors hover:bg-[var(--category-primary-color)]/5  ${isDarkMode ? 'border-slate-800' : 'border-slate-200'}  ${isDarkMode && 'hover:text-gray-700'}`}>
-                        <h3 className="text-md font-bold uppercase tracking-[0.4em]  mb-6">{cat.name}</h3>
+                        <h3 className="text-xs sm:text-lg font-bold uppercase tracking-[0.4em]  mb-6">{cat.name}</h3>
                         <div className="w-full h-40 rounded-lg overflow-hidden mb-8">
                             {
                                 cat?.icon ? (
