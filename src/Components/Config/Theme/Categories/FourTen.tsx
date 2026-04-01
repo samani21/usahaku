@@ -31,7 +31,7 @@ const FourTen = ({ categories, isDarkMode, onClick }: Props) => {
                             onClick && onClick(null)
                             handleScroll()
                         }} className={`w-full bg-black/50 absolute z-1 text-left text-gray-100 px-2`}>
-                            <h3 className="font-black uppercase italic tracking-tighter text-xl">Semua</h3>
+                            <h3 className="font-black uppercase italic tracking-tighter text-md sm:text-xl">Semua</h3>
                         </div>
                     </div>
                 </div>
@@ -59,7 +59,7 @@ const FourTen = ({ categories, isDarkMode, onClick }: Props) => {
                                 onClick && onClick(cat?.name)
                                 handleScroll()
                             }} className={`w-full bg-black/50 absolute z-1 text-left text-gray-100 px-2`}>
-                                <h3 className="font-black uppercase italic tracking-tighter text-xl">{cat.name}</h3>
+                                <h3 className="font-black uppercase italic tracking-tighter text-md sm:text-xl line-clamp-1">{cat.name}</h3>
                             </div>
                         </div>
                     </div>

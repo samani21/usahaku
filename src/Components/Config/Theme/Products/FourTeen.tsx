@@ -110,7 +110,7 @@ const Fourteen = ({ products, isDarkMode, handleCart }: Props) => {
                                 {p.category && (
                                     <span className="text-[12px] font-black opacity-40 uppercase tracking-widest">{p.category}</span>
                                 )}
-                                <h3 className="font-black text-lg mt-1 leading-tight uppercase italic line-clamp-2 group-hover:text-[var(--product-primary-color)] transition-colors">
+                                <h3 className="font-black text-sm sm:text-lg mt-1 leading-tight uppercase italic line-clamp-2 group-hover:text-[var(--product-primary-color)] transition-colors">
                                     {p.name}
                                 </h3>
                             </div>
@@ -122,7 +122,7 @@ const Fourteen = ({ products, isDarkMode, handleCart }: Props) => {
                                     </span>
                                 )}
                                 <div className="w-full flex justify-between items-center">
-                                    <p className="text-lg sm:text-2xl font-black tracking-tighter">{formatIDR(finalPrice)}</p>
+                                    <p className="text-md sm:text-2xl font-black tracking-tighter">{formatIDR(finalPrice)}</p>
                                     <div className="w-6 sm:w-8 h-6 sm:h-8 rounded-full bg-slate-900 dark:bg-white flex items-center justify-center text-white dark:text-black">
                                         <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M12 4v16m8-8H4" />
@@ -170,7 +170,7 @@ const Fourteen = ({ products, isDarkMode, handleCart }: Props) => {
                                 {product?.category}
                             </span>
                         )}
-                        <h2 className="text-2xl md:text-4xl font-black leading-tight italic uppercase break-words">{product?.name}</h2>
+                        <h2 className="text-lg md:text-2xl font-black leading-tight italic uppercase break-words">{product?.name}</h2>
                     </div>
 
                     <div className="flex flex-col gap-1">
