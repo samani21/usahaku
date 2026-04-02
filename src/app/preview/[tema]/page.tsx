@@ -14,6 +14,8 @@ import { ProductType } from '@/types/Admin/Catalog/Products';
 import { SummaryType } from '@/types/Admin/Catalog/Summary';
 import { CategoriesType } from '@/types/Admin/CategoriesType';
 import { ProductsType, Variants } from '@/types/Admin/ProductsType';
+import { ArrowLeft, Eye } from 'lucide-react';
+import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 const getContrastColor = (hex: string | undefined) => {
@@ -142,6 +144,39 @@ function PreviewPage() {
                     )}
                 </div>
                 <div className={`mt-12 space-y-6 ${header?.layout_header === 3 ? "pt-35 sm:pt-28" : 'pt-16'} pb-18 px-2 `}>
+                    <div className="animate-in fade-in slide-in-from-top duration-500">
+                        <div className="max-w-7xl mx-auto">
+                            <div className="bg-white/80 backdrop-blur-md border border-blue-100 shadow-lg rounded-2xl p-4 md:p-5 flex flex-col md:flex-row items-center justify-between gap-4">
+
+                                {/* Bagian Teks & Ikon */}
+                                <div className="flex items-center gap-4">
+                                    <div className="bg-blue-600 p-2.5 rounded-xl text-white shadow-blue-200 shadow-lg">
+                                        <Eye size={22} />
+                                    </div>
+                                    <div>
+                                        <h3 className="text-gray-900 font-semibold text-sm md:text-base">
+                                            Mode Pratinjau Aktif
+                                        </h3>
+                                        <p className="text-gray-500 text-xs md:text-sm">
+                                            Ini hanya contoh. Klik tombol untuk kembali ke daftar tema.
+                                        </p>
+                                    </div>
+                                </div>
+
+                                {/* Bagian Aksi/Tombol */}
+                                <div className="flex items-center gap-2 w-full md:w-auto">
+                                    <Link
+                                        href={'/theme'}
+                                        className="flex-1 md:flex-none inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-gray-900 hover:bg-gray-800 text-white text-sm font-medium rounded-xl transition-all active:scale-95 shadow-md"
+                                    >
+                                        <ArrowLeft size={18} />
+                                        Kembali
+                                    </Link>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     {hero && (
                         <HeroConfig
                             theme={hero?.layout_hero}
