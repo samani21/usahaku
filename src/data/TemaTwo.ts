@@ -1,11 +1,10 @@
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
-const layout = 15;
 export const TemaTwo = {
     header: {
         color: "#64748B",
         color_frame: "dark",
-        layout_header: layout,
-        logo: "https://usahaku-kappa.vercel.app/image/tema_satu/market-logo_848918-4791.avif",
+        layout_header: 10,
+        // logo: "https://usahaku-kappa.vercel.app/image/tema_satu/market-logo_848918-4791.avif",
         mode: "auto",
         span_one: "Laundry",
         span_two: "& Cuci Sepatu",
@@ -15,7 +14,7 @@ export const TemaTwo = {
         business_id: 13,
         color: "#64748B",
         id: 1,
-        layout_summary: layout,
+        layout_summary: 8,
         mode: "auto",
     },
     hero: {
@@ -24,27 +23,18 @@ export const TemaTwo = {
         color: "#64748B",
         cta: "Ambil Laundry",
         headline: "Cuci Bersih & Wangi",
-        layout_hero: layout,
         image: baseUrl + '/image/tema_dua/16.jpg',
+        layout_hero: 10,
         mode: "auto",
         sub_headline: "Layanan ekspres 1 hari selesai dengan jaminan kebersihan maksimal.",
-        title: "Prmo hari ini",
+        title: "",
     },
     category: {
         business_id: 13,
         color: "#64748B",
         id: 1,
-        layout_categories: layout,
+        layout_categories: 3,
         mode: "auto",
-    },
-    product: {
-        business_id: 13,
-        color: "#64748B",
-        created_at: "2026-03-20T07:33:24.000000Z",
-        id: 1,
-        layout_products: layout,
-        mode: "auto",
-        updated_at: "2026-03-24T03:33:49.000000Z",
     },
     categories: [
         {
@@ -108,7 +98,15 @@ export const TemaTwo = {
             "updated_at": "2026-03-15T22:03:19.000000Z"
         }
     ],
-
+    product: {
+        business_id: 13,
+        color: "#64748B",
+        created_at: "2026-03-20T07:33:24.000000Z",
+        id: 1,
+        layout_products: 9,
+        mode: "auto",
+        updated_at: "2026-03-24T03:33:49.000000Z",
+    },
     products: [{
         "business_id": 13,
         "product_category_id": 1,
