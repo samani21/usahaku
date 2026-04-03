@@ -72,7 +72,7 @@ const Ten = ({ products, isDarkMode, handleCart }: Props) => {
         }
     }
     return (
-        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 h-full'>
+        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6 h-full'>
             {products?.map((p, i) => {
                 const { finalPrice, label } = getPromoDetails(p);
                 return (
@@ -88,8 +88,8 @@ const Ten = ({ products, isDarkMode, handleCart }: Props) => {
                             </div>
                         )}
 
-                        <h3 className={`font-black italic text-md sm:text-2xl uppercase tracking-tighter mb-4 text-center sm:line-through decoration-[var(--product-primary-color)] decoration-4 group-hover:no-underline transition-all duration-500`}>
-                            {p?.name}
+                        <h3 className={`font-black italic text-md sm:text-xl line-clamp-2 h-14 uppercase tracking-tighter mb-4 text-center decoration-[var(--product-primary-color)] decoration-4 group-hover:no-underline transition-all duration-500`}>
+                            {p?.name} k ksd k sdf sdlf sdklf sdkf lkg dflk fdkf
                         </h3>
 
                         <div className="w-full relative overflow-hidden mb-6">

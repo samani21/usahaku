@@ -3,6 +3,7 @@ import { TemaFour } from "./TemaFour";
 import { TemaOne } from "./TemaOne"
 import { TemaThree } from "./TemaThree";
 import { TemaTwo } from "./TemaTwo";
+import { TemaSix } from "./TemSix";
 
 export const ThemePreview = (tema: number) => {
     switch (tema) {
@@ -16,6 +17,8 @@ export const ThemePreview = (tema: number) => {
             return TemaFour;
         case 5:
             return TemaFive;
+        case 6:
+            return TemaSix;
         default:
             return null
     }
