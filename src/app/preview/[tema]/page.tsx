@@ -87,7 +87,7 @@ function PreviewPage() {
         })
     }
     useEffect(() => {
-        const theme = ThemePreview(Number(tema));
+        const theme: any = ThemePreview(Number(tema));
         setHeader(theme?.header as any)
         if (theme?.header?.mode === 'auto') {
             setIsDarkTheme(isDark)
@@ -145,7 +145,7 @@ function PreviewPage() {
                 </div>
                 <div className={`mt-12 space-y-6 ${header?.layout_header === 3 ? "pt-35 sm:pt-28" : 'pt-16'} pb-18 px-2 `}>
                     <div className="animate-in fade-in slide-in-from-top duration-500">
-                        <div className="max-w-7xl mx-auto">
+                        <div className="max-w-7xl mx-auto mt-[-50px]">
                             <div className="bg-white/80 backdrop-blur-md border border-blue-100 shadow-lg rounded-2xl p-4 md:p-5 flex flex-col md:flex-row items-center justify-between gap-4">
 
                                 {/* Bagian Teks & Ikon */}
