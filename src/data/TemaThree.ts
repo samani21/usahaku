@@ -43,7 +43,7 @@ export const TemaThree = {
             "name": "Risoles Signature",
             "icon": baseUrl + '/image/tema_tiga/c_1.jpg',
             "color": "#451A03",
-            "count": 5,
+            "count": 2,
             "created_at": "2026-03-15T22:03:19.000000Z",
             "updated_at": "2026-03-15T22:03:19.000000Z"
         },
@@ -53,7 +53,7 @@ export const TemaThree = {
             "name": "Gorengan Gurih",
             "icon": baseUrl + '/image/tema_tiga/c_2.webp',
             "color": "#451A03",
-            "count": 8,
+            "count": 2,
             "created_at": "2026-03-15T22:03:19.000000Z",
             "updated_at": "2026-03-15T22:03:19.000000Z"
         },
@@ -63,7 +63,7 @@ export const TemaThree = {
             "name": "Kue Basah & Manis",
             "icon": baseUrl + '/image/tema_tiga/c_3.jpeg',
             "color": "#451A03",
-            "count": 12,
+            "count": 2,
             "created_at": "2026-03-15T22:03:19.000000Z",
             "updated_at": "2026-03-15T22:03:19.000000Z"
         },
@@ -73,7 +73,7 @@ export const TemaThree = {
             "name": "Snack Box / Paket",
             "icon": baseUrl + '/image/tema_tiga/c_4.jpg',
             "color": "#451A03",
-            "count": 4,
+            "count": 1,
             "created_at": "2026-03-15T22:03:19.000000Z",
             "updated_at": "2026-03-15T22:03:19.000000Z"
         },
@@ -83,7 +83,7 @@ export const TemaThree = {
             "name": "Frozen Snack",
             "icon": baseUrl + '/image/tema_tiga/c_5.png',
             "color": "#451A03",
-            "count": 6,
+            "count": 1,
             "created_at": "2026-03-15T22:03:19.000000Z",
             "updated_at": "2026-03-15T22:03:19.000000Z"
         },
@@ -93,7 +93,7 @@ export const TemaThree = {
             "name": "Minuman Pendamping",
             "icon": baseUrl + '/image/tema_tiga/c_6.webp',
             "color": "#451A03",
-            "count": 3,
+            "count": 2,
             "created_at": "2026-03-15T22:03:19.000000Z",
             "updated_at": "2026-03-15T22:03:19.000000Z"
         }

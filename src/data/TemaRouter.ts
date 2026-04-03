@@ -1,3 +1,4 @@
+import { TemaFive } from "./TemaFive";
 import { TemaFour } from "./TemaFour";
 import { TemaOne } from "./TemaOne"
 import { TemaThree } from "./TemaThree";
@@ -13,6 +14,8 @@ export const ThemePreview = (tema: number) => {
             return TemaThree;
         case 4:
             return TemaFour;
+        case 5:
+            return TemaFive;
         default:
             return null
     }

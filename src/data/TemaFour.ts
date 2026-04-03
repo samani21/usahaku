@@ -14,7 +14,7 @@ export const TemaFour = {
         business_id: 13,
         color: "#9CA3AF",
         id: 1,
-        layout_summary: 3,
+        layout_summary: 4,
         mode: "auto",
     },
 

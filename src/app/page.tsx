@@ -8,12 +8,14 @@ import PricingSection from "@/Components/LandingPage/PricingSection";
 import ThemeSection from "@/Components/LandingPage/ThemeSection";
 import { getToken, getUserInfo } from "@/store/authStore";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import ThemePage from "./theme/page";
 
 export default function Home() {
   const token = getToken();
   const user = getUserInfo();
   const router = useRouter();
+  const [detailTheme, setDetailTheme] = useState<boolean>(false);
   useEffect(() => {
     if (token && user) {
       router?.push('/admin/dashboard')
@@ -25,7 +27,11 @@ export default function Home() {
       <main>
         <HeroSection />
         <Feature />
-        <ThemeSection />
+        {
+          detailTheme ?
+            <ThemePage setDetailTheme={setDetailTheme} /> :
+            <ThemeSection setDetailTheme={setDetailTheme} />
+        }
         <PricingSection />
         <CTA />
         <Footer />

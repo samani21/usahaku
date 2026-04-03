@@ -80,14 +80,14 @@ const Fiveteen = ({ products, isDarkMode, handleCart }: Props) => {
                 return (
                     <div onClick={() => setProduct(p)} key={i} className="relative group cursor-pointer hover:bg-[var(--product-primary-color)]/5 rounded-md flex flex-col items-center justify-center p-4">
                         {label && (
-                            <div className="absolute top-4 right-4 z-10 bg-[var(--product-primary-color)] text-[var(--product-secondary-color)] text-[9px] font-black px-3 py-1 rounded-full shadow-lg">
+                            <div className="absolute top-4 right-4 z-1 bg-[var(--product-primary-color)] text-[var(--product-secondary-color)] text-[9px] font-black px-3 py-1 rounded-full shadow-lg">
                                 {label}
                             </div>
                         )}
 
                         <div className={`w-full mt-4 aspect-square rounded-full border-4 border-dashed ${isDarkMode ? "border-slate-700" : "border-slate-300"} p-3 group-hover:rotate-90 transition-transform duration-1000 ease-in-out`}>
-                            <div className={`w-full h-full rounded-full overflow-hidden border-8 ${isDarkMode ? "border-slate-800" : 'border-white'} shadow-2xl`}>
-                                <img src={p?.image} className="w-full h-full object-cover group-hover:scale-125 transition-transform duration-1000" alt="" />
+                            <div className={`w-30 h-30 sm:w-60 sm:h-60 rounded-full overflow-hidden border-8 ${isDarkMode ? "border-slate-800" : 'border-white'} shadow-2xl`}>
+                                <img src={p?.image} className="w-30 h-30 sm:w-60 sm:h-60 object-cover group-hover:scale-125 transition-transform duration-1000" alt="" />
                             </div>
                         </div>
                         <div className="text-center">
