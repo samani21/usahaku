@@ -37,7 +37,7 @@ const Eight = ({ categories, isDarkMode, onClick }: Props) => {
                     {/* Image/Icon Container */}
                     <div className="absolute inset-0 w-full h-full p-2">
                         <div className="relative w-full h-full rounded-[2rem] overflow-hidden">
-                            <div className={`w-full h-full flex items-center bg-white justify-center bg-white/50 p-8`}>
+                            <div className={`w-full h-full flex text-[var(--category-primary-color)] items-center bg-white justify-center bg-white/50 p-8`}>
                                 <Icon icon={'material-symbols:local-mall'} className='w-full h-full' />
                             </div>
                             {/* Gradient Overlay agar teks terbaca */}

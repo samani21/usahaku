@@ -31,7 +31,7 @@ const Six = ({ categories, isDarkMode, onClick }: Props) => {
                     }}
                     className="relative h-40 sm:h-64 rounded-2xl overflow-hidden group cursor-pointer transition-all duration-700 hover:shadow-[0_20px_50px_rgba(0,0,0,0.3)]">
                     <div className="absolute inset-0 w-full h-full overflow-hidden">
-                        <div className={`absolute bg-white inset-0 w-full h-full flex items-center justify-center ${isDarkMode ? "bg-slate-800" : "bg-slate-200"} transition-colors duration-500`}>
+                        <div className={`absolute bg-white inset-0 text-[var(--category-primary-color)] w-full h-full flex items-center justify-center ${isDarkMode ? "bg-slate-800" : "bg-slate-200"} transition-colors duration-500`}>
                             <Icon icon={'material-symbols:local-mall'} className='w-full h-full' />
                         </div>
                     </div>
