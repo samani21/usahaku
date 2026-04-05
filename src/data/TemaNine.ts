@@ -31,7 +31,7 @@ export const TemaNine = {
             "name": "Roti Manis",
             "icon": "mdi:bread-slice",
             "color": "#DB2777",
-            "count": 12,
+            "count": 2,
             "created_at": "2026-03-15T22:03:19.000000Z",
             "updated_at": "2026-03-15T22:03:19.000000Z"
         },
@@ -41,7 +41,7 @@ export const TemaNine = {
             "name": "Kue Ulang Tahun",
             "icon": "mdi:cake-variant",
             "color": "#DB2777",
-            "count": 5,
+            "count": 1,
             "created_at": "2026-03-15T22:03:19.000000Z",
             "updated_at": "2026-03-15T22:03:19.000000Z"
         },
@@ -51,7 +51,7 @@ export const TemaNine = {
             "name": "Pastry & Croissant",
             "icon": "mynaui:croissant",
             "color": "#DB2777",
-            "count": 8,
+            "count": 1,
             "created_at": "2026-03-15T22:03:19.000000Z",
             "updated_at": "2026-03-15T22:03:19.000000Z"
         },
@@ -61,7 +61,7 @@ export const TemaNine = {
             "name": "Donut & Toppings",
             "icon": "solar:donut-bold",
             "color": "#DB2777",
-            "count": 15,
+            "count": 2,
             "created_at": "2026-03-15T22:03:19.000000Z",
             "updated_at": "2026-03-15T22:03:19.000000Z"
         },
@@ -71,7 +71,7 @@ export const TemaNine = {
             "name": "Cookies & Hampers",
             "icon": "mdi:cookie",
             "color": "#DB2777",
-            "count": 7,
+            "count": 2,
             "created_at": "2026-03-15T22:03:19.000000Z",
             "updated_at": "2026-03-15T22:03:19.000000Z"
         },
@@ -81,7 +81,7 @@ export const TemaNine = {
             "name": "Dessert Box",
             "icon": "mdi:food-apple-outline",
             "color": "#DB2777",
-            "count": 4,
+            "count": 2,
             "created_at": "2026-03-15T22:03:19.000000Z",
             "updated_at": "2026-03-15T22:03:19.000000Z"
         }
