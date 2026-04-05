@@ -5,7 +5,7 @@ export const TemeFourTen = {
         color_frame: "light",
         layout_header: 14,
         logo: `${baseUrl}/image/tema_empat_belas/logo.png`,
-        mode: "auto",
+        mode: "light",
         span_one: "Pintar ",
         span_two: "Jago",
         type_frame: "circle",

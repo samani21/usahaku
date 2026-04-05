@@ -7,6 +7,7 @@ import { TemaSevent } from "./TemaSevent";
 import { TemaThree } from "./TemaThree";
 import { TemaTwo } from "./TemaTwo";
 import { TemaElevent } from "./TemeElevent";
+import { TemeFiveTen } from "./TemeFiveTen";
 import { TemeFourTen } from "./TemeFourTen";
 import { TemaTen } from "./TemeTen";
 import { TemeThirteen } from "./TemeThirteen";
@@ -43,6 +44,8 @@ export const ThemePreview = (tema: number) => {
             return TemeThirteen;
         case 14:
             return TemeFourTen;
+        case 15:
+            return TemeFiveTen;
         default:
             return null
     }
