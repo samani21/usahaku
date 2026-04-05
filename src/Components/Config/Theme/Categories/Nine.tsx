@@ -29,7 +29,7 @@ const Nine = ({ categories, isDarkMode, onClick }: Props) => {
                 }} className={`relative overflow-hidden rounded-3xl grid md:flex  sm:h-48 ${isDarkMode ? 'bg-slate-900 text-white' : 'bg-white text-slate-900 shadow-lg'}`}>
                     <div className="md:w-1/3 h-full">
                         <div className={`text-[var(--category-primary-color)] w-full h-full object-cover ${isDarkMode && "bg-white"} `} >
-                            <Icon icon={'material-symbols:local-mall'} className='w-full h-full' />
+                            <Icon icon={'cbi:bulb-general-group'} className='w-full h-full' />
                         </div>
                     </div>
                     <div className=" p-4 sm:p-8 flex flex-col justify-center">
@@ -56,7 +56,7 @@ const Nine = ({ categories, isDarkMode, onClick }: Props) => {
                                     )
                                 ) : (
                                     <div className={`text-[var(--category-primary-color)] w-full h-full object-cover ${isDarkMode && "bg-white"} `} >
-                                        <Icon icon={'material-symbols:local-mall'} className='w-full h-full' />
+                                        <Icon icon={'cbi:bulb-general-group'} className='w-full h-full' />
                                     </div>
                                 )
                             }

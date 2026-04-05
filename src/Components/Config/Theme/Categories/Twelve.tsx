@@ -29,7 +29,7 @@ const Twelve = ({ categories, isDarkMode, onClick }: Props) => {
                     {/* Background Layer (Visual Depth) */}
                     <div className="absolute inset-0 z-0">
                         <div className="w-full h-full flex items-center justify-center opacity-10 transition-transform duration-700 group-hover:scale-150">
-                            <Icon icon={'material-symbols:local-mall'} className='w-full h-full' />
+                            <Icon icon={'cbi:bulb-general-group'} className='w-full h-full' />
                         </div>
                         {/* Overlay Gradient */}
                         <div className={`absolute inset-0 bg-gradient-to-br ${isDarkMode
@@ -45,7 +45,7 @@ const Twelve = ({ categories, isDarkMode, onClick }: Props) => {
                         <div className="flex-1 w-full flex items-center justify-center">
                             <div className={`relative p-3 md:p-5 rounded-xl md:rounded-2xl transition-all duration-500  backdrop-blur-md border border-white/20 group-hover:rotate-6 group-hover:scale-110 ${isDarkMode ? "bg-white/5 shadow-[0_0_20px_rgba(0,0,0,0.3)]" : "bg-white/40 shadow-lg shadow-black/5"}`}>
                                 <div className="w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16  text-[var(--category-primary-color)] flex items-center justify-center">
-                                    <Icon icon={'material-symbols:local-mall'} className='w-full h-full' />
+                                    <Icon icon={'cbi:bulb-general-group'} className='w-full h-full' />
                                 </div>
                             </div>
                         </div>
@@ -96,7 +96,7 @@ const Twelve = ({ categories, isDarkMode, onClick }: Props) => {
                                     )
                                 ) : (
                                     <div className="w-full h-full flex items-center justify-center opacity-10 transition-transform duration-700 group-hover:scale-150">
-                                        <Icon icon={'material-symbols:local-mall'} className='w-full h-full' />
+                                        <Icon icon={'cbi:bulb-general-group'} className='w-full h-full' />
 
                                     </div>
                                 )
@@ -129,7 +129,7 @@ const Twelve = ({ categories, isDarkMode, onClick }: Props) => {
                                             )
                                         ) : (
                                             <div className="w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 flex items-center justify-center">
-                                                <Icon icon={'material-symbols:local-mall'} className='w-full h-full' />
+                                                <Icon icon={'cbi:bulb-general-group'} className='w-full h-full' />
                                             </div>
                                         )
                                     }

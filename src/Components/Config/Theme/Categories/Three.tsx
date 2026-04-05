@@ -38,7 +38,7 @@ const Three = ({ categories, isDarkMode, onClick }: Props) => {
                         className={` relative w-14 h-14 sm:w-16 sm:h-16 rounded-2xl flex items-center justify-center transition-transform duration-500 group-hover:rotate-6 ${isDarkMode ? 'bg-slate-800' : 'bg-slate-50'}`}>
                         <div className="w-10 h-10 rounded-xl overflow-hidden">
                             <div className="w-full h-full flex items-center text-[var(--category-primary-color)] justify-center">
-                                <Icon icon={'material-symbols:local-mall'} className='w-full h-full' />
+                                <Icon icon={'cbi:bulb-general-group'} className='w-full h-full' />
                             </div>
                         </div>
 
@@ -101,7 +101,7 @@ const Three = ({ categories, isDarkMode, onClick }: Props) => {
                                         )
                                     ) : (
                                         <div className="w-full h-full flex items-center justify-center">
-                                            <Icon icon={'material-symbols:local-mall'} className='w-full h-full' />
+                                            <Icon icon={'cbi:bulb-general-group'} className='w-full h-full' />
                                         </div>
                                     )
                                 }

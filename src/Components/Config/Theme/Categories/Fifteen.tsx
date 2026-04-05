@@ -28,7 +28,7 @@ const Fiften = ({ categories, isDarkMode, onClick }: Props) => {
                     handleScroll()
                 }} className="flex-1 group relative overflow-hidden rounded-3xl transition-all duration-700 hover:flex-[3]">
                     <div className={`text-[var(--category-primary-color)] absolute inset-0 w-full h-full object-cover ${isDarkMode && "bg-white"} `} >
-                        <Icon icon={'material-symbols:local-mall'} className='w-full h-full' />
+                        <Icon icon={'cbi:bulb-general-group'} className='w-full h-full' />
                     </div>
                     <div className="absolute inset-0 bg-black/40 group-hover:bg-black/60 transition-colors" />
                     <div className="absolute inset-0 flex items-center justify-center">
@@ -54,7 +54,7 @@ const Fiften = ({ categories, isDarkMode, onClick }: Props) => {
                                 )
                             ) : (
                                 <div className={`text-[var(--category-primary-color)] absolute inset-0 w-full h-full object-cover ${isDarkMode && "bg-white"} `} >
-                                    <Icon icon={'material-symbols:local-mall'} className='w-full h-full' />
+                                    <Icon icon={'cbi:bulb-general-group'} className='w-full h-full' />
                                 </div>
                             )
                         }
