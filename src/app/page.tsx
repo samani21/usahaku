@@ -10,11 +10,13 @@ import { getToken, getUserInfo } from "@/store/authStore";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import ThemePage from "./theme/page";
+import Loading from "@/Components/Component/Loading";
 
 export default function Home() {
   const token = getToken();
   const user = getUserInfo();
   const router = useRouter();
+  const [loading, setLoading] = useState<boolean>(false);
   const [detailTheme, setDetailTheme] = useState<boolean>(false);
   useEffect(() => {
     if (token && user) {
@@ -23,19 +25,22 @@ export default function Home() {
   })
   return (
     <div className="font-sans text-gray-800 antialiased bg-white">
-      <Header />
+      <Header setLoading={setLoading} />
       <main>
         <HeroSection />
         <Feature />
         {
           detailTheme ?
-            <ThemePage setDetailTheme={setDetailTheme} /> :
-            <ThemeSection setDetailTheme={setDetailTheme} />
+            <ThemePage setDetailTheme={setDetailTheme} setLoading={setLoading} /> :
+            <ThemeSection setDetailTheme={setDetailTheme} setLoading={setLoading} />
         }
         <PricingSection />
         <CTA />
         <Footer />
       </main>
+      {
+        loading && <Loading title='Sedang Proses' />
+      }
     </div>
   );
 }

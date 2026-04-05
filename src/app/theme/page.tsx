@@ -26,10 +26,10 @@ import {
 } from 'lucide-react';
 import Header from '@/Components/LandingPage/Header';
 import Link from 'next/link';
+import Loading from '@/Components/Component/Loading';
 
-const ThemePage = ({ setDetailTheme }: { setDetailTheme: Dispatch<SetStateAction<boolean>> }) => {
+const ThemePage = ({ setDetailTheme, setLoading }: { setDetailTheme: Dispatch<SetStateAction<boolean>>, setLoading: Dispatch<SetStateAction<boolean>> }) => {
     const [searchTerm, setSearchTerm] = useState<string>('');
-
     const themes = [
         { id: 1, name: 'Minimarket', icon: <ShoppingBasket className="w-8 h-8" />, description: 'Kebutuhan harian lengkap', image: "tema_1.png", mode: "Light" },
         { id: 2, name: 'Laundry', icon: <Waves className="w-8 h-8" />, description: 'Cuci bersih & wangi', image: "tema_2.png", mode: "Auto" },
@@ -85,6 +85,7 @@ const ThemePage = ({ setDetailTheme }: { setDetailTheme: Dispatch<SetStateAction
                             <Link
                                 href={`/preview/${theme?.id}`}
                                 key={theme.id}
+                                onClick={() => setLoading(true)}
                                 className="flex flex-col items-center group cursor-pointer"
                             >
                                 <div className="w-full  bg-white rounded-2xl border border-gray-100 shadow-lg group-hover:shadow-2xl group-hover:-translate-y-2 transition-all duration-500 overflow-hidden relative mb-6">
@@ -131,6 +132,7 @@ const ThemePage = ({ setDetailTheme }: { setDetailTheme: Dispatch<SetStateAction
                 </main>
 
             </div>
+
         </section>
     );
 };

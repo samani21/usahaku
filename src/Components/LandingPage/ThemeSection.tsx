@@ -1,8 +1,10 @@
+"use client"
 import { ChevronDown, Coffee, Moon, ShoppingBasket, Sun, Waves, Zap } from 'lucide-react';
 import Link from 'next/link';
-import React, { Dispatch, SetStateAction } from 'react'
+import React, { Dispatch, SetStateAction, useState } from 'react'
+import Loading from '../Component/Loading';
 
-const ThemeSection = ({ setDetailTheme }: { setDetailTheme: Dispatch<SetStateAction<boolean>> }) => {
+const ThemeSection = ({ setDetailTheme, setLoading }: { setDetailTheme: Dispatch<SetStateAction<boolean>>, setLoading: Dispatch<SetStateAction<boolean>> }) => {
     const themes = [
         { id: 1, name: 'Minimarket', icon: <ShoppingBasket className="w-8 h-8" />, description: 'Kebutuhan harian lengkap', image: "tema_1.png", mode: "Light" },
         { id: 2, name: 'Laundry', icon: <Waves className="w-8 h-8" />, description: 'Cuci bersih & wangi', image: "tema_2.png", mode: "Auto" },
@@ -22,6 +24,7 @@ const ThemeSection = ({ setDetailTheme }: { setDetailTheme: Dispatch<SetStateAct
                         <Link
                             href={`/preview/${theme?.id}`}
                             key={theme.id}
+                            onClick={() => setLoading(true)}
                             className="flex flex-col items-center group cursor-pointer"
                         >
                             <div className="w-full  bg-white rounded-2xl border border-gray-100 shadow-lg group-hover:shadow-2xl group-hover:-translate-y-2 transition-all duration-500 overflow-hidden relative mb-6">

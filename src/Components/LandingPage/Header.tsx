@@ -1,8 +1,8 @@
 "use client"
 import { useRouter } from 'next/navigation';
-import React from 'react'
+import React, { Dispatch, SetStateAction } from 'react'
 
-const Header = () => {
+const Header = ({ setLoading }: { setLoading: Dispatch<SetStateAction<boolean>> }) => {
     const router = useRouter();
 
     return (
@@ -14,7 +14,10 @@ const Header = () => {
                         <span className="text-[var(--primary-cyan)]">Usaha</span><span className="text-[var(--primary-orange)]">Ku</span>
                     </a> */}
                 </div>
-                <button onClick={() => router?.push('/auth/login')} className="cursor-pointer hidden md:inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-full text-white bg-[var(--primary-color)] hover:bg-[var(--primary-color)]/90 transition duration-300 shadow-lg shadow-[var(--primary-color)]/30">
+                <button onClick={() => {
+                    router?.push('/auth/login')
+                    setLoading(true)
+                }} className="cursor-pointer hidden md:inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-full text-white bg-[var(--primary-color)] hover:bg-[var(--primary-color)]/90 transition duration-300 shadow-lg shadow-[var(--primary-color)]/30">
                     Mulai Uji Coba
                 </button>
             </div>
