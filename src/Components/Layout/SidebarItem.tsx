@@ -1,7 +1,7 @@
 "use client"
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import React, { ReactElement } from 'react'
+import React, { Dispatch, ReactElement, SetStateAction } from 'react'
 
 type Props = {
     Icon: any;
@@ -12,9 +12,10 @@ type Props = {
     children?: ReactElement<Element>;
     href?: string;
     child?: boolean;
+    setLoading: Dispatch<SetStateAction<boolean>>;
 }
 
-const SidebarItem = ({ Icon, label, isActive = false, onClick, count, children, href, child }: Props) => {
+const SidebarItem = ({ Icon, label, isActive = false, onClick, count, children, href, child, setLoading }: Props) => {
     const route = useRouter();
     const activeClass = isActive ? 'sidebar-active' : 'text-gray-600 hover:text-emerald-600 hover:bg-emerald-50 font-medium';
     const iconColor = isActive ? 'text-white' : '';
@@ -34,7 +35,7 @@ const SidebarItem = ({ Icon, label, isActive = false, onClick, count, children, 
                     )}
                     {children}
                 </button> :
-                    <Link href={`/admin${href}`} prefetch
+                    <Link href={`/admin${href}`} onClick={() => setLoading(true)} prefetch
                         className={`sidebar-item flex items-center p-3 w-full rounded-lg font-semibold transition  duration-150 ${activeClass}`}
                     >
                         <Icon className={`w-5 h-5 mr-3 ${iconColor}`} />

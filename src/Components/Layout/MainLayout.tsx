@@ -113,7 +113,9 @@ const MainLayout = ({ children }: Props) => {
                 isActivityDropdownOpen={isActivityDropdownOpen}
                 setIsActivityDropdownOpen={setIsActivityDropdownOpen}
                 isSidebarOpen={isSidebarOpen}
-                setIsSidebarOpen={setIsSidebarOpen} />
+                setIsSidebarOpen={setIsSidebarOpen}
+                setLoading={setLoading}
+            />
             <div className="flex-1 flex flex-col overflow-hidden bg-[#f7f9fc]">
                 <Header
                     setIsSidebarOpen={setIsSidebarOpen}
