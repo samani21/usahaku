@@ -100,7 +100,7 @@ export const TemeFourTen = {
     ],
     product: {
         business_id: 13,
-        color: "#EF4444",
+        color: "#1D4ED8",
         created_at: "2026-03-20T07:33:24.000000Z",
         id: 1,
         layout_products: 12,
