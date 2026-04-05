@@ -43,10 +43,10 @@ const ThemePage = ({ setDetailTheme, setLoading }: { setDetailTheme: Dispatch<Se
         { id: 10, name: 'Warung Makan', icon: <Utensils className="w-8 h-8" />, description: 'Masakan rumah nikmat', image: "tema_10.png", mode: "Light" },
         { id: 11, name: 'Studio Foto', icon: <Camera className="w-8 h-8" />, description: 'Abadikan momen indah', image: "tema_11.png", mode: "Dark" },
         { id: 12, name: 'Barbershop', icon: <UserRound className="w-8 h-8" />, description: 'Gaya rambut pria modern', image: "tema_12.png", mode: "Dark" },
-        { id: 13, name: 'Toko Mainan', icon: <Gamepad2 className="w-8 h-8" />, description: 'Dunia ceria anak-anak', image: "", mode: "" },
-        { id: 14, name: 'Kursus', icon: <GraduationCap className="w-8 h-8" />, description: 'Belajar keahlian baru', image: "", mode: "" },
-        { id: 15, name: 'Florist', icon: <Flower2 className="w-8 h-8" />, description: 'Bunga segar & cantik', image: "", mode: "" },
-        { id: 16, name: 'Pet Shop', icon: <Dog className="w-8 h-8" />, description: 'Keperluan hewan kesayangan', image: "", mode: "" },
+        { id: 13, name: 'Toko Mainan', icon: <Gamepad2 className="w-8 h-8" />, description: 'Dunia ceria anak-anak', image: "tema_13.png", mode: "Auto" },
+        { id: 14, name: 'Kursus', icon: <GraduationCap className="w-8 h-8" />, description: 'Belajar keahlian baru', image: "tema_14.png", mode: "Light" },
+        { id: 15, name: 'Florist', icon: <Flower2 className="w-8 h-8" />, description: 'Bunga segar & cantik', mode: "Light", image: "tema_15.png" },
+        { id: 16, name: 'Pet Shop', icon: <Dog className="w-8 h-8" />, description: 'Keperluan hewan kesayangan', mode: "Light", image: "tema_16.png" },
     ];
 
     const filteredThemes = themes.filter(theme =>
@@ -127,7 +127,7 @@ const ThemePage = ({ setDetailTheme, setLoading }: { setDetailTheme: Dispatch<Se
                         ))}
                     </div>
                     <div onClick={() => setDetailTheme(false)} className='flex items-center justify-center cursor-pointer text-green-500 font-medium text-center text-lg mt-8'>
-                        Tampilkan lebih banyak <span><ChevronUp /></span>
+                        Tampilkan lebih sedikit <span><ChevronUp /></span>
                     </div>
                 </main>
 
