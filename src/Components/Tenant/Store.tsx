@@ -9,7 +9,7 @@ import CategorieConfig from '@/Components/Config/Theme/Categories';
 import ProductConfig from '@/Components/Config/Theme/Products';
 import SummaryConfig from '@/Components/Config/Theme/Summary';
 import { ProductsType, Variants } from '@/types/Admin/ProductsType';
-
+import { v4 as uuidv4 } from "uuid";
 const getContrastColor = (hex: string | undefined) => {
     if (!hex) return '#1e293b';
     const r = parseInt(hex.slice(1, 3), 16);
@@ -53,6 +53,13 @@ export default function Store({ tenant }: Props) {
         document.documentElement.style.setProperty(`--${type}-secondary-rgb`, contrastRgb);
     }, []);
 
+    let deviceId = localStorage.getItem("device_id");
+    useEffect(() => {
+        if (!deviceId) {
+            deviceId = uuidv4();
+            localStorage.setItem("device_id", deviceId);
+        }
+    }, [])
     useEffect(() => {
         const primary = isDarkTheme ? '#020617' : '#f8fafc';   // slate-950 / slate-50
         const secondary = isDarkTheme ? '#f8fafc' : '#020617'; // kebalikannya

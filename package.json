@@ -30,6 +30,7 @@
     "react-leaflet": "^5.0.0",
     "reactjs-otp-input": "^2.0.10",
     "recharts": "^3.4.1",
+    "uuid": "^13.0.0",
     "zustand": "^5.0.8"
   },
   "devDependencies": {
