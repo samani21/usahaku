@@ -53,8 +53,8 @@ export default function Store({ tenant }: Props) {
         document.documentElement.style.setProperty(`--${type}-secondary-rgb`, contrastRgb);
     }, []);
 
-    let deviceId = localStorage.getItem("device_id");
     useEffect(() => {
+        let deviceId = localStorage.getItem("device_id");
         if (!deviceId) {
             deviceId = uuidv4();
             localStorage.setItem("device_id", deviceId);

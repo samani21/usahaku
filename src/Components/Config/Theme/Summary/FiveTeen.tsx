@@ -1,7 +1,6 @@
 import { formatIDR } from '@/types/FormtRupiah';
-import { Send } from 'lucide-react';
-import { useRouter } from 'next/navigation';
 import React from 'react'
+import HandleCheckout from './HandleCheckout';
 
 type Props = {
     isDarkMode: boolean;
@@ -11,7 +10,6 @@ type Props = {
 }
 
 const FiveTeen = ({ isDarkMode, isBuild, summary, totalCart }: Props) => {
-    const router = useRouter();
     return (
         <div className="space-y-4">
             <div className="sticky bottom-6 mx-4 rounded-2xl overflow-hidden shadow-2xl flex">
@@ -19,9 +17,9 @@ const FiveTeen = ({ isDarkMode, isBuild, summary, totalCart }: Props) => {
                     <p className={`text-[10px] font-bold ${isDarkMode ? "text-slate-100" : "text-slate-500"} leading-none mb-1`}>Total</p>
                     <p className={`font-black ${isDarkMode ? "text-slate-200" : "text-slate-800"} leading-none`}>{formatIDR(summary)}</p>
                 </div>
-                <button onClick={() => !isBuild && router.push('/checkout')} className="bg-[var(--summary-primary-color)] text-white px-4 sm:px-8 font-black uppercase tracking-widest text-xs italic">
+                <HandleCheckout isBuild={isBuild} className='bg-[var(--summary-primary-color)] text-white px-4 sm:px-8 font-black uppercase tracking-widest text-xs italic'>
                     Checkout ({totalCart})
-                </button>
+                </HandleCheckout>
             </div>
         </div>
 

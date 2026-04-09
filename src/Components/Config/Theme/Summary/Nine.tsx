@@ -1,6 +1,6 @@
 import { formatIDR } from '@/types/FormtRupiah';
-import { useRouter } from 'next/navigation';
 import React from 'react'
+import HandleCheckout from './HandleCheckout';
 
 type Props = {
     isDarkMode: boolean;
@@ -10,7 +10,6 @@ type Props = {
 }
 
 const Nine = ({ isDarkMode, totalCart, summary, isBuild }: Props) => {
-    const router = useRouter();
     return (
         <div className="space-y-4">
             <div className="sticky bottom-4 flex justify-center">
@@ -20,7 +19,7 @@ const Nine = ({ isDarkMode, totalCart, summary, isBuild }: Props) => {
                         <span className="font-bold text-sm leading-none">{formatIDR(summary)}</span>
                     </div>
                     <div className="h-6 w-px bg-white/20"></div>
-                    <button onClick={() => !isBuild && router.push('/checkout')} className={`font-bold text-sm text-[var(--summary-primary-color)] uppercase tracking-tighter`}>Checkout ({totalCart})</button>
+                    <HandleCheckout isBuild={isBuild} className={`font-bold text-sm text-[var(--summary-primary-color)] uppercase tracking-tighter`}>Checkout ({totalCart})</HandleCheckout>
                 </div>
             </div>
         </div>
