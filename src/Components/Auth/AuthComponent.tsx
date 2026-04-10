@@ -9,6 +9,7 @@ import OtpComponent from './OtpComponent'
 import Loading from '../Component/Loading'
 import ForgotPasswordComponent from './ForgotPasswordComponent'
 import ChangePassword from './ChangePassword'
+import Store from './Store'
 
 type Props = {}
 
@@ -29,15 +30,16 @@ const AuthComponent = (props: Props) => {
 
     return (
         loading ? <Loading /> :
-            <div className='font-sans text-gray-800 antialiased min-h-screen flex'>
-                <LeftPanel />
-                {isOtp ? <OtpComponent /> :
-                    auth == 'login' ? <LoginComponent /> :
-                        auth === 'register' ? <RegisterComponent setIsOtp={setIsOtp} /> :
-                            auth === 'forgot-password' ? <ForgotPasswordComponent /> :
-                                auth === 'change-password' ? <ChangePassword /> : ''
-                }
-            </div>
+            auth === 'store' ? <Store /> :
+                <div className='font-sans text-gray-800 antialiased min-h-screen flex'>
+                    <LeftPanel />
+                    {isOtp ? <OtpComponent /> :
+                        auth == 'login' ? <LoginComponent /> :
+                            auth === 'register' ? <RegisterComponent setIsOtp={setIsOtp} /> :
+                                auth === 'forgot-password' ? <ForgotPasswordComponent /> :
+                                    auth === 'change-password' ? <ChangePassword /> : ''
+                    }
+                </div>
     )
 }
 
