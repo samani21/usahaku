@@ -113,15 +113,18 @@ export default function Store({ tenant }: Props) {
     }, [catalogData, selectCategorie])
     const summary = catalogData?.summary;
 
-    if (loading) return <Loading title='Sedang memuat halaman' />;
+
     const handleCart = (p: ProductsType | null, v: Variants | null, qty: number) => {
-        console.log(p, v)
+        // setLoading(true)
         const amount = v ? v?.final_price : p?.final_price;
         setCartItem({
             item: cartItem?.item + qty,
             amount: cartItem?.amount + (qty * (amount ?? 0))
         })
     }
+
+    if (loading) return <Loading title='Sedang memuat halaman' />;
+
     return (
         <div className={`flex flex-col overflow-hidden  items-center justify-center ${isDarkTheme ? 'bg-slate-950 text-white' : 'bg-slate-50 text-slate-900'}`}>
             <div className='max-w-7xl  min-h-screen w-full space-y-6 relative'>
