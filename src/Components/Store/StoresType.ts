@@ -36,3 +36,8 @@ export interface PostType {
     category: string;
     isPremium: boolean;
 }
+
+export interface UserLocationType {
+    lat: number;
+    lng: number;
+}

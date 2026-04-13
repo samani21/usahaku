@@ -197,3 +197,10 @@ input[type=number] {
   background-color: rgba(156, 163, 175, 0.3);
   border-radius: 10px;
 }
+
+@import "leaflet/dist/leaflet.css";
+
+/* 🔥 sembunyikan panel routing jelek */
+.leaflet-routing-container {
+  display: none !important;
+}

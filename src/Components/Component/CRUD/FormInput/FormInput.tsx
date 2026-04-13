@@ -20,6 +20,7 @@ type Props = {
     | "autocomplete"
     | "checkbox"
     | "switch"
+    | "date"
     | "color"
     | "image"
     | "time"

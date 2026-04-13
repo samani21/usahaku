@@ -1,5 +1,5 @@
 "use client"
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import {
     Map as MapIcon,
     Package,
@@ -17,6 +17,9 @@ import Header from './Header';
 import HomePage from './HomePage';
 import MapPage from './MapPage';
 import DailyUpdatePage from './DailyUpdatePage';
+import { Get } from '@/utils/Get';
+import { StoresType } from '@/types/StoresType';
+import { UserLocationType } from './StoresType';
 
 // --- DATA MOCKUP ---
 
@@ -72,12 +75,40 @@ const STORES = [
 ];
 export default function StorePageComponent() {
     const [searchQuery, setSearchQuery] = useState('');
-
+    const [loading, setLoading] = useState<boolean>(false);
     const [activeNav, setActiveNav] = useState('Beranda');
     const [isDark, setIsDark] = useState(false);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
-
+    const [stores, setStores] = useState<StoresType[]>([])
+    const [userLocation, setUserLocation] = useState<UserLocationType | null>(null);
     useEffect(() => {
+
+        if (!navigator.geolocation) {
+            console.log("Geolocation tidak didukung");
+            return;
+        }
+
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                const lat = position.coords.latitude;
+                const lng = position.coords.longitude;
+
+                setUserLocation({ lat, lng });
+
+                console.log("Lokasi user:", lat, lng);
+            },
+            (error) => {
+                setUserLocation({
+                    lat: 0,
+                    lng: 0,
+                });
+                console.log("Gagal ambil lokasi:", error.message);
+            },
+            {
+                enableHighAccuracy: true
+            }
+        );
+
         const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
         setIsDark(mediaQuery.matches);
         const handler = (e: any) => setIsDark(e.matches);
@@ -85,6 +116,11 @@ export default function StorePageComponent() {
         return () => mediaQuery.removeEventListener('change', handler);
     }, []);
 
+    useEffect(() => {
+        if (userLocation != null) {
+            fetchStore()
+        }
+    }, [userLocation])
 
     const mainNav = [
         { icon: Home, label: 'Beranda' },
@@ -112,6 +148,18 @@ export default function StorePageComponent() {
         });
         return { filteredStores: resultStores, filteredProducts: resultProducts };
     }, [searchQuery]);
+
+    const fetchStore = async () => {
+        setLoading(true)
+        try {
+            const res = await Get<{ success: boolean, data: StoresType[] }>(`/stores?lat=${userLocation?.lat != 0 ? userLocation?.lat : ''}&lng=${userLocation?.lng != 0 ? userLocation?.lng : ""}`);
+            if (res?.success) {
+                setStores(res?.data)
+            }
+        } catch (e: any) {
+            setLoading(true)
+        }
+    }
 
     return (
         <div className={`${isDark ? 'bg-zinc-950' : 'bg-gray-50'}`}>
@@ -167,8 +215,8 @@ export default function StorePageComponent() {
 
                     <main className={`flex-1 overflow-y-auto no-scrollbar transition-colors duration-500 ${isDark ? 'bg-zinc-950' : 'bg-white'}`}>
                         {
-                            activeNav === 'Beranda' ? <HomePage isDark={isDark} filteredStores={filteredStores} filteredProducts={filteredProducts} /> :
-                                activeNav === 'Maps' ? <MapPage filteredStores={filteredStores} isDark={isDark} PRIMARY_COLOR={PRIMARY_COLOR} /> :
+                            activeNav === 'Beranda' ? <HomePage stores={stores} isDark={isDark} filteredProducts={filteredProducts} /> :
+                                activeNav === 'Maps' ? <MapPage stores={stores} isDark={false} PRIMARY_COLOR={PRIMARY_COLOR} userLocation={userLocation} /> :
                                     activeNav === 'Update' ? <DailyUpdatePage isDark={isDark} /> : ''
                         }
                     </main>

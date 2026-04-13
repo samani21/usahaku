@@ -24,18 +24,23 @@ const selectOptions: OptionsType[] = [
 
 const CreateOrUpdateProductStock = ({ handleFormSubmit, data, loading, setLoading }: Props) => {
     const [form, setForm] = useState<any>({
+        outlet_id: "",
         product_id: "",
+        date: "",
         product_varian_id: "",
         stock: "",
     });
     const [error, setError] = useState<any>({
         product_id: null,
+        outlet_id: null,
+        date: null,
         product_varian_id: null,
         stock: null,
     })
     const [icon, setIcon] = useState<string>('')
 
     const [productOption, setProductOptions] = useState<OptionsType[]>()
+    const [outletOption, setOutletOption] = useState<OptionsType[]>()
     const [products, setProducts] = useState<ProductsType[]>()
 
 
@@ -53,6 +58,7 @@ const CreateOrUpdateProductStock = ({ handleFormSubmit, data, loading, setLoadin
             });
         }
         getProduct()
+        getOutlet()
     }, [])
     const handleChange = (
         e: React.ChangeEvent<
@@ -81,8 +87,23 @@ const CreateOrUpdateProductStock = ({ handleFormSubmit, data, loading, setLoadin
                     label: item.name,   // sesuaikan dengan field API
                     value: item.id,
                 })) ?? [];
-                setProducts(res?.data);
                 setProductOptions(productStock);
+            }
+        } catch (e) {
+
+        }
+    }
+
+    const getOutlet = async () => {
+        try {
+            const res = await Get<{ success: Boolean, data: any }>('outlet?limit=10000');
+            if (res?.success) {
+                const outlets = res?.data?.map((item: any) => ({
+                    label: item.name,   // sesuaikan dengan field API
+                    value: item.id,
+                })) ?? [];
+                setProducts(res?.data);
+                setOutletOption(outlets);
             }
         } catch (e) {
 
@@ -107,6 +128,20 @@ const CreateOrUpdateProductStock = ({ handleFormSubmit, data, loading, setLoadin
             setLoading(false);
             return;
         }
+        if (form?.outlet_id == "") {
+            setError({
+                outlet_id: "Outlet harus diisi"
+            })
+            setLoading(false);
+            return;
+        }
+        if (form?.date == "") {
+            setError({
+                date: "Tanggal harus diisi"
+            })
+            setLoading(false);
+            return;
+        }
         if (variantOptions?.length > 0 && form?.product_variant_id == "") {
             setError({
                 product_variant_id: "Variant harus diisi"
@@ -126,6 +161,8 @@ const CreateOrUpdateProductStock = ({ handleFormSubmit, data, loading, setLoadin
         formData.append('product_id', form?.product_id);
         formData.append('product_variant_id', form?.product_variant_id ?? null);
         formData.append('stock', form?.stock);
+        formData.append('outlet_id', form?.outlet_id);
+        formData.append('date', form?.date);
         handleFormSubmit(formData, data?.id ?? null)
     };
 
@@ -140,6 +177,15 @@ const CreateOrUpdateProductStock = ({ handleFormSubmit, data, loading, setLoadin
                 onChange={handleChange}
                 options={productOption}
                 error={error?.product_id}
+            />
+            <FormInput
+                type="autocomplete"
+                label="Outlet"
+                name="outlet_id"
+                value={form.outlet_id}
+                onChange={handleChange}
+                options={outletOption}
+                error={error?.outlet_id}
             />
 
             {
@@ -164,6 +210,14 @@ const CreateOrUpdateProductStock = ({ handleFormSubmit, data, loading, setLoadin
                 onChange={handleChange}
                 placeholder="Type number"
                 error={error?.stock}
+            />
+            <FormInput
+                type="date"
+                label="Tanggal"
+                name="date"
+                value={form.date ?? 0}
+                onChange={handleChange}
+                error={error?.date}
             />
             <button
                 type="submit"

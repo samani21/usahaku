@@ -1,12 +1,14 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import { ListIcon, MapIcon } from 'lucide-react';
 import React, { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react'
-import { ProductType, StoresType } from './StoresType';
+import { ProductType } from './StoresType';
+import { StoresType } from '@/types/StoresType';
+
 
 type Props = {
     isDark: boolean;
+    stores: StoresType[]
     filteredProducts: ProductType[]
-    filteredStores: StoresType[]
 }
 
 
@@ -31,25 +33,28 @@ const ProductCard = ({ product, storeName, isDark }: any) => {
     );
 };
 
-const StoreCard = ({ store, isDark }: any) => (
+const StoreCard = ({ store, isDark }: { store: StoresType, isDark: boolean }) => (
     <div className={`p-4 rounded-[1.5rem] border flex gap-4 transition-all ${isDark ? 'bg-zinc-900 border-zinc-800' : 'bg-white border-gray-100 shadow-sm'}`}>
-        <img src={store.image} className="w-24 h-24 rounded-2xl object-cover" />
+        <img src={store.business?.logo} className="w-24 h-24 rounded-2xl object-cover" />
         <div className="flex-1 min-w-0 flex flex-col justify-center">
             <div className="flex justify-between items-start">
-                <span className="text-[9px] font-black text-emerald-500 uppercase">{store.category}</span>
-                <span className={`text-[10px] font-bold ${isDark ? 'text-zinc-600' : 'text-gray-400'}`}>{store.distance}</span>
+                <span className="text-[9px] font-black text-emerald-500 uppercase">{store.business?.category}</span>
+                <span className={`text-[10px] font-bold ${isDark ? 'text-zinc-600' : 'text-gray-400'}`}>
+                    {store.distance.toFixed(2)} km
+                </span>
             </div>
             <h3 className={`font-bold text-base truncate ${isDark ? 'text-zinc-100' : 'text-gray-800'}`}>{store.name}</h3>
             <p className={`text-xs truncate ${isDark ? 'text-zinc-500' : 'text-gray-400'}`}>{store.address}</p>
             <div className="mt-2 flex items-center gap-2">
                 <div className="w-1.5 h-1.5 rounded-full bg-emerald-500"></div>
-                <span className="text-[10px] font-bold text-emerald-500 uppercase">{store.status}</span>
+                {/* <span className="text-[10px] font-bold text-emerald-500 uppercase">{store.status}</span> */}
+                <span className="text-[10px] font-bold text-emerald-500 uppercase">Buka</span>
             </div>
         </div>
     </div>
 );
 
-function HomePage({ isDark, filteredStores, filteredProducts }: Props) {
+function HomePage({ stores, isDark, filteredProducts }: Props) {
     const [activeTab, setActiveTab] = useState('stores');
 
     return (
@@ -66,13 +71,12 @@ function HomePage({ isDark, filteredStores, filteredProducts }: Props) {
                     <button onClick={() => setActiveTab('stores')} className={`flex-1 py-3 rounded-xl text-[10px] font-black tracking-widest transition-all ${activeTab === 'stores' ? (isDark ? 'bg-zinc-800 text-emerald-400' : 'bg-white text-emerald-600 shadow-sm') : 'text-zinc-400'}`}>TOKO</button>
                     <button onClick={() => setActiveTab('products')} className={`flex-1 py-3 rounded-xl text-[10px] font-black tracking-widest transition-all ${activeTab === 'products' ? (isDark ? 'bg-zinc-800 text-emerald-400' : 'bg-white text-emerald-600 shadow-sm') : 'text-zinc-400'}`}>PRODUK</button>
                 </div>
-
                 <AnimatePresence mode="wait">
                     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 lg:gap-6">
                         {activeTab === 'products' ? (
                             filteredProducts.map((p: any, i: number) => <ProductCard key={i} product={p} storeName={p.storeName} isDark={isDark} />)
                         ) : (
-                            filteredStores.map(s => <StoreCard key={s.id} store={s} isDark={isDark} />)
+                            stores.map(s => <StoreCard key={s.id} store={s} isDark={isDark} />)
                         )}
                     </motion.div>
                 </AnimatePresence>

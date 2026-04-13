@@ -5,5 +5,7 @@ export interface ProductStockType {
     product_variant_id?: number;
     stock: number;
     name_product: string;
+    name_outlet: string;
+    date: string;
     name_variant: string;
 }

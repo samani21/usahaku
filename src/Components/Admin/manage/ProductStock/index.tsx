@@ -200,6 +200,10 @@ const ProductStockComponent = (props: Props) => {
         () => [
 
             {
+                key: "name_outlet",
+                label: "Nama Outlet",
+            },
+            {
                 key: "name_product",
                 label: "Nama Produk",
             },
@@ -212,6 +216,11 @@ const ProductStockComponent = (props: Props) => {
                 key: "stock",
                 label: "stock",
                 render: (row) => row?.stock ?? ''
+            },
+            {
+                key: "date",
+                label: "Tanggal",
+                render: (row) => row?.date ?? ''
             },
             {
                 key: "actions",

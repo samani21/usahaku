@@ -273,6 +273,7 @@ export default function BusinessProfile() {
                                                 <option value="Fashion & Sepatu">Fashion & Sepatu</option>
                                                 <option value="Produk Digital">Produk Digital</option>
                                                 <option value="Makanan & Minuman">Makanan & Minuman</option>
+                                                <option value="Minimarket">Minimarket</option>
                                             </select>
                                             <ChevronRight className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-300 rotate-90 pointer-events-none" size={16} />
                                         </div>
