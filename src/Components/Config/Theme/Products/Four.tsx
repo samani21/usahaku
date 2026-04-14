@@ -131,7 +131,7 @@ const Four = ({ products, isDarkMode, handleCart }: Props) => {
             >
                 <div className="flex flex-col md:flex-row gap-0 max-h-[90vh]">
                     {/* Visual Section */}
-                    <div className="md:w-1/2 relative bg-zinc-100 dark:bg-zinc-900">
+                    <div className={`md:w-1/2 relative ${isDarkMode ? "bg-zinc-900" : "bg-zinc-100"}`}>
                         <img
                             src={selectedVariant?.image ?? product?.image}
                             className="w-full h-full object-cover"
@@ -191,7 +191,7 @@ const Four = ({ products, isDarkMode, handleCart }: Props) => {
                             )}
                         </div>
 
-                        <div className="mt-12 pt-10 border-t border-zinc-200 dark:border-zinc-800 flex flex-col gap-6">
+                        <div className={`mt-12 pt-10 border-t ${isDarkMode ? ":border-zinc-800" : "border-zinc-200 "} flex flex-col gap-6`}>
                             <div className="flex justify-between items-end">
                                 <div>
                                     <p className="text-[10px] font-black opacity-40 uppercase tracking-widest mb-1">Grand Total</p>

@@ -1,6 +1,6 @@
 import ModalWrapper from './ModalWrapper';
 import { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react';
-import { Minus, Plus, ShoppingCart, X, Zap } from 'lucide-react';
+import { Minus, Plus, ShoppingBag, X, ArrowUpRight, Maximize2 } from 'lucide-react';
 import AlertWrapper from './AlertWrapper';
 import { ProductsType, Variants } from '@/types/Admin/ProductsType';
 import { formatIDR } from '@/types/FormtRupiah';
@@ -13,281 +13,208 @@ type Props = {
     handleCart?: (p: ProductsType | null, v: Variants | null, qty: number) => void;
 }
 
-
-// Sub-komponen Qty (Gaya Neo-Brutalism)
-const QtySelector = ({ quantity, setQuantity }: { quantity: number, setQuantity: Dispatch<SetStateAction<number>> }) => (
-    <div className="space-y-2">
-        <p className="text-xs font-black uppercase tracking-tighter">Jumlah</p>
-        <div className="flex items-center bg-white border-4 border-black shadow-[4px_4px_0px_rgba(0,0,0,1)]">
-            <button
-                onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                className="p-3 hover:bg-black hover:text-white border-r-4 border-black transition-colors"
-            >
-                <Minus size={18} strokeWidth={3} />
-            </button>
-            <span className="w-12 text-center font-black text-xl">{quantity}</span>
-            <button
-                onClick={() => setQuantity(quantity + 1)}
-                className="p-3 hover:bg-black hover:text-white border-l-4 border-black transition-colors"
-            >
-                <Plus size={18} strokeWidth={3} />
-            </button>
-        </div>
-    </div>
-);
-
-// Sub-komponen Variant (Gaya Neo-Brutalism)
-const VariantPicker = ({ variants, selectedVariant, setSelectedVariant }: { variants: Variants[], selectedVariant: Variants | null, setSelectedVariant: (v: Variants) => void }) => (
-    <div className="space-y-3">
-        <p className="text-xs font-black uppercase tracking-tighter text-white">Varian Tersedia</p>
-        <div className="flex flex-wrap gap-3">
-            {variants.map((v) => (
-                <button
-                    key={v.id}
-                    onClick={() => setSelectedVariant(v)}
-                    className={`px-4 py-2 border-4 border-black font-black text-sm uppercase transition-all ${selectedVariant?.id === v.id
-                        ? 'bg-white text-black -translate-y-1 -translate-x-1 shadow-[4px_4px_0px_white]'
-                        : 'bg-black text-white hover:-translate-y-1 hover:-translate-x-1 shadow-[4px_4px_0px_rgba(255,255,255,0.3)]'
-                        }`}
-                >
-                    {v.name}
-                </button>
-            ))}
-        </div>
-    </div>
-);
-
 const Six = ({ products, isDarkMode, handleCart }: Props) => {
     const [product, setProduct] = useState<ProductsType | null>(null);
     const [productAlert, setProductAlert] = useState<ProductsType | null>(null);
     const [selectedVariant, setSelectedVariant] = useState<Variants | null>(null);
     const [quantity, setQuantity] = useState<number>(1);
     const [activeAlert, setActiveAlert] = useState<boolean>(false);
+
     const disableButton = useMemo(() => {
-        if (product) {
-            if (product?.variants?.length > 0 && !selectedVariant) {
-                return true;
-            } else {
-                if (product?.variants?.length === 0) {
-                    return false;
-                } else {
-                    return false;
-                }
-            }
-        }
-    }, [product, selectedVariant])
-    const mockItem = useMemo(() => {
-        return {
-            name: productAlert?.name,
-            price: productAlert?.final_price,
-            image: productAlert?.image,
-            category: productAlert?.category,
-            quantity: quantity
-        }
-    }, [activeAlert])
+        if (!product) return true;
+        return product?.variants?.length > 0 && !selectedVariant;
+    }, [product, selectedVariant]);
+
     useEffect(() => {
         if (activeAlert) {
             const timer = setTimeout(() => setActiveAlert(false), 3000);
-            setProduct(null)
-            setSelectedVariant(null)
-            setQuantity(1)
             return () => clearTimeout(timer);
         }
     }, [activeAlert]);
-    useEffect(() => {
-        if (product) {
-            // Jika modal aktif (product tidak null), kunci scroll
-            document.body.style.overflow = 'hidden';
-        } else {
-            // Jika modal tutup, kembalikan scroll
-            document.body.style.overflow = 'unset';
-        }
 
-        // Cleanup function untuk memastikan scroll kembali normal jika komponen unmount
-        return () => {
-            document.body.style.overflow = 'unset';
-        };
+    useEffect(() => {
+        document.body.style.overflow = product ? 'hidden' : 'unset';
+        return () => { document.body.style.overflow = 'unset'; };
     }, [product]);
+
     const addCart = () => {
         setActiveAlert(true);
+        if (handleCart) handleCart(product, selectedVariant, quantity);
         setProduct(null);
         setSelectedVariant(null);
-        setQuantity(1)
-        if (handleCart) {
-            handleCart(product, selectedVariant, quantity)
-        }
+        setQuantity(1);
     }
+
     return (
-        <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 h-full'>
+        <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-12 p-4'>
             {products?.map((p, i) => {
                 const { finalPrice, label } = getPromoDetails(p);
 
                 return (
                     <div
-                        onClick={() => {
-                            setProduct(p)
-                            setProductAlert(p)
-                        }}
                         key={i}
-                        className={`relative group cursor-pointer sm:h-96 ${isDarkMode ? "text-white" : "text-slate-900"}`}
+                        className={`group relative flex flex-col transition-all duration-500 ${isDarkMode ? 'text-white' : 'text-zinc-900'
+                            }`}
                     >
-                        {/* Bayangan Solid (Offset) */}
-                        <div className={`absolute inset-0 translate-x-3 translate-y-3 transition-transform group-hover:translate-x-5 group-hover:translate-y-5 ${isDarkMode ? 'bg-white/10' : 'bg-black'}`} />
-
-                        {/* Kartu Utama */}
-                        <div className={`relative h-full border-4 border-black p-4 flex flex-col transition-transform group-hover:-translate-x-1 group-hover:-translate-y-1 ${isDarkMode ? 'bg-zinc-800' : 'bg-white'}`}>
-
-                            {/* Badge Diskon Brutalist */}
+                        {/* Image Container with Custom Frame */}
+                        <div className={`relative overflow-hidden ${isDarkMode ? "bg-zinc-800 border-zinc-700" : "bg-zinc-100 border-zinc-200"} border-[1px]`}>
+                            {/* Promo Label Overlay */}
                             {label && (
-                                <div className="absolute -top-4 -left-4 z-1 bg-[var(--product-primary-color)] text-[var(--product-secondary-color)] text-xs font-black px-4 py-2 border-4 border-black rotate-[-5deg]">
+                                <div className={`absolute top-0 right-0 ${isDarkMode ? "bg-white text-black" : " bg-zinc-900 text-white"} px-4 py-2 text-[10px] font-bold uppercase tracking-[0.3em] z-10`}>
                                     {label}
                                 </div>
                             )}
 
-                            <div className="flex-1 overflow-hidden border-4 border-black mb-4">
-                                <img
-                                    src={p.image}
-                                    className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500 scale-100 group-hover:scale-110"
-                                    alt={p.name}
-                                />
+                            <img
+                                src={p.image}
+                                className="w-full aspect-[4/5] object-cover transition-transform duration-700 group-hover:scale-105"
+                                alt={p.name}
+                            />
+
+                            {/* Hover Quick Action */}
+                            <div
+                                onClick={() => { setProduct(p); setProductAlert(p); }}
+                                className="absolute inset-0 bg-zinc-900/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center cursor-pointer"
+                            >
+                                <div className="bg-white text-black px-6 py-3 flex items-center gap-3 font-bold text-xs tracking-widest translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
+                                    VIEW PRODUCT <Maximize2 size={14} />
+                                </div>
                             </div>
+                        </div>
 
-                            <div className="space-y-2">
-                                <div className="flex flex-col">
-                                    <span className="text-[10px] font-black uppercase opacity-60 mb-1">[{p.category}]</span>
-                                    <h3 className="font-black text-sm sm:text-md uppercase leading-tight italic line-clamp-2">{p.name}</h3>
-                                </div>
-
-                                <div className="flex justify-between items-end pt-2 border-t-2 border-black/10">
-                                    <div className="flex flex-col">
-                                        <div className='h-6'>
-                                            {label && (
-                                                <span className="text-[10px] text-rose-500 line-through font-bold ">
-                                                    {formatIDR(p.price)}
-                                                </span>
-                                            )}
-                                        </div>
-                                        <span className="text-xl font-black italic tracking-tighter text-[var(--product-primary-color)]" >
-                                            {formatIDR(finalPrice)}
-                                        </span>
-                                    </div>
-                                    <div className="hidden sm:grid w-10 h-10 border-4 border-black flex items-center justify-center bg-black text-white group-hover:bg-[var(--product-primary-color)] transition-colors">
-                                        <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={4} d="M12 4v16m8-8H4" />
-                                        </svg>
-                                    </div>
-                                </div>
+                        {/* Text Info - Offset Position */}
+                        <div className="mt-6 flex flex-col gap-2 relative">
+                            <div className="flex justify-between items-start gap-4">
+                                <h3 className="font-bold text-xl uppercase tracking-tighter leading-none max-w-[70%]">
+                                    {p.name}
+                                </h3>
+                                <p className="text-lg font-light tracking-tighter opacity-70 italic">
+                                    {formatIDR(finalPrice)}
+                                </p>
+                            </div>
+                            <div className="flex items-center justify-between text-[10px] font-black uppercase tracking-[0.2em] opacity-40">
+                                <span>{p.category}</span>
+                                <span className="h-[1px] flex-1 bg-current mx-4 opacity-20"></span>
+                                {/* <span>ID: {i + 102}</span> */}
                             </div>
                         </div>
                     </div>
                 );
             })}
 
+            {/* Modal - Full Screen Aesthetics */}
             <ModalWrapper
-                activeModal={product ? true : false}
-                closeModal={() => {
-                    setProduct(null)
-                    setSelectedVariant(null)
-                    setQuantity(1)
-                }}
-                isDarkMode={isDarkMode}>
-                <div className={`w-full p-6 md:p-12 flex flex-col md:flex-row gap-10 bg-[var(--product-primary-color)] text-black`}>
+                activeModal={!!product}
+                closeModal={() => { setProduct(null); setSelectedVariant(null); setQuantity(1); }}
+                isDarkMode={isDarkMode}
+            >
+                <div className={`w-full max-w-5xl flex flex-col md:flex-row h-full max-h-[90vh] overflow-y-auto no-scrollbar ${isDarkMode ? 'bg-zinc-950 text-white' : 'bg-white text-zinc-900'}`}>
 
-                    {/* Bagian Gambar (Bingkai Tebal & Solid Shadow) */}
-                    <div className="md:w-1/2 border-[8px] border-black shadow-[12px_12px_0px_rgba(0,0,0,1)] bg-white overflow-hidden group">
+                    {/* Left: Image (Split Screen) */}
+                    <div className={`md:w-[55%] sticky top-0 ${isDarkMode ? "bg-zinc-900" : "bg-zinc-100"} overflow-hidden`}>
                         <img
                             src={selectedVariant?.image ?? product?.image}
-                            className="w-full h-full aspect-square object-cover transition-transform duration-500 group-hover:scale-110"
+                            className="w-full h-full object-cover"
                             alt=""
                         />
                     </div>
 
-                    {/* Bagian Detail */}
-                    <div className="md:w-1/2 overflow-x-hidden no-scrollbar  space-y-8">
-                        <div className="space-y-2">
-                            <p className="font-black text-sm uppercase tracking-tighter border-b-4 border-black inline-block">
-                                {product?.category}
-                            </p>
-                            <h2 className="text-xl md:text-2xl font-black uppercase italic tracking-tighter leading-none">
+                    {/* Right: Info */}
+                    <div className="md:w-[45%] p-8 md:p-14 flex flex-col gap-10">
+                        <div className="space-y-4">
+                            <div className="flex items-center gap-2 text-[10px] font-black tracking-[0.4em] opacity-50 uppercase">
+                                <span>Category</span> / <span>{product?.category}</span>
+                            </div>
+                            <h2 className="text-5xl font-bold uppercase tracking-tighter leading-[0.9]">
                                 {product?.name}
                             </h2>
+                            <div className="h-1 w-20 bg-[var(--product-primary-color)]"></div>
                         </div>
 
-                        {/* Harga dengan gaya 'Rotate Box' */}
-                        <div className="bg-black text-[var(--product-primary-color)] p-6 shadow-[8px_8px_0px_rgba(0,0,0,0.2)] w-fit transform -rotate-2">
-                            {product?.discount_price && (
-                                <p className="text-md md:text-lg line-through opacity-70 font-black mb-1">
-                                    {formatIDR(selectedVariant?.price ?? product?.price ?? 0)}
-                                </p>
-                            )}
-                            <p className="text-2xl md:text-3xl font-black italic tracking-tighter">
-                                {formatIDR(selectedVariant?.final_price ?? product?.final_price ?? 0)}
-                            </p>
+                        <div className="flex flex-col gap-2">
+                            <span className="text-sm opacity-40 uppercase tracking-widest">Pricing</span>
+                            <div className="flex items-baseline gap-4">
+                                <span className="text-4xl font-light tracking-tighter">
+                                    {formatIDR(selectedVariant?.final_price ?? product?.final_price ?? 0)}
+                                </span>
+                                {product?.discount_price && (
+                                    <span className="text-sm line-through opacity-30">
+                                        {formatIDR(selectedVariant?.price ?? product?.price ?? 0)}
+                                    </span>
+                                )}
+                            </div>
                         </div>
 
-                        <ExpandableHTML
-                            htmlContent={product?.description}
-                            className="font-bold text-base text-[var(--product-secondary-color)] leading-tight border-l-8 border-black pl-6 italic"
-                        />
+                        <div className={`prose ${isDarkMode ? "prose-invert" : "prose-sm "}`}>
+                            <ExpandableHTML htmlContent={product?.description} />
+                        </div>
 
+                        {/* Interactive UI */}
                         <div className="space-y-8">
-                            {/* Varian Section */}
-                            {product?.variants && product?.variants?.length > 0 ? (
-                                <div className="bg-black px-6 py-4 shadow-[8px_8px_0px_rgba(0,0,0,0.3)]">
-                                    <VariantPicker
-                                        variants={product?.variants}
-                                        selectedVariant={selectedVariant}
-                                        setSelectedVariant={setSelectedVariant}
-                                    />
-                                </div>
-                            ) : ""}
-
-                            {/* Total & Qty Area */}
-                            <div className=" gap-4 border-t-8 border-black pt-6">
-                                <div className='flex items-center'>
-                                    {product?.is_qty ? (
-                                        <QtySelector quantity={quantity} setQuantity={setQuantity} />
-                                    ) : ''}
-                                    <div>
-
+                            {product?.variants && product?.variants?.length > 0 && (
+                                <div className="space-y-4">
+                                    <span className="text-[10px] font-black uppercase tracking-widest">Select Variant</span>
+                                    <div className="grid grid-cols-2 gap-2">
+                                        {product.variants.map((v) => (
+                                            <button
+                                                key={v.id}
+                                                onClick={() => setSelectedVariant(v)}
+                                                className={`py-3 px-4 text-[10px] font-bold uppercase border tracking-widest transition-all ${selectedVariant?.id === v.id
+                                                    ? isDarkMode ? "bbg-white text-black border-white" : "bg-zinc-900 text-white border-zinc-900"
+                                                    : isDarkMode ? "border-zinc-800 hover:border-zinc-400" : "border-zinc-200 hover:border-zinc-400"
+                                                    }`}
+                                            >
+                                                {v.name}
+                                            </button>
+                                        ))}
                                     </div>
                                 </div>
-                                <div className="text-right pr-4">
-                                    <p className="font-black text-xs uppercase tracking-tighter opacity-60">Total Bayar</p>
-                                    <p className="text-4xl font-black italic tracking-tighter">
+                            )}
+
+                            <div className={`flex items-center gap-10 pt-6 border-t ${isDarkMode ? "border-zinc-900" : "border-zinc-100"}`}>
+                                {product?.is_qty && (
+                                    <div className="flex items-center gap-6">
+                                        <button onClick={() => setQuantity(Math.max(1, quantity - 1))}><Minus size={16} /></button>
+                                        <span className="font-bold text-lg w-4 text-center">{quantity}</span>
+                                        <button onClick={() => setQuantity(quantity + 1)}><Plus size={16} /></button>
+                                    </div>
+                                )}
+                                <div className="flex-1">
+                                    <span className="text-[10px] font-black opacity-30 uppercase block">Total</span>
+                                    <span className="text-2xl font-bold tracking-tighter italic">
                                         {formatIDR((selectedVariant?.final_price || (product?.final_price ?? 0)) * quantity)}
-                                    </p>
+                                    </span>
                                 </div>
                             </div>
 
-                            {/* Tombol Aksi Neo-Brutalism */}
-                            <div className="flex flex-col sm:flex-row gap-4">
-                                <button
-                                    disabled={disableButton}
-                                    onClick={() => addCart()}
-                                    className="flex-1 py-6 bg-white border-4 border-black font-black text-2xl uppercase italic shadow-[8px_8px_0px_rgba(0,0,0,1)] hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all flex items-center justify-center gap-3 active:bg-zinc-100"
-                                >
-                                    <Zap size={28} fill="black" /> Order Sekarang
-                                </button>
-                            </div>
+                            <button
+                                disabled={disableButton}
+                                onClick={addCart}
+                                className={`w-full py-6 flex items-center justify-center gap-4 text-xs font-black uppercase tracking-[0.3em] transition-all
+                                    ${isDarkMode ? 'bg-white text-black hover:bg-zinc-200' : 'bg-zinc-900 text-white hover:bg-black'}`}
+                            >
+                                ADD TO BAG <ArrowUpRight size={18} />
+                            </button>
                         </div>
                     </div>
                 </div>
             </ModalWrapper>
-            <AlertWrapper activeAlert={activeAlert} position="top-right">
-                <div className="bg-white border-4 border-black p-4 shadow-[8px_8px_0px_rgba(0,0,0,1)] ml-12">
-                    <div className='flex items-center justify-between'>
-                        <div className="bg-black text-white px-2 py-1 text-[10px] font-black uppercase w-fit mb-2">
-                            UPDATE
-                        </div>
-                        <X className='text-black cursor-pointer' onClick={() => setActiveAlert(false)} />
+
+            {/* Alert Minimalist */}
+            <AlertWrapper activeAlert={activeAlert} position="bottom-center">
+                <div className={`flex items-center justify-between gap-6 px-8 py-4 shadow-2xl ${isDarkMode ? 'bg-white text-black' : 'bg-black text-white'}`}>
+                    <div className="flex flex-col">
+                        <span className="text-[10px] font-bold uppercase tracking-widest opacity-60">Bag Updated</span>
+                        <span className="text-sm font-black italic">{productAlert?.name} Secured</span>
                     </div>
-                    <h4 className="font-black text-xl text-black italic uppercase leading-none">KERANJANG DIISI!</h4>
-                    <p className="text-xs font-bold text-black mt-2">{mockItem?.name}, segera checkout.</p>
+                    <div className="h-8 w-[1px] bg-current opacity-20"></div>
+                    <button onClick={() => setActiveAlert(false)} className="hover:rotate-90 transition-transform">
+                        <X size={20} />
+                    </button>
                 </div>
             </AlertWrapper>
         </div>
-    )
+    );
 }
 
-export default Six
+export default Six;

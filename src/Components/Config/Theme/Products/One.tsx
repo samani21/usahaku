@@ -136,7 +136,7 @@ const One = ({ products, isDarkMode, handleCart }: Props) => {
             >
                 <div className='flex flex-col md:flex-row max-h-[90vh] overflow-y-auto'>
                     {/* Gallery Section */}
-                    <div className="md:w-1/2 bg-zinc-100 dark:bg-zinc-800">
+                    <div className={`md:w-1/2 ${isDarkMode ? "bg-zinc-800" : "bg-zinc-100"}`}>
                         <img
                             src={selectedVariant?.image ?? product?.image}
                             className="w-full h-full object-cover max-h-[400px] md:max-h-full"
