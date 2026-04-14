@@ -2,7 +2,7 @@ import ModalWrapper from './ModalWrapper';
 import { useEffect, useMemo, useState } from 'react';
 import QtySelector from './QtySelector';
 import VariantPicker from './VariantPicker';
-import { Zap } from 'lucide-react';
+import { Zap, ShoppingCart, X, Star, ArrowRight } from 'lucide-react';
 import AlertWrapper from './AlertWrapper';
 import { ProductsType, Variants } from '@/types/Admin/ProductsType';
 import { formatIDR } from '@/types/FormtRupiah';
@@ -20,178 +20,188 @@ const Fiveteen = ({ products, isDarkMode, handleCart }: Props) => {
     const [selectedVariant, setSelectedVariant] = useState<Variants | null>(null);
     const [quantity, setQuantity] = useState<number>(1);
     const [activeAlert, setActiveAlert] = useState<boolean>(false);
+
     const disableButton = useMemo(() => {
-        if (product) {
-            if (product?.variants?.length > 0 && !selectedVariant) {
-                return true;
-            } else {
-                if (product?.variants?.length === 0) {
-                    return false;
-                } else {
-                    return false;
-                }
-            }
-        }
-    }, [product, selectedVariant])
-    const mockItem = useMemo(() => {
-        return {
-            name: product?.name,
-            price: product?.final_price,
-            image: product?.image,
-            category: product?.category,
-            quantity: quantity
-        }
-    }, [activeAlert])
+        if (!product) return true;
+        return product?.variants?.length > 0 && !selectedVariant;
+    }, [product, selectedVariant]);
+
     useEffect(() => {
         if (activeAlert) {
             const timer = setTimeout(() => setActiveAlert(false), 3000);
             return () => clearTimeout(timer);
         }
     }, [activeAlert]);
-    useEffect(() => {
-        if (product) {
-            // Jika modal aktif (product tidak null), kunci scroll
-            document.body.style.overflow = 'hidden';
-        } else {
-            // Jika modal tutup, kembalikan scroll
-            document.body.style.overflow = 'unset';
-        }
 
-        // Cleanup function untuk memastikan scroll kembali normal jika komponen unmount
-        return () => {
-            document.body.style.overflow = 'unset';
-        };
+    useEffect(() => {
+        document.body.style.overflow = product ? 'hidden' : 'unset';
+        return () => { document.body.style.overflow = 'unset'; };
     }, [product]);
 
     const addCart = () => {
         setActiveAlert(true);
+        if (handleCart) handleCart(product, selectedVariant, quantity);
         setProduct(null);
         setSelectedVariant(null);
-        setQuantity(1)
-        if (handleCart) {
-            handleCart(product, selectedVariant, quantity)
-        }
-    }
+        setQuantity(1);
+    };
 
     return (
-        <div className='grid grid-cols-2 md:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 gap-4 h-full'>
+        <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 p-6 ${isDarkMode ? 'bg-zinc-950' : 'bg-slate-50'}`}>
             {products?.map((p, i) => {
                 const { finalPrice, label } = getPromoDetails(p);
                 return (
-                    <div onClick={() => setProduct(p)} key={i} className="relative group cursor-pointer hover:bg-[var(--product-primary-color)]/5 rounded-md flex flex-col items-center justify-center p-4">
+                    <div
+                        key={i}
+                        onClick={() => setProduct(p)}
+                        className="group relative flex flex-col items-center cursor-pointer"
+                    >
+                        {/* Discount Badge - Orbital Style */}
                         {label && (
-                            <div className="absolute top-4 right-4 z-1 bg-[var(--product-primary-color)] text-[var(--product-secondary-color)] text-[9px] font-black px-3 py-1 rounded-full shadow-lg">
+                            <div className={`absolute top-2 right-2 z-10 bg-[var(--product-primary-color)] text-white text-[10px] font-black w-12 h-12 flex items-center justify-center rounded-full shadow-xl rotate-12 group-hover:rotate-0 transition-transform duration-500 border-2 ${isDarkMode ? "border-zinc-900" : "border-white"}`}>
                                 {label}
                             </div>
                         )}
 
-                        <div className={`w-full mt-4 aspect-square rounded-full border-4 border-dashed ${isDarkMode ? "border-slate-700" : "border-slate-300"} p-3 group-hover:rotate-90 transition-transform duration-1000 ease-in-out`}>
-                            <div className={`w-30 h-30 sm:w-60 sm:h-60 rounded-full overflow-hidden border-8 ${isDarkMode ? "border-slate-800" : 'border-white'} shadow-2xl`}>
-                                <img src={p?.image} className="w-30 h-30 sm:w-60 sm:h-60 object-cover group-hover:scale-125 transition-transform duration-1000" alt="" />
+                        {/* Main Image Orbit */}
+                        <div className={`relative w-full aspect-square rounded-full border-2 border-dashed ${isDarkMode ? "border-zinc-800 group-hover:border-zinc-600" : "border-slate-200 group-hover:border-[var(--product-primary-color)]"} p-4 transition-all duration-700`}>
+                            <div className={`w-full h-full rounded-full overflow-hidden border-8 ${isDarkMode ? "border-zinc-900" : 'border-white'} shadow-[0_20px_40px_rgba(0,0,0,0.1)] group-hover:shadow-[0_20px_50px_rgba(var(--product-primary-rgb),0.3)] transition-all`}>
+                                <img
+                                    src={p?.image}
+                                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                                    alt={p.name}
+                                />
+                            </div>
+
+                            {/* Floating Icon Decor */}
+                            <div className={`absolute bottom-4 right-4 ${isDarkMode ? "bg-zinc-800" : "bg-white"} p-3 rounded-full shadow-lg transform group-hover:-translate-y-2 transition-transform`}>
+                                <ShoppingCart size={18} className="text-[var(--product-primary-color)]" />
                             </div>
                         </div>
-                        <div className="text-center">
-                            {
-                                p?.category &&
-                                <span className="text-[12px] sm:text-[14px] font-black opacity-80 tracking-tighter">{p?.category}</span>
-                            }
-                            <h3 className="text-sm line-clamp-2 text-start md:text-md font-black uppercase italic">{p?.name}</h3>
-                            <div className="flex justify-between items-end mt-2">
-                                <div className="mt-3 flex flex-col items-start">
-                                    {/* Harga Coret (Jika ada promo) */}
-                                    <div className='h-4'>
-                                        {label && (
-                                            <p className="text-xs line-through opacity-40 font-bold mb-0.5">
-                                                {formatIDR(p.price)}
-                                            </p>
-                                        )}
-                                    </div>
-                                    {/* Harga Final */}
-                                    <p className="text-lh md:text-2xl font-black">
-                                        {formatIDR(finalPrice)}
-                                    </p>
-                                </div>
+
+                        {/* Info Section */}
+                        <div className="mt-6 text-center space-y-2">
+                            {p?.category && (
+                                <span className="text-[10px] font-black tracking-[0.2em] opacity-40 uppercase">{p?.category}</span>
+                            )}
+                            <h3 className={`text-lg font-black uppercase italic leading-tight ${isDarkMode ? 'text-white' : 'text-zinc-900'}`}>{p?.name}</h3>
+
+                            <div className="flex flex-col items-center">
+                                {label && (
+                                    <span className="text-[11px] line-through opacity-30 font-bold mb-1">{formatIDR(p.price)}</span>
+                                )}
+                                <p className="text-xl font-black text-[var(--product-primary-color)] tracking-tighter">
+                                    {formatIDR(finalPrice)}
+                                </p>
                             </div>
                         </div>
                     </div>
-                )
+                );
             })}
 
             <ModalWrapper
-                activeModal={product ? true : false}
-                closeModal={() => {
-                    setProduct(null)
-                    setSelectedVariant(null)
-                    setQuantity(1)
-                }}
-                isDarkMode={isDarkMode}>
-                <div className="absolute inset-0 pointer-events-none">
-                    <img src={product?.image} className="w-full h-full object-cover blur-3xl opacity-30" alt="" />
-                </div>
-                <div className="relative w-full p-0 md:p-12 flex flex-col items-center">
-                    <div className="max-w-4xl w-full flex flex-col md:flex-row items-center gap-12">
-                        <div className="md:w-1/2 aspect-[4/5] rounded-[2.4rem] md:rounded-[4rem] overflow-hidden shadow-2xl border-4 border-white/50 relative">
-                            <img src={selectedVariant?.image ?? product?.image} className="w-full h-full object-cover" alt="" />
-                            <div className="absolute inset-x-0 bottom-0 p-8 bg-black/40 text-white rounded-bottom-[2rem]">
-                                {
-                                    product?.category &&
-                                    <span className="text-[14px] font-bold  uppercase rounded-full">{product?.category}</span>
-                                }
+                activeModal={!!product}
+                closeModal={() => { setProduct(null); setSelectedVariant(null); setQuantity(1); }}
+                isDarkMode={isDarkMode}
+            >
+                <div className="relative w-full max-w-5xl mx-auto overflow-hidden">
+                    {/* Background Glow Effect */}
+                    <div className="absolute -top-24 -left-24 w-96 h-96 bg-[var(--product-primary-color)] opacity-10 blur-[100px] rounded-full" />
+
+                    <div className="relative p-6 md:p-16 flex flex-col md:flex-row gap-12 items-center">
+                        {/* Image Showcase */}
+                        <div className="w-full md:w-1/2 group">
+                            <div className={`relative aspect-[4/5] rounded-[3rem] overflow-hidden border-4 ${isDarkMode ? "border-zinc-800" : " border-white"} shadow-2xl`}>
+                                <img
+                                    src={selectedVariant?.image ?? product?.image}
+                                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000"
+                                    alt=""
+                                />
+                                {product?.category && (
+                                    <div className={`absolute top-6 left-6 ${isDarkMode ? "bg-zinc-900/90" : "bg-white/90"} backdrop-blur-md px-5 py-2 rounded-2xl`}>
+                                        <span className="text-[10px] font-black uppercase tracking-widest">{product?.category}</span>
+                                    </div>
+                                )}
                             </div>
                         </div>
-                        <div className="px-6 pb-4 md:p-0 md:w-1/2 space-y-8">
-                            <div className="space-y-2">
-                                <h2 className="text-xl md:text-2xl font-black italic tracking-tighter leading-none">{product?.name}</h2>
-                                <div className={`h-2 w-20 bg-[var(--product-primary-color)] rounded-full`} />
+
+                        {/* Details Panel */}
+                        <div className={`w-full md:w-1/2 space-y-8 ${isDarkMode ? 'text-white' : 'text-zinc-900'}`}>
+                            <div className="space-y-4">
+                               
+                                <h2 className="text-4xl md:text-5xl font-black italic tracking-tighter leading-[0.9] uppercase">{product?.name}</h2>
+                                <div className="h-1.5 w-24 bg-[var(--product-primary-color)] rounded-full" />
                             </div>
+
                             <ExpandableHTML
                                 htmlContent={product?.description}
-                                className={`text-sm opacity-70 leading-relaxed font-light`}
+                                className="text-sm opacity-60 leading-relaxed font-medium"
                             />
-                            <div className="flex flex-col gap-4">
-                                {
-                                    product?.discount_price ?
-                                        <div className='flex '>
-                                            <div className="text-2xl font-black line-through">{formatIDR(selectedVariant?.price ?? product?.price ?? 0)}</div>
-                                            <div className='mt-[-12px] text-[12px]'>
-                                                <span className='text-rose-500 px-2 font-bold bg-red-50 p-1 rounded-full'>
-                                                    - {Promo(product, selectedVariant)}
-                                                </span>
-                                            </div>
-                                        </div> :
-                                        <div className="text-2xl font-black">{formatIDR(selectedVariant?.price ?? product?.price ?? 0)}</div>
-                                }
-                                <div>
-                                    {product?.variants && product?.variants?.length > 0 ?
-                                        <VariantPicker variants={product?.variants} selectedVariant={selectedVariant} setSelectedVariant={setSelectedVariant} isDarkMode={isDarkMode} /> : ""
-                                    }
-                                    <div className='flex items-end justify-between gap-2'>
-                                        {
-                                            product && product?.is_qty ?
-                                                <QtySelector quantity={quantity} setQuantity={setQuantity} isDarkMode={isDarkMode} /> : ""
-                                        }
-                                        <div className='mt-2'>
-                                            <p className={`font-semibold ${isDarkMode ? "text-gray-100" : "text-gray-700"}`}>Total</p>
-                                            <p className='text-1xl md:text-2xl font-bold'>{formatIDR((selectedVariant?.final_price || (product?.final_price ?? 0)) * quantity)}</p>
+
+                            <div className="space-y-6 pt-4">
+                                <div className="flex items-baseline gap-4">
+                                    <span className="text-4xl font-black tracking-tighter text-[var(--product-primary-color)]">
+                                        {formatIDR(selectedVariant?.final_price ?? product?.final_price ?? 0)}
+                                    </span>
+                                    {product?.discount_price && (
+                                        <div className="flex flex-col">
+                                            <span className="text-sm line-through opacity-30 font-bold">{formatIDR(selectedVariant?.price ?? product?.price ?? 0)}</span>
+                                            <span className="text-[10px] font-black text-rose-500 uppercase">Save {Promo(product, selectedVariant)}</span>
                                         </div>
+                                    )}
+                                </div>
+
+                                {product?.variants && product?.variants?.length > 0 && (
+                                    <div className="space-y-3">
+                                        <p className="text-[10px] font-black opacity-30 uppercase tracking-[0.2em]">Select Configuration</p>
+                                        <VariantPicker variants={product?.variants} selectedVariant={selectedVariant} setSelectedVariant={setSelectedVariant} isDarkMode={isDarkMode} />
+                                    </div>
+                                )}
+
+                                <div className={`flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-6 p-6 ${isDarkMode ? "bg-white/5 border-white/10" : "bg-zinc-100 border-zinc-200"} rounded-[2.5rem] border`}>
+                                    {product?.is_qty && (
+                                        <div className="space-y-2">
+                                            <p className="text-[9px] font-black opacity-30 uppercase">Quantity</p>
+                                            <QtySelector quantity={quantity} setQuantity={setQuantity} isDarkMode={isDarkMode} />
+                                        </div>
+                                    )}
+                                    <div className="text-right space-y-1">
+                                        <p className="text-[9px] font-black opacity-30 uppercase">Subtotal</p>
+                                        <p className="text-2xl font-black italic tracking-tighter">
+                                            {formatIDR((selectedVariant?.final_price || (product?.final_price ?? 0)) * quantity)}
+                                        </p>
                                     </div>
                                 </div>
-                                <button disabled={disableButton} onClick={() => addCart()} className={`w-full disabled:bg-gray-600  py-4 bg-[var(--product-primary-color)] text-white rounded-[3rem] font-black uppercase tracking-[0.2em] shadow-2xl flex items-center justify-center gap-4`}>
-                                    <Zap size={24} /> Checkout Now
+
+                                <button
+                                    disabled={disableButton}
+                                    onClick={addCart}
+                                    className={`w-full group relative overflow-hidden disabled:bg-zinc-600 py-6 ${isDarkMode ? "bg-white text-zinc-900 hover:bg-[var(--product-primary-color)]" : " bg-zinc-900 text-white hover:bg-[var(--product-primary-color)]"} rounded-[2rem] font-black uppercase tracking-[0.3em] text-xs transition-all  hover:text-white`}
+                                >
+                                    <div className="relative z-10 flex items-center justify-center gap-3">
+                                        <Zap size={18} fill="currentColor" />
+                                        Secure This Unit
+                                        <ArrowRight size={18} className="group-hover:translate-x-2 transition-transform" />
+                                    </div>
                                 </button>
                             </div>
                         </div>
                     </div>
                 </div>
             </ModalWrapper>
+
             <AlertWrapper activeAlert={activeAlert} position="top-center">
-                <div className={`${isDarkMode ? "bg-slate-900 border-slate-800 text-white" : "bg-white border-slate-200 text-slate-900"} px-4 py-2 rounded-full shadow-lg flex items-center gap-3 border`}>
-                    <div className={`w-2 h-2 rounded-full bg-[var(--product-primary-color)] animate-ping`} />
-                    <span className="text-[10px] font-black uppercase tracking-widest">{mockItem?.name} berhasil diorder</span>
+                <div className={`${isDarkMode ? "bg-zinc-900 border-zinc-800 text-white" : "bg-white border-slate-200 text-zinc-900"} px-6 py-4 rounded-[2rem] shadow-2xl flex items-center gap-4 border-2`}>
+                    <div className="relative">
+                        <div className="w-3 h-3 rounded-full bg-[var(--product-primary-color)] animate-ping absolute inset-0" />
+                        <div className="w-3 h-3 rounded-full bg-[var(--product-primary-color)] relative" />
+                    </div>
+                    <span className="text-[11px] font-black uppercase tracking-widest">{product?.name || 'Item'} Added to Registry</span>
+                    <button onClick={() => setActiveAlert(false)} className="ml-2 opacity-40 hover:opacity-100 transition-opacity"><X size={14} /></button>
                 </div>
             </AlertWrapper>
         </div>
-    )
+    );
 }
 
-export default Fiveteen
+export default Fiveteen;
