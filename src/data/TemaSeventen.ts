@@ -24,7 +24,7 @@ export const TemaSevenTen = {
         color: "#1E293B",
         cta: "Mulai Belanja",
         headline: "Belanja Mingguan Lebih Hemat",
-        image: "http://192.168.1.7:3000/image/tema_satu/hero.jpeg",
+        image: "https://usahaku-kappa.vercel.app/image/tema_satu/hero.jpeg",
         layout_hero: layout,
         mode: "auto",
         sub_headline: "Stok selalu baru, harga bersahabat, dan siap antar sampai ke depan pintu rumah Anda.",
