@@ -3,6 +3,7 @@ import { ListIcon, MapIcon } from 'lucide-react';
 import React, { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react'
 import { ProductType } from './StoresType';
 import { StoresType } from '@/types/StoresType';
+import Link from 'next/link';
 
 
 type Props = {
@@ -34,7 +35,7 @@ const ProductCard = ({ product, storeName, isDark }: any) => {
 };
 
 const StoreCard = ({ store, isDark }: { store: StoresType, isDark: boolean }) => (
-    <div className={`p-4 rounded-[1.5rem] border flex gap-4 transition-all ${isDark ? 'bg-zinc-900 border-zinc-800' : 'bg-white border-gray-100 shadow-sm'}`}>
+    <Link href={`/${store?.business?.slug}`} className={`p-4 rounded-[1.5rem] border flex gap-4 transition-all ${isDark ? 'bg-zinc-900 border-zinc-800' : 'bg-white border-gray-100 shadow-sm'}`}>
         <img src={store.business?.logo} className="w-24 h-24 rounded-2xl object-cover" />
         <div className="flex-1 min-w-0 flex flex-col justify-center">
             <div className="flex justify-between items-start">
@@ -51,7 +52,7 @@ const StoreCard = ({ store, isDark }: { store: StoresType, isDark: boolean }) =>
                 <span className="text-[10px] font-bold text-emerald-500 uppercase">Buka</span>
             </div>
         </div>
-    </div>
+    </Link>
 );
 
 function HomePage({ stores, isDark, filteredProducts }: Props) {
