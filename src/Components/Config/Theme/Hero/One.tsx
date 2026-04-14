@@ -46,7 +46,7 @@ const One = ({ isDarkMode, headline, subHeadline, ctaText, imageHero, title }: P
                 {
                     imageHero &&
                     <div className="flex-1 h-80 md:h-[410px] w-full">
-                        <img src={imageHero} alt="Hero" className="w-full md:w-[90%] h-full object-cover  md:rounded-lg " />
+                        <img src={imageHero} alt="Hero" className="w-full  h-full object-cover  md:rounded-lg " />
                     </div>
                 }
             </div>
