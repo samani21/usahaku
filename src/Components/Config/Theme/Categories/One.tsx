@@ -98,15 +98,15 @@ const One = ({ categories, isDarkMode, onClick }: Props) => {
                             >
                                 <div className="absolute inset-0 opacity-20 group-hover:scale-110 transition-transform duration-700">
                                     <Icon
-                                        icon={cat?.icon || 'solar:box-minimalistic-bold'}
+                                        icon={cat?.icon || 'cbi:bulb-general-group'}
                                         className="w-full h-full p-4 rotate-12"
                                         color={cat?.color}
                                     />
                                 </div>
                                 <div className="absolute inset-0 flex items-center justify-between px-8">
                                     <div>
-                                        <h3 className="text-2xl font-black uppercase italic leading-none">Semua</h3>
-                                        <p className="text-sm opacity-80 font-bold">{totalItems} Produk</p>
+                                        <h3 className="text-2xl font-black uppercase italic leading-none">{cat?.name}</h3>
+                                        <p className="text-sm opacity-80 font-bold">{cat?.count} Produk</p>
                                     </div>
                                     <div className="bg-white/20 p-3 rounded-2xl backdrop-blur-md">
                                         <ChevronRight className="w-6 h-6" />
