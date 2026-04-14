@@ -2,7 +2,7 @@ import ModalWrapper from './ModalWrapper';
 import { useEffect, useMemo, useState } from 'react';
 import QtySelector from './QtySelector';
 import VariantPicker from './VariantPicker';
-import { Minus, Package, Plus } from 'lucide-react';
+import { Minus, Package, Plus, Sparkles, X, ShoppingBag } from 'lucide-react';
 import AlertWrapper from './AlertWrapper';
 import { ProductsType, Variants } from '@/types/Admin/ProductsType';
 import { formatIDR } from '@/types/FormtRupiah';
@@ -20,252 +20,201 @@ const Fourteen = ({ products, isDarkMode, handleCart }: Props) => {
     const [selectedVariant, setSelectedVariant] = useState<Variants | null>(null);
     const [quantity, setQuantity] = useState<number>(1);
     const [activeAlert, setActiveAlert] = useState<boolean>(false);
+
     const disableButton = useMemo(() => {
-        if (product) {
-            if (product?.variants?.length > 0 && !selectedVariant) {
-                return true;
-            } else {
-                if (product?.variants?.length === 0) {
-                    return false;
-                } else {
-                    return false;
-                }
-            }
-        }
-    }, [product, selectedVariant])
-    const mockItem = useMemo(() => {
-        return {
-            name: product?.name,
-            price: product?.final_price,
-            image: product?.image,
-            category: product?.category,
-            quantity: quantity
-        }
-    }, [activeAlert])
+        if (!product) return true;
+        return product?.variants?.length > 0 && !selectedVariant;
+    }, [product, selectedVariant]);
+
     useEffect(() => {
         if (activeAlert) {
             const timer = setTimeout(() => setActiveAlert(false), 3000);
             return () => clearTimeout(timer);
         }
     }, [activeAlert]);
-    useEffect(() => {
-        if (product) {
-            // Jika modal aktif (product tidak null), kunci scroll
-            document.body.style.overflow = 'hidden';
-        } else {
-            // Jika modal tutup, kembalikan scroll
-            document.body.style.overflow = 'unset';
-        }
 
-        // Cleanup function untuk memastikan scroll kembali normal jika komponen unmount
-        return () => {
-            document.body.style.overflow = 'unset';
-        };
+    useEffect(() => {
+        document.body.style.overflow = product ? 'hidden' : 'unset';
+        return () => { document.body.style.overflow = 'unset'; };
     }, [product]);
+
+    const addCart = () => {
+        setActiveAlert(true);
+        if (handleCart) handleCart(product, selectedVariant, quantity);
+        setProduct(null);
+        setSelectedVariant(null);
+        setQuantity(1);
+    };
 
     const currentPrice = selectedVariant?.price ?? product?.price ?? 0;
     const currentFinalPrice = selectedVariant?.final_price ?? product?.final_price ?? 0;
     const currentDiscount = currentPrice - currentFinalPrice;
 
-    const addCart = () => {
-        setActiveAlert(true);
-        setProduct(null);
-        setSelectedVariant(null);
-        setQuantity(1)
-        if (handleCart) {
-            handleCart(product, selectedVariant, quantity)
-        }
-    }
     return (
-        <div className={`grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4 h-full ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>
+        <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 p-4 ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>
             {products?.map((p, i) => {
                 const { finalPrice, label } = getPromoDetails(p);
-                const bgColor = isDarkMode ? 'bg-slate-800' : 'bg-white';
                 return (
                     <div
                         key={i}
                         onClick={() => setProduct(p)}
-                        className={`relative flex flex-col rounded-[2rem] overflow-hidden cursor-pointer shadow-xl group hover:-translate-y-2 transition-all duration-300 ${bgColor}`}
+                        className={`group relative flex flex-col rounded-[2.5rem] overflow-hidden cursor-pointer transition-all duration-500 hover:shadow-[0_20px_50px_rgba(0,0,0,0.2)] ${isDarkMode ? 'bg-zinc-900 border border-zinc-800' : 'bg-white border border-slate-100'}`}
                     >
-                        {/* Bagian Gambar */}
-                        <div className="relative h-1/2 overflow-hidden">
-                            <img src={p.image} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt={p.name} />
+                        {/* Image Section with Urban Overlay */}
+                        <div className="relative aspect-square overflow-hidden">
+                            <img src={p.image} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000" alt={p.name} />
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-40 transition-opacity" />
+
                             {label && (
-                                <div className="absolute top-4 left-4 bg-red-600 text-white text-[10px] font-black px-3 py-1 rounded-md skew-x-[-10deg]">
+                                <div className="absolute top-6 left-6 bg-yellow-400 text-black text-[10px] font-black px-4 py-1.5 rounded-full uppercase tracking-tighter shadow-lg -rotate-12 group-hover:rotate-0 transition-transform">
                                     {label}
                                 </div>
                             )}
+
+                            <div className="absolute bottom-6 left-6 right-6 flex justify-between items-end translate-y-2 group-hover:translate-y-0 transition-transform">
+                                <div className="bg-white/10 backdrop-blur-md px-3 py-1 rounded-lg border border-white/20">
+                                    <span className="text-[10px] font-black text-white/70 uppercase">{p.category}</span>
+                                </div>
+                            </div>
                         </div>
 
-                        {/* Konten Tiket */}
-                        <div className="flex-1 p-6 relative flex flex-col justify-between">
-                            {/* Efek Lubang Tiket (Samping) */}
-                            <div className={`absolute -top-4 left-0 w-8 h-8 rounded-full bg-[var(--mode-primary)] -ml-4 shadow-inner`} />
-                            <div className={`absolute -top-4 right-0 w-8 h-8 rounded-full bg-[var(--mode-primary)] -mr-4 shadow-inner`} />
+                        {/* Ticket Perforation Area */}
+                        <div className="relative h-8 flex items-center px-4">
+                            <div className={`absolute -left-4 w-8 h-8 rounded-full ${isDarkMode ? 'bg-black' : 'bg-slate-50'} z-10 border-r ${isDarkMode ? 'border-zinc-800' : 'border-slate-100'}`} />
+                            <div className={`absolute -right-4 w-8 h-8 rounded-full ${isDarkMode ? 'bg-black' : 'bg-slate-50'} z-10 border-l ${isDarkMode ? 'border-zinc-800' : 'border-slate-100'}`} />
+                            <div className="w-full border-t-2 border-dashed border-zinc-700/30 opacity-50" />
+                        </div>
 
-                            {/* Garis Putus-putus Pemisah */}
-                            <div className="border-t-2 border-dashed border-slate-400/30 absolute top-0 left-6 right-6" />
+                        {/* Content Section */}
+                        <div className="p-8 pt-2 space-y-4">
+                            <h3 className="font-black text-xl leading-none uppercase italic tracking-tighter group-hover:text-[var(--product-primary-color)] transition-colors line-clamp-2">
+                                {p.name}
+                            </h3>
 
-                            <div className="mt-2">
-                                {p.category && (
-                                    <span className="text-[12px] font-black opacity-40 uppercase tracking-widest">{p.category}</span>
-                                )}
-                                <h3 className="font-black text-sm sm:text-lg mt-1 leading-tight uppercase italic line-clamp-2 group-hover:text-[var(--product-primary-color)] transition-colors">
-                                    {p.name}
-                                </h3>
-                            </div>
-
-                            <div className="flex flex-col items-start gap-1">
-                                {label && (
-                                    <span className="text-xs line-through opacity-40 font-bold">
-                                        {formatIDR(p.price)}
-                                    </span>
-                                )}
-                                <div className="w-full flex justify-between items-center">
-                                    <p className="text-md sm:text-2xl font-black tracking-tighter">{formatIDR(finalPrice)}</p>
-                                    <div className="w-6 sm:w-8 h-6 sm:h-8 rounded-full bg-slate-900 dark:bg-white flex items-center justify-center text-white dark:text-black">
-                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M12 4v16m8-8H4" />
-                                        </svg>
-                                    </div>
+                            <div className="flex items-center justify-between gap-4">
+                                <div className="flex flex-col">
+                                    {label && (
+                                        <span className="text-[10px] line-through opacity-30 font-black tracking-widest">{formatIDR(p.price)}</span>
+                                    )}
+                                    <p className="text-2xl font-black italic tracking-tighter leading-none">{formatIDR(finalPrice)}</p>
+                                </div>
+                                <div className={`h-12 w-12 rounded-2xl ${isDarkMode ? "bg-white text-black" : "bg-black text-white"} flex items-center justify-center transform rotate-3 group-hover:rotate-12 transition-transform shadow-xl`}>
+                                    <Plus size={20} strokeWidth={3} />
                                 </div>
                             </div>
                         </div>
                     </div>
-                )
+                );
             })}
 
             <ModalWrapper
-                activeModal={product ? true : false}
-                closeModal={() => {
-                    setProduct(null);
-                    setSelectedVariant(null);
-                    setQuantity(1);
-                }}
+                activeModal={!!product}
+                closeModal={() => { setProduct(null); setSelectedVariant(null); setQuantity(1); }}
                 isDarkMode={isDarkMode}
             >
-                {/* Bagian Gambar: Di Mobile tingginya terbatas agar tidak menutupi seluruh layar */}
-                <div className="w-full h-[30vh] md:h-[40vh] relative bg-black/20 shrink-0">
-                    <img
-                        src={selectedVariant?.image ?? product?.image}
-                        className='h-full w-full object-cover transition-all duration-500'
-                        alt={product?.name}
-                    />
-                    {product?.discount_price && (
-                        <div className="absolute top-4 left-4 bg-rose-600 text-white px-3 py-1.5 rounded-xl font-black text-lg shadow-lg">
-                            - {Promo(product, selectedVariant)}
-                        </div>
-                    )}
-                </div>
+                <div className={`w-full flex flex-col md:flex-row max-h-[90vh] ${isDarkMode ? 'bg-zinc-950 text-white' : 'bg-white text-zinc-900'}`}>
 
-                {/* Bagian Detail: Scrollable di mobile */}
-                <div className="w-full p-6 md:p-10 flex flex-col gap-4 relative overflow-y-auto no-scrollbar">
-                    {/* Ornamen Lingkaran Tiket (Hanya Desktop) */}
-                    <div className="hidden md:block absolute top-1/2 -left-4 w-8 h-8 rounded-full bg-slate-950 -translate-y-1/2 shadow-inner" />
-                    <div className="hidden md:block absolute top-1/2 -right-4 w-8 h-8 rounded-full bg-slate-950 -translate-y-1/2 shadow-inner" />
-
-                    <div className="space-y-1">
-                        {product?.category && (
-                            <span className="text-[10px] font-black uppercase tracking-widest opacity-50">
-                                {product?.category}
-                            </span>
-                        )}
-                        <h2 className="text-lg md:text-2xl font-black leading-tight italic uppercase break-words">{product?.name}</h2>
-                    </div>
-
-                    <div className="flex flex-col gap-1">
-                        <div className="flex items-center gap-3 flex-wrap">
-                            <span className="text-2xl md:text-4xl font-black text-[var(--product-primary-color)] italic">
-                                {formatIDR(currentFinalPrice)}
-                            </span>
-                            {currentDiscount > 0 && (
-                                <span className="text-sm md:text-lg font-bold opacity-30 line-through decoration-rose-500">
-                                    {formatIDR(currentPrice)}
-                                </span>
+                    {/* Visual Lab Section */}
+                    <div className={`md:w-1/2 relative ${isDarkMode ? "bg-zinc-900" : "bg-zinc-100"} group`}>
+                        <img
+                            src={selectedVariant?.image ?? product?.image}
+                            className='h-full w-full object-cover grayscale-[0.2] group-hover:grayscale-0 transition-all duration-700'
+                            alt={product?.name}
+                        />
+                        {/* Floating Tech Badges */}
+                        <div className="absolute top-8 left-8 flex flex-col gap-2">
+                            {product?.discount_price && (
+                                <div className="bg-[var(--product-primary-color)] text-white px-4 py-2 rounded-sm font-black text-xl italic skew-x-[-12deg]">
+                                    -{Promo(product, selectedVariant)}
+                                </div>
                             )}
                         </div>
-
-                        {currentDiscount > 0 && (
-                            <div className="inline-flex self-start px-2 py-1 bg-rose-500/10 border border-rose-500/20 text-rose-500 rounded-lg font-bold text-[10px] uppercase italic">
-                                Hemat {formatIDR(currentDiscount)}
-                            </div>
-                        )}
                     </div>
 
-                    <ExpandableHTML
-                        htmlContent={product?.description}
-                    />
-
-                    <div className="space-y-5 pt-2">
-                        {/* Varian Selector - Horizontal Scroll di Mobile jika banyak */}
-                        {product?.variants && product?.variants?.length > 0 && (
-                            <div className="space-y-2">
-                                <p className="text-[10px] font-bold uppercase opacity-40">Pilih Varian</p>
-                                <div className="flex flex-wrap gap-2">
-                                    {product.variants.map((v) => (
-                                        <button
-                                            key={v.id}
-                                            onClick={() => setSelectedVariant(v)}
-                                            className={`px-4 py-2 rounded-xl border-2 transition-all font-bold text-xs ${selectedVariant?.id === v.id ? 'border-[var(--product-primary-color)] bg-[var(--product-primary-color)] text-white shadow-md' : 'border-white/10 hover:border-white/30'}`}
-                                        >
-                                            {v.name}
-                                        </button>
-                                    ))}
-                                </div>
+                    {/* Urban Control Panel */}
+                    <div className="md:w-1/2 p-8 md:p-14 flex flex-col gap-8">
+                        <div className="space-y-2">
+                            <div className="flex items-center gap-2 text-[var(--product-primary-color)]">
+                                <Sparkles size={14} />
+                                <span className="text-[10px] font-black uppercase tracking-[0.3em]">{product?.category || 'Limited Edition'}</span>
                             </div>
-                        )}
+                            <h2 className="text-4xl md:text-6xl font-black italic leading-[0.85] uppercase tracking-tighter break-words">{product?.name}</h2>
+                        </div>
 
-                        {/* Qty & Subtotal Box */}
-                        <div className='flex flex-row items-center justify-between gap-4 p-4 bg-white/5 rounded-3xl border border-white/5'>
-                            {product?.is_qty ? (
-                                <div className="flex items-center gap-2 bg-black/20 p-1 rounded-xl">
-                                    <button
-                                        onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                                        className="p-1.5 hover:bg-white/10 rounded-lg"
-                                    >
-                                        <Minus size={14} />
-                                    </button>
-                                    <span className="w-6 text-center font-black text-lg">{quantity}</span>
-                                    <button
-                                        onClick={() => setQuantity(quantity + 1)}
-                                        className="p-1.5 hover:bg-white/10 rounded-lg"
-                                    >
-                                        <Plus size={14} />
-                                    </button>
+                        <div className={`border-l-4 ${isDarkMode ? "border-zinc-800" : "border-zinc-200"} pl-6 italic opacity-60`}>
+                            <ExpandableHTML htmlContent={product?.description} className="text-sm leading-relaxed" />
+                        </div>
+
+                        <div className="space-y-6">
+                            {/* Variants System */}
+                            {product?.variants && product?.variants.length > 0 && (
+                                <div className="space-y-4">
+                                    <p className="text-[10px] font-black uppercase tracking-widest opacity-40">System Options:</p>
+                                    <div className="flex flex-wrap gap-3">
+                                        {product.variants.map((v) => (
+                                            <button
+                                                key={v.id}
+                                                onClick={() => setSelectedVariant(v)}
+                                                className={`px-6 py-3 border-2 font-black text-[10px] uppercase italic transition-all ${selectedVariant?.id === v.id ? `${isDarkMode ? "bg-white text-black" : "bg-black text-white"} border-transparent scale-105` : `${isDarkMode ? "border-zinc-800" : "border-zinc-200"} hover:border-zinc-500`}`}
+                                            >
+                                                {v.name}
+                                            </button>
+                                        ))}
+                                    </div>
                                 </div>
-                            ) : <div></div>}
+                            )}
 
-                            <div className='text-right'>
-                                <p className="text-[9px] font-bold uppercase opacity-40">Total</p>
-                                <p className='text-xl md:text-2xl font-black italic'>
-                                    {formatIDR(currentFinalPrice * quantity)}
-                                </p>
+                            {/* Logic Box */}
+                            <div className={`space-y-2 p-4 ${isDarkMode ? "bg-white/5 border-white/5" : "bg-zinc-100 border-zinc-200"} rounded-[2rem] border `}>
+                                <div className="flex-1 space-y-1">
+                                    <p className="text-[10px] font-black uppercase opacity-30">Price Matrix</p>
+                                    <div className="flex items-baseline gap-2">
+                                        <span className="text-4xl font-black tracking-tighter italic">{formatIDR(currentFinalPrice)}</span>
+                                        {currentDiscount > 0 && <span className="text-sm opacity-20 line-through font-bold">{formatIDR(currentPrice)}</span>}
+                                    </div>
+                                </div>
+                                <div className='flex items-center justify-end'>
+                                    {product?.is_qty && <QtySelector quantity={quantity} setQuantity={setQuantity} isDarkMode={isDarkMode} />}
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                    {/* Tombol Aksi */}
-                    <div className="pt-2 sticky bottom-0 bg-inherit md:relative">
-                        <button disabled={disableButton} onClick={() => addCart()}
-                            className="w-full py-4 md:py-5 bg-[var(--product-primary-color)] text-white rounded-[1.5rem] font-black uppercase italic shadow-xl hover:scale-[1.02] active:scale-95 transition-all flex justify-center items-center gap-3 group"
-                        >
-                            Klaim Sekarang
-                            <Plus size={18} className="group-hover:rotate-90 transition-transform" />
-                        </button>
+                        {/* Checkout Sector */}
+                        <div className="mt-auto pt-8 flex flex-col gap-4">
+                            <div className="flex justify-between items-center px-2">
+                                <span className="text-[10px] font-black uppercase opacity-40">Settlement Total</span>
+                                <span className="text-2xl font-black italic tracking-tighter">{formatIDR(currentFinalPrice * quantity)}</span>
+                            </div>
+                            <button
+                                disabled={disableButton}
+                                onClick={addCart}
+                                className={`w-full py-6 ${isDarkMode ? "bg-white text-black hover:bg-[var(--product-primary-color)]" : "bg-black text-white hover:bg-[var(--product-primary-color)]"} rounded-full font-black uppercase italic text-sm tracking-[0.2em] shadow-2xl  hover:text-white transition-all flex items-center justify-center gap-4 group`}
+                            >
+                                <ShoppingBag size={18} />
+                                Add to Registry
+                                <Plus size={18} className="group-hover:rotate-90 transition-transform" />
+                            </button>
+                        </div>
                     </div>
                 </div>
             </ModalWrapper>
-            <AlertWrapper activeAlert={activeAlert} position="top-right">
-                <div className={`bg-[var(--product-primary-color)] text-white p-4 rounded-2xl shadow-2xl flex justify-between items-center`}>
-                    <div className="flex items-center gap-4">
-                        <div className="bg-white/20 p-2 rounded-lg"><Package size={18} /></div>
-                        <p className="text-sm font-bold">{mockItem?.name} berhasil diamankan di keranjang!</p>
+
+            <AlertWrapper activeAlert={activeAlert} position="top-center">
+                <div className={`min-w-[320px] ${isDarkMode ? 'bg-zinc-900 text-white' : 'bg-white text-zinc-900'} p-1 rounded-3xl shadow-[0_30px_60px_rgba(0,0,0,0.4)] flex items-center gap-4 border border-white/10`}>
+                    <div className="h-14 w-14 bg-[var(--product-primary-color)] rounded-2xl flex items-center justify-center text-white shrink-0 shadow-lg animate-pulse">
+                        <Package size={24} />
                     </div>
-                    <button onClick={() => setActiveAlert(false)} className="text-xs font-black uppercase underline decoration-2 underline-offset-4">Tutup</button>
+                    <div className="flex-1 pr-4">
+                        <p className="text-[10px] font-black uppercase opacity-40 tracking-widest">Confirmed</p>
+                        <p className="text-xs font-black uppercase italic leading-tight truncate">{product?.name || 'Unit'} Locked in Bag</p>
+                    </div>
+                    <button onClick={() => setActiveAlert(false)} className={`h-10 w-10 flex items-center justify-center ${isDarkMode ? "bg-white/10" : "bg-zinc-100"} rounded-full mr-2`}>
+                        <X size={16} />
+                    </button>
                 </div>
             </AlertWrapper>
         </div>
-    )
-}
+    );
+};
 
-export default Fourteen
+export default Fourteen;

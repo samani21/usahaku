@@ -1,3 +1,4 @@
+import React from 'react';
 import { CategoriesType } from '@/types/Admin/CategoriesType';
 import { Icon } from '@iconify/react';
 
@@ -11,62 +12,87 @@ const FourTen = ({ categories, isDarkMode, onClick }: Props) => {
     const handleScroll = () => {
         const el = document.getElementById("product-section");
         if (el) {
-            el.scrollIntoView({
-                behavior: "smooth",
-                block: "start"
-            });
+            el.scrollIntoView({ behavior: "smooth", block: "start" });
         }
     };
 
+    const cardBg = isDarkMode ? 'bg-slate-900' : 'bg-white';
+    const borderColor = isDarkMode ? 'border-slate-700' : 'border-slate-900';
+
     return (
-        <section>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-                <div className="relative group cursor-pointer">
-                    <div className={`absolute inset-0 rounded-2xl translate-x-3 translate-y-3 opacity-20 group-hover:translate-x-0 group-hover:translate-y-0 transition-transform bg-[var(--category-primary-color)]`} />
-                    <div className={`relative p-8 rounded-2xl border-2 flex flex-col items-center text-center transition-all ${isDarkMode ? 'bg-slate-950 border-slate-800' : 'bg-white border-slate-900 shadow-sm group-hover:shadow-none'}`}>
-                        <div className={`text-[var(--category-primary-color)] absolute inset-0 w-full h-full object-cover rounded-2xl  top-0 ${isDarkMode && 'bg-white'} `} >
-                            <Icon icon={'cbi:bulb-general-group'} className='w-full h-full' />
+        <section className="py-12 px-6 max-w-7xl mx-auto">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-8 md:gap-10">
+
+                {/* CARD: SEMUA */}
+                <div
+                    onClick={() => { onClick?.(null); handleScroll(); }}
+                    className="relative group cursor-pointer aspect-[4/5]"
+                >
+                    {/* Offset Shadow Layer */}
+                    <div className="absolute inset-0 rounded-2xl translate-x-3 translate-y-3 bg-orange-500 group-hover:translate-x-1 group-hover:translate-y-1 transition-all duration-300" />
+
+                    {/* Main Card */}
+                    <div className={`relative h-full rounded-2xl border-4 ${borderColor} ${cardBg} overflow-hidden flex flex-col transition-all duration-300 group-hover:-translate-x-1 group-hover:-translate-y-1`}>
+                        <div className="flex-1 relative bg-orange-50 flex items-center justify-center p-8">
+                            <Icon icon={'cbi:bulb-general-group'} className='w-full h-full text-orange-500 transition-transform duration-500 group-hover:scale-110' />
                         </div>
-                        <div onClick={() => {
-                            onClick && onClick(null)
-                            handleScroll()
-                        }} className={`w-full bg-black/50 absolute z-1 text-left text-gray-100 px-2`}>
-                            <h3 className="font-black uppercase italic tracking-tighter text-md sm:text-xl">Semua</h3>
+
+                        {/* Label */}
+                        <div className={`p-3 border-t-4 ${borderColor} ${isDarkMode ? 'bg-slate-800' : 'bg-white'}`}>
+                            <h3 className="font-black uppercase italic tracking-tighter text-sm md:text-lg leading-none truncate">
+                                Semua
+                            </h3>
+                            <p className="text-[10px] font-bold opacity-60 mt-1 uppercase">Explore All</p>
                         </div>
                     </div>
                 </div>
-                {categories.map((cat, i) => (
-                    <div key={i} className="relative group cursor-pointer">
-                        <div className={`absolute inset-0 rounded-2xl translate-x-3 translate-y-3 opacity-20 group-hover:translate-x-0 group-hover:translate-y-0 transition-transform bg-[var(--category-primary-color)]`} />
-                        <div className={`relative p-8 rounded-2xl border-2 flex flex-col items-center text-center transition-all ${isDarkMode ? 'bg-slate-950 border-slate-800' : 'bg-white border-slate-900 shadow-sm group-hover:shadow-none'}`}>
-                            {
-                                cat?.icon ? (
-                                    cat.icon.startsWith("http") ? (
-                                        <img src={cat?.icon} className={`absolute inset-0 w-full h-full object-cover rounded-2xl top-0 ${isDarkMode && 'bg-white'}`} />
 
-                                    ) : (
-                                        <div className={`absolute inset-0 w-full h-full object-cover rounded-2xl  top-0 ${isDarkMode && 'bg-white'}`} >
-                                            <Icon color={cat?.color} icon={cat?.icon} className='w-full h-full' />
-                                        </div>
-                                    )
+                {/* CATEGORIES MAPPING */}
+                {categories.map((cat, i) => (
+                    <div
+                        key={i}
+                        onClick={() => { onClick?.(cat?.name); handleScroll(); }}
+                        className="relative group cursor-pointer aspect-[4/5]"
+                    >
+                        {/* Dynamic Offset Shadow */}
+                        <div
+                            className="absolute inset-0 rounded-2xl translate-x-3 translate-y-3 group-hover:translate-x-1 group-hover:translate-y-1 transition-all duration-300 opacity-40"
+                            style={{ backgroundColor: cat.color || '#000' }}
+                        />
+
+                        {/* Main Card */}
+                        <div className={`relative h-full rounded-2xl border-4 ${borderColor} ${cardBg} overflow-hidden flex flex-col transition-all duration-300 group-hover:-translate-x-1 group-hover:-translate-y-1`}>
+                            <div className="flex-1 relative flex items-center justify-center p-8" style={{ backgroundColor: `${cat.color}10` }}>
+                                {cat?.icon?.startsWith("http") ? (
+                                    <img
+                                        src={cat.icon}
+                                        className={`w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 ${isDarkMode ? 'brightness-90' : ''}`}
+                                        alt={cat.name}
+                                    />
                                 ) : (
-                                    <div className={`text-[var(--category-primary-color)] absolute inset-0 w-full h-full object-cover rounded-2xl  top-0 ${isDarkMode && 'bg-white'} `} >
-                                        <Icon icon={'cbi:bulb-general-group'} className='w-full h-full' />
-                                    </div>
-                                )
-                            }
-                            <div onClick={() => {
-                                onClick && onClick(cat?.name)
-                                handleScroll()
-                            }} className={`w-full bg-black/50 absolute z-1 text-left text-gray-100 px-2`}>
-                                <h3 className="font-black uppercase italic tracking-tighter text-md sm:text-xl line-clamp-1">{cat.name}</h3>
+                                    <Icon
+                                        color={cat?.color}
+                                        icon={cat?.icon || 'cbi:bulb-general-group'}
+                                        className='w-full h-full transition-transform duration-500 group-hover:rotate-12 group-hover:scale-110'
+                                    />
+                                )}
+                            </div>
+
+                            {/* Label */}
+                            <div className={`p-3 border-t-4 ${borderColor} ${isDarkMode ? 'bg-slate-800' : 'bg-white'}`}>
+                                <h3 className="font-black uppercase italic tracking-tighter text-sm md:text-lg leading-none truncate">
+                                    {cat.name}
+                                </h3>
+                                <p className="text-[10px] font-bold opacity-60 mt-1 uppercase">
+                                    {cat.count || 0} Items
+                                </p>
                             </div>
                         </div>
                     </div>
                 ))}
             </div>
         </section>
-    )
-}
+    );
+};
 
-export default FourTen
+export default FourTen;
