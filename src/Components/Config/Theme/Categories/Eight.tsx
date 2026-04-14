@@ -1,3 +1,4 @@
+import React from 'react'
 import { CategoriesType } from "@/types/Admin/CategoriesType";
 import { Icon } from "@iconify/react";
 import { ArrowUpRight } from "lucide-react";
@@ -14,116 +15,95 @@ const Eight = ({ categories, isDarkMode, onClick }: Props) => {
     const handleScroll = () => {
         const el = document.getElementById("product-section");
         if (el) {
-            el.scrollIntoView({
-                behavior: "smooth",
-                block: "start"
-            });
+            el.scrollIntoView({ behavior: "smooth", block: "start" });
         }
     };
+
     return (
-        <section className="py-12 px-6 max-w-7xl mx-auto">
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 md:gap-8">
+        <section className="py-12 px-4 max-w-7xl mx-auto">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6">
+
+                {/* CARD: SEMUA */}
                 <div
-                    onClick={() => {
-                        onClick && onClick(null)
-                        handleScroll()
-                    }}
-                    className={`group relative aspect-square rounded-[2.5rem] flex flex-col items-center justify-center overflow-hidden cursor-pointer transition-all duration-500 hover:-translate-y-2
-              ${isDarkMode
-                            ? "bg-slate-900 shadow-[10px_10px_20px_#070a0f,-10px_-10px_20px_#111827]"
-                            : "bg-slate-50 shadow-[15px_15px_30px_#bebebe,-15px_-15px_30px_#ffffff]"
-                        }`}
+                    onClick={() => { onClick?.(null); handleScroll(); }}
+                    className={`group relative aspect-square rounded-[2.5rem] overflow-hidden cursor-pointer transition-all duration-500 hover:-translate-y-2
+                    ${isDarkMode
+                            ? "bg-slate-900 shadow-[8px_8px_16px_rgba(0,0,0,0.4),-4px_-4px_12px_rgba(255,255,255,0.02)]"
+                            : "bg-slate-50 shadow-[12px_12px_24px_#d1d1d1,-12px_-12px_24px_#ffffff]"}`}
                 >
-                    {/* Image/Icon Container */}
-                    <div className="absolute inset-0 w-full h-full p-2">
-                        <div className="relative w-full h-full rounded-[2rem] overflow-hidden">
-                            <div className={`w-full h-full flex text-[var(--category-primary-color)] items-center bg-white justify-center bg-white/50 p-8`}>
-                                <Icon icon={'cbi:bulb-general-group'} className='w-full h-full' />
-                            </div>
-                            {/* Gradient Overlay agar teks terbaca */}
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-60 group-hover:opacity-80 transition-opacity" />
+                    <div className="absolute inset-2 rounded-[2rem] overflow-hidden">
+                        <div className={`w-full h-full flex items-center justify-center transition-transform duration-700 group-hover:scale-110 ${isDarkMode ? 'bg-slate-800' : 'bg-white'}`}>
+                            <Icon icon={'cbi:bulb-general-group'} className='w-1/2 h-1/2 text-[var(--category-primary-color)] opacity-20' />
+                            <Icon icon={'cbi:bulb-general-group'} className='absolute w-1/3 h-1/3 text-[var(--category-primary-color)]' />
                         </div>
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent" />
                     </div>
 
-                    {/* Label Section - Glassmorphism Style */}
-                    <div className="absolute bottom-6 left-4 right-4 z-1">
-                        <div className="backdrop-blur-md bg-white/10 border border-white/20 rounded-2xl p-3 flex items-center justify-between transform translate-y-2 group-hover:translate-y-0 transition-transform duration-500">
-                            <div className="flex flex-col overflow-hidden">
-                                <h3 className="font-bold text-white text-sm md:text-base truncate drop-shadow-md">
-                                    Semua
-                                </h3>
-                                <span className="text-[10px] text-white/60 uppercase tracking-widest font-medium">
-                                    Explore
-                                </span>
+                    <div className="absolute bottom-5 left-4 right-4 z-10">
+                        <div className="backdrop-blur-xl bg-white/10 border border-white/20 rounded-[1.5rem] p-3 flex items-center justify-between shadow-2xl">
+                            <div className="flex flex-col">
+                                <h3 className="font-black text-white text-xs md:text-sm uppercase tracking-tighter italic">Semua</h3>
+                                <span className="text-[9px] text-[var(--category-primary-color)] font-bold uppercase tracking-widest">{totalItems} Item</span>
                             </div>
-                            <div className="bg-white/20 p-1.5 rounded-lg text-white group-hover:bg-white group-hover:text-black transition-colors">
-                                <ArrowUpRight size={16} />
+                            <div className="bg-[var(--category-primary-color)] p-1.5 rounded-xl text-white">
+                                <ArrowUpRight size={14} strokeWidth={3} />
                             </div>
                         </div>
                     </div>
-
-                    {/* Inner Glow on Hover */}
-                    <div className="absolute inset-0 ring-1 ring-inset ring-white/20 rounded-[2.5rem] pointer-events-none" />
                 </div>
+
+                {/* CATEGORIES MAPPING */}
                 {categories.map((cat, i) => (
                     <div
                         key={i}
-                        onClick={() => {
-                            onClick && onClick(cat?.name)
-                            handleScroll()
-                        }}
-                        className={`group relative aspect-square rounded-[2.5rem] flex flex-col items-center justify-center overflow-hidden cursor-pointer transition-all duration-500 hover:-translate-y-2
-              ${isDarkMode
-                                ? "bg-slate-900 shadow-[10px_10px_20px_#070a0f,-10px_-10px_20px_#111827]"
-                                : "bg-slate-50 shadow-[15px_15px_30px_#bebebe,-15px_-15px_30px_#ffffff]"
-                            }`}
+                        onClick={() => { onClick?.(cat?.name); handleScroll(); }}
+                        className={`group relative aspect-square rounded-[2.5rem] overflow-hidden cursor-pointer transition-all duration-500 hover:-translate-y-2
+                        ${isDarkMode
+                                ? "bg-slate-900 shadow-[8px_8px_16px_rgba(0,0,0,0.4),-4px_-4px_12px_rgba(255,255,255,0.02)] hover:shadow-[var(--category-primary-color)]/10"
+                                : "bg-slate-50 shadow-[12px_12px_24px_#d1d1d1,-12px_-12px_24px_#ffffff]"}`}
                     >
-                        {/* Image/Icon Container */}
-                        <div className="absolute inset-0 w-full h-full p-2">
-                            <div className="relative w-full h-full rounded-[2rem] overflow-hidden">
-                                {
-                                    cat?.icon ? (
-                                        cat.icon.startsWith("http") ? (
-                                            <img
-                                                src={cat.icon}
-                                                className="w-full h-full bg-white/50 object-cover transition-transform duration-700 group-hover:scale-110 grayscale-[0.2] group-hover:grayscale-0"
-                                                alt={cat.name}
-                                            />
-                                        ) : (
-                                            <div className={`w-full h-full flex items-center bg-white justify-center bg-white/50 p-8`}>
-                                                <Icon color={cat?.color} icon={cat?.icon} className='w-full h-full' />
-                                            </div>
-                                        )
-                                    ) : (
-                                        <div className={`w-full h-full flex items-center bg-white justify-center bg-white/50 p-8`}>
-                                            <Icon icon={'cbi:bulb-general-group'} className='w-full h-full' />
-                                        </div>
-                                    )
-                                }
-                                {/* Gradient Overlay agar teks terbaca */}
-                                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-60 group-hover:opacity-80 transition-opacity" />
-                            </div>
+                        <div className={`absolute inset-2 rounded-[2rem] overflow-hidden ${isDarkMode ? "bg-slate-800" : "bg-white"}`}>
+                            {cat?.icon?.startsWith("http") ? (
+                                <img
+                                    src={cat.icon}
+                                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 grayscale group-hover:grayscale-0"
+                                    alt={cat.name}
+                                />
+                            ) : (
+                                <div className="w-full h-full flex items-center justify-center p-8 transition-transform duration-700 group-hover:scale-110" style={{ backgroundColor: `${cat.color}05` }}>
+                                    <Icon color={cat?.color} icon={cat?.icon || 'cbi:bulb-general-group'} className='w-full h-full opacity-10 absolute scale-150 rotate-12' />
+                                    <Icon color={cat?.color} icon={cat?.icon || 'cbi:bulb-general-group'} className='w-full h-full relative z-10' />
+                                </div>
+                            )}
+                            {/* Overlay lebih gelap di bawah untuk readability */}
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent opacity-80 group-hover:opacity-90 transition-opacity" />
                         </div>
 
-                        {/* Label Section - Glassmorphism Style */}
-                        <div className="absolute bottom-6 left-4 right-4 z-1">
-                            <div className="backdrop-blur-md bg-white/10 border border-white/20 rounded-2xl p-3 flex items-center justify-between transform translate-y-2 group-hover:translate-y-0 transition-transform duration-500">
-                                <div className="flex flex-col overflow-hidden">
-                                    <h3 className="font-bold text-white text-sm md:text-base truncate drop-shadow-md">
+                        {/* Glass Label */}
+                        <div className="absolute bottom-5 left-4 right-4 z-10">
+                            <div className="backdrop-blur-xl bg-black/20 border border-white/10 rounded-[1.5rem] p-3 flex items-center justify-between transition-all duration-500 group-hover:bg-white group-hover:border-white">
+                                <div className="flex flex-col overflow-hidden text-white group-hover:text-black transition-colors">
+                                    <h3 className="font-black text-xs md:text-sm truncate uppercase tracking-tight">
                                         {cat.name}
                                     </h3>
-                                    <span className="text-[10px] text-white/60 uppercase tracking-widest font-medium">
-                                        Explore
+                                    <span className="text-[9px] opacity-70 font-bold uppercase tracking-widest">
+                                        {cat.count || 0} Products
                                     </span>
                                 </div>
-                                <div className="bg-white/20 p-1.5 rounded-lg text-white group-hover:bg-white group-hover:text-black transition-colors">
-                                    <ArrowUpRight size={16} />
+                                <div
+                                    className="p-1.5 rounded-xl transition-all duration-500"
+                                    style={{ backgroundColor: cat.color, color: '#fff' }}
+                                >
+                                    <ArrowUpRight size={14} strokeWidth={3} className="group-hover:rotate-45 transition-transform" />
                                 </div>
                             </div>
                         </div>
 
-                        {/* Inner Glow on Hover */}
-                        <div className="absolute inset-0 ring-1 ring-inset ring-white/20 rounded-[2.5rem] pointer-events-none" />
+                        {/* Hover Border Accent */}
+                        <div
+                            className="absolute inset-0 border-2 border-transparent group-hover:border-current transition-colors duration-500 rounded-[2.5rem] pointer-events-none opacity-20"
+                            style={{ color: cat.color }}
+                        />
                     </div>
                 ))}
             </div>
