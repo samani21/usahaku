@@ -39,7 +39,7 @@ const Eight = ({ categories, isDarkMode, onClick }: Props) => {
                         <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent" />
                     </div>
 
-                    <div className="absolute bottom-5 left-4 right-4 z-10">
+                    <div className="absolute bottom-5 left-4 right-4 z-0">
                         <div className="backdrop-blur-xl bg-white/10 border border-white/20 rounded-[1.5rem] p-3 flex items-center justify-between shadow-2xl">
                             <div className="flex flex-col">
                                 <h3 className="font-black text-white text-xs md:text-sm uppercase tracking-tighter italic">Semua</h3>
@@ -72,7 +72,7 @@ const Eight = ({ categories, isDarkMode, onClick }: Props) => {
                             ) : (
                                 <div className="w-full h-full flex items-center justify-center p-8 transition-transform duration-700 group-hover:scale-110" style={{ backgroundColor: `${cat.color}05` }}>
                                     <Icon color={cat?.color} icon={cat?.icon || 'cbi:bulb-general-group'} className='w-full h-full opacity-10 absolute scale-150 rotate-12' />
-                                    <Icon color={cat?.color} icon={cat?.icon || 'cbi:bulb-general-group'} className='w-full h-full relative z-10' />
+                                    <Icon color={cat?.color} icon={cat?.icon || 'cbi:bulb-general-group'} className='w-full h-full relative z-0' />
                                 </div>
                             )}
                             {/* Overlay lebih gelap di bawah untuk readability */}
@@ -80,7 +80,7 @@ const Eight = ({ categories, isDarkMode, onClick }: Props) => {
                         </div>
 
                         {/* Glass Label */}
-                        <div className="absolute bottom-5 left-4 right-4 z-10">
+                        <div className="absolute bottom-5 left-4 right-4 z-0">
                             <div className="backdrop-blur-xl bg-black/20 border border-white/10 rounded-[1.5rem] p-3 flex items-center justify-between transition-all duration-500 group-hover:bg-white group-hover:border-white">
                                 <div className="flex flex-col overflow-hidden text-white group-hover:text-black transition-colors">
                                     <h3 className="font-black text-xs md:text-sm truncate uppercase tracking-tight">

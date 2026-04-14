@@ -50,7 +50,7 @@ const Three = ({ categories, isDarkMode, onClick }: Props) => {
                     </div>
 
                     {/* Content Section */}
-                    <div className="mt-4 relative z-10">
+                    <div className="mt-4 relative z-0">
                         <h3 className="text-xl font-black tracking-tight leading-tight group-hover:translate-x-1 transition-transform duration-300">
                             Semua
                         </h3>
@@ -115,7 +115,7 @@ const Three = ({ categories, isDarkMode, onClick }: Props) => {
                         </div>
 
                         {/* Content Section */}
-                        <div className="mt-4 relative z-10">
+                        <div className="mt-4 relative z-0">
                             <h3 className="text-xl font-black tracking-tight leading-tight group-hover:translate-x-1 transition-transform duration-300">
                                 {cat.name}
                             </h3>

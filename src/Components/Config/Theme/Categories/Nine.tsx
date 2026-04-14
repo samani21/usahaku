@@ -33,7 +33,7 @@ const Nine = ({ categories, isDarkMode, onClick }: Props) => {
                     <div className="w-2/5 sm:w-1/3 relative overflow-hidden h-full">
                         <div className={`w-full h-full flex items-center justify-center p-6 transition-transform duration-700 group-hover:scale-110 ${isDarkMode ? "bg-slate-800" : "bg-[var(--category-primary-color)]/10"}`}>
                             <Icon icon={'cbi:bulb-general-group'} className='w-full h-full text-[var(--category-primary-color)] opacity-20 absolute scale-150 rotate-12' />
-                            <Icon icon={'cbi:bulb-general-group'} className='w-full h-full text-[var(--category-primary-color)] relative z-10' />
+                            <Icon icon={'cbi:bulb-general-group'} className='w-full h-full text-[var(--category-primary-color)] relative z-0' />
                         </div>
                     </div>
 
@@ -73,7 +73,7 @@ const Nine = ({ categories, isDarkMode, onClick }: Props) => {
                             ) : (
                                 <div className="w-full h-full flex items-center justify-center p-6 transition-transform duration-700 group-hover:rotate-6 group-hover:scale-110" style={{ backgroundColor: `${cat.color}10` }}>
                                     <Icon color={cat?.color} icon={cat?.icon || 'cbi:bulb-general-group'} className='w-full h-full opacity-10 absolute scale-125' />
-                                    <Icon color={cat?.color} icon={cat?.icon || 'cbi:bulb-general-group'} className='w-full h-full relative z-10' />
+                                    <Icon color={cat?.color} icon={cat?.icon || 'cbi:bulb-general-group'} className='w-full h-full relative z-0' />
                                 </div>
                             )}
                         </div>
