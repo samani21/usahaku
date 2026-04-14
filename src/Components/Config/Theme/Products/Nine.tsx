@@ -2,7 +2,7 @@ import ModalWrapper from './ModalWrapper';
 import { useEffect, useMemo, useState } from 'react';
 import QtySelector from './QtySelector';
 import VariantPicker from './VariantPicker';
-import { Check, Plus, ShoppingCart, Zap } from 'lucide-react';
+import { Check, Plus, ShoppingBag, Zap, X, ArrowRight } from 'lucide-react';
 import AlertWrapper from './AlertWrapper';
 import { ProductsType, Variants } from '@/types/Admin/ProductsType';
 import { formatIDR } from '@/types/FormtRupiah';
@@ -20,93 +20,81 @@ const Nine = ({ products, isDarkMode, handleCart }: Props) => {
     const [selectedVariant, setSelectedVariant] = useState<Variants | null>(null);
     const [quantity, setQuantity] = useState<number>(1);
     const [activeAlert, setActiveAlert] = useState<boolean>(false);
+
     const disableButton = useMemo(() => {
-        if (product) {
-            if (product?.variants?.length > 0 && !selectedVariant) {
-                return true;
-            } else {
-                if (product?.variants?.length === 0) {
-                    return false;
-                } else {
-                    return false;
-                }
-            }
-        }
-    }, [product, selectedVariant])
-    const mockItem = useMemo(() => {
-        return {
-            name: product?.name,
-            price: product?.final_price,
-            image: product?.image,
-            category: product?.category,
-            quantity: quantity
-        }
-    }, [activeAlert])
+        if (!product) return true;
+        return product?.variants?.length > 0 && !selectedVariant;
+    }, [product, selectedVariant]);
+
     useEffect(() => {
         if (activeAlert) {
             const timer = setTimeout(() => setActiveAlert(false), 3000);
             return () => clearTimeout(timer);
         }
     }, [activeAlert]);
-    useEffect(() => {
-        if (product) {
-            // Jika modal aktif (product tidak null), kunci scroll
-            document.body.style.overflow = 'hidden';
-        } else {
-            // Jika modal tutup, kembalikan scroll
-            document.body.style.overflow = 'unset';
-        }
 
-        // Cleanup function untuk memastikan scroll kembali normal jika komponen unmount
-        return () => {
-            document.body.style.overflow = 'unset';
-        };
+    useEffect(() => {
+        document.body.style.overflow = product ? 'hidden' : 'unset';
+        return () => { document.body.style.overflow = 'unset'; };
     }, [product]);
+
     const addCart = () => {
         setActiveAlert(true);
+        if (handleCart) handleCart(product, selectedVariant, quantity);
         setProduct(null);
         setSelectedVariant(null);
-        setQuantity(1)
-        if (handleCart) {
-            handleCart(product, selectedVariant, quantity)
-        }
+        setQuantity(1);
     }
+
     return (
-        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 h-full'>
+        <div className='grid grid-cols-1 lg:grid-cols-2 gap-6'>
             {products?.map((p, i) => {
                 const { finalPrice, label } = getPromoDetails(p);
                 return (
                     <div
-                        onClick={() => setProduct(p)}
                         key={i}
-                        className={`col-span-1 md:col-span-2 flex h-36 sm:h-48 rounded-[2rem] sm:rounded-[2.5rem] overflow-hidden cursor-pointer transition-transform hover:scale-[1.02] border-2 group ${isDarkMode ? 'bg-slate-900 border-slate-800 shadow-2xl shadow-black/50 text-white' : 'bg-white border-slate-100 shadow-md shadow-slate-200 text-slate-900'}`}
+                        onClick={() => setProduct(p)}
+                        className={`group relative flex h-40 sm:h-52 rounded-[2.5rem] overflow-hidden cursor-pointer transition-all duration-500 border-2 ${isDarkMode
+                            ? 'bg-zinc-900 border-white/5 hover:border-[var(--product-primary-color)]/50'
+                            : 'bg-white border-slate-100 hover:border-[var(--product-primary-color)] shadow-xl shadow-slate-200/50'
+                            }`}
                     >
-                        <div className="w-2/5 h-full relative overflow-hidden">
-                            <img src={p.image} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt={p.name} />
+                        {/* Image Side */}
+                        <div className={`w-1/3 sm:w-2/5 h-full relative overflow-hidden ${isDarkMode ? "bg-zinc-800" : 'bg-zinc-100'}`}>
+                            <img
+                                src={p.image}
+                                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                                alt={p.name}
+                            />
                             {label && (
-                                <div className="absolute top-2 left-2 bg-rose-600 text-white text-[8px] sm:text-[10px] font-black px-2 py-0.5 rounded-lg">
+                                <div className="absolute top-4 left-4 bg-rose-600 text-white text-[9px] font-black px-3 py-1 rounded-full shadow-lg uppercase italic tracking-tighter">
                                     {label}
                                 </div>
                             )}
                         </div>
-                        <div className="flex-1 p-4 sm:p-8 flex flex-col justify-center">
-                            {p.category && (
-                                <span className="text-[10px] sm:text-[12px] font-black opacity-50 uppercase tracking-widest mb-1">
-                                    {p.category}
-                                </span>
-                            )}
-                            <h3 className="font-black text-[12px] sm:text-lg uppercase italic leading-none mb-2 line-clamp-2">
-                                {p.name}
-                            </h3>
-                            <div className="flex items-center justify-between mt-auto sm:mt-2">
-                                <div className="flex flex-col">
-                                    {label && <span className="text-[10px] line-through opacity-30 font-bold -mb-1">{formatIDR(p.price)}</span>}
-                                    <p className="font-black text-lg sm:text-2xl text-[var(--product-primary-color)] italic leading-none">{formatIDR(finalPrice)}</p>
+
+                        {/* Content Side */}
+                        <div className="flex-1 p-5 sm:p-8 flex flex-col justify-between">
+                            <div>
+                                <div className="flex items-center gap-2 mb-1">
+                                    <span className="h-1 w-4 bg-[var(--product-primary-color)] rounded-full group-hover:w-8 transition-all"></span>
+                                    <span className="text-[10px] font-bold opacity-40 uppercase tracking-widest">{p.category}</span>
                                 </div>
-                                <div className={`p-2 sm:p-3 rounded-xl sm:rounded-2xl transition-colors ${isDarkMode ? 'bg-white text-black' : 'bg-black text-white'}`}>
-                                    <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 sm:w-6 sm:h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M12 4v16m8-8H4" />
-                                    </svg>
+                                <h3 className="font-black text-sm sm:text-xl uppercase italic leading-tight line-clamp-2 tracking-tighter">
+                                    {p.name}
+                                </h3>
+                            </div>
+
+                            <div className="flex items-end justify-between">
+                                <div className="space-y-0.5">
+                                    {label && <span className="text-[10px] line-through opacity-30 font-bold">{formatIDR(p.price)}</span>}
+                                    <p className="font-black text-xl sm:text-3xl text-[var(--product-primary-color)] italic leading-none tracking-tighter">
+                                        {formatIDR(finalPrice)}
+                                    </p>
+                                </div>
+                                <div className={`h-10 w-10 sm:h-14 sm:w-14 rounded-2xl flex items-center justify-center transition-all duration-300 ${isDarkMode ? 'bg-white text-black' : 'bg-slate-900 text-white'
+                                    } group-hover:rounded-full group-hover:rotate-45`}>
+                                    <Plus size={20} strokeWidth={3} />
                                 </div>
                             </div>
                         </div>
@@ -115,131 +103,112 @@ const Nine = ({ products, isDarkMode, handleCart }: Props) => {
             })}
 
             <ModalWrapper
-                activeModal={product ? true : false}
-                closeModal={() => {
-                    setProduct(null)
-                    setSelectedVariant(null)
-                    setQuantity(1)
-                }}
-                isDarkMode={isDarkMode}>
-                <div className="relative w-full md:overflow-auto md:overflow-x-hidden no-scrollbar min-h-full">
-                    {/* Background Blur Effect */}
-                    <div className="absolute inset-0 pointer-events-none">
-                        <img src={product?.image} className="w-full h-full object-cover blur-3xl opacity-20" alt="" />
-                    </div>
+                activeModal={!!product}
+                closeModal={() => { setProduct(null); setSelectedVariant(null); setQuantity(1); }}
+                isDarkMode={isDarkMode}
+            >
+                <div className={`relative w-full max-w-5xl rounded-[3rem] overflow-hidden ${isDarkMode ? 'bg-zinc-950 border border-white/10' : 'bg-white'}`}>
+                    {/* Atmospheric Glow */}
+                    <div className="absolute top-0 left-0 w-full h-64 bg-[var(--product-primary-color)]/10 blur-[120px] pointer-events-none" />
 
-                    <div className="relative w-full  p-4  md:p-20 md:pt-10 flex flex-col items-center">
-                        <div className="max-w-5xl w-full flex flex-col md:flex-row items-center gap-12 md:gap-20">
-
-                            {/* Bagian Gambar (Bingkai Tebal) */}
-                            <div className={`w-full md:w-1/2 aspect-[4/5] rounded-[3rem] md:rounded-[4rem] overflow-hidden shadow-2xl border-8 ${isDarkMode ? "border-white/5" : "border-white/10"} relative`}>
+                    <div className="relative flex flex-col lg:flex-row min-h-[600px]">
+                        {/* Visual Frame */}
+                        <div className="lg:w-1/2 p-6 lg:p-12 flex items-center justify-center">
+                            <div className={`relative w-full aspect-[4/5] rounded-[3rem] overflow-hidden border-[12px] ${isDarkMode ? 'border-zinc-900' : 'border-slate-50'} shadow-2xl`}>
                                 <img
                                     src={selectedVariant?.image ?? product?.image}
-                                    className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
+                                    className="w-full h-full object-cover"
                                     alt=""
                                 />
                                 {product?.discount_price && (
-                                    <div className="absolute top-6 left-6 bg-[var(--product-primary-color)] text-white px-6 py-2 rounded-2xl font-black italic shadow-xl">
-                                        - {Promo(product, selectedVariant)}
+                                    <div className="absolute top-6 left-6 bg-[var(--product-primary-color)] text-white px-6 py-2 rounded-2xl font-black italic shadow-2xl animate-bounce">
+                                        OFF {Promo(product, selectedVariant)}
                                     </div>
                                 )}
                             </div>
+                        </div>
 
-                            {/* Bagian Detail */}
-                            <div className="w-full md:w-1/2 space-y-8">
+                        {/* Order Details */}
+                        <div className="lg:w-1/2 p-8 lg:p-16 flex flex-col justify-between">
+                            <div className="space-y-8">
                                 <div className="space-y-4">
-                                    <div className="flex items-center gap-3">
-                                        <span className="text-[10px] font-black uppercase tracking-[0.3em] opacity-40 italic">{product?.category}</span>
+                                    <div className="flex items-center gap-4">
+                                        <span className="text-[10px] font-black uppercase tracking-[0.4em] opacity-30 italic">{product?.category}</span>
                                         {product?.stock && (
-                                            <span className="flex items-center gap-1 text-[10px] font-black uppercase text-emerald-500 italic">
-                                                <Check size={12} strokeWidth={4} /> {product?.stock} Ready
+                                            <span className="px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-500 text-[10px] font-black uppercase italic border border-emerald-500/20">
+                                                {product?.stock} In Stock
                                             </span>
                                         )}
                                     </div>
-                                    <div className="space-y-2">
-                                        <h2 className="text-lg sm:text-2xl font-black italic tracking-tighter leading-[0.9] uppercase">
-                                            {product?.name}
-                                        </h2>
-                                        <div className={`h-2 w-24 bg-[var(--product-primary-color)] rounded-full shadow-lg shadow-blue-500/20`} />
-                                    </div>
+                                    <h2 className="text-4xl lg:text-5xl font-black italic tracking-tighter leading-[0.85] uppercase">
+                                        {product?.name}
+                                    </h2>
+                                    <div className="h-1.5 w-20 bg-[var(--product-primary-color)] rounded-full" />
                                 </div>
 
-                                <ExpandableHTML
-                                    htmlContent={product?.description}
-                                    className={`text-sm md:text-base opacity-70 leading-relaxed font-light italic`}
-                                />
+                                <div className="prose  opacity-80 leading-relaxed font-medium">
+                                    <ExpandableHTML htmlContent={product?.description} />
+                                </div>
 
-                                <div className="flex flex-col gap-6">
-                                    {/* Harga Section */}
-                                    <div className="space-y-1">
-                                        <p className="text-[10px] font-black uppercase opacity-30 tracking-widest italic">Harga Per Item</p>
-                                        <div className="flex items-baseline gap-3">
-                                            <div className="text-xl md:text-2xl font-black italic tracking-tighter text-[var(--product-primary-color)]">
-                                                {formatIDR(selectedVariant?.final_price || product?.final_price || 0)}
-                                            </div>
-                                            {product?.discount_price && (
-                                                <div className="text-md font-bold opacity-30 line-through italic">
-                                                    {formatIDR(selectedVariant?.price || product?.price)}
-                                                </div>
-                                            )}
+                                <div className="space-y-6 pt-6 border-t border-slate-500/10">
+                                    {product?.variants && product?.variants.length > 0 && (
+                                        <VariantPicker
+                                            variants={product.variants}
+                                            selectedVariant={selectedVariant}
+                                            setSelectedVariant={setSelectedVariant}
+                                            isDarkMode={isDarkMode}
+                                        />
+                                    )}
+
+                                    <div className={`flex items-center justify-between p-6 rounded-[2rem] ${isDarkMode ? 'bg-white/5' : 'bg-slate-50'}`}>
+                                        {product?.is_qty ? (
+                                            <QtySelector quantity={quantity} setQuantity={setQuantity} isDarkMode={isDarkMode} />
+                                        ) : <div />}
+                                        <div className="text-right">
+                                            <p className="text-[10px] font-black uppercase opacity-30 italic">Grand Total</p>
+                                            <p className="text-3xl font-black italic tracking-tighter text-[var(--product-primary-color)]">
+                                                {formatIDR((selectedVariant?.final_price || product?.final_price || 0) * quantity)}
+                                            </p>
                                         </div>
                                     </div>
-
-                                    {/* Varian & Qty Area */}
-                                    <div className={`pt-6 border-t ${isDarkMode ? "border-white/5" : "border-black/5"} space-y-8`}>
-                                        {product?.variants && product?.variants?.length > 0 && (
-                                            <VariantPicker
-                                                variants={product?.variants}
-                                                selectedVariant={selectedVariant}
-                                                setSelectedVariant={setSelectedVariant}
-                                                isDarkMode={isDarkMode}
-                                            />
-                                        )}
-
-                                        <div className={`flex items-end justify-between gap-4 ${isDarkMode ? 'bg-white/5' : 'bg-black/5 '} p-6 rounded-[2.5rem]`}>
-                                            {product?.is_qty ? (
-                                                <QtySelector quantity={quantity} setQuantity={setQuantity} isDarkMode={isDarkMode} />
-                                            ) : <div></div>}
-                                            <div className='text-right'>
-                                                <p className={`text-[10px] font-black uppercase opacity-40 mb-1 italic ${isDarkMode ? "text-gray-100" : "text-gray-700"}`}>Estimasi Total</p>
-                                                <p className='text-lg sm:text-2xl font-black italic tracking-tighter'>
-                                                    {formatIDR((selectedVariant?.final_price || product?.final_price || 0) * quantity)}
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    {/* Tombol Utama */}
-                                    <button
-                                        disabled={disableButton}
-                                        onClick={() => addCart()}
-                                        className={`w-full py-6 md:py-8 bg-[var(--product-primary-color)] text-white rounded-[2.5rem] font-black uppercase italic tracking-[0.2em] text-sm md:text-base shadow-2xl  hover:scale-[1.02] transition-all active:scale-95 disabled:bg-gray-600 flex items-center justify-center gap-4`}
-                                    >
-                                        <Zap size={24} fill="white" />
-                                        Order Sekarang
-                                    </button>
                                 </div>
                             </div>
+
+                            <button
+                                disabled={disableButton}
+                                onClick={addCart}
+                                className="mt-10 w-full py-7 bg-[var(--product-primary-color)] text-white rounded-[2rem] font-black uppercase italic tracking-[0.2em] shadow-xl shadow-[var(--product-primary-color)]/20 text-sm hover:bg-[var(--product-primary-color)] transition-all active:scale-95 disabled:grayscale flex items-center justify-center gap-4"
+                            >
+                                <Zap size={22} fill="white" /> Amankan Slot Pesanan
+                            </button>
                         </div>
                     </div>
+
                 </div>
             </ModalWrapper>
+
             <AlertWrapper activeAlert={activeAlert} position="center">
-                <div className={`${isDarkMode ? "bg-slate-900" : "bg-slate-200"} text-white p-10 rounded-[3.5rem] shadow-[0_0_80px_rgba(0,0,0,0.8)] border border-white/10 text-center space-y-6`}>
-                    <div className="w-16 h-16 bg-emerald-500 text-white rounded-[1.5rem] rotate-12 flex items-center justify-center mx-auto shadow-xl shadow-emerald-500/20">
-                        <Check size={32} />
+                <div className={`${isDarkMode ? 'bg-zinc-900' : 'bg-white'} p-10 rounded-[3rem] shadow-[0_40px_100px_rgba(0,0,0,0.5)] border border-white/10 text-center space-y-8 animate-in zoom-in-95 duration-300`}>
+                    <div className="relative w-20 h-20 mx-auto">
+                        <div className="absolute inset-0 bg-emerald-500/20 blur-2xl rounded-full animate-pulse" />
+                        <div className="relative w-full h-full bg-emerald-500 text-white rounded-[1.8rem] rotate-12 flex items-center justify-center shadow-lg">
+                            <Check size={40} strokeWidth={3} />
+                        </div>
                     </div>
-                    <div className={`${isDarkMode ? "text-white" : "text-black"}`}>
-                        <h3 className="text-2xl font-black italic tracking-tighter">BELANJAAN AMAN!</h3>
-                        <p className="text-sm opacity-40 mt-1">Item favoritmu sudah kami simpan.</p>
+                    <div>
+                        <h3 className="text-3xl font-black italic tracking-tighter mb-2">SIAP DIKIRIM!</h3>
+                        <p className="text-sm opacity-50 font-medium">Produk pilihanmu sudah masuk antrean belanja.</p>
                     </div>
-                    <div className="flex flex-col gap-2">
-                        <button onClick={() => setActiveAlert(false)} className="w-full py-4 bg-white text-black rounded-2xl font-black uppercase tracking-widest text-xs">Tutup</button>
-                    </div>
+                    <button
+                        onClick={() => setActiveAlert(false)}
+                        className="w-full py-5 bg-[var(--product-primary-color)] text-white rounded-2xl font-black uppercase italic tracking-widest text-xs flex items-center justify-center gap-2"
+                    >
+                        Lanjutkan Belanja <ArrowRight size={16} />
+                    </button>
                 </div>
             </AlertWrapper>
         </div>
-    )
-}
+    );
+};
 
-export default Nine
+export default Nine;
