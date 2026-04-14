@@ -38,7 +38,7 @@ const Three = ({ products, isDarkMode, handleCart }: Props) => {
     }, [product, selectedVariant])
     useEffect(() => {
         if (activeAlert) {
-            const timer = setTimeout(() => setActiveAlert(false), 5000);
+            const timer = setTimeout(() => setActiveAlert(false), 3000);
             return () => clearTimeout(timer);
         }
     }, [activeAlert]);

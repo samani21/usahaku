@@ -87,7 +87,7 @@ const Six = ({ products, isDarkMode, handleCart }: Props) => {
     }, [activeAlert])
     useEffect(() => {
         if (activeAlert) {
-            const timer = setTimeout(() => setActiveAlert(false), 5000);
+            const timer = setTimeout(() => setActiveAlert(false), 3000);
             setProduct(null)
             setSelectedVariant(null)
             setQuantity(1)
