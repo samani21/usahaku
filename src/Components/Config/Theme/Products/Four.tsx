@@ -95,7 +95,7 @@ const Four = ({ products, isDarkMode, handleCart }: Props) => {
                                 <span className="text-[10px] font-bold text-[var(--product-primary-color)] uppercase tracking-[0.3em] mb-1 block">
                                     {p.category}
                                 </span>
-                                <h3 className="text-2xl font-black italic text-white leading-none uppercase tracking-tighter line-clamp-1">
+                                <h3 className="text-xl font-black italic text-white leading-none uppercase tracking-tighter line-clamp-1">
                                     {p?.name}
                                 </h3>
                             </div>
