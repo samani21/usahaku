@@ -1,5 +1,5 @@
 import React from 'react'
-import { ChevronRight } from 'lucide-react';
+import { ChevronRight, ArrowUpRight } from 'lucide-react';
 import { CategoriesType } from '@/types/Admin/CategoriesType';
 import { Icon } from '@iconify/react';
 
@@ -15,132 +15,131 @@ const Three = ({ categories, isDarkMode, onClick }: Props) => {
     const handleScroll = () => {
         const el = document.getElementById("product-section");
         if (el) {
-            el.scrollIntoView({
-                behavior: "smooth",
-                block: "start"
-            });
+            el.scrollIntoView({ behavior: "smooth", block: "start" });
         }
     };
+
     return (
-        <section>
+        <section className="py-8">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
                 <div
-
-                    onClick={() => {
-                        onClick && onClick(null)
-                        handleScroll()
-                    }}
-                    className={` group relative p-5 sm:p-8 rounded-[2rem] sm:rounded-[2.5rem] flex flex-col items-start space-y-4  transition-all duration-500 cursor-pointer border hover:-translate-y-3 hover:shadow-2xl ${isDarkMode ? 'bg-slate-900 border-slate-800 text-white hover:border-[var(--category-primary-color)]/50' : 'bg-white border-slate-100 shadow-xl shadow-slate-200/50 text-slate-900 hover:border-[var(--category-primary-color)]'}`}>
+                    onClick={() => { onClick?.(null); handleScroll(); }}
+                    className={`group relative p-6 sm:p-8 rounded-[2.5rem] flex flex-col items-start justify-between min-h-[220px] transition-all duration-500 cursor-pointer border-2 hover:-translate-y-3
+                        ${isDarkMode ? 'bg-slate-900 border-slate-800 text-white hover:border-slate-700' : 'bg-white border-slate-50 shadow-xl shadow-slate-100 text-slate-900'}`}
+                >
+                    {/* Decorative Gradient Background (Hanya muncul saat hover) */}
                     <div
-                        className="absolute top-0 right-0 w-24 h-24 blur-[60px] bg-[var(--category-primary-color)] opacity-0 group-hover:opacity-20 transition-opacity duration-500 pointer-events-none rounded-full"
+                        className="absolute inset-0 opacity-0 group-hover:opacity-[0.03] transition-opacity duration-500 rounded-[2.5rem]"
                     />
-                    <div
-                        className={` relative w-14 h-14 sm:w-16 sm:h-16 rounded-2xl flex items-center justify-center transition-transform duration-500 group-hover:rotate-6 ${isDarkMode ? 'bg-slate-800' : 'bg-slate-50'}`}>
-                        <div className="w-10 h-10 rounded-xl overflow-hidden">
-                            <div className="w-full h-full flex items-center text-[var(--category-primary-color)] justify-center">
-                                <Icon icon={'cbi:bulb-general-group'} className='w-full h-full' />
+
+                    {/* Top Icon Section */}
+                    <div className="w-full flex justify-between items-start">
+                        <div
+                            className={`w-14 h-14 rounded-2xl bg-[var(--category-primary-color)]/5 flex items-center justify-center transition-all duration-500 group-hover:rotate-12 group-hover:shadow-xl`}
+                        >
+                            <div className="w-10 h-10 rounded-xl overflow-hidden flex items-center justify-center">
+                                <Icon icon={'cbi:bulb-general-group'} className='w-8 h-8 text-[var(--category-primary-color)]' />
                             </div>
                         </div>
 
-                        {/* Floating Dot Decoration */}
                         <div
-                            className={`absolute -top-1 -right-1 w-3 h-3 bg-[var(--category-primary-color)] rounded-full border-2 ${isDarkMode ? "border-slate-900" : "border-white"}`}
-                        />
+                            className="p-2 rounded-full opacity-0 group-hover:opacity-100 bg-[var(--category-primary-color)]/10 text-[var(--category-primary-color)] transition-all duration-500 translate-x-4 group-hover:translate-x-0"
+                        >
+                            <ChevronRight className="w-4 h-4" strokeWidth={3} />
+                        </div>
                     </div>
 
                     {/* Content Section */}
-                    <div className="space-y-1">
-                        <h3 className="text-lg sm:text-xl font-extrabold tracking-tight group-hover:text-[var(--category-primary-color)] transition-colors">
+                    <div className="mt-4 relative z-10">
+                        <h3 className="text-xl font-black tracking-tight leading-tight group-hover:translate-x-1 transition-transform duration-300">
                             Semua
                         </h3>
-                        <div className="flex items-center gap-2">
-                            <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-tighter ${isDarkMode ? 'bg-slate-800 text-slate-400' : 'bg-slate-100 text-slate-500'}`}>
-                                {totalItems || 0} Products
+                        <div className="flex items-center gap-2 mt-2">
+                            <span
+                                className="text-[10px] font-black px-3 py-1 bg-[var(--category-primary-color)]/15 text-[var(--category-primary-color)] rounded-lg uppercase tracking-wider"
+                            >
+                                {totalItems} Items
                             </span>
                         </div>
                     </div>
 
-                    {/* Footer Interaction */}
-                    <div
-                        className="pt-2 flex items-center gap-1 text-[10px] font-black uppercase tracking-[0.2em] text-[var(--category-primary-color)] transition-all duration-300 group-hover:gap-3"
-                    >
-                        <span>Lihat Detail</span>
-                        <div className="p-1 rounded-full bg-current bg-opacity-10">
-                            <ChevronRight className="w-3 h-3" strokeWidth={3} />
-                        </div>
+                    {/* Bottom Accent Line */}
+                    <div className={`w-full h-1 mt-6 rounded-full overflow-hidden ${isDarkMode ? 'bg-slate-800' : 'bg-slate-100'}`}>
+                        <div
+                            className="w-2 group-hover:w-full h-full bg-[var(--category-primary-color)] transition-all duration-700 ease-out"
+                        />
                     </div>
-
-
                 </div>
+
+                {/* CATEGORIES MAPPING */}
                 {categories.map((cat, i) => (
                     <div
                         key={i}
-                        onClick={() => {
-                            onClick && onClick(cat?.name)
-                            handleScroll()
+                        onClick={() => { onClick?.(cat?.name); handleScroll(); }}
+                        className={`group relative p-6 sm:p-8 rounded-[2.5rem] flex flex-col items-start justify-between min-h-[220px] transition-all duration-500 cursor-pointer border-2 hover:-translate-y-3
+                        ${isDarkMode ? 'bg-slate-900 border-slate-800 text-white hover:border-slate-700' : 'bg-white border-slate-50 shadow-xl shadow-slate-100 text-slate-900'}`}
+                        style={{
+                            boxShadow: !isDarkMode ? `0 20px 40px ${cat.color}15` : '',
                         }}
-                        className={` group relative p-5 sm:p-8 rounded-[2rem] sm:rounded-[2.5rem] flex flex-col items-start space-y-4  transition-all duration-500 cursor-pointer border hover:-translate-y-3 hover:shadow-2xl ${isDarkMode ? 'bg-slate-900 border-slate-800 text-white hover:border-[var(--category-primary-color)]/50' : 'bg-white border-slate-100 shadow-xl shadow-slate-200/50 text-slate-900 hover:border-[var(--category-primary-color)]'}`}>
+                    >
+                        {/* Decorative Gradient Background (Hanya muncul saat hover) */}
                         <div
-                            className="absolute top-0 right-0 w-24 h-24 blur-[60px] bg-[var(--category-primary-color)] opacity-0 group-hover:opacity-20 transition-opacity duration-500 pointer-events-none rounded-full"
+                            className="absolute inset-0 opacity-0 group-hover:opacity-[0.03] transition-opacity duration-500 rounded-[2.5rem]"
+                            style={{ backgroundColor: cat.color }}
                         />
-                        <div
-                            className={` relative w-14 h-14 sm:w-16 sm:h-16 rounded-2xl flex items-center justify-center transition-transform duration-500 group-hover:rotate-6 ${isDarkMode ? 'bg-slate-800' : 'bg-slate-50'}`}>
-                            <div className="w-10 h-10 rounded-xl overflow-hidden">
-                                {
-                                    cat?.icon ? (
-                                        cat.icon.startsWith("http") ? (
-                                            <img
-                                                src={cat?.icon}
-                                                className="w-full h-full object-cover"
-                                                alt={cat.name}
-                                            />
-                                        ) : (
-                                            <div className="w-full h-full flex items-center justify-center">
-                                                <Icon color={cat?.color} icon={cat?.icon} className='w-full h-full' />
-                                            </div>
-                                        )
+
+                        {/* Top Icon Section */}
+                        <div className="w-full flex justify-between items-start">
+                            <div
+                                className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-all duration-500 group-hover:rotate-12 group-hover:shadow-xl`}
+                                style={{
+                                    backgroundColor: `${cat.color}15`,
+                                    boxShadow: `0 10px 20px ${cat.color}20`
+                                }}
+                            >
+                                <div className="w-10 h-10 rounded-xl overflow-hidden flex items-center justify-center">
+                                    {cat?.icon?.startsWith("http") ? (
+                                        <img src={cat.icon} className="w-full h-full object-cover" alt={cat.name} />
                                     ) : (
-                                        <div className="w-full h-full flex items-center justify-center">
-                                            <Icon icon={'cbi:bulb-general-group'} className='w-full h-full' />
-                                        </div>
-                                    )
-                                }
+                                        <Icon icon={cat?.icon || 'cbi:bulb-general-group'} className='w-8 h-8' style={{ color: cat.color }} />
+                                    )}
+                                </div>
                             </div>
 
-                            {/* Floating Dot Decoration */}
                             <div
-                                className={`absolute -top-1 -right-1 w-3 h-3 bg-[var(--category-primary-color)] rounded-full border-2 ${isDarkMode ? "border-slate-900" : "border-white"}`}
-                            />
+                                className="p-2 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-500 translate-x-4 group-hover:translate-x-0"
+                                style={{ backgroundColor: `${cat.color}10`, color: cat.color }}
+                            >
+                                <ChevronRight className="w-4 h-4" strokeWidth={3} />
+                            </div>
                         </div>
 
                         {/* Content Section */}
-                        <div className="space-y-1">
-                            <h3 className="text-lg sm:text-xl font-extrabold tracking-tight group-hover:text-[var(--category-primary-color)] transition-colors">
+                        <div className="mt-4 relative z-10">
+                            <h3 className="text-xl font-black tracking-tight leading-tight group-hover:translate-x-1 transition-transform duration-300">
                                 {cat.name}
                             </h3>
-                            <div className="flex items-center gap-2">
-                                <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-tighter ${isDarkMode ? 'bg-slate-800 text-slate-400' : 'bg-slate-100 text-slate-500'}`}>
-                                    {cat.count || 0} Products
+                            <div className="flex items-center gap-2 mt-2">
+                                <span
+                                    className="text-[10px] font-black px-3 py-1 rounded-lg uppercase tracking-wider"
+                                    style={{ backgroundColor: `${cat.color}15`, color: cat.color }}
+                                >
+                                    {cat.count || 0} Items
                                 </span>
                             </div>
                         </div>
 
-                        {/* Footer Interaction */}
-                        <div
-                            className="pt-2 flex items-center gap-1 text-[10px] font-black uppercase tracking-[0.2em] text-[var(--category-primary-color)] transition-all duration-300 group-hover:gap-3"
-                        >
-                            <span>Lihat Detail</span>
-                            <div className="p-1 rounded-full bg-current bg-opacity-10">
-                                <ChevronRight className="w-3 h-3" strokeWidth={3} />
-                            </div>
+                        {/* Bottom Accent Line */}
+                        <div className={`w-full h-1 mt-6 rounded-full overflow-hidden ${isDarkMode ? 'bg-slate-800' : 'bg-slate-100'}`}>
+                            <div
+                                className="w-2 group-hover:w-full h-full transition-all duration-700 ease-out"
+                                style={{ backgroundColor: cat.color }}
+                            />
                         </div>
-
-
                     </div>
                 ))}
             </div>
         </section>
-
     )
 }
 

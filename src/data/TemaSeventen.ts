@@ -1,5 +1,5 @@
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
-const layout = 2;
+const layout = 3;
 export const TemaSevenTen = {
     header: {
         color: "#059669",
@@ -72,7 +72,7 @@ export const TemaSevenTen = {
             "id": 3,
             "business_id": 13,
             "name": "Minuman Dingin",
-            "icon": "mdi:cup-water",
+            "icon": "",
             "color": "#3498DB",
             "count": 3,
             "created_at": "2026-03-15T22:03:19.000000Z",

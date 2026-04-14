@@ -82,10 +82,10 @@ const Two = ({ categories, isDarkMode, onClick }: Props) => {
                                                 className="absolute inset-0 opacity-5 scale-150 rotate-12"
                                                 style={{ color: cat?.color }}
                                             >
-                                                <Icon icon={cat?.icon || ''} className="w-full h-full" />
+                                                <Icon icon={cat?.icon || 'cbi:bulb-general-group'} className="w-full h-full" />
                                             </div>
                                             <Icon
-                                                icon={cat?.icon || ''}
+                                                icon={cat?.icon || 'cbi:bulb-general-group'}
                                                 className='w-1/2 h-1/2 relative z-10 transition-all duration-500 group-hover:scale-110'
                                                 style={{ color: cat?.color }}
                                             />
