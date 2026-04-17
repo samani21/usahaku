@@ -34,7 +34,7 @@ export const TemaThree = {
         color: "#451A03",
         id: 1,
         layout_categories: 1,
-        mode: "dark",
+        mode: "light",
     },
     categories: [
         {

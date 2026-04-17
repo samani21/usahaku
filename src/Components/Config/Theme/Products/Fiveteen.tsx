@@ -47,7 +47,7 @@ const Fiveteen = ({ products, isDarkMode, handleCart }: Props) => {
     };
 
     return (
-        <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 p-6 ${isDarkMode ? 'bg-zinc-950' : 'bg-slate-50'}`}>
+        <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 p-6 `}>
             {products?.map((p, i) => {
                 const { finalPrice, label } = getPromoDetails(p);
                 return (
@@ -58,17 +58,17 @@ const Fiveteen = ({ products, isDarkMode, handleCart }: Props) => {
                     >
                         {/* Discount Badge - Orbital Style */}
                         {label && (
-                            <div className={`absolute top-2 right-2 z-10 bg-[var(--product-primary-color)] text-white text-[10px] font-black w-12 h-12 flex items-center justify-center rounded-full shadow-xl rotate-12 group-hover:rotate-0 transition-transform duration-500 border-2 ${isDarkMode ? "border-zinc-900" : "border-white"}`}>
+                            <div className={`absolute top-2 right-2 z-1 bg-[var(--product-primary-color)] text-white text-[10px] font-black w-12 h-12 flex items-center justify-center rounded-full shadow-xl rotate-12 group-hover:rotate-0 transition-transform duration-500 border-2 ${isDarkMode ? "border-zinc-900" : "border-white"}`}>
                                 {label}
                             </div>
                         )}
 
                         {/* Main Image Orbit */}
                         <div className={`relative w-full aspect-square rounded-full border-2 border-dashed ${isDarkMode ? "border-zinc-800 group-hover:border-zinc-600" : "border-slate-200 group-hover:border-[var(--product-primary-color)]"} p-4 transition-all duration-700`}>
-                            <div className={`w-full h-full rounded-full overflow-hidden border-8 ${isDarkMode ? "border-zinc-900" : 'border-white'} shadow-[0_20px_40px_rgba(0,0,0,0.1)] group-hover:shadow-[0_20px_50px_rgba(var(--product-primary-rgb),0.3)] transition-all`}>
+                            <div className={`sm:w-full sm:h-full rounded-full  overflow-hidden border-8 ${isDarkMode ? "border-zinc-900" : 'border-white'} shadow-[0_20px_40px_rgba(0,0,0,0.1)] group-hover:shadow-[0_20px_50px_rgba(var(--product-primary-rgb),0.3)] transition-all`}>
                                 <img
                                     src={p?.image}
-                                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                                    className="w-full h-67  sm:h-57 object-cover group-hover:scale-110 transition-transform duration-700"
                                     alt={p.name}
                                 />
                             </div>
@@ -128,7 +128,7 @@ const Fiveteen = ({ products, isDarkMode, handleCart }: Props) => {
                         {/* Details Panel */}
                         <div className={`w-full md:w-1/2 space-y-8 ${isDarkMode ? 'text-white' : 'text-zinc-900'}`}>
                             <div className="space-y-4">
-                               
+
                                 <h2 className="text-4xl md:text-5xl font-black italic tracking-tighter leading-[0.9] uppercase">{product?.name}</h2>
                                 <div className="h-1.5 w-24 bg-[var(--product-primary-color)] rounded-full" />
                             </div>
@@ -196,7 +196,7 @@ const Fiveteen = ({ products, isDarkMode, handleCart }: Props) => {
                         <div className="w-3 h-3 rounded-full bg-[var(--product-primary-color)] animate-ping absolute inset-0" />
                         <div className="w-3 h-3 rounded-full bg-[var(--product-primary-color)] relative" />
                     </div>
-                    <span className="text-[11px] font-black uppercase tracking-widest">{product?.name || 'Item'} Added to Registry</span>
+                    <span className="text-[11px] font-black uppercase tracking-widest">{product?.name || 'Item'} berhasil dipesan</span>
                     <button onClick={() => setActiveAlert(false)} className="ml-2 opacity-40 hover:opacity-100 transition-opacity"><X size={14} /></button>
                 </div>
             </AlertWrapper>

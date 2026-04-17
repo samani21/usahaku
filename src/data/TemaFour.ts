@@ -20,10 +20,10 @@ export const TemaFour = {
 
     category: {
         business_id: 13,
-        color: "#451A03",
+        color: "#9CA3AF",
         id: 1,
         layout_categories: 10,
-        mode: "dark",
+        mode: "auto",
     },
     categories: [
         {
@@ -31,7 +31,7 @@ export const TemaFour = {
             "business_id": 13,
             "name": "Pakaian Pria",
             "icon": "mdi:tshirt-crew",
-            "color": "#9CA3AF",
+            "color": "#451A03",
             "count": 124,
             "created_at": "2026-03-15T22:03:19.000000Z",
             "updated_at": "2026-03-15T22:03:19.000000Z"
@@ -40,8 +40,8 @@ export const TemaFour = {
             "id": 2,
             "business_id": 13,
             "name": "Pakaian Wanita",
-            "icon": "mdi:dress",
-            "color": "#9CA3AF",
+            "icon": "hugeicons:dress-03",
+            "color": "#451A03",
             "count": 186,
             "created_at": "2026-03-15T22:03:19.000000Z",
             "updated_at": "2026-03-15T22:03:19.000000Z"
@@ -51,7 +51,7 @@ export const TemaFour = {
             "business_id": 13,
             "name": "Koleksi Hijab",
             "icon": "mdi:head-snowflake-outline",
-            "color": "#9CA3AF",
+            "color": "#451A03",
             "count": 52,
             "created_at": "2026-03-15T22:03:19.000000Z",
             "updated_at": "2026-03-15T22:03:19.000000Z"
@@ -60,8 +60,8 @@ export const TemaFour = {
             "id": 4,
             "business_id": 13,
             "name": "Tas & Aksesoris",
-            "icon": "mdi:handbag",
-            "color": "#9CA3AF",
+            "icon": "fluent-emoji-high-contrast:handbag",
+            "color": "#451A03",
             "count": 89,
             "created_at": "2026-03-15T22:03:19.000000Z",
             "updated_at": "2026-03-15T22:03:19.000000Z"
@@ -71,7 +71,7 @@ export const TemaFour = {
             "business_id": 13,
             "name": "Alas Kaki",
             "icon": "mdi:shoe-heel",
-            "color": "#9CA3AF",
+            "color": "#451A03",
             "count": 64,
             "created_at": "2026-03-15T22:03:19.000000Z",
             "updated_at": "2026-03-15T22:03:19.000000Z"
@@ -81,7 +81,7 @@ export const TemaFour = {
             "business_id": 13,
             "name": "Promo Musim Ini",
             "icon": "mdi:label-percent-outline",
-            "color": "#9CA3AF",
+            "color": "#451A03",
             "count": 21,
             "created_at": "2026-03-15T22:03:19.000000Z",
             "updated_at": "2026-03-15T22:03:19.000000Z"

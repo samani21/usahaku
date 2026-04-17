@@ -80,8 +80,8 @@ const Fourteen = ({ products, isDarkMode, handleCart }: Props) => {
 
                         {/* Ticket Perforation Area */}
                         <div className="relative h-8 flex items-center px-4">
-                            <div className={`absolute -left-4 w-8 h-8 rounded-full ${isDarkMode ? 'bg-black' : 'bg-slate-50'} z-10 border-r ${isDarkMode ? 'border-zinc-800' : 'border-slate-100'}`} />
-                            <div className={`absolute -right-4 w-8 h-8 rounded-full ${isDarkMode ? 'bg-black' : 'bg-slate-50'} z-10 border-l ${isDarkMode ? 'border-zinc-800' : 'border-slate-100'}`} />
+                            <div className={`absolute -left-4 w-8 h-8 rounded-full ${isDarkMode ? 'bg-black' : 'bg-slate-50'} z-0 border-r ${isDarkMode ? 'border-zinc-800' : 'border-slate-100'}`} />
+                            <div className={`absolute -right-4 w-8 h-8 rounded-full ${isDarkMode ? 'bg-black' : 'bg-slate-50'} z-0 border-l ${isDarkMode ? 'border-zinc-800' : 'border-slate-100'}`} />
                             <div className="w-full border-t-2 border-dashed border-zinc-700/30 opacity-50" />
                         </div>
 

@@ -73,13 +73,13 @@ const One = ({ products, isDarkMode, handleCart }: Props) => {
                         {/* Image Container */}
                         <div className="relative aspect-[4/5] overflow-hidden">
                             {label && (
-                                <div className="absolute top-3 left-3 z-10 bg-rose-500/90 backdrop-blur-md text-white text-[10px] font-bold px-3 py-1.5 rounded-full shadow-lg flex items-center gap-1">
+                                <div className="absolute top-3 left-3 z-0 bg-rose-500/90 backdrop-blur-md text-white text-[10px] font-bold px-3 py-1.5 rounded-full shadow-lg flex items-center gap-1">
                                     <Tag size={10} /> {label}
                                 </div>
                             )}
 
                             {/* Hover Overlay Button */}
-                            <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10 flex items-center justify-center">
+                            <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-0 flex items-center justify-center">
                                 <div className="bg-white/90 backdrop-blur-md p-3 rounded-full text-zinc-900 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
                                     <Eye size={20} />
                                 </div>
@@ -206,7 +206,7 @@ const One = ({ products, isDarkMode, handleCart }: Props) => {
                                     onClick={addCart}
                                     className="w-full group/btn relative overflow-hidden py-4 bg-[var(--product-primary-color)] text-white rounded-2xl font-black transition-all hover:scale-[1.02] active:scale-95 disabled:grayscale disabled:opacity-50"
                                 >
-                                    <span className="relative z-10 flex items-center justify-center gap-2">
+                                    <span className="relative z-0 flex items-center justify-center gap-2">
                                         <ShoppingBag size={20} /> BELI SEKARANG
                                     </span>
                                     <div className="absolute inset-0 bg-white/20 translate-y-full group-hover/btn:translate-y-0 transition-transform duration-300" />
