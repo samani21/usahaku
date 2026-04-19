@@ -10,6 +10,18 @@ import ProductConfig from '@/Components/Config/Theme/Products';
 import SummaryConfig from '@/Components/Config/Theme/Summary';
 import { ProductsType, Variants } from '@/types/Admin/ProductsType';
 import { v4 as uuidv4 } from "uuid";
+import { Post } from '@/utils/Post';
+
+
+interface Cart {
+    item: number,
+    amount: number
+}
+
+interface CatalogType extends Catalog {
+    cart: Cart;
+}
+
 const getContrastColor = (hex: string | undefined) => {
     if (!hex) return '#1e293b';
     const r = parseInt(hex.slice(1, 3), 16);
@@ -29,16 +41,15 @@ const hexToRgb = (hex: string) => {
 
 export default function Store() {
     const [loading, setLoading] = useState<boolean>(true);
-    const [catalogData, setCatalogData] = useState<Catalog | null>(null);
+    const [catalogData, setCatalogData] = useState<CatalogType | null>(null);
     const [isDarkTheme, setIsDarkTheme] = useState<boolean>(false);
     const [selectCategorie, setSeletctCategorie] = useState<string | null>(null);
-    const [cartItem, setCartItem] = useState<{
-        item: number,
-        amount: number
-    }>({
+    const [cartItem, setCartItem] = useState<Cart>({
         item: 0,
         amount: 0
     })
+
+    console.log('cartItem', cartItem)
     const [retryEffect, setRetreyEffect] = useState<boolean>(false);
     const updateCssVariables = useCallback((type: 'header' | 'hero' | 'category' | 'product' | 'summary', color: string) => {
         const contrast = getContrastColor(color);
@@ -69,11 +80,14 @@ export default function Store() {
     const fetchCatalog = async () => {
         try {
             setLoading(true);
-            const res = await Get<{ success: boolean; data: Catalog }>(`/customer/tenant`);
+            const res = await Get<{ success: boolean; data: CatalogType }>(`/customer/tenant`);
             if (res?.success && res.data) {
                 setCatalogData(res.data);
                 setIsDarkTheme(res.data.header?.mode === 'dark');
-
+                setCartItem({
+                    item: res?.data?.cart?.item,
+                    amount: res?.data?.cart?.amount
+                })
                 // Update CSS variables if colors exist
                 if (res.data.header?.color) updateCssVariables('header', res.data.header.color);
                 if (res.data.hero?.color) updateCssVariables('hero', res.data.hero.color);
@@ -82,7 +96,7 @@ export default function Store() {
                 if (res.data.summary?.color) updateCssVariables('summary', res.data.summary.color);
             }
         } catch (error) {
-            console.error("Failed to fetch catalog:", error);
+            // console.error("Failed to fetch catalog:", error);
         } finally {
             setLoading(false);
         }
@@ -97,7 +111,7 @@ export default function Store() {
                 setRetreyEffect(true);
             }
         } catch (e: any) {
-            console.error(e)
+            // console.error(e)
         }
     }
 
@@ -131,13 +145,29 @@ export default function Store() {
     const summary = catalogData?.summary;
 
 
-    const handleCart = (p: ProductsType | null, v: Variants | null, qty: number) => {
-        // setLoading(true)
-        const amount = v ? v?.final_price : p?.final_price;
-        setCartItem({
-            item: cartItem?.item + qty,
-            amount: cartItem?.amount + (qty * (amount ?? 0))
-        })
+    const handleCart = async (p: ProductsType | null, v: Variants | null, qty: number) => {
+        setLoading(true)
+        try {
+            const formData = new FormData();
+            formData.append('product_id', String(p?.id));
+            if (v) {
+                formData.append('variant_id', String(v?.id));
+            }
+            formData.append('qty', String(qty));
+            const res = await Post<any, FormData>('/customer/add-cart', formData)
+            if (res?.success) {
+                const amount = v ? v?.final_price : p?.final_price;
+                setCartItem({
+                    item: cartItem?.item + qty,
+                    amount: cartItem?.amount + (qty * (amount ?? 0))
+                })
+            }
+        } catch (e: any) {
+            // console.error(e);
+        } finally {
+            setLoading(false)
+        }
+
     }
 
     if (loading) return <Loading title='Sedang memuat halaman' />;
@@ -189,7 +219,7 @@ export default function Store() {
                                 handleCart={handleCart} />
                         }
                     </section>
-                    <div className='fixed bottom-0 w-full flex z-3 items-center justify-center left-0'>
+                    <div className='fixed bottom-0 w-full flex z-20 items-center justify-center left-0'>
                         <div className='max-w-7xl w-full'>
                             {
                                 summary && cartItem?.item > 0 &&

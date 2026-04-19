@@ -159,12 +159,12 @@ const Fiveteen = ({ products, isDarkMode, handleCart }: Props) => {
                                 )}
 
                                 <div className={`flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-6 p-6 ${isDarkMode ? "bg-white/5 border-white/10" : "bg-zinc-100 border-zinc-200"} rounded-[2.5rem] border`}>
-                                    {product?.is_qty && (
+                                    {product?.is_qty ? (
                                         <div className="space-y-2">
                                             <p className="text-[9px] font-black opacity-30 uppercase">Quantity</p>
                                             <QtySelector quantity={quantity} setQuantity={setQuantity} isDarkMode={isDarkMode} />
                                         </div>
-                                    )}
+                                    ) : <div></div>}
                                     <div className="text-right space-y-1">
                                         <p className="text-[9px] font-black opacity-30 uppercase">Subtotal</p>
                                         <p className="text-2xl font-black italic tracking-tighter">
