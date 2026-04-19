@@ -26,11 +26,8 @@ const hexToRgb = (hex: string) => {
     return `${r}, ${g}, ${b}`;
 };
 
-type Props = {
-    tenant: string;
-}
 
-export default function Store({ tenant }: Props) {
+export default function Store() {
     const [loading, setLoading] = useState<boolean>(true);
     const [catalogData, setCatalogData] = useState<Catalog | null>(null);
     const [isDarkTheme, setIsDarkTheme] = useState<boolean>(false);
@@ -42,6 +39,7 @@ export default function Store({ tenant }: Props) {
         item: 0,
         amount: 0
     })
+    const [retryEffect, setRetreyEffect] = useState<boolean>(false);
     const updateCssVariables = useCallback((type: 'header' | 'hero' | 'category' | 'product' | 'summary', color: string) => {
         const contrast = getContrastColor(color);
         const rgb = hexToRgb(color);
@@ -53,13 +51,13 @@ export default function Store({ tenant }: Props) {
         document.documentElement.style.setProperty(`--${type}-secondary-rgb`, contrastRgb);
     }, []);
 
-    useEffect(() => {
-        let deviceId = localStorage.getItem("device_id");
-        if (!deviceId) {
-            deviceId = uuidv4();
-            localStorage.setItem("device_id", deviceId);
-        }
-    }, [])
+    // useEffect(() => {
+    //     let deviceId = localStorage.getItem("device_id");
+    //     if (!deviceId) {
+    //         deviceId = uuidv4();
+    //         localStorage.setItem("device_id", deviceId);
+    //     }
+    // }, [])
     useEffect(() => {
         const primary = isDarkTheme ? '#020617' : '#f8fafc';   // slate-950 / slate-50
         const secondary = isDarkTheme ? '#f8fafc' : '#020617'; // kebalikannya
@@ -71,7 +69,7 @@ export default function Store({ tenant }: Props) {
     const fetchCatalog = async () => {
         try {
             setLoading(true);
-            const res = await Get<{ success: boolean; data: Catalog }>(`/catalog/${tenant}`);
+            const res = await Get<{ success: boolean; data: Catalog }>(`/customer/tenant`);
             if (res?.success && res.data) {
                 setCatalogData(res.data);
                 setIsDarkTheme(res.data.header?.mode === 'dark');
@@ -90,9 +88,28 @@ export default function Store({ tenant }: Props) {
         }
     };
 
+    const getInitToken = async () => {
+        try {
+            const res = await Get<{ success: Boolean, data: any }>('/customer/init')
+            if (res?.success) {
+                localStorage.setItem("device_id", res?.data.device_id)
+                localStorage.setItem("token", res?.data.token)
+                setRetreyEffect(true);
+            }
+        } catch (e: any) {
+            console.error(e)
+        }
+    }
+
     useEffect(() => {
-        fetchCatalog();
-    }, [updateCssVariables]);
+        const device_id = localStorage.getItem('device_id');
+        const token = localStorage.getItem('token');
+        if (device_id && token) {
+            fetchCatalog()
+        } else {
+            getInitToken();
+        }
+    }, [updateCssVariables, retryEffect]);
 
 
     const header = catalogData?.header;

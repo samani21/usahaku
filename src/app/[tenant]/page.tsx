@@ -1,16 +1,13 @@
 import Store from "@/Components/Tenant/Store"
 
-type Props = {
-    params: Promise<{ tenant: string }>
-}
 
-export default async function Page({ params }: Props) {
+export default async function Page() {
 
-    const { tenant } = await params
+
 
     return (
         <div>
-            <Store tenant={tenant} />
+            <Store />
         </div>
     )
 }
