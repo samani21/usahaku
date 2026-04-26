@@ -9,6 +9,7 @@ type Props = {
     handleFormSubmit: (form: FormData, id: number | null) => void;
     data: ProductStockType | null;
     loading: boolean;
+    onCancel: () => void;
     setLoading: Dispatch<SetStateAction<boolean>>;
 }
 
@@ -22,7 +23,7 @@ const selectOptions: OptionsType[] = [
     { label: "Option 3", value: 3 },
 ];
 
-const CreateOrUpdateProductStock = ({ handleFormSubmit, data, loading, setLoading }: Props) => {
+const CreateOrUpdateProductStock = ({ handleFormSubmit, data, loading, setLoading, onCancel }: Props) => {
     const [form, setForm] = useState<any>({
         outlet_id: "",
         product_id: "",
@@ -54,7 +55,8 @@ const CreateOrUpdateProductStock = ({ handleFormSubmit, data, loading, setLoadin
             setForm({
                 product_id: data?.product_id,
                 product_variant_id: data?.product_variant_id,
-                stock: data?.stock
+                stock: data?.stock,
+                date: data?.date
             });
         }
         getProduct()
@@ -219,16 +221,36 @@ const CreateOrUpdateProductStock = ({ handleFormSubmit, data, loading, setLoadin
                 onChange={handleChange}
                 error={error?.date}
             />
-            <button
-                type="submit"
-                disabled={loading}
-                className={`w-full py-3 rounded-xl font-semibold transition ${loading
-                    ? "bg-gray-400 cursor-not-allowed"
-                    : "bg-black text-white hover:bg-gray-800"
-                    }`}
-            >
-                {loading ? "Loading..." : "SUBMIT"}
-            </button>
+            <div className="flex flex-col sm:flex-row gap-4 pt-4">
+                {/* Tombol Batal */}
+                <button
+                    type="button"
+                    onClick={onCancel}
+                    disabled={loading}
+                    className="flex-1 py-3 rounded-xl font-semibold border border-gray-300 text-gray-700 hover:bg-gray-50 transition disabled:opacity-50"
+                >
+                    BATAL
+                </button>
+
+                {/* Tombol Simpan */}
+                <button
+                    type="submit"
+                    disabled={loading}
+                    className={`flex-[2] py-3 rounded-xl font-semibold transition flex items-center justify-center gap-2 ${loading
+                        ? "bg-gray-400 cursor-not-allowed text-white"
+                        : "bg-black text-white hover:bg-gray-800 shadow-lg active:scale-[0.98]"
+                        }`}
+                >
+                    {loading ? (
+                        <>
+                            <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                            <span>MEMPROSES...</span>
+                        </>
+                    ) : (
+                        "SIMPAN DATA"
+                    )}
+                </button>
+            </div>
         </form>
     );
 };

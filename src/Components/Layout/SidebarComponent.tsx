@@ -35,7 +35,7 @@ const SidebarComponent = ({ isActivityDropdownOpen, setIsActivityDropdownOpen, i
                 ></div>
             )}
             <div
-                className={`fixed md:relative flex-col w-64 bg-white border-r border-gray-100 p-6 z-60 transition-transform duration-300 ease-in-out h-full ${isSidebarOpen
+                className={`fixed md:relative flex-col w-64 bg-zinc-50 border-r border-gray-100 p-6 z-60 transition-transform duration-300 ease-in-out h-full ${isSidebarOpen
                     ? 'translate-x-0 flex'
                     : '-translate-x-full hidden md:flex md:translate-x-0'
                     }`}

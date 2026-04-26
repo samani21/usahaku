@@ -290,7 +290,7 @@ const CategoriesComponent = (props: Props) => {
                         setIsModalOpen(false)
                         setDataUpdate(null)
                     }}>
-                        <CreateOrUpdateCategorie handleFormSubmit={handleFormSubmit} data={dataUpdate} loading={loading} setLoading={setLoading} />
+                        <CreateOrUpdateCategorie handleFormSubmit={handleFormSubmit} data={dataUpdate} loading={loading} setLoading={setLoading} onCancel={() => setIsModalOpen(false)} />
                     </ModalCrud>
             }
 

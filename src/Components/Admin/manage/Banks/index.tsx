@@ -275,11 +275,11 @@ const BanksComponent = (props: Props) => {
                         }}
                         deleteData={deleteData}
                         handleDelete={onDelete} /> :
-                    <ModalCrud isOpen={isModalOpen} title={dataUpdate ? "Edit" : "Tambah" + ' Kategori'} onClose={() => {
+                    <ModalCrud isOpen={isModalOpen} title={dataUpdate ? "Edit" : "Tambah" + ' Bank'} onClose={() => {
                         setIsModalOpen(false)
                         setDataUpdate(null)
                     }}>
-                        <CreateOrUpdateBanks handleFormSubmit={handleFormSubmit} data={dataUpdate} />
+                        <CreateOrUpdateBanks handleFormSubmit={handleFormSubmit} data={dataUpdate} onCancel={() => setIsModalOpen(false)} />
                     </ModalCrud>
             }
 

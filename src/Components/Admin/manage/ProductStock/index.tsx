@@ -290,7 +290,7 @@ const ProductStockComponent = (props: Props) => {
                         setIsModalOpen(false)
                         setDataUpdate(null)
                     }}>
-                        <CreateOrUpdateProductStock handleFormSubmit={handleFormSubmit} data={dataUpdate} loading={loading} setLoading={setLoading} />
+                        <CreateOrUpdateProductStock handleFormSubmit={handleFormSubmit} data={dataUpdate} loading={loading} setLoading={setLoading} onCancel={() => setIsModalOpen(false)} />
                     </ModalCrud>
             }
             {

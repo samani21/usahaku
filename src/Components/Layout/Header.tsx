@@ -49,7 +49,7 @@ const Header = ({ setIsSidebarOpen, isSidebarOpen, setIsMobileActionMenuOpen, ha
   ];
   const user = getUserInfo();
   return (
-    <header className="flex items-center justify-between px-4 py-2 md:py-4 md:px-6 bg-[#ffffff] sticky top-0 z-10 border-b border-gray-100">
+    <header className="flex items-center justify-between px-4 py-2 md:py-4 md:px-6 bg-zinc-50 sticky top-0 z-10 border-b border-gray-100">
       <h1 className="text-2xl font-bold text-gray-800 hidden md:block">{label}</h1>
 
       <button
