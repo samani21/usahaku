@@ -19,7 +19,7 @@ const ModalDelete = ({ isOpen, onClose, deleteData, handleDelete }: Props) => {
                 <div className="sticky top-0 bg-red-700 p-5 rounded-t-xl shadow-lg flex justify-between items-center z-10">
                     <div className="flex items-center space-x-3">
                         <Trash2 size={28} className="text-white" />
-                        <h2 className="text-2xl font-bold text-white">Hapus Produk</h2>
+                        <h2 className="text-2xl font-bold text-white">Hapus Data</h2>
                     </div>
                     <button
                         onClick={onClose}
