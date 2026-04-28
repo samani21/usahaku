@@ -69,56 +69,75 @@ const Three = ({ products, isDarkMode, handleCart }: Props) => {
         <div className='grid grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-6 md:gap-4 h-full'>
             {products?.map((p, i) => {
                 const { finalPrice, label } = getPromoDetails(p);
+                const is_available = (p?.product_stock ?? 0) > 0;
 
                 return (
                     <div
-                        onClick={() => setProduct(p)}
                         key={i}
-                        className="group cursor-pointer flex flex-col items-center justify-center"
+                        onClick={() => is_available && setProduct(p)}
+                        className={`group flex flex-col items-center justify-center transition-all duration-500 
+                ${is_available ? "cursor-pointer" : "cursor-not-allowed opacity-80"}`}
                     >
                         {/* Image Container Circle */}
-                        <div className={`relative w-48 h-48 sm:w-56 sm:h-56 rounded-full shadow-2xl transition-transform duration-500 group-hover:-translate-y-4 border-[10px] ${isDarkMode ? "border-slate-800" : "border-white"}`}>
+                        <div className={`relative w-48 h-48 sm:w-56 sm:h-56 rounded-full shadow-2xl transition-all duration-500 border-[10px] 
+                ${is_available ? "group-hover:-translate-y-4 shadow-black/20" : "grayscale shadow-none"} 
+                ${isDarkMode ? "border-slate-800" : "border-white"}`}>
 
-                            {/* Badge Diskon - Permanen (Tidak perlu hover) */}
-                            {label && (
+                            {/* Badge Diskon - Only show if available */}
+                            {label && is_available && (
                                 <div className="absolute top-2 right-2 z-1 bg-[var(--product-primary-color)] text-white text-[10px] sm:text-xs font-black px-3 py-1.5 rounded-full uppercase italic shadow-lg border-2 border-white animate-bounce-slow">
                                     {label}
+                                </div>
+                            )}
+
+                            {/* Sold Out Badge Overlay */}
+                            {!is_available && (
+                                <div className="absolute inset-0 z-10 flex items-center justify-center rounded-full bg-black/40 backdrop-blur-[1px]">
+                                    <span className="bg-white text-black text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-tighter shadow-xl border-2 border-black rotate-[-12deg]">
+                                        Habis Terjual
+                                    </span>
                                 </div>
                             )}
 
                             <div className="w-full h-full rounded-full overflow-hidden">
                                 <img
                                     src={p?.image}
-                                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                                    className={`w-full h-full object-cover transition-transform duration-700 
+                            ${is_available ? "group-hover:scale-110" : ""}`}
                                     alt={p.name}
                                 />
                             </div>
                         </div>
 
                         {/* Content Area */}
-                        <div className="mt-8 flex flex-col items-center text-center space-y-2">
+                        <div className={`mt-8 flex flex-col items-center text-center space-y-2 transition-opacity duration-500 ${!is_available ? "opacity-50" : ""}`}>
                             <span className="text-[10px] font-bold opacity-40 uppercase tracking-[0.2em]">{p.category}</span>
-                            <h3 className="font-black text-sm sm:text-lg h-8 sm:h-12 uppercase italic leading-tight group-hover:text-[var(--product-primary-color)] transition-colors line-clamp-2">
+                            <h3 className={`font-black text-sm sm:text-lg h-8 sm:h-12 uppercase italic leading-tight transition-colors line-clamp-2 
+                    ${is_available ? "group-hover:text-[var(--product-primary-color)]" : "text-zinc-500"}`}>
                                 {p.name}
                             </h3>
 
                             <div className="flex flex-col items-center gap-1">
                                 <div className='h-6'>
-                                    {label && (
+                                    {label && is_available && (
                                         <span className="text-[12px] line-through opacity-30 font-bold">
                                             {formatIDR(p.price)}
                                         </span>
                                     )}
                                 </div>
-                                <div className="px-6 py-2 rounded-full font-black text-sm transition-all bg-[var(--product-primary-color)] text-white group-hover:px-8 group-hover:bg-black group-hover:shadow-lg">
-                                    {formatIDR(finalPrice)}
+
+                                {/* Price Button / Sold Out Button */}
+                                <div className={`px-6 py-2 rounded-full font-black text-sm transition-all shadow-md 
+                        ${is_available
+                                        ? "bg-[var(--product-primary-color)] text-white group-hover:px-10 group-hover:bg-black group-hover:shadow-xl"
+                                        : "bg-zinc-200 text-zinc-400 border border-zinc-300"}`}>
+                                    {is_available ? formatIDR(finalPrice) : "OUT OF STOCK"}
                                 </div>
                             </div>
                         </div>
                     </div>
                 );
             })}
-
             <ModalWrapper
                 activeModal={product ? true : false}
                 closeModal={() => {
@@ -185,7 +204,7 @@ const Three = ({ products, isDarkMode, handleCart }: Props) => {
                             }
                             {
                                 product && product.is_qty ?
-                                    <QtySelector quantity={quantity} setQuantity={setQuantity} isDarkMode={isDarkMode} /> : ""
+                                    <QtySelector quantity={quantity} product={product} selectedVariant={selectedVariant} setQuantity={setQuantity} isDarkMode={isDarkMode} /> : ""
                             }
                         </div>
                         <div className="sm:flex items-center gap-6 pt-4 " >

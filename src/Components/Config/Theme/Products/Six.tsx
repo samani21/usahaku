@@ -6,6 +6,8 @@ import { ProductsType, Variants } from '@/types/Admin/ProductsType';
 import { formatIDR } from '@/types/FormtRupiah';
 import ExpandableHTML from './ExpandableHTML';
 import { getPromoDetails } from './PromoType';
+import QtySelector from './QtySelector';
+import VariantPicker from './VariantPicker';
 
 type Props = {
     products: ProductsType[];
@@ -49,53 +51,76 @@ const Six = ({ products, isDarkMode, handleCart }: Props) => {
         <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-12 p-4'>
             {products?.map((p, i) => {
                 const { finalPrice, label } = getPromoDetails(p);
+                const is_available = (p?.product_stock ?? 0) > 0;
 
                 return (
                     <div
                         key={i}
-                        className={`group relative flex flex-col transition-all duration-500 ${isDarkMode ? 'text-white' : 'text-zinc-900'
-                            }`}
+                        className={`group relative flex flex-col transition-all duration-500 
+                ${isDarkMode ? 'text-white' : 'text-zinc-900'}
+                ${!is_available ? 'opacity-70' : ''}`}
                     >
                         {/* Image Container with Custom Frame */}
-                        <div className={`relative overflow-hidden ${isDarkMode ? "bg-zinc-800 border-zinc-700" : "bg-zinc-100 border-zinc-200"} border-[1px]`}>
-                            {/* Promo Label Overlay */}
-                            {label && (
-                                <div className={`absolute top-0 right-0 ${isDarkMode ? "bg-white text-black" : " bg-zinc-900 text-white"} px-4 py-2 text-[10px] font-bold uppercase tracking-[0.3em] z-10`}>
+                        <div className={`relative overflow-hidden border-[1px] transition-colors duration-500
+                ${isDarkMode ? "bg-zinc-800 border-zinc-700" : "bg-zinc-100 border-zinc-200"}
+                ${!is_available ? "grayscale" : ""}`}>
+
+                            {/* Promo Label Overlay - Hidden if sold out to keep it clean */}
+                            {label && is_available && (
+                                <div className={`absolute top-0 right-0 z-10 px-4 py-2 text-[10px] font-bold uppercase tracking-[0.3em]
+                        ${isDarkMode ? "bg-white text-black" : " bg-zinc-900 text-white"}`}>
                                     {label}
                                 </div>
                             )}
 
                             <img
                                 src={p.image}
-                                className="w-full aspect-[4/5] object-cover transition-transform duration-700 group-hover:scale-105"
+                                className={`w-full aspect-[4/5] object-cover transition-transform duration-700 
+                        ${is_available ? "group-hover:scale-105" : ""}`}
                                 alt={p.name}
                             />
 
-                            {/* Hover Quick Action */}
+                            {/* Hover Quick Action / Sold Out Status */}
                             <div
-                                onClick={() => { setProduct(p); setProductAlert(p); }}
-                                className="absolute inset-0 bg-zinc-900/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center cursor-pointer"
+                                onClick={() => {
+                                    if (is_available) {
+                                        setProduct(p);
+                                        setProductAlert(p);
+                                    }
+                                }}
+                                className={`absolute inset-0 transition-all duration-300 flex items-center justify-center
+                        ${is_available
+                                        ? "bg-zinc-900/40 opacity-0 group-hover:opacity-100 cursor-pointer"
+                                        : "bg-zinc-900/10 opacity-100 cursor-not-allowed"}`}
                             >
-                                <div className="bg-white text-black px-6 py-3 flex items-center gap-3 font-bold text-xs tracking-widest translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
-                                    VIEW PRODUCT <Maximize2 size={14} />
+                                <div className={`px-6 py-3 flex items-center gap-3 font-bold text-xs tracking-widest transition-all duration-500
+                        ${is_available
+                                        ? "bg-white text-black translate-y-4 group-hover:translate-y-0"
+                                        : "bg-zinc-400 text-white translate-y-0"}`}>
+                                    {is_available ? (
+                                        <>VIEW PRODUCT <Maximize2 size={14} /></>
+                                    ) : (
+                                        <>OUT OF STOCK <X size={14} /></>
+                                    )}
                                 </div>
                             </div>
                         </div>
 
                         {/* Text Info - Offset Position */}
-                        <div className="mt-6 flex flex-col gap-2 relative">
+                        <div className={`mt-6 flex flex-col gap-2 relative transition-opacity ${!is_available ? "opacity-50" : ""}`}>
                             <div className="flex justify-between items-start gap-4">
                                 <h3 className="font-bold text-xl uppercase tracking-tighter leading-none max-w-[70%]">
                                     {p.name}
                                 </h3>
-                                <p className="text-lg font-light tracking-tighter opacity-70 italic">
+                                <p className={`text-lg font-light tracking-tighter italic 
+                        ${is_available ? "opacity-70" : "line-through opacity-30"}`}>
                                     {formatIDR(finalPrice)}
                                 </p>
                             </div>
                             <div className="flex items-center justify-between text-[10px] font-black uppercase tracking-[0.2em] opacity-40">
                                 <span>{p.category}</span>
                                 <span className="h-[1px] flex-1 bg-current mx-4 opacity-20"></span>
-                                {/* <span>ID: {i + 102}</span> */}
+                                {!is_available && <span className="text-red-500">Currently Unavailable</span>}
                             </div>
                         </div>
                     </div>
@@ -152,33 +177,16 @@ const Six = ({ products, isDarkMode, handleCart }: Props) => {
                         {/* Interactive UI */}
                         <div className="space-y-8">
                             {product?.variants && product?.variants?.length > 0 && (
-                                <div className="space-y-4">
-                                    <span className="text-[10px] font-black uppercase tracking-widest">Select Variant</span>
-                                    <div className="grid grid-cols-2 gap-2">
-                                        {product.variants.map((v) => (
-                                            <button
-                                                key={v.id}
-                                                onClick={() => setSelectedVariant(v)}
-                                                className={`py-3 px-4 text-[10px] font-bold uppercase border tracking-widest transition-all ${selectedVariant?.id === v.id
-                                                    ? isDarkMode ? "bbg-white text-black border-white" : "bg-zinc-900 text-white border-zinc-900"
-                                                    : isDarkMode ? "border-zinc-800 hover:border-zinc-400" : "border-zinc-200 hover:border-zinc-400"
-                                                    }`}
-                                            >
-                                                {v.name}
-                                            </button>
-                                        ))}
-                                    </div>
+                                <div className="">
+                                    <VariantPicker variants={product?.variants} selectedVariant={selectedVariant} setSelectedVariant={setSelectedVariant} isDarkMode={isDarkMode} />
                                 </div>
                             )}
 
                             <div className={`flex items-center gap-10 pt-6 border-t ${isDarkMode ? "border-zinc-900" : "border-zinc-100"}`}>
-                                {product?.is_qty && (
-                                    <div className="flex items-center gap-6">
-                                        <button onClick={() => setQuantity(Math.max(1, quantity - 1))}><Minus size={16} /></button>
-                                        <span className="font-bold text-lg w-4 text-center">{quantity}</span>
-                                        <button onClick={() => setQuantity(quantity + 1)}><Plus size={16} /></button>
-                                    </div>
-                                )}
+                                {
+                                    product && product.is_qty ?
+                                        <QtySelector quantity={quantity} product={product} selectedVariant={selectedVariant} setQuantity={setQuantity} isDarkMode={isDarkMode} /> : ""
+                                }
                                 <div className="flex-1">
                                     <span className="text-[10px] font-black opacity-30 uppercase block">Total</span>
                                     <span className="text-2xl font-bold tracking-tighter italic">

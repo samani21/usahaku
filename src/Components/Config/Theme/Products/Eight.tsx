@@ -59,44 +59,74 @@ const Eight = ({ products, isDarkMode, handleCart }: Props) => {
         <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8'>
             {products?.map((p, i) => {
                 const { finalPrice, label } = getPromoDetails(p);
+                const is_available = (p?.product_stock ?? 0) > 0;
 
                 return (
                     <div
                         key={i}
-                        onClick={() => { setProduct(p); setProductAlert(p); }}
-                        className={`group relative flex flex-col rounded-[2rem] overflow-hidden transition-all duration-500 cursor-pointer border ${isDarkMode
-                            ? 'bg-zinc-900 border-white/5 hover:border-[var(--product-primary-color)]/50 hover:shadow-[0_20px_40px_rgba(0,0,0,0.4)]'
-                            : 'bg-white border-slate-100 hover:shadow-[0_20px_40px_rgba(0,0,0,0.08)]'
+                        onClick={() => {
+                            if (is_available) {
+                                setProduct(p);
+                                setProductAlert(p);
+                            }
+                        }}
+                        className={`group relative flex flex-col rounded-[2rem] overflow-hidden transition-all duration-500 border ${is_available
+                            ? "cursor-pointer " + (isDarkMode
+                                ? 'bg-zinc-900 border-white/5 hover:border-[var(--product-primary-color)]/50 hover:shadow-[0_20px_40px_rgba(0,0,0,0.4)]'
+                                : 'bg-white border-slate-100 hover:shadow-[0_20px_40px_rgba(0,0,0,0.08)]')
+                            : "cursor-not-allowed " + (isDarkMode ? 'bg-zinc-950 border-white/5' : 'bg-slate-50 border-slate-200')
                             }`}
                     >
                         {/* Image Canvas */}
                         <div className={`relative aspect-[4/5] overflow-hidden ${isDarkMode ? "bg-zinc-800" : "bg-zinc-100"}`}>
                             <img
                                 src={p?.image}
-                                className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
+                                className={`w-full h-full object-cover transition-all duration-1000 
+                        ${is_available ? "group-hover:scale-110" : "grayscale opacity-30"}`}
                                 alt={p?.name}
                             />
 
                             {/* Floating Action Header */}
-                            <div className="absolute top-4 left-4 right-4 flex justify-between items-start z-10">
-                                {label ? (
+                            <div className="absolute top-4 left-4 right-4 flex justify-between items-start z-1">
+                                {label && is_available ? (
                                     <div className="bg-[var(--product-primary-color)] text-white text-[10px] font-black px-4 py-1.5 rounded-full shadow-lg uppercase tracking-widest italic">
                                         {label}
                                     </div>
+                                ) : !is_available ? (
+                                    <div className="bg-zinc-800/80 backdrop-blur-sm text-white/50 text-[9px] font-bold px-3 py-1 rounded-md uppercase tracking-widest border border-white/10">
+                                        Sold Out
+                                    </div>
                                 ) : <div />}
-                                <div className="h-10 w-10 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center border border-white/20 opacity-0 group-hover:opacity-100 transition-opacity">
-                                    <ArrowUpRight size={18} className="text-white" />
-                                </div>
+
+                                {is_available && (
+                                    <div className="h-10 w-10 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center border border-white/20 opacity-0 group-hover:opacity-100 transition-opacity">
+                                        <ArrowUpRight size={18} className="text-white" />
+                                    </div>
+                                )}
                             </div>
 
-                            {/* Gradient Overlay for Text Visibility */}
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity" />
+                            {/* Gradient Overlay */}
+                            <div className={`absolute inset-0 transition-opacity duration-500 bg-gradient-to-t from-black/90 via-transparent to-transparent 
+                    ${is_available ? "opacity-60 group-hover:opacity-80" : "opacity-90"}`}
+                            />
+
+                            {/* Centered Sold Out Text (Optional enhancement) */}
+                            {!is_available && (
+                                <div className="absolute inset-0 flex items-center justify-center">
+                                    <span className="text-white/20 font-black text-4xl tracking-tighter uppercase rotate-[-10deg] select-none">
+                                        Out of Stock
+                                    </span>
+                                </div>
+                            )}
                         </div>
 
                         {/* Content Area */}
-                        <div className="p-6 flex flex-col flex-1">
+                        <div className={`p-6 flex flex-col flex-1 transition-opacity duration-500 ${!is_available ? "opacity-40" : ""}`}>
                             <div className="flex-1 space-y-2">
-                                <span className="text-[10px] font-bold text-[var(--product-primary-color)] uppercase tracking-[0.2em]">{p.category}</span>
+                                <span className={`text-[10px] font-bold uppercase tracking-[0.2em] 
+                        ${is_available ? "text-[var(--product-primary-color)]" : "text-zinc-500"}`}>
+                                    {p.category}
+                                </span>
                                 <h3 className={`text-xl font-bold leading-tight line-clamp-2 tracking-tighter ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>
                                     {p.name}
                                 </h3>
@@ -104,11 +134,18 @@ const Eight = ({ products, isDarkMode, handleCart }: Props) => {
 
                             <div className="mt-6 flex items-end justify-between border-t border-dashed border-slate-500/20 pt-4">
                                 <div className="flex flex-col">
-                                    {label && <span className="text-xs line-through opacity-30 font-medium">{formatIDR(p.price)}</span>}
-                                    <span className="text-2xl font-black tracking-tighter text-[var(--product-primary-color)]">{formatIDR(finalPrice)}</span>
+                                    {label && is_available && <span className="text-xs line-through opacity-30 font-medium">{formatIDR(p.price)}</span>}
+                                    <span className={`text-2xl font-black tracking-tighter 
+                            ${is_available ? "text-[var(--product-primary-color)]" : "text-zinc-500"}`}>
+                                        {formatIDR(finalPrice)}
+                                    </span>
                                 </div>
-                                <div className={`p-3 rounded-2xl ${isDarkMode ? 'bg-white text-black' : 'bg-slate-900 text-white'} group-hover:rotate-12 transition-transform`}>
-                                    <ShoppingBag size={18} />
+
+                                <div className={`p-3 rounded-2xl transition-all duration-300 
+                        ${is_available
+                                        ? (isDarkMode ? 'bg-white text-black group-hover:rotate-12' : 'bg-slate-900 text-white group-hover:rotate-12')
+                                        : 'bg-zinc-800 text-zinc-600'}`}>
+                                    {is_available ? <ShoppingBag size={18} /> : <X size={18} />}
                                 </div>
                             </div>
                         </div>
@@ -179,7 +216,10 @@ const Eight = ({ products, isDarkMode, handleCart }: Props) => {
                         {/* Order Actions */}
                         <div className="mt-12 space-y-6">
                             <div className="flex items-center justify-between p-5 bg-[var(--product-primary-color)]/5 rounded-3xl border border-[var(--product-primary-color)]/10">
-                                <QtySelector quantity={quantity} setQuantity={setQuantity} isDarkMode={isDarkMode} />
+                                {
+                                    product && product.is_qty ?
+                                        <QtySelector quantity={quantity} product={product} selectedVariant={selectedVariant} setQuantity={setQuantity} isDarkMode={isDarkMode} /> : ""
+                                }
                                 <div className="text-right">
                                     <p className="text-[9px] font-black opacity-30 uppercase">Total Estimasi</p>
                                     <p className="text-2xl font-black tracking-tighter">

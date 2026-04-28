@@ -66,6 +66,7 @@ export interface Variants {
     percent_discount?: number,
     final_price: number,
     customValue?: string,
+    product_variant_stock?: number,
     pivot?: {
         percent: number;
         price: number;

@@ -80,44 +80,76 @@ const Twelve = ({ products, isDarkMode, handleCart }: Props) => {
         <div className='grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4  h-full'>
             {products?.map((p, i) => {
                 const { finalPrice, label } = getPromoDetails(p);
+                const is_available = (p?.product_stock ?? 0) > 0;
 
                 return (
                     <div
                         key={i}
-                        onClick={() => setProduct(p)}
-                        className="relative h-80 group cursor-pointer flex items-center justify-center"
+                        onClick={() => is_available && setProduct(p)}
+                        className={`relative h-80 group flex items-center justify-center transition-all ${is_available ? "cursor-pointer" : "cursor-not-allowed"
+                            }`}
                     >
                         {/* Layer Dekoratif Belakang */}
-                        <div className="absolute inset-10 bg-rose-400 rounded-[2.5rem] rotate-12 transition-transform group-hover:rotate-0 opacity-20 duration-500" />
-                        <div className="absolute inset-10 bg-indigo-400 rounded-[2.5rem] -rotate-6 transition-transform group-hover:rotate-0 opacity-20 duration-500" />
+                        <div className={`absolute inset-10 rounded-[2.5rem] rotate-12 transition-all duration-500 
+                ${is_available
+                                ? "bg-rose-400 opacity-20 group-hover:rotate-0"
+                                : "bg-slate-300 opacity-10 rotate-0"}`}
+                        />
+                        <div className={`absolute inset-10 rounded-[2.5rem] -rotate-6 transition-all duration-500 
+                ${is_available
+                                ? "bg-indigo-400 opacity-20 group-hover:rotate-0"
+                                : "bg-slate-400 opacity-10 rotate-0"}`}
+                        />
 
                         {/* Kartu Utama */}
-                        <div className={`relative w-[85%] sm:w-48 h-64 rounded-[2rem] overflow-hidden shadow-2xl transition-all duration-500 group-hover:-translate-y-8 ${isDarkMode ? 'bg-slate-900 text-white' : 'bg-white text-slate-900'}`}>
+                        <div className={`relative w-[85%] sm:w-48 h-64 rounded-[2rem] overflow-hidden shadow-2xl transition-all duration-500 
+                ${is_available ? "group-hover:-translate-y-8" : "grayscale opacity-80"} 
+                ${isDarkMode ? 'bg-slate-900 text-white' : 'bg-white text-slate-900'}`}>
 
-                            {/* Badge Diskon di Gambar */}
-                            {label && (
-                                <div className="absolute top-3 left-3 z-1 bg-rose-600 text-white text-[9px] font-black px-2 py-0.5 rounded-lg shadow-lg">
-                                    {label}
+                            {/* Badge Status (Promo atau Sold Out) */}
+                            {is_available ? (
+                                label && (
+                                    <div className="absolute top-3 left-3 z-10 bg-rose-600 text-white text-[9px] font-black px-2 py-0.5 rounded-lg shadow-lg">
+                                        {label}
+                                    </div>
+                                )
+                            ) : (
+                                <div className="absolute top-3 left-3 z-10 bg-slate-700 text-white text-[9px] font-black px-2 py-0.5 rounded-lg">
+                                    SOLD OUT
                                 </div>
                             )}
 
-                            <img src={p.image} className="w-full h-3/5 object-cover" alt={p.name} />
+                            <img
+                                src={p.image}
+                                className={`w-full h-3/5 object-cover ${!is_available ? "opacity-50" : ""}`}
+                                alt={p.name}
+                            />
 
                             <div className="p-4 text-center">
-                                {p.category && (
-                                    <span className="text-[10px] font-black uppercase opacity-40 block mb-0.5">{p.category}</span>
-                                )}
-                                <h3 className="font-bold text-sm truncate uppercase italic tracking-tight mb-1">{p.name}</h3>
+                                <div className={!is_available ? "opacity-40" : ""}>
+                                    {p.category && (
+                                        <span className="text-[10px] font-black uppercase opacity-40 block mb-0.5">{p.category}</span>
+                                    )}
+                                    <h3 className="font-bold text-sm truncate uppercase italic tracking-tight mb-1">{p.name}</h3>
+                                </div>
 
                                 <div className="flex flex-col items-center">
-                                    {label && (
-                                        <span className="text-[9px] line-through opacity-30 font-bold -mb-1">
-                                            {formatIDR(p.price)}
-                                        </span>
+                                    {is_available ? (
+                                        <>
+                                            {label && (
+                                                <span className="text-[9px] line-through opacity-30 font-bold -mb-1">
+                                                    {formatIDR(p.price)}
+                                                </span>
+                                            )}
+                                            <p className="font-black text-base text-[var(--product-primary-color)] drop-shadow-sm">
+                                                {formatIDR(finalPrice)}
+                                            </p>
+                                        </>
+                                    ) : (
+                                        <p className="font-black text-sm text-slate-500 italic mt-1">
+                                            Tidak Tersedia
+                                        </p>
                                     )}
-                                    <p className="font-black text-base text-[var(--product-primary-color)] drop-shadow-sm">
-                                        {formatIDR(finalPrice)}
-                                    </p>
                                 </div>
                             </div>
                         </div>
@@ -196,7 +228,7 @@ const Twelve = ({ products, isDarkMode, handleCart }: Props) => {
 
                                 <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-6">
                                     {product?.is_qty ? (
-                                        <QtySelector quantity={quantity} setQuantity={setQuantity} isDarkMode={isDarkMode} />
+                                        <QtySelector selectedVariant={selectedVariant} product={product} quantity={quantity} setQuantity={setQuantity} isDarkMode={isDarkMode} />
                                     ) : <div></div>}
                                     <div className="text-left sm:text-right">
                                         <p className={`text-[10px] font-black uppercase opacity-40 tracking-widest mb-1 ${isDarkMode ? "text-gray-100" : "text-gray-700"}`}>Subtotal</p>

@@ -17,11 +17,15 @@ import {
     Minus,
     Trash2,
     Info,
-    ChevronRight
+    ChevronRight,
+    Copy,
+    AlertTriangle
 } from 'lucide-react';
 import { Get } from '@/utils/Get';
 import Loading from '../Component/Loading';
 import { useRouter } from 'next/navigation';
+import { BanksType } from '@/types/Admin/Banks';
+import { Post } from '@/utils/Post';
 
 interface CartItemsType {
     id: number;
@@ -41,6 +45,7 @@ interface CartItemsType {
 interface CartsType {
     items: CartItemsType[];
     total: number;
+    banks: BanksType[];
 }
 
 const CheckOutComponent = () => {
@@ -50,8 +55,25 @@ const CheckOutComponent = () => {
     const [imagePreview, setImagePreview] = useState<string | null>(null);
     const [showMobileUpload, setShowMobileUpload] = useState(false);
     const [items, setItems] = useState<CartItemsType[]>([]);
+    const [banks, setBanks] = useState<BanksType[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
     const router = useRouter();
+    const [customerName, setCustomerName] = useState('');
+    const [phoneNumber, setPhoneNumber] = useState('');
+    const [error, setError] = useState<string | null>(null);
+    console.log('customerName', customerName)
+    // Fungsi untuk memformat nomor ke 628
+    const handlePhoneChange = (e: any) => {
+        let input = e.target.value.replace(/\D/g, ''); // Hapus semua karakter non-angka
+        if (input.startsWith('0')) {
+            input = '62' + input.substring(1);
+        } else if (input.startsWith('8')) {
+            input = '62' + input;
+        } else if (input.startsWith('+62')) {
+            // Ini ditangani oleh replace non-angka di atas menjadi 62
+        }
+        setPhoneNumber(input);
+    };
     const updateQty = (id: number, delta: number) => {
         setItems(prevItems =>
             prevItems.map(item => {
@@ -79,9 +101,29 @@ const CheckOutComponent = () => {
         }
     };
 
-    const handleCheckout = () => {
-        if (!paymentMethod || items.length === 0) return;
-        setIsPaid(true);
+    const handleCheckout = async () => {
+        try {
+
+            if (!customerName) {
+                setError("Harap isi nama penerima")
+                return
+            }
+            if (!phoneNumber) {
+                setError("Harap Isi no Whatsapp")
+                return
+            }
+            const formData = new FormData();
+            formData.append('payment_method', paymentMethod);
+            formData.append('customer_name', customerName);
+            formData.append('phone_number', phoneNumber);
+            const res = await Post<any, FormData>('/customer/create-order', formData)
+            // if (!paymentMethod || items.length === 0) return;
+            // setIsPaid(true);
+        } catch (e: any) {
+
+        } finally {
+
+        }
     };
 
     useEffect(() => {
@@ -142,6 +184,7 @@ const CheckOutComponent = () => {
             const res = await Get<{ success: boolean, data: CartsType }>('customer/list-cart');
             if (res?.success) {
                 setItems(res?.data?.items)
+                setBanks(res?.data?.banks)
             }
         } catch (e: any) {
 
@@ -244,18 +287,22 @@ const CheckOutComponent = () => {
                                                 </div>
                                             ) : (
                                                 <div className="space-y-4">
-                                                    <div className={`p-4 ${darkMode ? "border-gray-700 bg-[#1a2333]" : "bg-white border-gray-200"} rounded-2xl border shadow-sm text-left`}>
-                                                        <div className="flex justify-between items-center mb-2">
-                                                            <span className="text-[10px] font-bold text-blue-600 uppercase">Bank BCA</span>
-                                                            <img src="https://upload.wikimedia.org/wikipedia/commons/5/5c/Bank_Central_Asia.svg" alt="BCA" className="h-3" />
-                                                        </div>
-                                                        <p className="text-xs text-gray-400 mb-1">Nomor Rekening:</p>
-                                                        <p className={`text-lg font-mono font-bold ${darkMode ? "text-white" : "text-gray-800"}`}>883 0192 1102</p>
-                                                        <p className="text-[10px] text-gray-500 mt-1">a/n PT TOKO SEPATU INDO</p>
-                                                    </div>
-                                                    <button className="text-[10px] font-bold text-emerald-500 hover:underline flex items-center justify-center gap-1 mx-auto">
-                                                        Salin No. Rekening <ChevronRight size={10} />
-                                                    </button>
+                                                    {
+                                                        banks?.map((b, i) => (
+                                                            <div key={i} className={`p-4 ${darkMode ? "border-gray-700 bg-[#1a2333]" : "bg-white border-gray-200"} rounded-2xl border shadow-sm text-left`}>
+                                                                <div className="flex justify-between items-center mb-2">
+                                                                    <span className="text-[10px] font-bold text-blue-600 uppercase">{b?.master_bank?.name}</span>
+                                                                    <img src={b?.master_bank?.logo} alt={b?.master_bank?.name} className="h-3" />
+                                                                </div>
+                                                                <p className="text-xs text-gray-400 mb-1">Nomor Rekening:</p>
+                                                                <div className='flex items-center justify-between'>
+                                                                    <p className={`text-lg font-mono font-bold ${darkMode ? "text-white" : "text-gray-800"}`}>{b?.account_number}</p>
+                                                                    <Copy size={14} />
+                                                                </div>
+                                                                <p className="text-[10px] text-gray-500 mt-1">a/n {b?.account_name}</p>
+                                                            </div>
+                                                        ))
+                                                    }
                                                 </div>
                                             )}
                                         </div>
@@ -346,7 +393,60 @@ const CheckOutComponent = () => {
                                 <span className="text-emerald-600">Rp {total.toLocaleString('id-ID')}</span>
                             </div>
                         </div>
+                        <div className="mt-6 space-y-4">
+                            {/* Input Nama */}
+                            <div>
+                                <label className={`block text-xs font-bold mb-2 ${darkMode ? "text-gray-400" : "text-gray-500"}`}>
+                                    NAMA PENERIMA <span className="text-red-500">*</span>
+                                </label>
+                                <input
+                                    type="text"
+                                    placeholder="Masukkan nama lengkap"
+                                    value={customerName}
+                                    onChange={(e) => setCustomerName(e.target.value)}
+                                    className={`w-full p-3 rounded-xl border text-sm outline-none transition-all ${darkMode
+                                        ? `bg-[#0f1520] text-white ${!customerName && items.length > 0 ? "border-red-900/50 focus:border-red-500" : "border-gray-800 focus:border-emerald-500"}`
+                                        : `bg-gray-50 ${!customerName && items.length > 0 ? "border-red-300 focus:border-red-500" : "border-gray-200 focus:border-emerald-500"}`
+                                        }`}
+                                />
+                                {!customerName && items.length > 0 && (
+                                    <p className="text-[10px] text-red-500 mt-1 italic">* Nama wajib diisi untuk pengiriman</p>
+                                )}
+                            </div>
 
+                            {/* Input WhatsApp */}
+                            <div>
+                                <label className={`block text-xs font-bold mb-2 ${darkMode ? "text-gray-400" : "text-gray-500"}`}>
+                                    NOMOR WHATSAPP <span className="text-red-500">*</span>
+                                </label>
+                                <input
+                                    type="text"
+                                    placeholder="Contoh: 0812..."
+                                    value={phoneNumber}
+                                    onChange={handlePhoneChange}
+                                    className={`w-full p-3 rounded-xl border text-sm outline-none transition-all ${darkMode
+                                        ? `bg-[#0f1520] text-white ${(phoneNumber && !phoneNumber.startsWith('628')) || (items.length > 0 && !phoneNumber) ? "border-red-900/50 focus:border-red-500" : "border-gray-800 focus:border-emerald-500"}`
+                                        : `bg-gray-50 ${(phoneNumber && !phoneNumber.startsWith('628')) || (items.length > 0 && !phoneNumber) ? "border-red-300 focus:border-red-500" : "border-gray-200 focus:border-emerald-500"}`
+                                        }`}
+                                />
+
+                                {/* Pesan Error Spesifik */}
+                                {items.length > 0 && !phoneNumber ? (
+                                    <p className="text-[10px] text-red-500 mt-1 italic">* Nomor WA wajib diisi</p>
+                                ) : phoneNumber && !phoneNumber.startsWith('628') ? (
+                                    <div className="flex items-center gap-1 mt-1 text-red-500">
+                                        <span className="text-[10px] font-medium italic">Format salah! Gunakan awalan 628</span>
+                                    </div>
+                                ) : phoneNumber && phoneNumber.length < 10 ? (
+                                    <p className="text-[10px] text-orange-500 mt-1 italic">Nomor terlalu pendek...</p>
+                                ) : null}
+                            </div>
+                        </div>
+                        {
+                            error && <div className='bg-red-50 text-xs text-red-600 flex items-center gap-2 px-4 py-2 mt-2 rounded-lg'>
+                                <AlertTriangle size={14} /> {error}
+                            </div>
+                        }
                         <button
                             disabled={!paymentMethod || items.length === 0 || ((paymentMethod === 'transfer' || paymentMethod === 'qris') && !imagePreview)}
                             onClick={handleCheckout}

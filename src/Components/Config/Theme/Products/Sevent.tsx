@@ -48,50 +48,81 @@ const Sevent = ({ products, isDarkMode, handleCart }: Props) => {
             <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 max-w-7xl mx-auto'>
                 {products?.map((p, i) => {
                     const { finalPrice, label } = getPromoDetails(p);
+                    const is_available = (p?.product_stock ?? 0) > 0;
+
                     return (
                         <div
                             key={i}
-                            onClick={() => { setProduct(p); setProductAlert(p); }}
-                            className={`group relative p-4 rounded-[2rem] transition-all duration-500 cursor-pointer ${isDarkMode
-                                ? 'bg-white/[0.03] hover:bg-white/[0.08] border-white/5'
-                                : 'bg-white hover:bg-slate-50 border-slate-200/60'
-                                } border hover:-translate-y-2`}
+                            onClick={() => {
+                                if (is_available) {
+                                    setProduct(p);
+                                    setProductAlert(p);
+                                }
+                            }}
+                            className={`group relative p-4 rounded-[2rem] transition-all duration-500 
+                ${is_available
+                                    ? 'cursor-pointer hover:-translate-y-2'
+                                    : 'cursor-not-allowed opacity-70 grayscale-[0.5]'
+                                } border ${isDarkMode
+                                    ? 'bg-white/[0.03] hover:bg-white/[0.08] border-white/5'
+                                    : 'bg-white hover:bg-slate-50 border-slate-200/60'
+                                }`}
                         >
                             {/* Floating Image Section */}
                             <div className="relative h-64 w-full mb-6 rounded-[1.5rem] overflow-hidden">
                                 <img
                                     src={p?.image}
-                                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                                    className={`w-full h-full object-cover transition-transform duration-700 
+                        ${is_available ? 'group-hover:scale-110' : ''}`}
                                     alt={p?.name}
                                 />
-                                {label && (
+
+                                {/* Promo Label - Only show if available */}
+                                {label && is_available && (
                                     <div className="absolute top-4 left-4 bg-[var(--product-primary-color)] text-white px-3 py-1.5 rounded-full text-[9px] font-black uppercase flex items-center gap-1 shadow-lg">
                                         <Zap size={10} fill="currentColor" /> {label}
+                                    </div>
+                                )}
+
+                                {/* Sold Out Overlay Badge */}
+                                {!is_available && (
+                                    <div className="absolute inset-0 bg-black/40 flex items-center justify-center backdrop-blur-[2px]">
+                                        <div className="bg-white/90 text-black px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest shadow-2xl">
+                                            Habis
+                                        </div>
                                     </div>
                                 )}
                             </div>
 
                             {/* Detailed Text Section */}
-                            <div className="px-2 space-y-4">
+                            <div className={`px-2 space-y-4 ${!is_available ? 'opacity-50' : ''}`}>
                                 <div className="flex justify-between items-start">
                                     <div className="space-y-1">
-                                        <p className="text-[10px] font-bold text-[var(--product-primary-color)] uppercase tracking-[0.2em]">{p.category}</p>
-                                        <h3 className="text-lg font-extrabold leading-tight line-clamp-1 italic">{p.name}</h3>
+                                        <p className={`text-[10px] font-bold uppercase tracking-[0.2em] 
+                            ${is_available ? 'text-[var(--product-primary-color)]' : 'text-zinc-500'}`}>
+                                            {p.category}
+                                        </p>
+                                        <h3 className="text-lg font-extrabold leading-tight line-clamp-1 italic text-current">
+                                            {p.name}
+                                        </h3>
                                     </div>
-                                    {/* <div className="flex items-center gap-1 text-orange-500">
-                                        <Flame size={14} fill="currentColor" />
-                                        <span className="text-[10px] font-black">POPULER</span>
-                                    </div> */}
                                 </div>
 
                                 <div className="flex items-center justify-between pt-4 border-t border-dashed border-slate-500/20">
                                     <div className="flex flex-col">
-                                        <p className="text-xl font-black tracking-tighter">{formatIDR(finalPrice)}</p>
-                                        {/* <p className="text-[9px] opacity-40 font-bold uppercase tracking-widest text-right">Per Unit</p> */}
+                                        <p className={`text-xl font-black tracking-tighter ${!is_available ? 'line-through' : ''}`}>
+                                            {formatIDR(finalPrice)}
+                                        </p>
                                     </div>
-                                    <div className={`h-12 w-12 rounded-2xl flex items-center justify-center transition-all duration-300 ${isDarkMode ? 'bg-white text-black' : 'bg-slate-900 text-white'
-                                        } group-hover:rounded-[1.5rem] group-hover:rotate-6`}>
-                                        <ChevronRight size={20} />
+
+                                    {/* Button Action - Adaptive */}
+                                    <div className={`h-12 w-12 rounded-2xl flex items-center justify-center transition-all duration-300 
+                        ${!is_available
+                                            ? 'bg-zinc-200 text-zinc-400'
+                                            : isDarkMode
+                                                ? 'bg-white text-black group-hover:rounded-[1.5rem] group-hover:rotate-6'
+                                                : 'bg-slate-900 text-white group-hover:rounded-[1.5rem] group-hover:rotate-6'}`}>
+                                        {is_available ? <ChevronRight size={20} /> : <X size={18} />}
                                     </div>
                                 </div>
                             </div>
@@ -157,7 +188,10 @@ const Sevent = ({ products, isDarkMode, handleCart }: Props) => {
 
                             <div className="mt-10 space-y-4">
                                 <div className="flex items-center justify-between p-4 bg-slate-500/5 rounded-2xl border border-slate-500/10">
-                                    <QtySelector quantity={quantity} setQuantity={setQuantity} isDarkMode={isDarkMode} />
+                                    {
+                                        product && product.is_qty ?
+                                            <QtySelector quantity={quantity} product={product} selectedVariant={selectedVariant} setQuantity={setQuantity} isDarkMode={isDarkMode} /> : ""
+                                    }
                                     <div className="text-right">
                                         <p className="text-[9px] font-black opacity-30 uppercase tracking-widest">Grand Total</p>
                                         <p className="text-2xl font-black">{formatIDR((selectedVariant?.final_price || product?.final_price || 0) * quantity)}</p>

@@ -44,7 +44,6 @@ const CreateOrUpdateProductStock = ({ handleFormSubmit, data, loading, setLoadin
     const [outletOption, setOutletOption] = useState<OptionsType[]>()
     const [products, setProducts] = useState<ProductsType[]>()
 
-
     useEffect(() => {
         setForm({
             product_id: '',
@@ -89,6 +88,7 @@ const CreateOrUpdateProductStock = ({ handleFormSubmit, data, loading, setLoadin
                     label: item.name,   // sesuaikan dengan field API
                     value: item.id,
                 })) ?? [];
+                setProducts(res?.data);
                 setProductOptions(productStock);
             }
         } catch (e) {
@@ -104,7 +104,6 @@ const CreateOrUpdateProductStock = ({ handleFormSubmit, data, loading, setLoadin
                     label: item.name,   // sesuaikan dengan field API
                     value: item.id,
                 })) ?? [];
-                setProducts(res?.data);
                 setOutletOption(outlets);
             }
         } catch (e) {
@@ -113,7 +112,7 @@ const CreateOrUpdateProductStock = ({ handleFormSubmit, data, loading, setLoadin
     }
 
     const variantOptions = useMemo(() => {
-        const product = products?.find((p) => p?.id === form.product_id)?.variants
+        const product = products?.find((p) => p?.id === 2)?.variants
         return product?.map((item: any) => ({
             label: item.name,   // sesuaikan dengan field API
             value: item.id,
@@ -180,16 +179,6 @@ const CreateOrUpdateProductStock = ({ handleFormSubmit, data, loading, setLoadin
                 options={productOption}
                 error={error?.product_id}
             />
-            <FormInput
-                type="autocomplete"
-                label="Outlet"
-                name="outlet_id"
-                value={form.outlet_id}
-                onChange={handleChange}
-                options={outletOption}
-                error={error?.outlet_id}
-            />
-
             {
                 variantOptions?.length > 0 &&
                 <FormInput
@@ -203,6 +192,15 @@ const CreateOrUpdateProductStock = ({ handleFormSubmit, data, loading, setLoadin
                 />
 
             }
+            <FormInput
+                type="autocomplete"
+                label="Outlet"
+                name="outlet_id"
+                value={form.outlet_id}
+                onChange={handleChange}
+                options={outletOption}
+                error={error?.outlet_id}
+            />
             {/* NUMBER */}
             <FormInput
                 type="number"

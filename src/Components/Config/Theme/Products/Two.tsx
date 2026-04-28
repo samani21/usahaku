@@ -60,54 +60,75 @@ const Two = ({ products, isDarkMode, handleCart }: Props) => {
         <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-10 h-full'>
             {products?.map((p, i) => {
                 const { finalPrice, label } = getPromoDetails(p);
+                const is_available = (p?.product_stock ?? 0) > 0;
 
                 return (
                     <div
                         key={i}
                         onClick={() => {
-                            setProduct(p)
-                            setProductAlert(p)
+                            if (is_available) {
+                                setProduct(p);
+                                setProductAlert(p);
+                            }
                         }}
-                        className="group cursor-pointer flex flex-col items-center"
+                        className={`group flex flex-col items-center transition-all duration-500 
+                ${is_available ? "cursor-pointer" : "cursor-not-allowed"}`}
                     >
                         {/* Image Container with Neo-Brutalism Touch */}
-                        <div className={`relative w-full aspect-[3/4] rounded-[2.5rem] overflow-hidden mb-6 transition-all duration-500 transform group-hover:-translate-y-2 ${isDarkMode ? "bg-zinc-800 shadow-[0_20px_50px_rgba(0,0,0,0.5)]" : "bg-slate-100 shadow-[0_20px_50px_rgba(0,0,0,0.1)]"
-                            }`}>
-                            {label && (
-                                <div className="absolute top-5 left-5 z-20 bg-black text-white text-[9px] font-black px-4 py-2 rounded-full uppercase tracking-widest shadow-xl">
+                        <div className={`relative w-full aspect-[3/4] rounded-[2.5rem] overflow-hidden mb-6 transition-all duration-500 transform 
+                ${is_available ? "group-hover:-translate-y-2 shadow-[0_20px_50px_rgba(0,0,0,0.1)]" : "grayscale opacity-80"} 
+                ${isDarkMode ? "bg-zinc-800 shadow-[0_20px_50px_rgba(0,0,0,0.5)]" : "bg-slate-100"}`}>
+
+                            {/* Promo Label - Only show if available */}
+                            {label && is_available && (
+                                <div className="absolute top-5 left-5 z-1 bg-black text-white text-[9px] font-black px-4 py-2 rounded-full uppercase tracking-widest shadow-xl">
                                     {label}
+                                </div>
+                            )}
+
+                            {/* Sold Out Badge - Custom Neo-Brutalism Style */}
+                            {!is_available && (
+                                <div className="absolute inset-0 z-30 flex items-center justify-center bg-black/40 backdrop-blur-[2px]">
+                                    <div className="bg-white text-black border-2 border-black font-black text-[10px] px-4 py-2 uppercase tracking-[0.3em] -rotate-3 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+                                        Out of Stock
+                                    </div>
                                 </div>
                             )}
 
                             <img
                                 src={p?.image}
-                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000 grayscale-[0.2] group-hover:grayscale-0"
+                                className={`w-full h-full object-cover transition-transform duration-1000 
+                        ${is_available ? "grayscale-[0.2] group-hover:grayscale-0 group-hover:scale-105" : "grayscale"}`}
                                 alt={p.name}
                             />
 
-                            {/* Floating Quick Action */}
-                            <div className="absolute bottom-5 right-5 z-20 translate-y-12 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-300">
-                                <div className="bg-white text-black p-3 rounded-full shadow-2xl">
-                                    <ShoppingCart size={18} strokeWidth={2.5} />
+                            {/* Floating Quick Action - Only for available products */}
+                            {is_available && (
+                                <div className="absolute bottom-5 right-5 z-20 translate-y-12 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-300">
+                                    <div className="bg-white text-black p-3 rounded-full shadow-2xl hover:scale-110 active:scale-95 transition-transform">
+                                        <ShoppingCart size={18} strokeWidth={2.5} />
+                                    </div>
                                 </div>
-                            </div>
+                            )}
 
-                            <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity" />
+                            <div className={`absolute inset-0 transition-opacity ${is_available ? "bg-black/10 opacity-0 group-hover:opacity-100" : ""}`} />
                         </div>
 
                         {/* Bold Editorial Text */}
-                        <div className="text-center w-full px-2">
+                        <div className={`text-center w-full px-2 transition-opacity duration-500 ${!is_available ? "opacity-40" : ""}`}>
                             <p className="text-[10px] font-black uppercase tracking-[0.4em] opacity-40 mb-2">{p?.category}</p>
-                            <h3 className="font-black text-sm md:text-base uppercase leading-tight mb-2 group-hover:text-[var(--product-primary-color)] transition-colors line-clamp-2">
+                            <h3 className={`font-black text-sm md:text-base uppercase leading-tight mb-2 transition-colors line-clamp-2 
+                    ${is_available ? "group-hover:text-[var(--product-primary-color)]" : ""}`}>
                                 {p?.name}
                             </h3>
+
                             <div className="flex flex-col items-center">
                                 {label && (
                                     <span className="text-[11px] line-through opacity-30 font-bold mb-1">
                                         {formatIDR(p.price)}
                                     </span>
                                 )}
-                                <p className={`font-black text-lg ${isDarkMode ? 'text-white' : 'text-zinc-900'}`}>
+                                <p className={`font-black text-lg ${!is_available ? "text-zinc-500" : isDarkMode ? 'text-white' : 'text-zinc-900'}`}>
                                     {formatIDR(finalPrice)}
                                 </p>
                             </div>
@@ -171,7 +192,7 @@ const Two = ({ products, isDarkMode, handleCart }: Props) => {
                             <div className="bg-zinc-500/5 p-6 rounded-[2rem] space-y-6 backdrop-blur-sm border border-white/5">
                                 <div className="flex items-center justify-between">
                                     <span className="text-xs font-bold uppercase opacity-50">Kuantitas</span>
-                                    {product?.is_qty && <QtySelector quantity={quantity} setQuantity={setQuantity} isDarkMode={isDarkMode} />}
+                                    {product?.is_qty && <QtySelector product={product} selectedVariant={selectedVariant} quantity={quantity} setQuantity={setQuantity} isDarkMode={isDarkMode} />}
                                 </div>
 
                                 <div className="flex flex-col items-center gap-1">

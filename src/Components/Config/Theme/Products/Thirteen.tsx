@@ -78,54 +78,80 @@ const Thirteen = ({ products, isDarkMode, handleCart }: Props) => {
         <div className='grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4 h-full'>
             {products?.map((p, i) => {
                 const { finalPrice, label } = getPromoDetails(p);
+                const is_available = (p?.product_stock ?? 0) > 0;
+
                 return (
                     <div
                         key={i}
-                        onClick={() => setProduct(p)}
-                        className="text-center cursor-pointer group flex flex-col items-center"
+                        onClick={() => is_available && setProduct(p)}
+                        className={`text-center group flex flex-col items-center transition-all duration-700 
+                ${is_available ? "cursor-pointer" : "cursor-not-allowed opacity-40 grayscale"}`}
                     >
                         {/* Frame Gambar */}
-                        <div className={`aspect-[4/5] w-full ${isDarkMode ? "bg-slate-900" : "bg-slate-50"} mb-8 overflow-hidden relative`}>
+                        <div className={`aspect-[4/5] w-full mb-8 overflow-hidden relative 
+                ${isDarkMode ? "bg-slate-900" : "bg-slate-50"} 
+                ${!is_available ? "ring-1 ring-inset ring-current/10" : ""}`}>
+
                             <img
                                 src={p.image}
-                                className={`w-full h-full object-cover transition-all duration-[1.5s] ease-out ${isDarkMode ? "mix-blend-normal opacity-70" : "mix-blend-multiply opacity-80"}  group-hover:opacity-100 group-hover:scale-110`}
+                                className={`w-full h-full object-cover transition-all duration-[1.5s] ease-out 
+                        ${is_available
+                                        ? (isDarkMode ? "mix-blend-normal opacity-70 group-hover:opacity-100 group-hover:scale-110"
+                                            : "mix-blend-multiply opacity-80 group-hover:opacity-100 group-hover:scale-110")
+                                        : "opacity-20"}`}
                                 alt={p.name}
                             />
 
-                            <div className="absolute inset-0 border border-current m-4 sm:m-6 opacity-0 group-hover:opacity-30 transition-all duration-700 pointer-events-none" />
+                            {/* Decorative Border Frame - Hanya muncul jika tersedia */}
+                            {is_available && (
+                                <div className="absolute inset-0 border border-current m-4 sm:m-6 opacity-0 group-hover:opacity-30 transition-all duration-700 pointer-events-none" />
+                            )}
 
-                            {label && (
+                            {/* Label Status */}
+                            {label && is_available ? (
                                 <div className="absolute top-0 right-0 bg-rose-600 text-white px-4 py-2 text-[10px] tracking-[0.2em] font-black z-1 shadow-lg">
                                     {label}
+                                </div>
+                            ) : !is_available && (
+                                <div className="absolute inset-0 flex items-center justify-center">
+                                    <span className="text-[10px] tracking-[0.4em] uppercase font-light border-y border-current/20 py-2 px-4">
+                                        Archive / Sold
+                                    </span>
                                 </div>
                             )}
                         </div>
 
                         {/* Info Produk Minimalist */}
                         {p.category && (
-                            <p className="text-[9px] sm:text-[10px] tracking-[0.6em] uppercase opacity-40 mb-4 transition-opacity group-hover:opacity-100">
+                            <p className={`text-[9px] sm:text-[10px] tracking-[0.6em] uppercase mb-4 transition-opacity 
+                    ${is_available ? "opacity-40 group-hover:opacity-100" : "opacity-20"}`}>
                                 {p.category}
                             </p>
                         )}
 
-                        <h3 className="text-md sm:text-lg font-light tracking-[0.2em] uppercase leading-relaxed mb-4 line-clamp-1">
+                        <h3 className={`text-md sm:text-lg font-light tracking-[0.2em] uppercase leading-relaxed mb-4 line-clamp-1 
+                ${!is_available ? "text-current/50" : ""}`}>
                             {p.name}
                         </h3>
 
-                        {/* Decorative Line */}
-                        <div className="w-10 h-px bg-current opacity-20 group-hover:w-20 group-hover:opacity-50 transition-all duration-700 mb-4" />
+                        {/* Decorative Line - Statis jika habis */}
+                        <div className={`h-px bg-current transition-all duration-700 mb-4 
+                ${is_available ? "w-10 opacity-20 group-hover:w-20 group-hover:opacity-50" : "w-6 opacity-10"}`}
+                        />
 
-                        {/* Price Display dengan Info Promo */}
+                        {/* Price Display */}
                         <div className="flex flex-col items-center gap-1">
-                            {label && (
+                            {label && is_available && (
                                 <span className="text-[10px] opacity-30 line-through tracking-widest uppercase">
                                     {formatIDR(p.price)}
                                 </span>
                             )}
-                            <span className="font-bold text-sm tracking-widest">{formatIDR(p?.final_price ?? 0)}</span>
+                            <span className={`font-bold text-sm tracking-widest ${!is_available ? "opacity-30 font-light" : ""}`}>
+                                {is_available ? formatIDR(finalPrice) : "Out of Stock"}
+                            </span>
                         </div>
                     </div>
-                )
+                );
             })}
 
             <ModalWrapper
@@ -187,7 +213,7 @@ const Thirteen = ({ products, isDarkMode, handleCart }: Props) => {
 
                                     <div className='flex items-center justify-between gap-4'>
                                         {product?.is_qty ? (
-                                            <QtySelector quantity={quantity} setQuantity={setQuantity} isDarkMode={isDarkMode} />
+                                            <QtySelector product={product} selectedVariant={selectedVariant} quantity={quantity} setQuantity={setQuantity} isDarkMode={isDarkMode} />
                                         ) : <div></div>}
                                         <div className='text-right'>
                                             <p className={`text-[10px] font-bold uppercase opacity-40 ${isDarkMode ? "text-gray-100" : "text-gray-700"}`}>Subtotal</p>

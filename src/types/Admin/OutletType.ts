@@ -7,6 +7,8 @@ export interface OutletsType {
     day_close: string;
     time_open: string;
     time_close: string;
-    lat: number
-    lng: number
+    lat: number;
+    lng: number;
+    is_open: boolean;
+    is_currently_open: boolean;
 }

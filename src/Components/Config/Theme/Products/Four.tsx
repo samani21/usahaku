@@ -2,7 +2,7 @@ import ModalWrapper from './ModalWrapper';
 import { useEffect, useMemo, useState } from 'react';
 import QtySelector from './QtySelector';
 import VariantPicker from './VariantPicker';
-import { Check, Minus, Plus, Tag, Zap, ArrowUpRight, ShoppingBag } from 'lucide-react';
+import { Check, Minus, Plus, Tag, Zap, ArrowUpRight, ShoppingBag, X } from 'lucide-react';
 import AlertWrapper from './AlertWrapper';
 import { ProductsType, Variants } from '@/types/Admin/ProductsType';
 import { formatIDR } from '@/types/FormtRupiah';
@@ -60,39 +60,61 @@ const Four = ({ products, isDarkMode, handleCart }: Props) => {
         <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6'>
             {products?.map((p, i) => {
                 const { finalPrice, label } = getPromoDetails(p);
+                const is_available = (p?.product_stock ?? 0) > 0;
 
                 return (
                     <div
-                        onClick={() => {
-                            setProduct(p)
-                            setProductAlert(p)
-                        }}
                         key={i}
-                        className="group relative h-[450px] rounded-[3rem] overflow-hidden cursor-pointer bg-zinc-900 shadow-2xl transition-all duration-500 hover:shadow-[var(--product-primary-color)]/20 shadow-xl"
+                        onClick={() => {
+                            if (is_available) {
+                                setProduct(p);
+                                setProductAlert(p);
+                            }
+                        }}
+                        className={`group relative h-[450px] rounded-[3rem] overflow-hidden transition-all duration-500 bg-zinc-900 shadow-2xl 
+                ${is_available
+                                ? "cursor-pointer hover:shadow-[var(--product-primary-color)]/20 shadow-xl"
+                                : "cursor-not-allowed shadow-none"}`}
                     >
-                        {/* Background Image with Parallax Effect */}
+                        {/* Background Image with Parallax & Availability Filter */}
                         <img
                             src={p?.image}
-                            className="absolute inset-0 w-full h-full object-cover opacity-60 grayscale group-hover:grayscale-0 group-hover:scale-110 transition-all duration-1000"
+                            className={`absolute inset-0 w-full h-full object-cover transition-all duration-1000 
+                    ${is_available
+                                    ? "opacity-60 grayscale group-hover:grayscale-0 group-hover:scale-110"
+                                    : "opacity-20 grayscale"}`}
                             alt={p.name}
                         />
 
-                        {/* Top Info: Tag & Arrow */}
+                        {/* Top Info: Tag & Status Icon */}
                         <div className="absolute top-6 left-6 right-6 flex justify-between items-center z-10">
-                            {label ? (
+                            {label && is_available ? (
                                 <div className="bg-white/10 backdrop-blur-md border border-white/20 px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-tighter text-white italic">
                                     {label}
                                 </div>
+                            ) : !is_available ? (
+                                <div className="bg-red-500/20 backdrop-blur-md border border-red-500/30 px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest text-red-400">
+                                    Out of Stock
+                                </div>
                             ) : <div />}
-                            <div className="w-10 h-10 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center text-white group-hover:bg-[var(--product-primary-color)] group-hover:border-transparent transition-all duration-300">
-                                <ArrowUpRight size={20} />
+
+                            <div className={`w-10 h-10 rounded-full backdrop-blur-md border border-white/20 flex items-center justify-center text-white transition-all duration-300
+                    ${is_available
+                                    ? "bg-white/10 group-hover:bg-[var(--product-primary-color)] group-hover:border-transparent"
+                                    : "bg-black/40 text-white/20 border-white/5"}`}>
+                                {is_available ? <ArrowUpRight size={20} /> : <X size={20} />}
                             </div>
                         </div>
 
                         {/* Bottom Glass Panel */}
-                        <div className="absolute bottom-4 left-4 right-4 p-6 backdrop-blur-2xl bg-white/10 border border-white/20 rounded-[2.5rem] flex flex-col gap-4 translate-y-2 group-hover:translate-y-0 transition-transform duration-500">
-                            <div>
-                                <span className="text-[10px] font-bold text-[var(--product-primary-color)] uppercase tracking-[0.3em] mb-1 block">
+                        <div className={`absolute bottom-4 left-4 right-4 p-6 backdrop-blur-2xl border transition-all duration-500 rounded-[2.5rem] flex flex-col gap-4
+                ${is_available
+                                ? "bg-white/10 border-white/20 translate-y-2 group-hover:translate-y-0"
+                                : "bg-black/40 border-white/5 translate-y-0"}`}>
+
+                            <div className={!is_available ? "opacity-40" : ""}>
+                                <span className={`text-[10px] font-bold uppercase tracking-[0.3em] mb-1 block
+                        ${is_available ? "text-[var(--product-primary-color)]" : "text-zinc-500"}`}>
                                     {p.category}
                                 </span>
                                 <h3 className="text-xl font-black italic text-white leading-none uppercase tracking-tighter line-clamp-1">
@@ -100,26 +122,35 @@ const Four = ({ products, isDarkMode, handleCart }: Props) => {
                                 </h3>
                             </div>
 
-                            <div className="flex items-center justify-between border-t border-white/10 pt-4">
-                                <div className="flex flex-col">
-                                    {label && (
+                            <div className={`flex items-center justify-between border-t pt-4 
+                    ${is_available ? "border-white/10" : "border-white/5"}`}>
+
+                                <div className={`flex flex-col ${!is_available ? "opacity-40" : ""}`}>
+                                    {label && is_available && (
                                         <span className="text-[11px] line-through text-white/40 font-bold leading-none mb-1">
                                             {formatIDR(p.price)}
                                         </span>
                                     )}
-                                    <span className="text-xl font-black text-white leading-none tracking-tight">
+                                    <span className={`text-xl font-black leading-none tracking-tight 
+                            ${is_available ? "text-white" : "text-zinc-500"}`}>
                                         {formatIDR(finalPrice)}
                                     </span>
                                 </div>
-                                <div className="text-white/40 text-[10px] font-bold uppercase tracking-widest">
-                                    View Detail
+
+                                <div className={`text-[10px] font-bold uppercase tracking-widest transition-colors
+                        ${is_available ? "text-white/40 group-hover:text-[var(--product-primary-color)]" : "text-red-500/50"}`}>
+                                    {is_available ? "View Detail" : "Sold Out"}
                                 </div>
                             </div>
                         </div>
+
+                        {/* Overlay for Sold Out - Darkens the entire card slightly */}
+                        {!is_available && (
+                            <div className="absolute inset-0 bg-black/40 pointer-events-none" />
+                        )}
                     </div>
                 );
             })}
-
             <ModalWrapper
                 activeModal={!!product}
                 closeModal={() => {
@@ -175,20 +206,10 @@ const Four = ({ products, isDarkMode, handleCart }: Props) => {
                                 </div>
                             )}
 
-                            {product?.is_qty && (
-                                <div className="space-y-4">
-                                    <p className="text-[10px] font-black uppercase tracking-widest opacity-40">Quantity</p>
-                                    <div className={`flex items-center gap-6 ${isDarkMode ? "bg-zinc-900" : "bg-zinc-100"} p-2 rounded-2xl w-fit`}>
-                                        <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className="p-3 hover:bg-[var(--product-primary-color)] hover:text-white rounded-xl transition-all">
-                                            <Minus size={18} strokeWidth={3} />
-                                        </button>
-                                        <span className="text-xl font-black min-w-[20px] text-center">{quantity}</span>
-                                        <button onClick={() => setQuantity(quantity + 1)} className="p-3 hover:bg-[var(--product-primary-color)] hover:text-white rounded-xl transition-all">
-                                            <Plus size={18} strokeWidth={3} />
-                                        </button>
-                                    </div>
-                                </div>
-                            )}
+                            {
+                                product && product.is_qty ?
+                                    <QtySelector quantity={quantity} product={product} selectedVariant={selectedVariant} setQuantity={setQuantity} isDarkMode={isDarkMode} /> : ""
+                            }
                         </div>
 
                         <div className={`mt-12 pt-10 border-t ${isDarkMode ? ":border-zinc-800" : "border-zinc-200 "} flex flex-col gap-6`}>

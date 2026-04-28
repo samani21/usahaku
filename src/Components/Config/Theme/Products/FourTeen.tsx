@@ -54,24 +54,42 @@ const Fourteen = ({ products, isDarkMode, handleCart }: Props) => {
         <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 p-4 ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>
             {products?.map((p, i) => {
                 const { finalPrice, label } = getPromoDetails(p);
+                const is_available = (p?.product_stock ?? 0) > 0;
+
                 return (
                     <div
                         key={i}
-                        onClick={() => setProduct(p)}
-                        className={`group relative flex flex-col rounded-[2.5rem] overflow-hidden cursor-pointer transition-all duration-500 hover:shadow-[0_20px_50px_rgba(0,0,0,0.2)] ${isDarkMode ? 'bg-zinc-900 border border-zinc-800' : 'bg-white border border-slate-100'}`}
+                        onClick={() => is_available && setProduct(p)}
+                        className={`group relative flex flex-col rounded-[2.5rem] overflow-hidden transition-all duration-500 ${is_available
+                                ? `cursor-pointer hover:shadow-[0_20px_50px_rgba(0,0,0,0.2)] ${isDarkMode ? 'bg-zinc-900 border border-zinc-800' : 'bg-white border border-slate-100'}`
+                                : `cursor-not-allowed ${isDarkMode ? 'bg-zinc-950 border border-zinc-900 opacity-60' : 'bg-slate-100 border border-slate-200 opacity-80'}`
+                            }`}
                     >
                         {/* Image Section with Urban Overlay */}
                         <div className="relative aspect-square overflow-hidden">
-                            <img src={p.image} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000" alt={p.name} />
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-40 transition-opacity" />
+                            <img
+                                src={p.image}
+                                className={`w-full h-full object-cover transition-transform duration-1000 ${is_available ? "group-hover:scale-110" : "grayscale opacity-30"}`}
+                                alt={p.name}
+                            />
 
-                            {label && (
-                                <div className="absolute top-6 left-6 bg-yellow-400 text-black text-[10px] font-black px-4 py-1.5 rounded-full uppercase tracking-tighter shadow-lg -rotate-12 group-hover:rotate-0 transition-transform">
-                                    {label}
+                            {/* Overlay: Darker when sold out */}
+                            <div className={`absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent transition-opacity ${is_available ? "opacity-60 group-hover:opacity-40" : "opacity-90"}`} />
+
+                            {/* Status Badge */}
+                            {is_available ? (
+                                label && (
+                                    <div className="absolute top-6 left-6 bg-yellow-400 text-black text-[10px] font-black px-4 py-1.5 rounded-full uppercase tracking-tighter shadow-lg -rotate-12 group-hover:rotate-0 transition-transform">
+                                        {label}
+                                    </div>
+                                )
+                            ) : (
+                                <div className="absolute top-6 left-6 bg-zinc-800 text-zinc-500 text-[10px] font-black px-4 py-1.5 rounded-full uppercase tracking-tighter shadow-lg border border-zinc-700">
+                                    Out of Stock
                                 </div>
                             )}
 
-                            <div className="absolute bottom-6 left-6 right-6 flex justify-between items-end translate-y-2 group-hover:translate-y-0 transition-transform">
+                            <div className={`absolute bottom-6 left-6 right-6 flex justify-between items-end transition-transform ${is_available ? "translate-y-2 group-hover:translate-y-0" : "translate-y-0 opacity-50"}`}>
                                 <div className="bg-white/10 backdrop-blur-md px-3 py-1 rounded-lg border border-white/20">
                                     <span className="text-[10px] font-black text-white/70 uppercase">{p.category}</span>
                                 </div>
@@ -82,31 +100,37 @@ const Fourteen = ({ products, isDarkMode, handleCart }: Props) => {
                         <div className="relative h-8 flex items-center px-4">
                             <div className={`absolute -left-4 w-8 h-8 rounded-full ${isDarkMode ? 'bg-black' : 'bg-slate-50'} z-0 border-r ${isDarkMode ? 'border-zinc-800' : 'border-slate-100'}`} />
                             <div className={`absolute -right-4 w-8 h-8 rounded-full ${isDarkMode ? 'bg-black' : 'bg-slate-50'} z-0 border-l ${isDarkMode ? 'border-zinc-800' : 'border-slate-100'}`} />
-                            <div className="w-full border-t-2 border-dashed border-zinc-700/30 opacity-50" />
+                            <div className={`w-full border-t-2 border-dashed ${is_available ? "border-zinc-700/30 opacity-50" : "border-zinc-800 opacity-20"}`} />
                         </div>
 
                         {/* Content Section */}
-                        <div className="p-8 pt-2 space-y-4">
-                            <h3 className="font-black text-xl leading-none uppercase italic tracking-tighter group-hover:text-[var(--product-primary-color)] transition-colors line-clamp-2">
+                        <div className={`p-8 pt-2 space-y-4 transition-opacity ${!is_available ? "opacity-40" : ""}`}>
+                            <h3 className={`font-black text-xl leading-none uppercase italic tracking-tighter transition-colors line-clamp-2 ${is_available ? "group-hover:text-[var(--product-primary-color)]" : ""}`}>
                                 {p.name}
                             </h3>
 
                             <div className="flex items-center justify-between gap-4">
                                 <div className="flex flex-col">
-                                    {label && (
+                                    {label && is_available && (
                                         <span className="text-[10px] line-through opacity-30 font-black tracking-widest">{formatIDR(p.price)}</span>
                                     )}
-                                    <p className="text-2xl font-black italic tracking-tighter leading-none">{formatIDR(finalPrice)}</p>
+                                    <p className={`text-2xl font-black italic tracking-tighter leading-none ${is_available ? "" : "text-zinc-600"}`}>
+                                        {formatIDR(finalPrice)}
+                                    </p>
                                 </div>
-                                <div className={`h-12 w-12 rounded-2xl ${isDarkMode ? "bg-white text-black" : "bg-black text-white"} flex items-center justify-center transform rotate-3 group-hover:rotate-12 transition-transform shadow-xl`}>
-                                    <Plus size={20} strokeWidth={3} />
+
+                                {/* Action Icon */}
+                                <div className={`h-12 w-12 rounded-2xl flex items-center justify-center transition-all shadow-xl 
+                        ${is_available
+                                        ? `${isDarkMode ? "bg-white text-black" : "bg-black text-white"} transform rotate-3 group-hover:rotate-12`
+                                        : "bg-zinc-800 text-zinc-600 rotate-0 shadow-none"}`}>
+                                    {is_available ? <Plus size={20} strokeWidth={3} /> : <Minus size={20} strokeWidth={3} />}
                                 </div>
                             </div>
                         </div>
                     </div>
                 );
             })}
-
             <ModalWrapper
                 activeModal={!!product}
                 closeModal={() => { setProduct(null); setSelectedVariant(null); setQuantity(1); }}
@@ -174,7 +198,7 @@ const Fourteen = ({ products, isDarkMode, handleCart }: Props) => {
                                     </div>
                                 </div>
                                 <div className='flex items-center justify-end'>
-                                    {product?.is_qty && <QtySelector quantity={quantity} setQuantity={setQuantity} isDarkMode={isDarkMode} />}
+                                    {product?.is_qty && <QtySelector product={product} selectedVariant={selectedVariant} quantity={quantity} setQuantity={setQuantity} isDarkMode={isDarkMode} />}
                                 </div>
                             </div>
                         </div>

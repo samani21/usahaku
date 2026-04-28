@@ -78,44 +78,73 @@ const Eleven = ({ products, isDarkMode, handleCart }: Props) => {
         <div className='grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-6 h-full'>
             {products?.map((p, i) => {
                 const { finalPrice, label } = getPromoDetails(p);
+                const is_available = (p?.product_stock ?? 0) > 0;
+
                 return (
                     <div
-                        onClick={() => setProduct(p)}
                         key={i}
-                        className="relative p-1 rounded-[2rem] bg-gradient-to-br from-indigo-400 via-pink-400 to-amber-300 cursor-pointer group h-[320px] sm:h-[400px] shadow-xl hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 overflow-hidden"
+                        onClick={() => is_available && setProduct(p)}
+                        className={`relative p-1 rounded-[2rem] transition-all duration-500 overflow-hidden h-[320px] sm:h-[400px]
+                ${is_available
+                                ? "bg-gradient-to-br from-indigo-400 via-pink-400 to-amber-300 cursor-pointer group shadow-xl hover:shadow-2xl hover:-translate-y-2"
+                                : "bg-slate-400 cursor-not-allowed opacity-80"}`}
                     >
 
-                        {/* Badge Diskon Float */}
-                        {label && (
-                            <div className="absolute top-4 right-4 z-1   bg-white/20 backdrop-blur-md border border-white/30 text-white px-3 py-1.5 rounded-xl font-black italic text-xs flex items-center gap-1 shadow-lg animate-pulse">
-                                {label}
+                        {/* Badge Status */}
+                        {is_available ? (
+                            label && (
+                                <div className="absolute top-4 right-4 z-10 bg-white/20 backdrop-blur-md border border-white/30 text-white px-3 py-1.5 rounded-xl font-black italic text-xs flex items-center gap-1 shadow-lg animate-pulse">
+                                    {label}
+                                </div>
+                            )
+                        ) : (
+                            <div className="absolute top-4 right-4 z-10 bg-slate-800/80 backdrop-blur-md border border-white/10 text-white/50 px-3 py-1.5 rounded-xl font-black italic text-[10px] tracking-widest uppercase">
+                                Habis
                             </div>
                         )}
 
-                        <div className={`h-full w-full rounded-[1.8rem] p-4 sm:p-6 flex flex-col items-center text-center justify-between ${isDarkMode ? 'bg-slate-900/95 text-white' : 'bg-white/95 text-slate-900'}`}>
+                        <div className={`h-full w-full rounded-[1.8rem] p-4 sm:p-6 flex flex-col items-center text-center justify-between transition-colors duration-500
+                ${isDarkMode ? 'bg-slate-900/95 text-white' : 'bg-white/95 text-slate-900'}
+                ${!is_available ? 'grayscale-[0.8]' : ''}`}>
 
                             {/* Image Container */}
-                            <div className="relative w-full h-32 aspect-square rounded-[1.5rem] bg-slate-100 overflow-hidden ring-4 ring-white/10 shadow-inner group-hover:scale-105 transition-transform duration-500">
-                                <img src={p?.image} className="w-full h-full object-cover" alt={p.name} />
-                                {label && (
+                            <div className={`relative w-full h-32 aspect-square rounded-[1.5rem] overflow-hidden ring-4 transition-all duration-500
+                    ${is_available
+                                    ? "bg-slate-100 ring-white/10 shadow-inner group-hover:scale-105"
+                                    : "bg-slate-200 ring-slate-300/20"}`}>
+
+                                <img
+                                    src={p?.image}
+                                    className={`w-full h-full object-cover ${!is_available ? 'opacity-40' : ''}`}
+                                    alt={p.name}
+                                />
+
+                                {label && is_available && (
                                     <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-[var(--product-primary-color)]/80 to-transparent p-4 opacity-0 group-hover:opacity-100 transition-opacity">
                                         <p className="text-white text-[10px] font-black uppercase tracking-tighter italic">Potongan {formatIDR(finalPrice)}</p>
                                     </div>
                                 )}
                             </div>
 
-                            <div className="space-y-2">
+                            <div className={`space-y-2 transition-opacity ${!is_available ? 'opacity-40' : ''}`}>
                                 {p?.category && (
-                                    <span className="text-[10px] font-black opacity-30 tracking-[0.3em] uppercase italic border-b border-[var(--product-primary-color)]/20 line-clamp-1 pb-1">{p?.category}</span>
+                                    <span className={`text-[10px] font-black tracking-[0.3em] uppercase italic border-b line-clamp-1 pb-1
+                            ${is_available ? 'opacity-30 border-[var(--product-primary-color)]/20' : 'opacity-20 border-slate-500'}`}>
+                                        {p?.category}
+                                    </span>
                                 )}
-                                <h3 className="font-black text-md sm:text-xl h-12 tracking-tighter uppercase leading-tight group-hover:text-[var(--product-primary-color)] transition-colors line-clamp-2">{p?.name}</h3>
+                                <h3 className={`font-black text-md sm:text-xl h-12 tracking-tighter uppercase leading-tight transition-colors line-clamp-2
+                        ${is_available ? 'group-hover:text-[var(--product-primary-color)]' : ''}`}>
+                                    {p?.name}
+                                </h3>
 
                                 <div className="flex flex-col items-center gap-0">
-                                    <p className="text-md sm:text-2xl font-black italic tracking-tighter text-[var(--product-primary-color)]">
-                                        {formatIDR(p?.final_price ?? 0)}
+                                    <p className={`text-md sm:text-2xl font-black italic tracking-tighter 
+                            ${is_available ? 'text-[var(--product-primary-color)]' : 'text-slate-500 line-through'}`}>
+                                        {formatIDR(finalPrice)}
                                     </p>
                                     <div className='h-8'>
-                                        {label && (
+                                        {label && is_available && (
                                             <p className="text-xs opacity-30 line-through font-bold italic tracking-wider">
                                                 {formatIDR(p?.price ?? 0)}
                                             </p>
@@ -125,15 +154,17 @@ const Eleven = ({ products, isDarkMode, handleCart }: Props) => {
                             </div>
 
                             <div className="hidden sm:grid w-full pt-2">
-                                <div className="w-full py-3 rounded-xl border border-white/5 bg-white/5 font-black uppercase italic text-[10px] tracking-widest group-hover:bg-[var(--product-primary-color)] group-hover:text-white transition-all">
-                                    View Details
+                                <div className={`w-full py-3 rounded-xl border font-black uppercase italic text-[10px] tracking-widest transition-all
+                        ${is_available
+                                        ? "border-white/5 bg-white/5 group-hover:bg-[var(--product-primary-color)] group-hover:text-white"
+                                        : "border-slate-700 bg-slate-800/50 text-slate-500"}`}>
+                                    {is_available ? "View Details" : "Out of Stock"}
                                 </div>
                             </div>
                         </div>
                     </div>
                 );
             })}
-
             <ModalWrapper
                 activeModal={product ? true : false}
                 closeModal={() => {
@@ -207,7 +238,7 @@ const Eleven = ({ products, isDarkMode, handleCart }: Props) => {
 
                                 <div className="flex items-end justify-between gap-4 mt-2">
                                     {product?.is_qty ? (
-                                        <QtySelector quantity={quantity} setQuantity={setQuantity} isDarkMode={isDarkMode} />
+                                        <QtySelector product={product} selectedVariant={selectedVariant} quantity={quantity} setQuantity={setQuantity} isDarkMode={isDarkMode} />
                                     ) : <div></div>}
                                     <div className="text-right">
                                         <p className={`text-[10px] font-black uppercase opacity-40 tracking-widest ${isDarkMode ? "text-gray-100" : "text-gray-700"}`}>Subtotal</p>

@@ -57,34 +57,52 @@ const Five = ({ products, isDarkMode, handleCart }: Props) => {
         <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-8'>
             {products?.map((p, i) => {
                 const { finalPrice, label } = getPromoDetails(p);
+                const is_available = (p?.product_stock ?? 0) > 0;
 
                 return (
                     <div
-                        onClick={() => {
-                            setProduct(p);
-                            setProductAlert(p);
-                        }}
                         key={i}
-                        className={`group relative flex flex-col transition-all duration-700 ease-out cursor-pointer
-                            ${i % 2 === 0 ? 'md:translate-y-4' : 'md:-translate-y-4'}`}
+                        onClick={() => {
+                            if (is_available) {
+                                setProduct(p);
+                                setProductAlert(p);
+                            }
+                        }}
+                        className={`group relative flex flex-col transition-all duration-700 ease-out
+                ${is_available ? 'cursor-pointer' : 'cursor-not-allowed'}
+                ${i % 2 === 0 ? 'md:translate-y-4' : 'md:-translate-y-4'}`}
                     >
                         {/* Image Frame with Minimal Polaroid Aesthetic */}
-                        <div className={`relative aspect-[3/4] mb-4 overflow-hidden rounded-sm ring-1 ${isDarkMode ? 'bg-zinc-900 ring-white/10' : 'bg-zinc-50 ring-black/5'}`}>
+                        <div className={`relative aspect-[3/4] mb-4 overflow-hidden rounded-sm ring-1 transition-all duration-500
+                ${is_available
+                                ? (isDarkMode ? 'bg-zinc-900 ring-white/10' : 'bg-zinc-50 ring-black/5')
+                                : (isDarkMode ? 'bg-zinc-950 ring-white/5 opacity-60' : 'bg-zinc-200 ring-black/5 opacity-70')}`}>
+
                             <img
                                 src={p.image}
-                                className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
+                                className={`w-full h-full object-cover transition-all duration-1000 
+                        ${is_available ? 'group-hover:scale-105' : 'grayscale sepia-[0.2]'}`}
                                 alt={p.name}
                             />
 
-                            {/* Hover Overlay */}
-                            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-500 flex items-center justify-center">
-                                <div className="w-12 h-12 rounded-full bg-white scale-0 group-hover:scale-100 transition-transform duration-500 flex items-center justify-center text-black">
-                                    <Plus size={24} strokeWidth={1.5} />
-                                </div>
+                            {/* Hover Overlay / Sold Out Overlay */}
+                            <div className={`absolute inset-0 transition-colors duration-500 flex items-center justify-center
+                    ${is_available ? 'bg-black/0 group-hover:bg-black/20' : 'bg-zinc-900/20'}`}>
+
+                                {is_available ? (
+                                    <div className="w-12 h-12 rounded-full bg-white scale-0 group-hover:scale-100 transition-transform duration-500 flex items-center justify-center text-black shadow-xl">
+                                        <Plus size={24} strokeWidth={1.5} />
+                                    </div>
+                                ) : (
+                                    <span className={`font-serif italic text-xs tracking-[0.2em] px-4 py-2 border backdrop-blur-sm
+                            ${isDarkMode ? 'bg-black/40 border-white/10 text-zinc-400' : 'bg-white/60 border-black/5 text-zinc-500'}`}>
+                                        Sold Out
+                                    </span>
+                                )}
                             </div>
 
-                            {/* Label Tag */}
-                            {label && (
+                            {/* Label Tag - Only show if available */}
+                            {label && is_available && (
                                 <div className="absolute top-4 left-0 bg-rose-600 text-white px-3 py-1 text-[9px] font-black uppercase tracking-widest italic shadow-lg">
                                     {label}
                                 </div>
@@ -92,18 +110,20 @@ const Five = ({ products, isDarkMode, handleCart }: Props) => {
                         </div>
 
                         {/* Text Content - Editorial Serif */}
-                        <div className="text-center px-2">
-                            <h3 className={`font-serif text-lg md:text-xl italic font-medium leading-tight mb-2 line-clamp-2 ${isDarkMode ? 'text-zinc-100' : 'text-zinc-900'}`}>
+                        <div className={`text-center px-2 transition-opacity duration-500 ${!is_available ? 'opacity-40' : ''}`}>
+                            <h3 className={`font-serif text-lg md:text-xl italic font-medium leading-tight mb-2 line-clamp-2 
+                    ${isDarkMode ? 'text-zinc-100' : 'text-zinc-900'}`}>
                                 {p.name}
                             </h3>
                             <div className="flex flex-col items-center gap-1">
-                                {label && (
+                                {label && is_available && (
                                     <span className="text-[10px] opacity-40 line-through font-bold">
                                         {formatIDR(p.price)}
                                     </span>
                                 )}
-                                <p className={`text-sm md:text-base font-bold tracking-widest ${isDarkMode ? 'text-[var(--product-primary-color)]' : 'text-zinc-900'}`}>
-                                    {formatIDR(finalPrice)}
+                                <p className={`text-sm md:text-base font-bold tracking-widest 
+                        ${!is_available ? 'text-zinc-500' : isDarkMode ? 'text-[var(--product-primary-color)]' : 'text-zinc-900'}`}>
+                                    {is_available ? formatIDR(finalPrice) : 'UNAVAILABLE'}
                                 </p>
                             </div>
                         </div>
@@ -156,8 +176,7 @@ const Five = ({ products, isDarkMode, handleCart }: Props) => {
                             {/* Options Area */}
                             <div className={`flex flex-col gap-8 py-8 border-y ${isDarkMode ? "border-zinc-900" : "border-zinc-100"}`}>
                                 {product?.variants && product?.variants?.length > 0 && (
-                                    <div className="flex flex-col items-center gap-4">
-                                        <span className="text-[10px] font-black uppercase tracking-[0.3em] opacity-40 text-center">Selection</span>
+                                    <div className="">
                                         <VariantPicker variants={product?.variants} selectedVariant={selectedVariant} setSelectedVariant={setSelectedVariant} isDarkMode={isDarkMode} />
                                     </div>
                                 )}
@@ -165,7 +184,7 @@ const Five = ({ products, isDarkMode, handleCart }: Props) => {
                                 {product?.is_qty && (
                                     <div className="flex flex-col items-center gap-4">
                                         <span className="text-[10px] font-black uppercase tracking-[0.3em] opacity-40 text-center">Quantity</span>
-                                        <QtySelector quantity={quantity} setQuantity={setQuantity} isDarkMode={isDarkMode} />
+                                        <QtySelector product={product} selectedVariant={selectedVariant} quantity={quantity} setQuantity={setQuantity} isDarkMode={isDarkMode} />
                                     </div>
                                 )}
                             </div>
