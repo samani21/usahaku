@@ -96,7 +96,55 @@ function PreviewPage() {
         setCategory(theme?.category)
         setCategories(theme?.categories);
         setProduct(theme?.product);
-        setDataProducts(theme?.products as any);
+        const updatedProducts = theme?.products?.map((product: any) => {
+            return { ...product }; // Copy data awal
+        });
+
+        // 1. Tentukan jumlah produk yang akan dihabiskan (antara 3 sampai 4)
+        const totalToEmpty = Math.floor(Math.random() * (4 - 3 + 1)) + 3;
+
+        // 2. Acak index produk yang akan dikosongkan stoknya
+        const indicesToEmpty = new Set<number>();
+        while (indicesToEmpty.size < Math.min(totalToEmpty, updatedProducts.length)) {
+            const randomIndex = Math.floor(Math.random() * updatedProducts.length);
+            indicesToEmpty.add(randomIndex);
+        }
+
+        // 3. Update stok untuk semua produk
+        const finalProducts = updatedProducts.map((product: any, index: number) => {
+            let totalStock: number;
+
+            if (indicesToEmpty.has(index)) {
+                // Jika index terpilih, stok jadi 0
+                totalStock = 0;
+            } else {
+                // Jika tidak, stok acak 10 - 30
+                totalStock = Math.floor(Math.random() * (30 - 10 + 1)) + 10;
+            }
+
+            // 4. Distribusi ke variant jika ada
+            if (product.variants && product.variants.length > 0) {
+                let remainingStock = totalStock;
+                const updatedVariants = product.variants.map((variant: any, vIndex: number) => {
+                    let variantStock = 0;
+                    if (totalStock > 0) {
+                        if (vIndex === product.variants.length - 1) {
+                            variantStock = remainingStock;
+                        } else {
+                            variantStock = Math.floor(Math.random() * (remainingStock + 1));
+                            remainingStock -= variantStock;
+                        }
+                    }
+                    return { ...variant, product_variant_stock: variantStock };
+                });
+
+                return { ...product, product_stock: totalStock, variants: updatedVariants };
+            }
+
+            return { ...product, product_stock: totalStock };
+        });
+
+        setDataProducts(finalProducts);
         setSummary(theme?.summary);
         if (theme?.header?.color) updateCssVariables('header', theme?.header.color);
         if (theme?.hero?.color) updateCssVariables('hero', theme?.hero.color);
