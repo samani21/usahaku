@@ -1,20 +1,22 @@
 import { OutletsType } from '@/types/Admin/OutletType';
 import { Get } from '@/utils/Get';
 import { Search, X, MapPin, ChevronDown, Loader2 } from 'lucide-react' // Tambah import
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import React, { useEffect, useState } from 'react'
 
 type Props = {
     onClose: () => void;
     onSelect: (outlet: OutletsType) => void;
+    tenant: string;
 }
 
-const ModalOutlet = ({ onClose, onSelect }: Props) => {
+const ModalOutlet = ({ onClose, onSelect, tenant }: Props) => {
     const [loading, setLoading] = useState<boolean>(true);
     const [outlets, setOutlets] = useState<OutletsType[]>([]);
     const [search, setSearch] = useState<string>('');
-    console.log('outlets', outlets)
+    const pathname = usePathname();
     useEffect(() => {
-        // Minta izin lokasi saat modal terbuka
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(
                 (position) => {
@@ -97,7 +99,6 @@ const ModalOutlet = ({ onClose, onSelect }: Props) => {
                             className="w-full pl-14 pr-6 py-5 bg-slate-50 border-none rounded-2xl focus:ring-2 focus:ring-[#149184] focus:bg-white transition-all outline-none text-slate-700"
                         />
                     </div>
-
                     {/* List */}
                     <div className="space-y-4 max-h-[350px] overflow-y-auto pr-2 custom-scrollbar">
                         {loading ? (
@@ -106,63 +107,67 @@ const ModalOutlet = ({ onClose, onSelect }: Props) => {
                                 <p>Mencari outlet terdekat...</p>
                             </div>
                         ) : filteredOutlets.length > 0 ? (
-                            filteredOutlets.map((outlet, index) => (
-                                <button
-                                    key={index}
-                                    onClick={() => onSelect(outlet)}
-                                    className={`w-full text-left p-6 rounded-3xl border transition-all flex justify-between items-center group ${outlet.is_currently_open
-                                        ? 'hover:bg-teal-50 border-slate-100 hover:border-[#149184]/30'
-                                        : 'bg-slate-50/50 border-slate-100 opacity-80'
-                                        }`}
-                                >
-                                    <div className="flex items-center gap-5">
-                                        {/* Icon Map Pin dengan indikator warna status */}
-                                        <div className={`p-3 shadow-sm rounded-xl transition-colors ${outlet.is_currently_open
-                                            ? 'bg-white text-slate-400 group-hover:text-[#149184]'
-                                            : 'bg-slate-200 text-slate-500'
-                                            }`}>
-                                            <MapPin size={22} />
-                                        </div>
-
-                                        <div>
-                                            <div className="flex items-center gap-2">
-                                                <p className={`font-bold text-lg transition-colors ${outlet.is_currently_open ? 'text-slate-900 group-hover:text-[#149184]' : 'text-slate-500'
-                                                    }`}>
-                                                    {outlet.name}
-                                                </p>
-
-                                                {/* Badge Status Buka/Tutup */}
-                                                <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${outlet.is_currently_open
-                                                    ? 'bg-green-100 text-green-600'
-                                                    : 'bg-red-100 text-red-600'
-                                                    }`}>
-                                                    {outlet.is_currently_open ? 'BUKA' : 'TUTUP'}
-                                                </span>
+                            filteredOutlets.map((outlet, index) => {
+                                const url = pathname === `/${tenant}` ? outlet?.name : `/${tenant}/${outlet?.name}`
+                                return (
+                                    <Link
+                                        key={index}
+                                        // onClick={() => onSelect(outlet)}
+                                        href={url}
+                                        className={`w-full text-left p-6 rounded-3xl border transition-all flex justify-between items-center group ${outlet.is_currently_open
+                                            ? 'hover:bg-teal-50 border-slate-100 hover:border-[#149184]/30'
+                                            : 'bg-slate-50/50 border-slate-100 opacity-80'
+                                            }`}
+                                    >
+                                        <div className="flex items-center gap-5">
+                                            {/* Icon Map Pin dengan indikator warna status */}
+                                            <div className={`p-3 shadow-sm rounded-xl transition-colors ${outlet.is_currently_open
+                                                ? 'bg-white text-slate-400 group-hover:text-[#149184]'
+                                                : 'bg-slate-200 text-slate-500'
+                                                }`}>
+                                                <MapPin size={22} />
                                             </div>
 
-                                            <p className="text-sm text-slate-500">{outlet.address}</p>
+                                            <div>
+                                                <div className="flex items-center gap-2">
+                                                    <p className={`font-bold text-lg transition-colors ${outlet.is_currently_open ? 'text-slate-900 group-hover:text-[#149184]' : 'text-slate-500'
+                                                        }`}>
+                                                        {outlet.name}
+                                                    </p>
 
-                                            <div className="flex gap-2 mt-2">
-                                                {/* Jarak */}
-                                                {(outlet as any).distance && (
-                                                    <span className="text-[10px] bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full inline-block">
-                                                        {parseFloat((outlet as any).distance).toFixed(1)} km dari lokasimu
+                                                    {/* Badge Status Buka/Tutup */}
+                                                    <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${outlet.is_currently_open
+                                                        ? 'bg-green-100 text-green-600'
+                                                        : 'bg-red-100 text-red-600'
+                                                        }`}>
+                                                        {outlet.is_currently_open ? 'BUKA' : 'TUTUP'}
                                                     </span>
-                                                )}
+                                                </div>
 
-                                                {/* Jam Operasional (Opsional) */}
-                                                <span className="text-[10px] text-slate-400 italic">
-                                                    {outlet.time_open.substring(0, 5)} - {outlet.time_close.substring(0, 5)}
-                                                </span>
+                                                <p className="text-sm text-slate-500">{outlet.address}</p>
+
+                                                <div className="flex gap-2 mt-2">
+                                                    {/* Jarak */}
+                                                    {(outlet as any).distance && (
+                                                        <span className="text-[10px] bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full inline-block">
+                                                            {parseFloat((outlet as any).distance).toFixed(1)} km dari lokasimu
+                                                        </span>
+                                                    )}
+
+                                                    {/* Jam Operasional (Opsional) */}
+                                                    <span className="text-[10px] text-slate-400 italic">
+                                                        {outlet.time_open.substring(0, 5)} - {outlet.time_close.substring(0, 5)}
+                                                    </span>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
 
-                                    <div className="w-10 h-10 rounded-full flex items-center justify-center text-slate-300 group-hover:text-[#149184] transition-all">
-                                        <ChevronDown className="-rotate-90" size={20} />
-                                    </div>
-                                </button>
-                            ))
+                                        <div className="w-10 h-10 rounded-full flex items-center justify-center text-slate-300 group-hover:text-[#149184] transition-all">
+                                            <ChevronDown className="-rotate-90" size={20} />
+                                        </div>
+                                    </Link>
+                                )
+                            })
                         ) : (
                             <div className="text-center py-10 text-slate-500">
                                 Outlet tidak ditemukan.

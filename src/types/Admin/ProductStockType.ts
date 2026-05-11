@@ -8,4 +8,6 @@ export interface ProductStockType {
     name_outlet: string;
     date: string;
     name_variant: string;
+    reference_type?: string;
+    note?: string;
 }

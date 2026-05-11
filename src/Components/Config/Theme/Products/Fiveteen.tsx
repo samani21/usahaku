@@ -65,14 +65,12 @@ const Fiveteen = ({ products, isDarkMode, handleCart }: Props) => {
                                 {label}
                             </div>
                         )}
-
                         {/* Out of Stock Overlay Badge */}
                         {!is_available && (
                             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 bg-red-600 text-white text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-widest shadow-2xl rotate-[-10deg]">
                                 Sold Out
                             </div>
                         )}
-
                         {/* Main Image Orbit */}
                         <div className={`relative w-full aspect-square rounded-full border-2 border-dashed transition-all duration-700 p-4
                 ${!is_available ? "grayscale border-zinc-400" : isDarkMode ? "border-zinc-800 group-hover:border-zinc-600" : "border-slate-200 group-hover:border-[var(--product-primary-color)]"}`}>

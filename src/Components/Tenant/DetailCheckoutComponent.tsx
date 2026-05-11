@@ -23,7 +23,7 @@ import {
 } from 'lucide-react';
 import { Get } from '@/utils/Get';
 import Loading from '../Component/Loading';
-import { useParams, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { BanksType } from '@/types/Admin/Banks';
 import { Post } from '@/utils/Post';
 
@@ -36,8 +36,6 @@ interface CartItemsType {
     qty: number;
     price: number;
     subtotal: number;
-    product_stock: number;
-    product_variant_stock: number;
     name_product: string;
     iamge_product: string;
     name_variant: string;
@@ -47,46 +45,22 @@ interface CartItemsType {
 interface CartsType {
     items: CartItemsType[];
     total: number;
-    is_bank: boolean;
-    is_qris: boolean;
+    banks: BanksType[];
 }
 
-interface StockAvailableType {
-    available_stock: number;
-    max_allowed_qty: number;
-    product_id: number;
-    product_name: number;
-    requested_qty: number;
-    variant_id?: number
-}
-
-const CheckOutComponent = () => {
-    const { outlet } = useParams();
+const DetailCheckoutComponent = () => {
     const [darkMode, setDarkMode] = useState(false);
     const [paymentMethod, setPaymentMethod] = useState('');
     const [isPaid, setIsPaid] = useState(false);
     const [imagePreview, setImagePreview] = useState<string | null>(null);
     const [showMobileUpload, setShowMobileUpload] = useState(false);
     const [items, setItems] = useState<CartItemsType[]>([]);
-    const [isBank, setIsBank] = useState<boolean>(false);
-    const [isQris, setIsQris] = useState<boolean>(false);
+    const [banks, setBanks] = useState<BanksType[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
     const router = useRouter();
     const [customerName, setCustomerName] = useState('');
     const [phoneNumber, setPhoneNumber] = useState('');
     const [error, setError] = useState<string | null>(null);
-    const [stockAvailable, setStockAvailable] = useState<StockAvailableType[]>([]);
-    const [tenant, setTenant] = useState<string>('');
-    useEffect(() => {
-        const path = window.location.pathname;
-        let tenant: string | null = null;
-        const segments = path.split("/").filter(Boolean);
-        if (segments.length > 0) {
-            setTenant(segments[0]);
-        }
-
-    }, [])
-    // Fungsi untuk memformat nomor ke 628
     const handlePhoneChange = (e: any) => {
         let input = e.target.value.replace(/\D/g, ''); // Hapus semua karakter non-angka
         if (input.startsWith('0')) {
@@ -101,41 +75,18 @@ const CheckOutComponent = () => {
     const updateQty = (id: number, delta: number) => {
         setItems(prevItems =>
             prevItems.map(item => {
-
-                if (Number(item.id) !== Number(id)) return item;
-
-                const maxStock =
-                    item.product_variant_stock ??
-                    item.product_stock ??
-                    0;
-
-                const newQty = Number(item.qty) + Number(delta);
-
-                // hapus item jika qty <= 0
-                if (newQty <= 0) {
-                    return null;
+                if (item.id === id) {
+                    const newQty = Math.max(0, item.qty + delta);
+                    return { ...item, qty: newQty };
                 }
-
-                // batasi hanya saat tambah qty
-                if (delta > 0 && maxStock > 0 && newQty > maxStock) {
-                    return item;
-                }
-
-                return {
-                    ...item,
-                    qty: newQty,
-                    subtotal: item.price * newQty
-                };
-
-            }).filter(Boolean) as typeof prevItems
+                return item;
+            }).filter(item => item.qty > 0)
         );
     };
 
     const subtotal = items.reduce((acc, item) => acc + (item.price * item.qty), 0);
     // const shipping = items.length > 0 ? 25000 : 0;
-    const total = items.reduce((acc, item) => {
-        return acc + (item.price * item.qty);
-    }, 0);
+    const total = subtotal;
 
     const handleFileUpload = (e: any) => {
         const file = e.target.files[0];
@@ -149,7 +100,6 @@ const CheckOutComponent = () => {
     };
 
     const handleCheckout = async () => {
-        setLoading(true);
         try {
 
             if (!customerName) {
@@ -161,32 +111,15 @@ const CheckOutComponent = () => {
                 return
             }
             const formData = new FormData();
-
             formData.append('payment_method', paymentMethod);
             formData.append('customer_name', customerName);
             formData.append('phone_number', phoneNumber);
-
-            items.forEach((item, index) => {
-                formData.append(`items[${index}][product_id]`, String(item.product_id));
-                formData.append(`items[${index}][variant_id]`, String(item.variant_id) || '');
-                formData.append(`items[${index}][qty]`, item.qty.toString());
-            });
             const res = await Post<any, FormData>('/customer/create-order', formData)
-            if (!paymentMethod || items.length === 0) return;
-            setIsPaid(true);
-            if (res?.success) {
-                if (tenant === outlet) {
-                    router?.push(`/detail/${res?.data?.qr_token}`)
-                } else {
-                    router?.push(`${tenant}/detail/${res?.data?.qr_token}`)
-                }
-            } else {
-            }
+            // if (!paymentMethod || items.length === 0) return;
+            // setIsPaid(true);
         } catch (e: any) {
-            setStockAvailable(e?.raw?.response?.data?.data)
 
         } finally {
-            setLoading(false);
 
         }
     };
@@ -249,8 +182,7 @@ const CheckOutComponent = () => {
             const res = await Get<{ success: boolean, data: CartsType }>('customer/list-cart');
             if (res?.success) {
                 setItems(res?.data?.items)
-                setIsBank(res?.data?.is_bank);
-                setIsQris(res?.data?.is_qris);
+                setBanks(res?.data?.banks)
             }
         } catch (e: any) {
 
@@ -259,10 +191,9 @@ const CheckOutComponent = () => {
 
         }
     }
-    // const maxStock = 6; // dummy global
+    const maxStock = 6; // dummy global
 
-    // const invalidItems = items.filter((item) => item.qty > maxStock);
-    // let is_invalid
+    const invalidItems = items.filter((item) => item.qty > maxStock);
     return (
         <div className={`${darkMode ? 'dark bg-[#0a0f18] text-white' : 'bg-gray-50 text-gray-900'} min-h-screen font-sans p-4 md:p-8 transition-colors duration-300`}>
             {/* Header */}
@@ -271,6 +202,7 @@ const CheckOutComponent = () => {
                     <ArrowLeft size={20} />
                     <span className="hidden sm:inline">Kembali</span>
                 </button>
+
                 <div className="flex items-center gap-2">
                     <div className={`w-10 h-10 ${darkMode ? 'bg-white ' : "bg-emerald-600"} rounded-lg flex items-center justify-center shadow-lg`}>
                         <span className={` ${darkMode ? 'text-black' : "text-white"} font-bold text-sm`}>TS</span>
@@ -301,41 +233,24 @@ const CheckOutComponent = () => {
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-                            {['cash', 'transfer', 'qris']
-                                .filter((method) => {
-                                    if (method === 'transfer') return isBank;
-                                    if (method === 'qris') return isQris;
-                                    return true; // 'cash' selalu tampil
-                                })
-                                .map((method) => (
-                                    <button
-                                        key={method}
-                                        onClick={() => { setPaymentMethod(method); setImagePreview(null); }}
-                                        className={`p-4 rounded-2xl border-2 transition-all flex flex-col items-center gap-3 relative overflow-hidden ${paymentMethod === method
-                                            ? `border-emerald-500 ${darkMode ? "bg-emerald-500/10" : "bg-emerald-50"}`
-                                            : `${darkMode ? "border-gray-800 bg-[#0f1520]" : "border-gray-100 bg-gray-50"} hover:border-emerald-200`
-                                            }`}
-                                    >
-                                        {paymentMethod === method && (
-                                            <div className="absolute top-2 right-2">
-                                                <CheckCircle2 size={16} className="text-emerald-500" />
-                                            </div>
-                                        )}
-
-                                        {/* Icon Picker */}
-                                        {method === 'cash' && <Banknote size={32} className={paymentMethod === 'cash' ? 'text-emerald-500' : 'text-gray-400'} />}
-                                        {method === 'transfer' && <CreditCard size={32} className={paymentMethod === 'transfer' ? 'text-emerald-500' : 'text-gray-400'} />}
-                                        {method === 'qris' && <QrCode size={32} className={paymentMethod === 'qris' ? 'text-emerald-500' : 'text-gray-400'} />}
-
-                                        <span className={`font-semibold capitalize ${paymentMethod === method
-                                            ? (darkMode ? "text-white" : "text-emerald-600")
-                                            : "text-gray-500"
-                                            }`}>
-                                            {method === 'cash' ? 'Tunai' : method === 'transfer' ? 'Transfer Bank' : 'QRIS'}
-                                        </span>
-                                    </button>
-                                ))
-                            }
+                            {['cash', 'transfer', 'qris'].map((method) => (
+                                <button
+                                    key={method}
+                                    onClick={() => { setPaymentMethod(method); setImagePreview(null); }}
+                                    className={`p-4 rounded-2xl border-2 transition-all flex flex-col items-center gap-3 relative overflow-hidden ${paymentMethod === method
+                                        ? `border-emerald-500 ${darkMode ? "bg-emerald-500/10" : "bg-emerald-50"}`
+                                        : `${darkMode ? "border-gray-800 bg-[#0f1520]" : "border-gray-100 bg-gray-50"} hover:border-emerald-200`
+                                        }`}
+                                >
+                                    {paymentMethod === method && <div className="absolute top-2 right-2"><CheckCircle2 size={16} className="text-emerald-500" /></div>}
+                                    {method === 'cash' && <Banknote size={32} className={paymentMethod === 'cash' ? 'text-emerald-500' : 'text-gray-400'} />}
+                                    {method === 'transfer' && <CreditCard size={32} className={paymentMethod === 'transfer' ? 'text-emerald-500' : 'text-gray-400'} />}
+                                    {method === 'qris' && <QrCode size={32} className={paymentMethod === 'qris' ? 'text-emerald-500' : 'text-gray-400'} />}
+                                    <span className={`font-semibold capitalize ${paymentMethod === method ? `${darkMode ? '-white' : "text-emerald-600"}` : 'text-gray-500'}`}>
+                                        {method === 'cash' ? 'Tunai' : method === 'transfer' ? 'Transfer Bank' : 'QRIS'}
+                                    </span>
+                                </button>
+                            ))}
                         </div>
 
                         {/* Area Instruksi Dinamis */}
@@ -361,67 +276,66 @@ const CheckOutComponent = () => {
                                         </div>
                                     </div>
                                 ) : (
-                                    // <div className="flex flex-col md:flex-row gap-8">
-                                    //     {/* Panel Kiri: Aksi QR/Visual */}
-                                    //     <div className="flex-1 text-center">
-                                    //         {paymentMethod === 'qris' ? (
-                                    //             <div className="space-y-4">
-                                    //                 <div className="bg-white p-3 rounded-2xl shadow-xl border border-gray-100 inline-block">
-                                    //                     <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=QRIS_DEMO" alt="QRIS" className="w-32 h-32" />
-                                    //                 </div>
-                                    //                 <p className="text-[10px] text-gray-500 font-medium italic">Pindai kode QR di atas menggunakan aplikasi bank atau e-wallet (Gopay/OVO/Dana).</p>
-                                    //             </div>
-                                    //         ) : (
-                                    //             <div className="space-y-4">
-                                    //                 {
-                                    //                     banks?.map((b, i) => (
-                                    //                         <div key={i} className={`p-4 ${darkMode ? "border-gray-700 bg-[#1a2333]" : "bg-white border-gray-200"} rounded-2xl border shadow-sm text-left`}>
-                                    //                             <div className="flex justify-between items-center mb-2">
-                                    //                                 <span className="text-[10px] font-bold text-blue-600 uppercase">{b?.master_bank?.name}</span>
-                                    //                                 <img src={b?.master_bank?.logo} alt={b?.master_bank?.name} className="h-3" />
-                                    //                             </div>
-                                    //                             <p className="text-xs text-gray-400 mb-1">Nomor Rekening:</p>
-                                    //                             <div className='flex items-center justify-between'>
-                                    //                                 <p className={`text-lg font-mono font-bold ${darkMode ? "text-white" : "text-gray-800"}`}>{b?.account_number}</p>
-                                    //                                 <Copy size={14} />
-                                    //                             </div>
-                                    //                             <p className="text-[10px] text-gray-500 mt-1">a/n {b?.account_name}</p>
-                                    //                         </div>
-                                    //                     ))
-                                    //                 }
-                                    //             </div>
-                                    //         )}
-                                    //     </div>
+                                    <div className="flex flex-col md:flex-row gap-8">
+                                        {/* Panel Kiri: Aksi QR/Visual */}
+                                        <div className="flex-1 text-center">
+                                            {paymentMethod === 'qris' ? (
+                                                <div className="space-y-4">
+                                                    <div className="bg-white p-3 rounded-2xl shadow-xl border border-gray-100 inline-block">
+                                                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=QRIS_DEMO" alt="QRIS" className="w-32 h-32" />
+                                                    </div>
+                                                    <p className="text-[10px] text-gray-500 font-medium italic">Pindai kode QR di atas menggunakan aplikasi bank atau e-wallet (Gopay/OVO/Dana).</p>
+                                                </div>
+                                            ) : (
+                                                <div className="space-y-4">
+                                                    {
+                                                        banks?.map((b, i) => (
+                                                            <div key={i} className={`p-4 ${darkMode ? "border-gray-700 bg-[#1a2333]" : "bg-white border-gray-200"} rounded-2xl border shadow-sm text-left`}>
+                                                                <div className="flex justify-between items-center mb-2">
+                                                                    <span className="text-[10px] font-bold text-blue-600 uppercase">{b?.master_bank?.name}</span>
+                                                                    <img src={b?.master_bank?.logo} alt={b?.master_bank?.name} className="h-3" />
+                                                                </div>
+                                                                <p className="text-xs text-gray-400 mb-1">Nomor Rekening:</p>
+                                                                <div className='flex items-center justify-between'>
+                                                                    <p className={`text-lg font-mono font-bold ${darkMode ? "text-white" : "text-gray-800"}`}>{b?.account_number}</p>
+                                                                    <Copy size={14} />
+                                                                </div>
+                                                                <p className="text-[10px] text-gray-500 mt-1">a/n {b?.account_name}</p>
+                                                            </div>
+                                                        ))
+                                                    }
+                                                </div>
+                                            )}
+                                        </div>
 
-                                    //     {/* Panel Kanan: Upload Bukti */}
-                                    //     <div className={`flex-[1.5] border-t md:border-t-0 md:border-l ${darkMode ? "border-gray-800" : "border-gray-200 "} pt-6 md:pt-0 md:pl-8`}>
-                                    //         <p className="text-[11px] font-bold text-gray-500 uppercase tracking-widest mb-3">Upload Bukti Transfer</p>
-                                    //         <label className={`relative group cursor-pointer block border-2 border-dashed ${darkMode ? "bg-[#1a2333]  border-gray-700" : "border-gray-300 bg-white"} hover:border-emerald-500 rounded-2xl p-4 text-center transition-all`}>
-                                    //             <input type="file" className="hidden" accept="image/*" onChange={handleFileUpload} />
-                                    //             {imagePreview ? (
-                                    //                 <div className="relative">
-                                    //                     <img src={imagePreview} alt="Preview" className="h-24 mx-auto rounded-lg shadow-md" />
-                                    //                     <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center rounded-lg transition-opacity">
-                                    //                         <span className="text-[10px] text-white font-bold">Ganti Foto</span>
-                                    //                     </div>
-                                    //                 </div>
-                                    //             ) : (
-                                    //                 <div className="py-2">
-                                    //                     <div className={`w-10 h-10 ${darkMode ? "bg-[#0f1520]" : "bg-gray-50 "} rounded-full flex items-center justify-center mx-auto mb-2 group-hover:scale-110 transition-transform`}>
-                                    //                         <Upload className="text-gray-400 group-hover:text-emerald-500" size={18} />
-                                    //                     </div>
-                                    //                     <span className="text-[10px] text-gray-500 block">Klik untuk pilih file atau foto struk</span>
-                                    //                     <span className="text-[9px] text-gray-400 italic">Maks. 5MB (JPG, PNG)</span>
-                                    //                 </div>
-                                    //             )}
-                                    //         </label>
-                                    //         <div className="mt-4 flex items-start gap-2 text-[10px] text-gray-400">
-                                    //             <Smartphone size={12} className="shrink-0 mt-0.5" />
-                                    //             <p>Atau <button onClick={() => setShowMobileUpload(true)} className="text-emerald-500 font-bold hover:underline">Scan QR</button> di sisi kiri untuk upload langsung dari HP.</p>
-                                    //         </div>
-                                    //     </div>
-                                    // </div>
-                                    ""
+                                        {/* Panel Kanan: Upload Bukti */}
+                                        <div className={`flex-[1.5] border-t md:border-t-0 md:border-l ${darkMode ? "border-gray-800" : "border-gray-200 "} pt-6 md:pt-0 md:pl-8`}>
+                                            <p className="text-[11px] font-bold text-gray-500 uppercase tracking-widest mb-3">Upload Bukti Transfer</p>
+                                            <label className={`relative group cursor-pointer block border-2 border-dashed ${darkMode ? "bg-[#1a2333]  border-gray-700" : "border-gray-300 bg-white"} hover:border-emerald-500 rounded-2xl p-4 text-center transition-all`}>
+                                                <input type="file" className="hidden" accept="image/*" onChange={handleFileUpload} />
+                                                {imagePreview ? (
+                                                    <div className="relative">
+                                                        <img src={imagePreview} alt="Preview" className="h-24 mx-auto rounded-lg shadow-md" />
+                                                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center rounded-lg transition-opacity">
+                                                            <span className="text-[10px] text-white font-bold">Ganti Foto</span>
+                                                        </div>
+                                                    </div>
+                                                ) : (
+                                                    <div className="py-2">
+                                                        <div className={`w-10 h-10 ${darkMode ? "bg-[#0f1520]" : "bg-gray-50 "} rounded-full flex items-center justify-center mx-auto mb-2 group-hover:scale-110 transition-transform`}>
+                                                            <Upload className="text-gray-400 group-hover:text-emerald-500" size={18} />
+                                                        </div>
+                                                        <span className="text-[10px] text-gray-500 block">Klik untuk pilih file atau foto struk</span>
+                                                        <span className="text-[9px] text-gray-400 italic">Maks. 5MB (JPG, PNG)</span>
+                                                    </div>
+                                                )}
+                                            </label>
+                                            <div className="mt-4 flex items-start gap-2 text-[10px] text-gray-400">
+                                                <Smartphone size={12} className="shrink-0 mt-0.5" />
+                                                <p>Atau <button onClick={() => setShowMobileUpload(true)} className="text-emerald-500 font-bold hover:underline">Scan QR</button> di sisi kiri untuk upload langsung dari HP.</p>
+                                            </div>
+                                        </div>
+                                    </div>
                                 )}
                             </div>
                         )}
@@ -435,7 +349,7 @@ const CheckOutComponent = () => {
                         </h3>
 
                         <div className="space-y-6 mb-8 max-h-[40vh] overflow-y-auto pr-2 custom-scrollbar">
-                            {/* {invalidItems.length > 0 && (
+                            {invalidItems.length > 0 && (
                                 <div className={`mb-4 p-3 rounded-xl border text-xs ${darkMode
                                     ? "bg-red-900/20 border-red-800 text-red-300"
                                     : "bg-red-50 border-red-200 text-red-600"
@@ -458,12 +372,13 @@ const CheckOutComponent = () => {
                                         })}
                                     </ul>
                                 </div>
-                            )} */}
+                            )}
                             {items.length > 0 ? (
                                 items.map((item) => {
-                                    const maxStock = stockAvailable?.find((s) => s?.variant_id === item?.variant_id)?.available_stock ?? stockAvailable?.find((s) => s?.product_id === item?.product_id)?.available_stock ?? item?.product_variant_stock ?? item?.product_stock; // 👉 statis dulu (dummy)
-                                    const isOver = maxStock != 0 && item.qty > maxStock || maxStock === 0;
+                                    const maxStock = 6; // 👉 statis dulu (dummy)
+                                    const isOver = item.qty > maxStock;
                                     const overQty = item.qty - maxStock;
+
                                     return (
                                         <div key={item.id} className="flex gap-4 group">
                                             <img
@@ -481,8 +396,8 @@ const CheckOutComponent = () => {
                                                 <p className={`${darkMode ? "text-emerald-400" : "text-emerald-600"} font-bold text-sm mt-0.5`}>
                                                     Rp {(item.price * item.qty).toLocaleString('id-ID')}
                                                 </p>
-                                                {/* 🔥 INFO STOCK */}
 
+                                                {/* 🔥 INFO STOCK */}
                                                 <p className={`text-[10px] mt-1 ${isOver ? "text-red-500" : "text-gray-400"}`}>
                                                     {isOver
                                                         ? `⚠ Maksimal ${maxStock} item (kelebihan ${overQty})`
@@ -503,11 +418,11 @@ const CheckOutComponent = () => {
                                                         </span>
 
                                                         <button
-                                                            disabled={maxStock != 0 && item.qty >= maxStock}
+                                                            disabled={item.qty >= maxStock}
                                                             onClick={() => updateQty(item.id, 1)}
                                                             className={`p-1 ${darkMode ? "hover:bg-gray-800" : "hover:bg-white"} rounded-md transition-colors text-gray-500`}
                                                         >
-                                                            <Plus size={12} className={maxStock != 0 && item.qty >= maxStock ? "opacity-30" : ""} />
+                                                            <Plus size={12} className={item.qty >= maxStock ? "opacity-30" : ""} />
                                                         </button>
                                                     </div>
                                                 </div>
@@ -592,14 +507,14 @@ const CheckOutComponent = () => {
                             </div>
                         }
                         <button
-                            disabled={!paymentMethod || items.length === 0 && !imagePreview}
+                            disabled={!paymentMethod || items.length === 0 || ((paymentMethod === 'transfer' || paymentMethod === 'qris') && !imagePreview)}
                             onClick={handleCheckout}
-                            className={`w-full mt-8 py-4 rounded-2xl font-black transition-all transform active:scale-95 flex items-center justify-center gap-2 ${(!paymentMethod || items.length === 0 && !imagePreview)
+                            className={`w-full mt-8 py-4 rounded-2xl font-black transition-all transform active:scale-95 flex items-center justify-center gap-2 ${(!paymentMethod || items.length === 0 || ((paymentMethod === 'transfer' || paymentMethod === 'qris') && !imagePreview))
                                 ? `${darkMode ? "bbg-gray-800" : "bg-gray-200"} text-gray-400 cursor-not-allowed shadow-none`
                                 : 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-xl shadow-emerald-600/30'
                                 }`}
                         >
-                            BUAT PESANAN
+                            {paymentMethod === 'cash' ? 'BUAT PESANAN' : 'KONFIRMASI PEMBAYARAN'}
                         </button>
                     </section>
                 </div>
@@ -611,4 +526,4 @@ const CheckOutComponent = () => {
     );
 };
 
-export default CheckOutComponent;
+export default DetailCheckoutComponent;

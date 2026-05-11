@@ -48,8 +48,11 @@ const getDevice = () => {
 // axios instance
 export const apiClient: AxiosInstance = axios.create({
     baseURL: API_URL,
+    // headers: {
+    //     "Content-Type": "application/json",
+    // },
     headers: {
-        "Content-Type": "application/json",
+        'Content-Type': undefined,
     },
 });
 

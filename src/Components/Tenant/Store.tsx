@@ -24,6 +24,7 @@ interface Cart {
 
 interface CatalogType extends Catalog {
     cart: Cart;
+    outlet: OutletsType;
 }
 
 const getContrastColor = (hex: string | undefined) => {
@@ -69,6 +70,19 @@ export default function Store() {
     }, []);
     const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
     const [selectedOutlet, setSelectedOutlet] = useState<OutletsType | null>(null);
+    const [dataProduct, setdataProducts] = useState<ProductsType[]>([]);
+    console.log('dataProduct', dataProduct)
+    const [tenant, setTenant] = useState<string>('');
+    useEffect(() => {
+        const path = window.location.pathname;
+        let tenant: string | null = null;
+        const segments = path.split("/").filter(Boolean);
+        if (segments.length > 0) {
+            setTenant(segments[0]);
+        }
+
+    }, [])
+
     useEffect(() => {
         const primary = isDarkTheme ? '#020617' : '#f8fafc';   // slate-950 / slate-50
         const secondary = isDarkTheme ? '#f8fafc' : '#020617'; // kebalikannya
@@ -80,14 +94,16 @@ export default function Store() {
     const fetchCatalog = async () => {
         try {
             setLoading(true);
-            const res = await Get<{ success: boolean; data: CatalogType }>(`/customer/tenant?outlet=Outlet 3`);
+            const res = await Get<{ success: boolean; data: CatalogType }>(`/customer/tenant`);
             if (res?.success && res.data) {
                 setCatalogData(res.data);
                 setIsDarkTheme(res.data.header?.mode === 'dark');
+                setdataProducts(res?.data?.products)
                 setCartItem({
                     item: res?.data?.cart?.item,
                     amount: res?.data?.cart?.amount
                 })
+                setSelectedOutlet(res?.data?.outlet)
                 // Update CSS variables if colors exist
                 if (res.data.header?.color) updateCssVariables('header', res.data.header.color);
                 if (res.data.hero?.color) updateCssVariables('hero', res.data.hero.color);
@@ -132,16 +148,16 @@ export default function Store() {
     const categories = catalogData?.categories;
     const product = catalogData?.product
     const products = useMemo(() => {
-        if (!catalogData?.products) return []
+        if (!dataProduct) return []
 
         if (selectCategorie) {
-            return catalogData.products.filter(
+            return dataProduct.filter(
                 (p) => p?.category === selectCategorie
             )
         }
 
-        return catalogData.products
-    }, [catalogData, selectCategorie])
+        return dataProduct
+    }, [catalogData, selectCategorie, dataProduct])
     const summary = catalogData?.summary;
 
 
@@ -156,10 +172,44 @@ export default function Store() {
             formData.append('qty', String(qty));
             const res = await Post<any, FormData>('/customer/add-cart', formData)
             if (res?.success) {
+                console.log('res?.cartItem', res)
                 setCartItem({
-                    item: res?.cartItem?.item,
-                    amount: res?.cartItem?.amount
+                    item: res?.data?.cartItem?.item,
+                    amount: res?.data?.cartItem?.amount
                 })
+
+                const productNew: ProductsType[] = products?.map((p) => {
+                    // hanya update product yang cocok
+                    if (p.id === Number(res?.data?.item?.product_id)) {
+                        let updatedProduct = {
+                            ...p,
+                            product_stock: (p.product_stock ?? 0) - (Number(res?.data?.qty) ?? 0),
+                        };
+
+                        // 👉 jika ada variant_id
+                        if (res?.data?.item?.variant_id) {
+                            updatedProduct = {
+                                ...updatedProduct,
+                                variants: p.variants?.map((v) => {
+                                    if (v.id === Number(res?.data?.item?.variant_id)) {
+                                        return {
+                                            ...v,
+                                            product_variant_stock:
+                                                (v.product_variant_stock ?? 0) - (Number(res?.data?.qty) ?? 0),
+                                        };
+                                    }
+                                    return v;
+                                }) ?? [],
+                            };
+                        }
+
+                        return updatedProduct;
+                    }
+
+                    return p;
+                }) ?? [];
+
+                setdataProducts(productNew);
             }
         } catch (e: any) {
             // console.error(e);
@@ -290,7 +340,7 @@ export default function Store() {
                 </div>
             </div>
             {
-                isOpenModal && <ModalOutlet onClose={() => setIsOpenModal(false)} onSelect={(outlet: OutletsType) => { setSelectedOutlet(outlet); setIsOpenModal(false) }} />
+                isOpenModal && <ModalOutlet onClose={() => setIsOpenModal(false)} onSelect={(outlet: OutletsType) => { setSelectedOutlet(outlet); setIsOpenModal(false) }} tenant={tenant} />
             }
         </div>
     );

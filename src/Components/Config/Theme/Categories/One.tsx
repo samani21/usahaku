@@ -92,7 +92,7 @@ const One = ({ categories, isDarkMode, onClick }: Props) => {
                             </div> :
                             <div
                                 key={i}
-                                onClick={() => { onClick?.(null); handleScroll(); }}
+                                onClick={() => { onClick?.(cat?.name); handleScroll(); }}
                                 className={`relative group overflow-hidden rounded-[2.5rem] cursor-pointer col-span-2 row-span-1 shadow-2xl transition-all duration-500 hover:-translate-y-2
                     ${isDarkMode ? "bg-slate-800" : "bg-slate-200 text-slate-900"}`}
                             >

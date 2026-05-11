@@ -223,26 +223,16 @@ const ProductStockComponent = (props: Props) => {
                 render: (row) => row?.date ?? ''
             },
             {
-                key: "actions",
-                label: "Aksi",
-                align: "center",
-                render: (row) => (
-                    <div className="flex justify-center gap-2">
-                        <button
-                            onClick={() => handleEdit(row)}
-                            className="text-blue-600 hover:text-blue-800"
-                        >
-                            <Edit size={18} />
-                        </button>
-                        <button
-                            onClick={() => handleDelete(row)}
-                            className="text-red-600 hover:text-red-800"
-                        >
-                            <Trash2Icon size={18} />
-                        </button>
-                    </div>
-                ),
+                key: "reference_type",
+                label: "Reference",
+                render: (row) => row?.reference_type ?? ''
             },
+            {
+                key: "note",
+                label: "Catatan",
+                render: (row) => row?.note ?? ''
+            },
+
         ],
         [handleEdit, handleDelete]
     );

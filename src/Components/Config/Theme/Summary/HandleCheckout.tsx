@@ -19,7 +19,7 @@ const HandleCheckout = ({ isBuild, className, children }: Props) => {
     return (
         <button onClick={() => {
             setLoading(true)
-            !isBuild && router.push(`${pathname != '/' ? pathname : ''}/checkout`);
+            !isBuild && router.push(`${pathname}/checkout`);
         }} className={className}>
             {children}
         </button>

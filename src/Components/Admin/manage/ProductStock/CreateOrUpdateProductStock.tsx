@@ -15,12 +15,11 @@ type Props = {
 
 interface OptionsType {
     label: string;
-    value: number;
+    value: string;
 }
 const selectOptions: OptionsType[] = [
-    { label: "Option 1", value: 1 },
-    { label: "Option 2", value: 2 },
-    { label: "Option 3", value: 3 },
+    { label: "Tambah Stock", value: 'restock' },
+    { label: "Penyesuaian", value: 'adjustment' },
 ];
 
 const CreateOrUpdateProductStock = ({ handleFormSubmit, data, loading, setLoading, onCancel }: Props) => {
@@ -30,6 +29,8 @@ const CreateOrUpdateProductStock = ({ handleFormSubmit, data, loading, setLoadin
         date: "",
         product_varian_id: "",
         stock: "",
+        reference_type: "",
+        note: "",
     });
     const [error, setError] = useState<any>({
         product_id: null,
@@ -37,6 +38,8 @@ const CreateOrUpdateProductStock = ({ handleFormSubmit, data, loading, setLoadin
         date: null,
         product_varian_id: null,
         stock: null,
+        reference_type: null,
+        note: null,
     })
     const [icon, setIcon] = useState<string>('')
 
@@ -48,13 +51,18 @@ const CreateOrUpdateProductStock = ({ handleFormSubmit, data, loading, setLoadin
         setForm({
             product_id: '',
             product_variant_id: '',
-            stock: ''
+            stock: '',
+            reference_type: '',
+            note: '',
+            date: '',
         })
         if (data) {
             setForm({
                 product_id: data?.product_id,
                 product_variant_id: data?.product_variant_id,
                 stock: data?.stock,
+                reference_type: data?.reference_type,
+                note: data?.note,
                 date: data?.date
             });
         }
@@ -112,7 +120,7 @@ const CreateOrUpdateProductStock = ({ handleFormSubmit, data, loading, setLoadin
     }
 
     const variantOptions = useMemo(() => {
-        const product = products?.find((p) => p?.id === 2)?.variants
+        const product = products?.find((p) => p?.id === form?.product_id)?.variants
         return product?.map((item: any) => ({
             label: item.name,   // sesuaikan dengan field API
             value: item.id,
@@ -164,6 +172,8 @@ const CreateOrUpdateProductStock = ({ handleFormSubmit, data, loading, setLoadin
         formData.append('stock', form?.stock);
         formData.append('outlet_id', form?.outlet_id);
         formData.append('date', form?.date);
+        formData.append('reference_type', form?.reference_type);
+        formData.append('note', form?.note);
         handleFormSubmit(formData, data?.id ?? null)
     };
 
@@ -219,6 +229,25 @@ const CreateOrUpdateProductStock = ({ handleFormSubmit, data, loading, setLoadin
                 onChange={handleChange}
                 error={error?.date}
             />
+            <FormInput
+                type="select"
+                label="Reference"
+                name="reference_type"
+                value={form.reference_type}
+                onChange={handleChange}
+                options={selectOptions}
+            />
+            {
+                form.reference_type === 'adjustment' &&
+                <FormInput
+                    type="textarea"
+                    label="Catatan"
+                    name="note"
+                    value={form.note}
+                    onChange={handleChange}
+                    error={error?.note}
+                />
+            }
             <div className="flex flex-col sm:flex-row gap-4 pt-4">
                 {/* Tombol Batal */}
                 <button

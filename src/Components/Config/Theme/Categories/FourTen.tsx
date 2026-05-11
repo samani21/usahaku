@@ -29,12 +29,12 @@ const FourTen = ({ categories, isDarkMode, onClick }: Props) => {
                     className="relative group cursor-pointer aspect-[4/5]"
                 >
                     {/* Offset Shadow Layer */}
-                    <div className="absolute inset-0 rounded-2xl translate-x-3 translate-y-3 bg-orange-500 group-hover:translate-x-1 group-hover:translate-y-1 transition-all duration-300" />
+                    <div className="absolute inset-0 rounded-2xl translate-x-3 translate-y-3 bg-[var(--category-primary-color)] group-hover:translate-x-1 group-hover:translate-y-1 transition-all duration-300" />
 
                     {/* Main Card */}
                     <div className={`relative h-full rounded-2xl border-4 ${borderColor} ${cardBg} overflow-hidden flex flex-col transition-all duration-300 group-hover:-translate-x-1 group-hover:-translate-y-1`}>
-                        <div className="flex-1 relative bg-orange-50 flex items-center justify-center p-8">
-                            <Icon icon={'cbi:bulb-general-group'} className='w-full h-full text-orange-500 transition-transform duration-500 group-hover:scale-110' />
+                        <div className="flex-1 relative bg-[var(--category-primary-color)]/5 flex items-center justify-center p-8">
+                            <Icon icon={'cbi:bulb-general-group'} className='w-full h-full text-[var(--category-primary-color)] transition-transform duration-500 group-hover:scale-110' />
                         </div>
 
                         {/* Label */}
