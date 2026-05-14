@@ -71,7 +71,6 @@ export default function Store() {
     const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
     const [selectedOutlet, setSelectedOutlet] = useState<OutletsType | null>(null);
     const [dataProduct, setdataProducts] = useState<ProductsType[]>([]);
-    console.log('dataProduct', dataProduct)
     const [tenant, setTenant] = useState<string>('');
     useEffect(() => {
         const path = window.location.pathname;

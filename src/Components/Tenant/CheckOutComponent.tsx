@@ -168,7 +168,9 @@ const CheckOutComponent = () => {
 
             items.forEach((item, index) => {
                 formData.append(`items[${index}][product_id]`, String(item.product_id));
-                formData.append(`items[${index}][variant_id]`, String(item.variant_id) || '');
+                if (item.variant_id) {
+                    formData.append(`items[${index}][variant_id]`, String(item.variant_id) || '');
+                }
                 formData.append(`items[${index}][qty]`, item.qty.toString());
             });
             const res = await Post<any, FormData>('/customer/create-order', formData)
@@ -178,7 +180,7 @@ const CheckOutComponent = () => {
                 if (tenant === outlet) {
                     router?.push(`/detail/${res?.data?.qr_token}`)
                 } else {
-                    router?.push(`${tenant}/detail/${res?.data?.qr_token}`)
+                    router?.push(`/${tenant}/detail/${res?.data?.qr_token}`)
                 }
             } else {
             }
@@ -288,7 +290,6 @@ const CheckOutComponent = () => {
             </div>
 
             <div className="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8">
-
                 <div className="lg:col-span-2 space-y-6">
                     <section className={`${darkMode ? "bg-[#161d2a] border-gray-800" : "bg-white border-gray-200"} p-6 rounded-3xl border shadow-sm`}>
                         <div className="flex justify-between items-center mb-6">
