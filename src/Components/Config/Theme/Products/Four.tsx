@@ -220,12 +220,12 @@ const Four = ({ products, isDarkMode, handleCart }: Props) => {
                                         {formatIDR((selectedVariant?.final_price ?? product?.final_price ?? 0) * quantity)}
                                     </p>
                                 </div>
-                                {product?.discount_price && (
+                                {product?.discount_price ? (
                                     <div className="text-right pb-1">
                                         <p className="text-xs font-bold text-rose-500 uppercase tracking-tighter italic">Save {Promo(product, selectedVariant)}</p>
                                         <p className="text-sm opacity-30 line-through font-bold">{formatIDR((selectedVariant?.price ?? product?.price ?? 0) * quantity)}</p>
                                     </div>
-                                )}
+                                ) : ''}
                             </div>
 
                             <button
@@ -245,7 +245,7 @@ const Four = ({ products, isDarkMode, handleCart }: Props) => {
 
             {/* Futuristic Bottom Right Alert */}
             <AlertWrapper activeAlert={activeAlert} position="bottom-right">
-                <div className="relative group overflow-hidden bg-zinc-900 text-white p-6 rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.5)] border border-white/10 flex items-center gap-5">
+                <div className="relative group overflow-hidden bg-zinc-900 text-white p-6 rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.5)] border border-white/10 flex items-center justify-between gap-5">
                     <div className="absolute top-0 right-0 p-2 bg-[var(--product-primary-color)] rounded-bl-xl">
                         <ShoppingBag size={12} className="text-white" />
                     </div>
@@ -256,7 +256,7 @@ const Four = ({ products, isDarkMode, handleCart }: Props) => {
                         <p className="text-[10px] font-black uppercase text-[var(--product-primary-color)] tracking-widest">Added to Cart</p>
                         <p className="text-sm font-bold italic line-clamp-1">{mockItem?.name}</p>
                     </div>
-                    <div className="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-500">
+                    <div onClick={() => setActiveAlert(false)} className="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-500">
                         <Check size={18} strokeWidth={3} />
                     </div>
                 </div>

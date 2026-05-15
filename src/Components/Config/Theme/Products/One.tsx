@@ -178,12 +178,12 @@ const One = ({ products, isDarkMode, handleCart }: Props) => {
                             <span className="px-3 py-1 bg-[var(--product-primary-color)] text-white text-[10px] font-bold rounded-full uppercase tracking-tighter">
                                 {product?.category}
                             </span>
-                            {product?.discount_price && (
+                            {product?.discount_price ? (
                                 <div className='text-rose-500 flex items-center font-bold text-sm gap-1'>
                                     <Tag size={14} />
                                     <span>Hemat {Promo(product, selectedVariant)}</span>
                                 </div>
-                            )}
+                            ) : ''}
                         </div>
 
                         <h2 className="text-2xl md:text-4xl font-black mb-4 leading-tight">{product?.name}</h2>

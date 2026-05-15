@@ -53,7 +53,7 @@ const Five = ({ categories, isDarkMode, onClick }: Props) => {
                                     )
                                 ) : (
                                     <div className={`w-full h-full   flex items-center justify-center p-2`}>
-                                        <Icon icon={'cbi:bulb-general-group'} className='w-full h-full' />
+                                        <Icon icon={'cbi:bulb-general-group'} className='w-full h-full text-[var(--category-primary-color)]' />
                                     </div>
                                 )
                             }

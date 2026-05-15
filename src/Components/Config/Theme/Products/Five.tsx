@@ -181,12 +181,12 @@ const Five = ({ products, isDarkMode, handleCart }: Props) => {
                                     </div>
                                 )}
 
-                                {product?.is_qty && (
+                                {product?.is_qty ? (
                                     <div className="flex flex-col items-center gap-4">
                                         <span className="text-[10px] font-black uppercase tracking-[0.3em] opacity-40 text-center">Quantity</span>
                                         <QtySelector product={product} selectedVariant={selectedVariant} quantity={quantity} setQuantity={setQuantity} isDarkMode={isDarkMode} />
                                     </div>
-                                )}
+                                ) : ''}
                             </div>
 
                             {/* Price and CTA */}
@@ -194,9 +194,9 @@ const Five = ({ products, isDarkMode, handleCart }: Props) => {
                                 <div className="text-center">
                                     <p className="text-[10px] font-black uppercase tracking-widest opacity-40 mb-1">Total Amount</p>
                                     <div className="flex flex-col items-center">
-                                        {product?.discount_price && (
+                                        {product?.discount_price ? (
                                             <span className="text-sm opacity-30 line-through font-bold">{formatIDR((selectedVariant?.price ?? product?.price ?? 0) * quantity)}</span>
-                                        )}
+                                        ) : ''}
                                         <span className="text-4xl md:text-5xl font-black tracking-tighter text-[var(--product-primary-color)]">
                                             {formatIDR((selectedVariant?.final_price ?? product?.final_price ?? 0) * quantity)}
                                         </span>
@@ -221,7 +221,7 @@ const Five = ({ products, isDarkMode, handleCart }: Props) => {
 
             {/* Editorial Alert */}
             <AlertWrapper activeAlert={activeAlert} position="top-center">
-                <div className={`${isDarkMode ? "bg-zinc-900 text-white border-zinc-800" : "bg-white text-zinc-900 border-zinc-200"} pl-2 pr-6 py-2 rounded-full shadow-2xl flex items-center gap-4 border animate-in fade-in slide-in-from-top-4`}>
+                <div className={`${isDarkMode ? "bg-zinc-900 text-white border-zinc-800" : "bg-white text-zinc-900 border-zinc-200"} pl-2 pr-6 py-2 rounded-full shadow-2xl flex items-center gap-4 border animate-in justify-between fade-in slide-in-from-top-4`}>
                     <div className="w-10 h-10 rounded-full overflow-hidden">
                         <img src={mockItem?.image} className="w-full h-full object-cover" alt="" />
                     </div>

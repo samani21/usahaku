@@ -72,8 +72,8 @@ const Nine = ({ categories, isDarkMode, onClick }: Props) => {
                                 <img src={cat.icon} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" alt={cat.name} />
                             ) : (
                                 <div className="w-full h-full flex items-center justify-center p-6 transition-transform duration-700 group-hover:rotate-6 group-hover:scale-110" style={{ backgroundColor: `${cat.color}10` }}>
-                                    <Icon color={cat?.color} icon={cat?.icon || 'cbi:bulb-general-group'} className='w-full h-full opacity-10 absolute scale-125' />
-                                    <Icon color={cat?.color} icon={cat?.icon || 'cbi:bulb-general-group'} className='w-full h-full relative z-0' />
+                                    <Icon color={cat?.color} icon={cat?.icon || 'cbi:bulb-general-group'} className='w-full h-full opacity-10 absolute scale-125 text-[var(--category-primary-color)]' />
+                                    <Icon color={cat?.color} icon={cat?.icon || 'cbi:bulb-general-group'} className='w-full h-full relative z-0 text-[var(--category-primary-color)]' />
                                 </div>
                             )}
                         </div>

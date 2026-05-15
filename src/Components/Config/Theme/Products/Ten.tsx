@@ -152,11 +152,11 @@ const Ten = ({ products, isDarkMode, handleCart }: Props) => {
                                 <span className={`px-5 py-1.5 rounded-full ${isDarkMode ? "bg-slate-800" : "bg-slate-100"} text-[10px] font-black uppercase tracking-widest italic`}>
                                     {product?.category}
                                 </span>
-                                {product?.discount_price && (
+                                {product?.discount_price ? (
                                     <span className="px-5 py-1.5 rounded-full bg-[var(--product-primary-color)] text-white text-[10px] font-black uppercase tracking-widest shadow-lg shadow-[var(--product-primary-color)]/20">
                                         - {Promo(product, selectedVariant)}
                                     </span>
-                                )}
+                                ) : ''}
                             </div>
                             <h2 className="text-lg sm:text-3xl font-black tracking-tight leading-none">{product?.name}</h2>
                         </div>
@@ -175,7 +175,7 @@ const Ten = ({ products, isDarkMode, handleCart }: Props) => {
                             </div>
                             <div className="space-y-1">
                                 <span className="text-[10px] font-black opacity-70 uppercase tracking-widest">Ketersediaan</span>
-                                <div className="text-2xl font-black flex items-center gap-2"><Check size={20} className="text-emerald-500" /> {product?.stock} Unit</div>
+                                <div className="text-2xl font-black flex items-center gap-2"><Check size={20} className="text-emerald-500" /> {selectedVariant?.product_variant_stock ?? product?.stock} Unit</div>
                             </div>
                         </div>
                         <div className="grid gap-4">

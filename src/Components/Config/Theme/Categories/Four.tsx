@@ -70,13 +70,12 @@ const Four = ({ categories, isDarkMode, onClick }: Props) => {
 
                         <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-2xl overflow-hidden mr-5">
                             <div
-                                className="w-full h-full flex items-center justify-center transition-all duration-700 group-hover:rotate-6 group-hover:scale-110"
-                                style={{ backgroundColor: `${cat.color}10` }}
+                                className="w-full h-full flex items-center justify-center transition-all bg-[var(--category-primary-color)]/5 duration-700 group-hover:rotate-6 group-hover:scale-110"
                             >
                                 {cat?.icon?.startsWith("http") ? (
                                     <img src={cat.icon} className="w-full h-full object-cover" alt={cat.name} />
                                 ) : (
-                                    <Icon icon={cat?.icon || 'cbi:bulb-general-group'} className='w-10 h-10' style={{ color: cat.color }} />
+                                    <Icon icon={cat?.icon || 'cbi:bulb-general-group'} className='w-10 h-10 text-[var(--category-primary-color)]' style={{ color: cat.color }} />
                                 )}
                             </div>
                         </div>

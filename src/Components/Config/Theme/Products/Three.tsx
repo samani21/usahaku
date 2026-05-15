@@ -164,13 +164,13 @@ const Three = ({ products, isDarkMode, handleCart }: Props) => {
                             <div className="grid ">
                                 <div className='flex items-center justify-end w-full'>
                                     {
-                                        product?.discount_price &&
-                                        <div className="bg-rose-500 flex items-center gap-2 text-[12px] text-white px-4 py-2 rounded-2xl font-black italic">
-                                            <span className='mt-1'>
-                                                <Tag size={16} />
-                                            </span>
-                                            -{Promo(product, selectedVariant)}
-                                        </div>
+                                        product?.discount_price ?
+                                            <div className="bg-rose-500 flex items-center gap-2 text-[12px] text-white px-4 py-2 rounded-2xl font-black italic">
+                                                <span className='mt-1'>
+                                                    <Tag size={16} />
+                                                </span>
+                                                -{Promo(product, selectedVariant)}
+                                            </div> : ''
                                     }
                                 </div>
                                 <div>
@@ -182,8 +182,8 @@ const Three = ({ products, isDarkMode, handleCart }: Props) => {
                                     }
                                     <div className='sm:flex items-center'>
                                         {
-                                            product?.discount_price &&
-                                            <p className="text-1xl font-black mr-4 line-through">{formatIDR(selectedVariant?.price ?? product?.price ?? 0)}</p>
+                                            product?.discount_price ?
+                                                <p className="text-1xl font-black mr-4 line-through">{formatIDR(selectedVariant?.price ?? product?.price ?? 0)}</p> : ''
                                         }
                                         <p className="text-3xl font-black">{formatIDR(selectedVariant?.final_price ?? product?.final_price ?? 0)}</p>
                                     </div>
@@ -223,9 +223,9 @@ const Three = ({ products, isDarkMode, handleCart }: Props) => {
                 </div>
             </ModalWrapper>
             <AlertWrapper activeAlert={activeAlert} position="bottom-center">
-                <div className={`backdrop-blur-xl bg-[var(--product-primary-color)] border border-emerald-500/20 p-4 rounded-full flex items-center justify-between gap-4 px-6 shadow-2xl`}>
-                    <Sparkles className={'text-[var(--product-secondary-color)]'} size={20} />
-                    <p className="text-sm font-bold">Produk masuk keranjang!</p>
+                <div className={`backdrop-blur-xl bg-slate-900 border border-emerald-500/20 p-4 rounded-full flex items-center justify-between gap-4 px-6 shadow-2xl`}>
+                    <Sparkles className={'text-white'} size={20} />
+                    <p className="text-sm font-bold text-white">Produk masuk keranjang!</p>
                     <div className="w-px h-4 bg-emerald-500/20" />
                     <button onClick={() => setActiveAlert(false)} className={`text-[10px] text-end  uppercase text-[var(--product-secondary-color)]`}>Tutup</button>
                 </div>

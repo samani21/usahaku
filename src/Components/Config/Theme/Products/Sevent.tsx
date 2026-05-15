@@ -157,15 +157,17 @@ const Sevent = ({ products, isDarkMode, handleCart }: Props) => {
                         <div className="md:w-1/2 p-8 md:py-12 flex flex-col justify-between">
                             <div className="space-y-6">
                                 <div className="space-y-2">
-                                    <span className="px-3 py-1 rounded-md bg-[var(--product-primary-color)]/10 text-[var(--product-primary-color)] text-[10px] font-black uppercase tracking-widest border border-[var(--product-primary-color)]/20">
-                                        {product?.category}
-                                    </span>
+                                    {product?.category ?
+                                        <span className="px-3 py-1 rounded-md bg-[var(--product-primary-color)]/10 text-[var(--product-primary-color)] text-[10px] font-black uppercase tracking-widest border border-[var(--product-primary-color)]/20">
+                                            {product?.category}
+                                        </span> : ''
+                                    }
                                     <h2 className="text-4xl font-black tracking-tighter leading-none italic">{product?.name}</h2>
                                     <div className="flex items-baseline gap-3">
                                         <p className="text-3xl font-black text-[var(--product-primary-color)]">{formatIDR(selectedVariant?.final_price || product?.final_price || 0)}</p>
-                                        {product?.discount_price && (
+                                        {product?.discount_price ? (
                                             <p className="text-sm line-through opacity-30 font-bold">{formatIDR(selectedVariant?.price || product?.price || 0)}</p>
-                                        )}
+                                        ) : ''}
                                     </div>
                                 </div>
 

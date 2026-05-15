@@ -161,12 +161,12 @@ const Fiveteen = ({ products, isDarkMode, handleCart }: Props) => {
                                     <span className="text-4xl font-black tracking-tighter text-[var(--product-primary-color)]">
                                         {formatIDR(selectedVariant?.final_price ?? product?.final_price ?? 0)}
                                     </span>
-                                    {product?.discount_price && (
+                                    {product?.discount_price ? (
                                         <div className="flex flex-col">
                                             <span className="text-sm line-through opacity-30 font-bold">{formatIDR(selectedVariant?.price ?? product?.price ?? 0)}</span>
                                             <span className="text-[10px] font-black text-rose-500 uppercase">Save {Promo(product, selectedVariant)}</span>
                                         </div>
-                                    )}
+                                    ) : ''}
                                 </div>
 
                                 {product?.variants && product?.variants?.length > 0 && (

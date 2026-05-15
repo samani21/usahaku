@@ -29,7 +29,7 @@ const One = ({ categories, isDarkMode, onClick }: Props) => {
                       ${isDarkMode ? "bg-slate-800" : "bg-slate-200 text-slate-900"}`}
                 >
                     <div className="absolute inset-0 opacity-20 group-hover:scale-110 transition-transform duration-700">
-                        <LayoutGrid className="w-full h-full p-4 rotate-12" />
+                        <LayoutGrid className="w-full h-full p-4 rotate-12 text-[var(--category-primary-color)]" />
                     </div>
                     <div className="absolute inset-0 flex items-center justify-between px-8">
                         <div>
@@ -99,7 +99,7 @@ const One = ({ categories, isDarkMode, onClick }: Props) => {
                                 <div className="absolute inset-0 opacity-20 group-hover:scale-110 transition-transform duration-700">
                                     <Icon
                                         icon={cat?.icon || 'cbi:bulb-general-group'}
-                                        className="w-full h-full p-4 rotate-12"
+                                        className="w-full h-full p-4 rotate-12 text-[var(--category-primary-color)]"
                                         color={cat?.color}
                                     />
                                 </div>

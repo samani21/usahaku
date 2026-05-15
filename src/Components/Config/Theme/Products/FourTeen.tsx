@@ -61,8 +61,8 @@ const Fourteen = ({ products, isDarkMode, handleCart }: Props) => {
                         key={i}
                         onClick={() => is_available && setProduct(p)}
                         className={`group relative flex flex-col rounded-[2.5rem] overflow-hidden transition-all duration-500 ${is_available
-                                ? `cursor-pointer hover:shadow-[0_20px_50px_rgba(0,0,0,0.2)] ${isDarkMode ? 'bg-zinc-900 border border-zinc-800' : 'bg-white border border-slate-100'}`
-                                : `cursor-not-allowed ${isDarkMode ? 'bg-zinc-950 border border-zinc-900 opacity-60' : 'bg-slate-100 border border-slate-200 opacity-80'}`
+                            ? `cursor-pointer hover:shadow-[0_20px_50px_rgba(0,0,0,0.2)] ${isDarkMode ? 'bg-zinc-900 border border-zinc-800' : 'bg-white border border-slate-100'}`
+                            : `cursor-not-allowed ${isDarkMode ? 'bg-zinc-950 border border-zinc-900 opacity-60' : 'bg-slate-100 border border-slate-200 opacity-80'}`
                             }`}
                     >
                         {/* Image Section with Urban Overlay */}
@@ -198,7 +198,7 @@ const Fourteen = ({ products, isDarkMode, handleCart }: Props) => {
                                     </div>
                                 </div>
                                 <div className='flex items-center justify-end'>
-                                    {product?.is_qty && <QtySelector product={product} selectedVariant={selectedVariant} quantity={quantity} setQuantity={setQuantity} isDarkMode={isDarkMode} />}
+                                    {product?.is_qty ? <QtySelector product={product} selectedVariant={selectedVariant} quantity={quantity} setQuantity={setQuantity} isDarkMode={isDarkMode} /> : ''}
                                 </div>
                             </div>
                         </div>

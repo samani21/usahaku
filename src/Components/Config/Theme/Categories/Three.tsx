@@ -91,17 +91,14 @@ const Three = ({ categories, isDarkMode, onClick }: Props) => {
                         {/* Top Icon Section */}
                         <div className="w-full flex justify-between items-start">
                             <div
-                                className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-all duration-500 group-hover:rotate-12 group-hover:shadow-xl`}
-                                style={{
-                                    backgroundColor: `${cat.color}15`,
-                                    boxShadow: `0 10px 20px ${cat.color}20`
-                                }}
+                                className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-all bg-[var(--category-primary-color)]/5 duration-500 group-hover:rotate-12 group-hover:shadow-xl`}
+                    
                             >
                                 <div className="w-10 h-10 rounded-xl overflow-hidden flex items-center justify-center">
                                     {cat?.icon?.startsWith("http") ? (
                                         <img src={cat.icon} className="w-full h-full object-cover" alt={cat.name} />
                                     ) : (
-                                        <Icon icon={cat?.icon || 'cbi:bulb-general-group'} className='w-8 h-8' style={{ color: cat.color }} />
+                                        <Icon icon={cat?.icon || 'cbi:bulb-general-group'} className='w-8 h-8 text-[var(--category-primary-color)]' style={{ color: cat.color }} />
                                     )}
                                 </div>
                             </div>

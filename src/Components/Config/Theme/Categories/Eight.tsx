@@ -31,19 +31,23 @@ const Eight = ({ categories, isDarkMode, onClick }: Props) => {
                             ? "bg-slate-900 shadow-[8px_8px_16px_rgba(0,0,0,0.4),-4px_-4px_12px_rgba(255,255,255,0.02)]"
                             : "bg-slate-50 shadow-[12px_12px_24px_#d1d1d1,-12px_-12px_24px_#ffffff]"}`}
                 >
-                    <div className="absolute inset-2 rounded-[2rem] overflow-hidden">
-                        <div className={`w-full h-full flex items-center justify-center transition-transform duration-700 group-hover:scale-110 ${isDarkMode ? 'bg-slate-800' : 'bg-white'}`}>
-                            <Icon icon={'cbi:bulb-general-group'} className='w-1/2 h-1/2 text-[var(--category-primary-color)] opacity-20' />
-                            <Icon icon={'cbi:bulb-general-group'} className='absolute w-1/3 h-1/3 text-[var(--category-primary-color)]' />
+                    <div className={`absolute inset-2 rounded-[2rem] overflow-hidden ${isDarkMode ? "bg-slate-800" : "bg-white"}`}>
+                        <div className="w-full h-full flex items-center justify-center p-8 transition-transform duration-700 group-hover:scale-110 bg-[var(--category-primary-color)]/5" >
+                            <Icon icon={'cbi:bulb-general-group'} className='w-full h-full opacity-10 absolute scale-150 rotate-12 text-[var(--category-primary-color)]' />
+                            <Icon icon={'cbi:bulb-general-group'} className='w-full h-full relative z-0 text-[var(--category-primary-color)]' />
                         </div>
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent" />
+                        {/* Overlay lebih gelap di bawah untuk readability */}
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent opacity-80 group-hover:opacity-90 transition-opacity" />
                     </div>
-
                     <div className="absolute bottom-5 left-4 right-4 z-0">
                         <div className="backdrop-blur-xl bg-white/10 border border-white/20 rounded-[1.5rem] p-3 flex items-center justify-between shadow-2xl">
-                            <div className="flex flex-col">
-                                <h3 className="font-black text-white text-xs md:text-sm uppercase tracking-tighter italic">Semua</h3>
-                                <span className="text-[9px] text-[var(--category-primary-color)] font-bold uppercase tracking-widest">{totalItems} Item</span>
+                            <div className="flex flex-col overflow-hidden text-white group-hover:text-black transition-colors">
+                                <h3 className="font-black text-xs md:text-sm truncate uppercase tracking-tight">
+                                    Semua
+                                </h3>
+                                <span className="text-[9px] opacity-70 font-bold uppercase tracking-widest">
+                                    {totalItems} Products
+                                </span>
                             </div>
                             <div className="bg-[var(--category-primary-color)] p-1.5 rounded-xl text-white">
                                 <ArrowUpRight size={14} strokeWidth={3} />
@@ -71,8 +75,8 @@ const Eight = ({ categories, isDarkMode, onClick }: Props) => {
                                 />
                             ) : (
                                 <div className="w-full h-full flex items-center justify-center p-8 transition-transform duration-700 group-hover:scale-110" style={{ backgroundColor: `${cat.color}05` }}>
-                                    <Icon color={cat?.color} icon={cat?.icon || 'cbi:bulb-general-group'} className='w-full h-full opacity-10 absolute scale-150 rotate-12' />
-                                    <Icon color={cat?.color} icon={cat?.icon || 'cbi:bulb-general-group'} className='w-full h-full relative z-0' />
+                                    <Icon color={cat?.color} icon={cat?.icon || 'cbi:bulb-general-group'} className='w-full h-full opacity-10 absolute scale-150 rotate-12 text-[var(--category-primary-color)]' />
+                                    <Icon color={cat?.color} icon={cat?.icon || 'cbi:bulb-general-group'} className='w-full h-full relative z-0 text-[var(--category-primary-color)]' />
                                 </div>
                             )}
                             {/* Overlay lebih gelap di bawah untuk readability */}
@@ -91,8 +95,7 @@ const Eight = ({ categories, isDarkMode, onClick }: Props) => {
                                     </span>
                                 </div>
                                 <div
-                                    className="p-1.5 rounded-xl transition-all duration-500"
-                                    style={{ backgroundColor: cat.color, color: '#fff' }}
+                                    className="p-1.5 rounded-xl transition-all duration-500 bg-[var(--category-primary-color)] text-white"
                                 >
                                     <ArrowUpRight size={14} strokeWidth={3} className="group-hover:rotate-45 transition-transform" />
                                 </div>

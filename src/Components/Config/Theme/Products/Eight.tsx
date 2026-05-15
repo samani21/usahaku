@@ -187,13 +187,13 @@ const Eight = ({ products, isDarkMode, handleCart }: Props) => {
                             <div className="flex flex-col gap-1">
                                 <div className="flex items-baseline gap-3">
                                     <span className="text-4xl font-black text-[var(--product-primary-color)]">{formatIDR(selectedVariant?.final_price || product?.final_price || 0)}</span>
-                                    {product?.discount_price && <span className="text-lg line-through opacity-20 font-bold italic">{formatIDR(selectedVariant?.price || product?.price || 0)}</span>}
+                                    {product?.discount_price ? <span className="text-lg line-through opacity-20 font-bold italic">{formatIDR(selectedVariant?.price || product?.price || 0)}</span> : ''}
                                 </div>
-                                {product?.discount_price && (
+                                {product?.discount_price ? (
                                     <div className="flex items-center gap-2 text-emerald-500 font-bold text-xs">
                                         <Tag size={14} fill="currentColor" /> HEMAT {formatIDR(product?.discount_price)} {product?.percent_discount && `(${Promo(product, selectedVariant)})`}
                                     </div>
-                                )}
+                                ) : ''}
                             </div>
 
                             <div className="text-sm leading-relaxed opacity-60 max-h-40 overflow-y-auto pr-4 custom-scrollbar">
@@ -242,11 +242,11 @@ const Eight = ({ products, isDarkMode, handleCart }: Props) => {
 
             {/* Alert - Minimalist Dynamic Notification */}
             <AlertWrapper activeAlert={activeAlert} position="top-right">
-                <div className={`p-1 pr-6 flex items-center gap-4 rounded-full ${isDarkMode ? 'bg-zinc-900 border-white/10' : 'bg-white border-slate-200'} border shadow-2xl animate-in slide-in-from-right-10`}>
+                <div className={`p-1 pr-6 flex items-center gap-4 rounded-full ${isDarkMode ? 'bg-zinc-900 border-white/10' : 'bg-white border-slate-200'} border shadow-2xl animate-in slide-in-from-right-10 justify-between`}>
                     <div className="h-10 w-10 rounded-full bg-emerald-500 flex items-center justify-center text-white">
                         <CheckCircle2 size={18} />
                     </div>
-                    <div className="flex flex-col py-2">
+                    <div className="py-2 text-left">
                         <p className="text-[10px] font-black text-emerald-500 uppercase leading-none">Berhasil</p>
                         <p className="text-xs font-bold truncate max-w-[150px]">{mockItem.name}</p>
                     </div>

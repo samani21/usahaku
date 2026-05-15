@@ -96,8 +96,7 @@ const Twelve = ({ categories, isDarkMode, onClick }: Props) => {
                                     )
                                 ) : (
                                     <div className="w-full h-full flex items-center justify-center opacity-10 transition-transform duration-700 group-hover:scale-150">
-                                        <Icon icon={'cbi:bulb-general-group'} className='w-full h-full' />
-
+                                        <Icon icon={'cbi:bulb-general-group'} className='w-full h-full text-[var(--category-primary-color)]' />
                                     </div>
                                 )
                             }
@@ -129,7 +128,7 @@ const Twelve = ({ categories, isDarkMode, onClick }: Props) => {
                                             )
                                         ) : (
                                             <div className="w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 flex items-center justify-center">
-                                                <Icon icon={'cbi:bulb-general-group'} className='w-full h-full' />
+                                                <Icon icon={'cbi:bulb-general-group'} className='w-full h-full text-[var(--category-primary-color)]' />
                                             </div>
                                         )
                                     }

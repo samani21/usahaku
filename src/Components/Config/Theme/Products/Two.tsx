@@ -192,13 +192,13 @@ const Two = ({ products, isDarkMode, handleCart }: Props) => {
                             <div className="bg-zinc-500/5 p-6 rounded-[2rem] space-y-6 backdrop-blur-sm border border-white/5">
                                 <div className="flex items-center justify-between">
                                     <span className="text-xs font-bold uppercase opacity-50">Kuantitas</span>
-                                    {product?.is_qty && <QtySelector product={product} selectedVariant={selectedVariant} quantity={quantity} setQuantity={setQuantity} isDarkMode={isDarkMode} />}
+                                    {product?.is_qty ? <QtySelector product={product} selectedVariant={selectedVariant} quantity={quantity} setQuantity={setQuantity} isDarkMode={isDarkMode} /> : ''}
                                 </div>
 
                                 <div className="flex flex-col items-center gap-1">
-                                    {product?.discount_price && (
+                                    {product?.discount_price ? (
                                         <span className="text-sm line-through opacity-30 font-bold">{formatIDR(selectedVariant?.price ?? product?.price ?? 0)}</span>
-                                    )}
+                                    ) : ''}
                                     <div className="text-4xl font-black">
                                         {formatIDR((selectedVariant?.final_price ?? product?.final_price ?? 0) * (product?.is_qty ? quantity : 1))}
                                     </div>

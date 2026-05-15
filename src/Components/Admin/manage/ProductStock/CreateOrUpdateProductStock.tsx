@@ -41,7 +41,6 @@ const CreateOrUpdateProductStock = ({ handleFormSubmit, data, loading, setLoadin
         reference_type: null,
         note: null,
     })
-    const [icon, setIcon] = useState<string>('')
 
     const [productOption, setProductOptions] = useState<OptionsType[]>()
     const [outletOption, setOutletOption] = useState<OptionsType[]>()
@@ -50,6 +49,7 @@ const CreateOrUpdateProductStock = ({ handleFormSubmit, data, loading, setLoadin
     useEffect(() => {
         setForm({
             product_id: '',
+            outlet_id: '',
             product_variant_id: '',
             stock: '',
             reference_type: '',
@@ -75,7 +75,6 @@ const CreateOrUpdateProductStock = ({ handleFormSubmit, data, loading, setLoadin
         >
     ) => {
         const { name, value, files } = e.target as HTMLInputElement;
-        console.log('name', name, value);
         if (files) {
             setForm((prev: any) => ({
                 ...prev,
@@ -113,6 +112,12 @@ const CreateOrUpdateProductStock = ({ handleFormSubmit, data, loading, setLoadin
                     value: item.id,
                 })) ?? [];
                 setOutletOption(outlets);
+                if (outlets?.length === 1) {
+                    setForm((prev: any) => ({
+                        ...prev,
+                        outlet_id: outlets[0]?.v,
+                    }));
+                }
             }
         } catch (e) {
 
@@ -137,7 +142,7 @@ const CreateOrUpdateProductStock = ({ handleFormSubmit, data, loading, setLoadin
             setLoading(false);
             return;
         }
-        if (form?.outlet_id == "") {
+        if (form?.outlet_id == "" || form?.outlet_id === 'undefined') {
             setError({
                 outlet_id: "Outlet harus diisi"
             })
@@ -161,6 +166,13 @@ const CreateOrUpdateProductStock = ({ handleFormSubmit, data, loading, setLoadin
         if (form?.stock == "") {
             setError({
                 stock: "stock harus diisi"
+            })
+            setLoading(false);
+            return;
+        }
+        if (form?.reference_type == "") {
+            setError({
+                reference_type: "Reference harus diisi"
             })
             setLoading(false);
             return;
@@ -236,6 +248,7 @@ const CreateOrUpdateProductStock = ({ handleFormSubmit, data, loading, setLoadin
                 value={form.reference_type}
                 onChange={handleChange}
                 options={selectOptions}
+                error={error?.reference_type}
             />
             {
                 form.reference_type === 'adjustment' &&

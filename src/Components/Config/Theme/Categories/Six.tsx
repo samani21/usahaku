@@ -59,7 +59,7 @@ const Six = ({ categories, isDarkMode, onClick }: Props) => {
                         key={i}
                         onClick={() => { onClick?.(cat?.name); handleScroll(); }}
                         className="relative h-48 sm:h-72 rounded-[2rem] overflow-hidden group cursor-pointer shadow-lg transition-all duration-700 hover:-translate-y-2"
-                        style={{ boxShadow: !isDarkMode ? `0 20px 40px ${cat.color}20` : '' }}>
+                    >
 
                         {/* Dynamic Background */}
                         <div className="absolute inset-0 w-full h-full">
@@ -70,14 +70,11 @@ const Six = ({ categories, isDarkMode, onClick }: Props) => {
                                     alt={cat.name}
                                 />
                             ) : (
-                                <div className="w-full h-full flex items-center justify-center transition-colors duration-700"
-                                    style={{ backgroundColor: isDarkMode ? '#0f172a' : cat.color }}>
+                                <div className="w-full h-full flex items-center justify-center transition-colors duration-700 bg-[var(--category-primary-color)]">
                                     {/* Animated Mesh Circle */}
-                                    <div className="absolute inset-0 opacity-30 blur-[40px] animate-spin-slow"
-                                        style={{ background: `radial-gradient(circle, ${cat.color} 0%, transparent 70%)` }} />
+                                    <div className="absolute inset-0 opacity-30 blur-[40px] animate-spin-slow bg-gradient-to-r from-[var(--category-primary-color)] to-transparent" />
                                     <Icon icon={cat?.icon || 'cbi:bulb-general-group'}
-                                        className='w-1/2 h-1/2 opacity-20 group-hover:opacity-40 transition-opacity'
-                                        style={{ color: isDarkMode ? cat.color : '#fff' }} />
+                                        className='w-1/2 h-1/2 opacity-20 group-hover:opacity-40 transition-opacity  text-white' />
                                 </div>
                             )}
                         </div>

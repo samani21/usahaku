@@ -74,14 +74,13 @@ const Eleven = ({ categories, isDarkMode, onClick }: Props) => {
                         <div className="relative z-0 h-full p-6 flex flex-col justify-between">
                             <div className="flex justify-between items-start">
                                 <div
-                                    className="w-12 h-12 rounded-xl flex items-center justify-center transition-transform duration-500 group-hover:scale-110 group-hover:rotate-6"
-                                    style={{ backgroundColor: `${cat.color}20`, color: cat.color }}
+                                    className="w-12 h-12 rounded-xl flex items-center justify-center transition-transform duration-500 group-hover:scale-110 group-hover:rotate-6 text-[var(--category-primary-color)] bg-[var(--category-primary-color)]/20"
                                 >
 
                                     {cat?.icon?.startsWith("http") ? (
                                         <img src={cat.icon} className="w-full h-full rounded-xl" alt={cat.name} />
                                     ) : (
-                                        <Icon icon={cat?.icon || 'cbi:bulb-general-group'} className="w-7 h-7" />
+                                        <Icon icon={cat?.icon || 'cbi:bulb-general-group'} className="w-7 h-7 text-[var(--category-primary-color)]" />
                                     )}
                                 </div>
                                 <span className="text-[10px] font-black opacity-30 group-hover:opacity-100 transition-opacity">

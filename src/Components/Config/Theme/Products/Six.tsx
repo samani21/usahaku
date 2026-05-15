@@ -162,11 +162,11 @@ const Six = ({ products, isDarkMode, handleCart }: Props) => {
                                 <span className="text-4xl font-light tracking-tighter">
                                     {formatIDR(selectedVariant?.final_price ?? product?.final_price ?? 0)}
                                 </span>
-                                {product?.discount_price && (
+                                {product?.discount_price ? (
                                     <span className="text-sm line-through opacity-30">
                                         {formatIDR(selectedVariant?.price ?? product?.price ?? 0)}
                                     </span>
-                                )}
+                                ) : ''}
                             </div>
                         </div>
 

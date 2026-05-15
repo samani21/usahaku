@@ -35,7 +35,7 @@ const Two = ({ categories, isDarkMode, onClick }: Props) => {
                            ${isDarkMode ? 'bg-slate-800' : 'bg-white shadow-[0_10px_30px_rgba(0,0,0,0.08)]'}`}>
                             {/* Inner Shine Effect */}
                             <div className="absolute top-0 left-0 w-full h-1/2 bg-gradient-to-b from-white/20 to-transparent" />
-                            <Icon icon={'cbi:bulb-general-group'} className='w-1/2 h-1/2 relative z-0 group-hover:rotate-90 transition-transform duration-500' />
+                            <Icon icon={'cbi:bulb-general-group'} className='w-1/2 h-1/2 text-[var(--category-primary-color)] relative z-0 group-hover:rotate-90 transition-transform duration-500' />
                         </div>
 
                         {/* Badge */}
@@ -79,14 +79,14 @@ const Two = ({ categories, isDarkMode, onClick }: Props) => {
                                         <div className="w-full h-full flex items-center justify-center relative transition-colors duration-500 group-hover:bg-slate-50">
                                             {/* Decorative background shape */}
                                             <div
-                                                className="absolute inset-0 opacity-5 scale-150 rotate-12"
+                                                className="absolute inset-0 opacity-5 scale-150 rotate-12 text-[var(--category-primary-color)]"
                                                 style={{ color: cat?.color }}
                                             >
                                                 <Icon icon={cat?.icon || 'cbi:bulb-general-group'} className="w-full h-full" />
                                             </div>
                                             <Icon
                                                 icon={cat?.icon || 'cbi:bulb-general-group'}
-                                                className='w-1/2 h-1/2 relative z-0 transition-all duration-500 group-hover:scale-110'
+                                                className='w-1/2 h-1/2 relative text-[var(--category-primary-color)] z-0 transition-all duration-500 group-hover:scale-110'
                                                 style={{ color: cat?.color }}
                                             />
                                         </div>
@@ -96,8 +96,8 @@ const Two = ({ categories, isDarkMode, onClick }: Props) => {
 
                             {/* Badge dengan warna kategori */}
                             <div
-                                className="absolute -top-1 -right-1 w-9 h-9 rounded-full flex items-center justify-center text-[10px] font-black text-white shadow-lg border-4 transition-all duration-500 group-hover:scale-110 z-0"
-                                style={{ backgroundColor: cat?.color, borderColor: isDarkMode ? '#1e293b' : '#fff' }}
+                                className="absolute -top-1 -right-1 w-9 h-9 rounded-full flex items-center bg-[var(--category-primary-color)] justify-center text-[10px] font-black text-white shadow-lg border-4 transition-all duration-500 group-hover:scale-110 z-0"
+                            // style={{ backgroundColor: cat?.color, borderColor: isDarkMode ? '#1e293b' : '#fff' }}
                             >
                                 {cat.count || 0}
                             </div>

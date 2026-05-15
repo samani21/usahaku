@@ -38,7 +38,7 @@ const FourTen = ({ categories, isDarkMode, onClick }: Props) => {
                         </div>
 
                         {/* Label */}
-                        <div className={`p-3 border-t-4 ${borderColor} ${isDarkMode ? 'bg-slate-800' : 'bg-white'}`}>
+                        <div className={`p-3 py-1 border-t-4 ${borderColor} ${isDarkMode ? 'bg-slate-800' : 'bg-white'}`}>
                             <h3 className="font-black uppercase italic tracking-tighter text-sm md:text-lg leading-none truncate">
                                 Semua
                             </h3>
@@ -62,7 +62,7 @@ const FourTen = ({ categories, isDarkMode, onClick }: Props) => {
 
                         {/* Main Card */}
                         <div className={`relative h-full rounded-2xl border-4 ${borderColor} ${cardBg} overflow-hidden flex flex-col transition-all duration-300 group-hover:-translate-x-1 group-hover:-translate-y-1`}>
-                            <div className="flex-1 relative flex items-center justify-center p-8" style={{ backgroundColor: `${cat.color}10` }}>
+                            <div className="flex-1 relative flex items-center justify-center p-8 bg-[var(--category-primary-color)]/10" >
                                 {cat?.icon?.startsWith("http") ? (
                                     <img
                                         src={cat.icon}
@@ -73,13 +73,13 @@ const FourTen = ({ categories, isDarkMode, onClick }: Props) => {
                                     <Icon
                                         color={cat?.color}
                                         icon={cat?.icon || 'cbi:bulb-general-group'}
-                                        className='w-full h-full transition-transform duration-500 group-hover:rotate-12 group-hover:scale-110'
+                                        className='w-full h-full transition-transform duration-500 group-hover:rotate-12 group-hover:scale-110 text-[var(--category-primary-color)]'
                                     />
                                 )}
                             </div>
 
                             {/* Label */}
-                            <div className={`p-3 border-t-4 ${borderColor} ${isDarkMode ? 'bg-slate-800' : 'bg-white'}`}>
+                            <div className={`p-3 py-1 border-t-4 ${borderColor} ${isDarkMode ? 'bg-slate-800' : 'bg-white'}`}>
                                 <h3 className="font-black uppercase italic tracking-tighter text-sm md:text-lg leading-none truncate">
                                     {cat.name}
                                 </h3>

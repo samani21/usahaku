@@ -89,7 +89,7 @@ const Elevent = ({ categories, isDarkMode, onClick }: Props) => {
                                         )
                                     ) : (
                                         <div className="w-full h-full flex items-center justify-center p-8 transition-transform duration-500 group-hover:scale-110">
-                                            <Icon icon={'cbi:bulb-general-group'} className='w-full h-full' />
+                                            <Icon icon={'cbi:bulb-general-group'} className='w-full h-full text-[var(--category-primary-color)]' />
                                         </div>
                                     )
                                 }
