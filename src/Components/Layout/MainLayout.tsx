@@ -5,6 +5,8 @@ import React, { useEffect, useState } from 'react'
 import SidebarComponent from './SidebarComponent';
 import Header from './Header';
 import Loading from '../Component/Loading';
+import GlassCard from './GlassCard';
+import { Bell } from 'lucide-react';
 
 type Props = {
     children: React.ReactNode
@@ -15,12 +17,10 @@ const MainLayout = ({ children }: Props) => {
     const router = useRouter();
     const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
     const [isMobileActionMenuOpen, setIsMobileActionMenuOpen] = useState<boolean>(false);
-    const [isActivityDropdownOpen, setIsActivityDropdownOpen] = useState<string>('');
     const pathname = usePathname();
     const [loading, setLoading] = useState<boolean>(false);
     const segments = pathname.split("/").filter(Boolean);
     const lastOne = segments.slice(-1);
-
     const breadcrumb = segments.map((seg, index) => {
         if (index === 0) return "Home";
         return seg.charAt(0).toUpperCase() + seg.slice(1);
@@ -84,72 +84,55 @@ const MainLayout = ({ children }: Props) => {
         router?.push('/auth/login')
     }
     return (
-        <div className="flex h-screen overflow-hidden bg-[#f7f9fc] ">
-            <div className="fixed bottom-0 right-0 p-4 sm:p-6 z-99999 flex flex-col items-end pointer-events-none">
-                {/* {currentAlert && (
-                    <div className="pointer-events-auto">
-                        {currentAlert.type === 'loading' ? (
-                            <LoadingAlert
-                                title={currentAlert.title}
-                                message={currentAlert.message}
-                            />
-                        ) : currentAlert.type === 'success' ? (
-                            <SuccessAlert
-                                title={currentAlert.title}
-                                message={currentAlert.message}
-                                onClose={closeAlert}
-                            />
-                        ) : (
-                            <ErrorAlert
-                                title={currentAlert.title}
-                                message={currentAlert.message}
-                                onClose={closeAlert}
-                            />
-                        )}
-                    </div>
-                )} */}
-            </div>
-            <SidebarComponent
-                isActivityDropdownOpen={isActivityDropdownOpen}
-                setIsActivityDropdownOpen={setIsActivityDropdownOpen}
-                isSidebarOpen={isSidebarOpen}
-                setIsSidebarOpen={setIsSidebarOpen}
-                setLoading={setLoading}
-            />
-            <div className="flex-1 flex flex-col overflow-hidden bg-[#f7f9fc]">
-                <Header
-                    setIsSidebarOpen={setIsSidebarOpen}
-                    isSidebarOpen={isSidebarOpen}
-                    setIsMobileActionMenuOpen={setIsMobileActionMenuOpen}
-                    isMobileActionMenuOpen={isMobileActionMenuOpen}
-                    closeMobileActionMenu={closeMobileActionMenu}
-                    handleNotificationClick={handleNotificationClick}
-                    handleProfileClick={handleProfileClick}
-                    title={pathname}
-                    handleLogout={handleLogout}
+        <div className="min-h-screen bg-[#f0f9f6]  font-sans text-slate-800">
+            {isSidebarOpen && (
+                <div
+                    className="fixed inset-0 bg-emerald-950/20 backdrop-blur-sm z-60 lg:hidden transition-opacity duration-300"
+                    onClick={() => setIsSidebarOpen(false)}
                 />
+            )}
 
-                <main className="flex-1 overflow-x-hidden overflow-y-auto p-4 md:p-6 md:pt-0  inter">
-                    <nav className="text-sm pb-4">
-                        <ol className="flex items-center text-gray-600 mt-2">
-                            {breadcrumb.map((p, i) => (
-                                <li key={i} className="flex items-center">
-                                    <a href="#" className={`${i === breadcrumb.length - 1 ? 'font-semibold text-emerald-600' : 'font-reguler text-[#6B7280]'}`}>{p}</a>
-                                    {i < breadcrumb.length - 1 && (
-                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mx-3 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                                        </svg>
-                                    )}
-                                </li>
-                            ))}
-                        </ol>
-                    </nav>
-                    {children}
+            <div className="mx-auto flex flex-col lg:flex-row gap-6">
+                <SidebarComponent
+                    isSidebarOpen={isSidebarOpen}
+                    setIsSidebarOpen={setIsSidebarOpen}
+                    setLoading={setLoading}
+                />
+                <main className="relative h-screen flex-1 flex flex-col lg:pr-4">
+                    <Header
+                        setIsSidebarOpen={setIsSidebarOpen}
+                        isSidebarOpen={isSidebarOpen}
+                        setIsMobileActionMenuOpen={setIsMobileActionMenuOpen}
+                        isMobileActionMenuOpen={isMobileActionMenuOpen}
+                        closeMobileActionMenu={closeMobileActionMenu}
+                        handleNotificationClick={handleNotificationClick}
+                        handleProfileClick={handleProfileClick}
+                        title={pathname}
+                        handleLogout={handleLogout}
+                    />
+                    <div className='overflow-auto no-scrollbar mt-18 lg:mt-20 px-4 lg:px-0'>
+                        <div className='mt-4'>
+                            <nav className="lg:hidden text-sm pb-4">
+                                <ol className="flex items-center text-gray-600 mt-2">
+                                    {breadcrumb.map((p, i) => (
+                                        <li key={i} className="flex items-center">
+                                            <a href="#" className={`${i === breadcrumb.length - 1 ? 'font-semibold text-emerald-600' : 'font-reguler text-[#6B7280]'}`}>{p}</a>
+                                            {i < breadcrumb.length - 1 && (
+                                                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mx-3 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                                                </svg>
+                                            )}
+                                        </li>
+                                    ))}
+                                </ol>
+                            </nav>
+                            <h1 className="text-2xl font-semibold mb-6 text-gray-800">{breadcrumb[breadcrumb.length - 1]}</h1>
+                            {children}
+                        </div>
+                    </div>
                 </main>
             </div>
-            {
-                loading && <Loading />
-            }
+            {loading && <Loading />}
         </div>
     )
 }

@@ -59,13 +59,36 @@ const ProductStockComponent = (props: Props) => {
     }, [search]);
 
     const parsedDate = useMemo(() => {
-        if (!dateRangeText.includes(" - ")) return { start_date: "", end_date: "" };
+        if (!dateRangeText.includes(" - ")) {
+            return { start_date: "", end_date: "" };
+        }
+
+        const monthMap: Record<string, string> = {
+            Januari: "01",
+            Februari: "02",
+            Maret: "03",
+            April: "04",
+            Mei: "05",
+            Juni: "06",
+            Juli: "07",
+            Agustus: "08",
+            September: "09",
+            Oktober: "10",
+            November: "11",
+            Desember: "12",
+        };
+
+        const formatDate = (dateStr: string) => {
+            const [day, month, year] = dateStr.trim().split(" ");
+
+            return `${year}-${monthMap[month]}-${day.padStart(2, "0")}`;
+        };
 
         const [start, end] = dateRangeText.split(" - ");
 
         return {
-            start_date: new Date(start).toISOString().slice(0, 10),
-            end_date: new Date(end).toISOString().slice(0, 10),
+            start_date: formatDate(start),
+            end_date: formatDate(end),
         };
     }, [dateRangeText]);
 

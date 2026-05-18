@@ -69,7 +69,7 @@ const FormInput = ({
     const isAutocomplete = type === "autocomplete";
 
     const baseInput =
-        "w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-emerald-500/10 focus:border-emerald-500 transition-all text-slate-800 placeholder:text-slate-400";
+        "w-full px-4 py-2 bg-slate-50/50 border-2 border-slate-100 rounded-2xl focus:outline-none focus:ring-0 focus:border-emerald-500 focus:bg-white transition-all text-slate-700 font-semibold placeholder:font-normal";
     const errorStyle = error
         ? "border-red-500 focus:border-red-500 focus:ring-red-500/50 focus:ring-2"
         : "border-gray-300";
@@ -538,7 +538,7 @@ const FormInput = ({
     }
     return (
         <div className="flex flex-col space-y-1">
-            <label className="text-sm font-medium text-zinc-500 font-semibold">
+            <label className="text-xs font-bold text-emerald-800 uppercase tracking-widest ml-1">
                 {label} {required && <span className="text-red-500">*</span>}
             </label>
 

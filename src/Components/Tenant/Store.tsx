@@ -12,7 +12,7 @@ import { ProductsType, Variants } from '@/types/Admin/ProductsType';
 import { v4 as uuidv4 } from "uuid";
 import { Post } from '@/utils/Post';
 import { useParams, useRouter } from 'next/navigation';
-import { ChevronDown, MapPin } from 'lucide-react';
+import { ChevronDown, MapPin, Store as IconStore, ChevronRight, Clock, CheckCircle2, AlertCircle, Phone, Navigation, X } from 'lucide-react';
 import ModalOutlet from './ModalOutlet';
 import { OutletsType } from '@/types/Admin/OutletType';
 
@@ -72,6 +72,7 @@ export default function Store() {
     const [selectedOutlet, setSelectedOutlet] = useState<OutletsType | null>(null);
     const [dataProduct, setdataProducts] = useState<ProductsType[]>([]);
     const [tenant, setTenant] = useState<string>('');
+    const [toastMessage, setToastMessage] = useState<string | null>(null);
     useEffect(() => {
         const path = window.location.pathname;
         let tenant: string | null = null;
@@ -219,7 +220,12 @@ export default function Store() {
     }
 
     if (loading) return <Loading title='Sedang memuat halaman' />;
-
+    const triggerToast = (message: string) => {
+        setToastMessage(message);
+        setTimeout(() => {
+            setToastMessage(null);
+        }, 4000);
+    };
     return (
         <div className={`flex flex-col overflow-hidden  items-center justify-center ${isDarkTheme ? 'bg-slate-950 text-white' : 'bg-slate-50 text-slate-900'}`}>
             <div className='max-w-7xl  min-h-screen w-full space-y-6 relative'>
@@ -240,59 +246,142 @@ export default function Store() {
                 </div>
                 <div className={`mt-8 space-y-6 ${header?.layout_header === 3 ? "pt-26" : 'pt-16'} pb-18 px-2 `}>
                     <div className='flex items-center justify-center'>
-                        <div className="w-full max-w-5xl bg-white rounded-3xl shadow-2xl p-5 md:p-8 border border-slate-100 flex flex-col md:flex-row items-center gap-6 z-20">
+                        <div className="w-full  bg-white rounded-3xl shadow-lg hover:shadow-xl border border-zinc-200/80 overflow-hidden transition-all duration-300 transform hover:-translate-y-1 flex flex-col md:flex-row min-h-[140px]">
 
-                            {/* Lokasi Detail */}
-                            <div className="flex-1 w-full border-b md:border-b-0 md:border-r border-slate-100 pb-5 md:pb-0 md:pr-8">
-                                <label className="block text-[11px] uppercase tracking-[0.2em] text-slate-400 font-bold mb-3">
-                                    {selectedOutlet ? 'Lokasi Terpilih' : 'Lokasi Belum Dipilih'}
-                                </label>
-                                <div className="flex items-center gap-4">
-                                    <div className={`p-3 rounded-2xl ${selectedOutlet ? 'bg-teal-50 text-[#149184]' : 'bg-slate-100 text-slate-400'}`}>
-                                        <MapPin size={24} />
-                                    </div>
-                                    <div className="flex flex-col">
-                                        <span className={`text-xl font-bold leading-none ${selectedOutlet ? 'text-slate-800' : 'text-slate-400 italic'}`}>
-                                            {selectedOutlet ? selectedOutlet.name : 'Pilih outlet terdekat...'}
-                                        </span>
-                                        <span className="text-sm text-slate-500 mt-1 uppercase tracking-wider">
-                                            {selectedOutlet ? selectedOutlet.address : 'Klik tombol cari di samping'}
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
+                            {selectedOutlet ? (
+                                <>
+                                    <div className="md:w-5/12 p-6 bg-gradient-to-br from-zinc-800 via-zinc-900 to-zinc-950 text-white relative overflow-hidden flex flex-col justify-between min-h-[180px] md:min-h-auto">
+                                        <div className="absolute right-[-10%] bottom-[-10%] text-white/5 pointer-events-none">
+                                            <MapPin className="w-44 h-44 rotate-12" />
+                                        </div>
 
-                            {/* Status Info */}
-                            <div className="flex-1 w-full pb-5 md:pb-0 md:px-4">
-                                <label className="block text-[11px] uppercase tracking-[0.2em] text-slate-400 font-bold mb-3">Ketersediaan Stok</label>
-                                <div className="flex items-center gap-3">
-                                    {selectedOutlet ? (
-                                        <>
-                                            <div className="relative flex h-3 w-3">
-                                                <span className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${selectedOutlet.is_currently_open ? 'bg-green-400' : 'bg-red-400'}`}></span>
-                                                <span className={`relative inline-flex rounded-full h-3 w-3 ${selectedOutlet.is_currently_open ? 'bg-green-500' : 'bg-red-500'}`}></span>
-                                            </div>
-                                            <span className="text-sm font-semibold text-slate-700">
-                                                {selectedOutlet.is_currently_open ? 'Produk Tersedia di Outlet Ini' : 'Outlet sedang Tutup'}
+                                        <div className="flex justify-start items-start relative z-10">
+
+                                        </div>
+
+                                        <div className="relative z-10 mt-6 md:mt-12">
+                                            <span className="text-[10px] uppercase tracking-wider font-extrabold text-zinc-300 bg-black/30 px-2 py-0.5 rounded">
+                                                {header?.span_one} {header?.span_two}
                                             </span>
-                                        </>
-                                    ) : (
-                                        <span className="text-sm font-medium text-slate-400">Silahkan pilih lokasi untuk cek stok</span>
-                                    )}
-                                </div>
-                            </div>
+                                            <h2 className="text-xl sm:text-2xl font-black mt-2 tracking-tight leading-snug">
+                                                {selectedOutlet.name}
+                                            </h2>
+                                        </div>
+                                    </div>
+                                    <div className="md:w-7/12 p-6 flex flex-col justify-between space-y-6">
 
-                            {/* CTA Button */}
-                            <button
-                                onClick={() => setIsOpenModal(true)}
-                                className={`w-full md:w-auto px-10 py-4 rounded-2xl font-bold text-sm tracking-widest uppercase transition-all flex items-center justify-center gap-3 ${selectedOutlet
-                                    ? 'bg-[#149184] text-white hover:bg-[#0f6e65]'
-                                    : 'bg-slate-900 text-white hover:bg-black animate-bounce md:animate-none'
-                                    } hover:shadow-lg hover:shadow-teal-900/20`}
-                            >
-                                {selectedOutlet ? 'Ganti Outlet' : 'Cari Outlet'}
-                                <ChevronDown size={18} className={selectedOutlet ? '' : '-rotate-90'} />
-                            </button>
+                                        <div className="space-y-4">
+                                            <div className="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-zinc-100">
+                                                <div className="flex items-center gap-2">
+                                                    <Clock className="w-4.5 h-4.5 text-zinc-400" />
+                                                    <div>
+                                                        <p className="text-[10px] uppercase tracking-wider text-zinc-400 font-bold">Jam Operasional</p>
+                                                        <p className="text-sm font-bold text-zinc-800">
+                                                            {selectedOutlet.time_open} - {selectedOutlet.time_close}
+                                                        </p>
+                                                    </div>
+                                                </div>
+
+                                                {/* Status Badge */}
+                                                <div>
+                                                    {selectedOutlet.is_currently_open ? (
+                                                        <span className="inline-flex items-center gap-1 bg-emerald-50 text-emerald-700 border border-emerald-200 px-3 py-1 rounded-full text-xs font-bold">
+                                                            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                                                            Buka
+                                                        </span>
+                                                    ) : (
+                                                        <span className="inline-flex items-center gap-1 bg-rose-50 text-rose-700 border border-rose-200 px-3 py-1 rounded-full text-xs font-bold">
+                                                            <AlertCircle className="w-3.5 h-3.5 text-rose-600" />
+                                                            Tutup
+                                                        </span>
+                                                    )}
+                                                </div>
+                                            </div>
+
+                                            {/* Alamat */}
+                                            <div className="flex gap-3">
+                                                <div className="flex-shrink-0 mt-0.5">
+                                                    <div className="bg-zinc-100 p-2 rounded-xl text-zinc-700">
+                                                        <MapPin className="w-4 h-4" />
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <p className="text-[10px] uppercase tracking-wider text-zinc-400 font-bold">Alamat Lengkap</p>
+                                                    <p className="text-xs sm:text-sm text-zinc-600 font-medium leading-relaxed mt-0.5">
+                                                        {selectedOutlet.address}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        {/* Tombol Navigasi / Ganti Outlet */}
+                                        <div className="grid grid-cols-1 gap-3 pt-2">
+                                            {/* <button
+                                                onClick={() => triggerToast(`Navigasi rute aktif menuju ${selectedOutlet.name}`)}
+                                                className="flex items-center justify-center gap-2 bg-zinc-100 hover:bg-zinc-200 text-zinc-700 py-3 px-3 rounded-xl font-bold text-xs transition-colors duration-200"
+                                            >
+                                                <Navigation className="w-4 h-4 text-zinc-500" />
+                                                Petunjuk Rute
+                                            </button> */}
+
+                                            <button
+                                                onClick={() => setIsOpenModal(true)}
+                                                className="flex items-center justify-center gap-2 bg-zinc-900 hover:bg-zinc-950 text-white py-3 px-3 rounded-xl font-bold text-xs shadow-md transition-all duration-200"
+                                            >
+                                                <IconStore className="w-4 h-4" />
+                                                Ganti Outlet
+                                                <ChevronRight className="w-3.5 h-3.5" />
+                                            </button>
+                                        </div>
+                                    </div>
+                                </>
+                            ) : (
+                                /* JIKA OUTLET BELUM DIPILIH (EMPTY STATE) */
+                                <>
+                                    {/* Left Side (Column 1): Brand Banner Static */}
+                                    <div className="md:w-5/12 p-6 bg-gradient-to-br from-zinc-800 via-zinc-900 to-zinc-950 text-white relative overflow-hidden flex flex-col justify-between min-h-[180px] md:min-h-auto">
+                                        {/* Subtle Map Pin Background Pulsing */}
+                                        <div className="absolute right-[-10%] bottom-[-10%] text-white/5 pointer-events-none">
+                                            <MapPin className="w-44 h-44 rotate-12 animate-pulse" />
+                                        </div>
+
+                                        <div className="flex justify-start items-start relative z-10">
+                                            <span className="bg-white/10 backdrop-blur-md text-white text-xs px-3 py-1 rounded-full font-bold shadow-sm border border-white/10">
+                                                📍 Lokasi Belum Ditentukan
+                                            </span>
+                                        </div>
+
+                                        <div className="relative z-10 mt-6 md:mt-12">
+                                            <span className="text-[10px] uppercase tracking-wider font-extrabold text-zinc-400 bg-white/10 px-2 py-0.5 rounded">
+                                                {header?.span_one} {header?.span_two}
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    {/* Right Side (Column 2): Call To Action Placeholder */}
+                                    <div className="md:w-7/12 p-6 flex flex-col justify-center items-center text-center space-y-6">
+                                        <div className="space-y-2 max-w-sm">
+                                            <div className="mx-auto bg-zinc-100 w-12 h-12 rounded-2xl flex items-center justify-center text-zinc-650 mb-3 animate-bounce">
+                                                <IconStore className="w-6 h-6 text-zinc-800" />
+                                            </div>
+                                            <h3 className="text-base font-bold text-zinc-900">Temukan Outlet Terdekat</h3>
+                                            <p className="text-xs sm:text-sm text-zinc-500 leading-relaxed">
+                                                Silakan pilih lokasi outlet terdekat untuk memantau jam operasional secara real-time, alamat navigasi, dan kontak pemesanan.
+                                            </p>
+                                        </div>
+
+                                        <button
+                                            onClick={() => setIsOpenModal(true)}
+                                            className="w-full sm:w-auto px-6 py-3 bg-zinc-900 hover:bg-zinc-950 text-white rounded-xl font-bold text-xs shadow-md transition-all duration-200 flex items-center justify-center gap-2"
+                                        >
+                                            <IconStore className="w-4 h-4" />
+                                            Pilih Outlet Sekarang
+                                            <ChevronRight className="w-3.5 h-3.5" />
+                                        </button>
+                                    </div>
+                                </>
+                            )}
+
                         </div>
                     </div>
                     {hero && (
@@ -339,8 +428,19 @@ export default function Store() {
                 </div>
             </div>
             {
-                isOpenModal && <ModalOutlet onClose={() => setIsOpenModal(false)} onSelect={(outlet: OutletsType) => { setSelectedOutlet(outlet); setIsOpenModal(false) }} tenant={tenant} />
+                isOpenModal && <ModalOutlet onClose={() => setIsOpenModal(false)} tenant={tenant} selectedOutlet={selectedOutlet} />
             }
+            {toastMessage && (
+                <div className="fixed top-6 left-1/2 -translate-x-1/2 z-50 bg-zinc-900 text-white px-5 py-3 rounded-2xl shadow-xl flex items-center gap-3 animate-fade-in border border-zinc-800">
+                    <div className="bg-zinc-800 p-1.5 rounded-lg text-zinc-300">
+                        <Navigation className="w-4 h-4 animate-bounce" />
+                    </div>
+                    <span className="text-xs sm:text-sm font-semibold pr-2">{toastMessage}</span>
+                    <button onClick={() => setToastMessage(null)} className="text-zinc-400 hover:text-white">
+                        <X className="w-4 h-4" />
+                    </button>
+                </div>
+            )}
         </div>
     );
 }

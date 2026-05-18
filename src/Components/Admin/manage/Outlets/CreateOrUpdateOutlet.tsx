@@ -4,6 +4,7 @@ import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { SelectOption } from "@/types/Public";
 import { OutletsType } from "@/types/Admin/OutletType";
 import dynamic from "next/dynamic";
+import ButtonSubmit from "@/Components/Component/CRUD/FormInput/ButtonSubmit";
 const MapWithSearch = dynamic(() => import('@/Components/Component/Maps/MapWithSearch'), {
     ssr: false,
 });
@@ -231,36 +232,7 @@ const CreateOrUpdateOutlet = ({ handleFormSubmit, data, loading, setLoading, onC
                     lng={latLng?.lng ?? 0} />
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-4 pt-4">
-                {/* Tombol Batal */}
-                <button
-                    type="button"
-                    onClick={onCancel}
-                    disabled={loading}
-                    className="flex-1 py-3 rounded-xl font-semibold border border-gray-300 text-gray-700 hover:bg-gray-50 transition disabled:opacity-50"
-                >
-                    BATAL
-                </button>
-
-                {/* Tombol Simpan */}
-                <button
-                    type="submit"
-                    disabled={loading}
-                    className={`flex-[2] py-3 rounded-xl font-semibold transition flex items-center justify-center gap-2 ${loading
-                        ? "bg-gray-400 cursor-not-allowed text-white"
-                        : "bg-black text-white hover:bg-gray-800 shadow-lg active:scale-[0.98]"
-                        }`}
-                >
-                    {loading ? (
-                        <>
-                            <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                            <span>MEMPROSES...</span>
-                        </>
-                    ) : (
-                        "SIMPAN DATA"
-                    )}
-                </button>
-            </div>
+            <ButtonSubmit onClose={onCancel} isSubmitting={loading} />
         </form>
     );
 };

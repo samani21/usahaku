@@ -49,7 +49,6 @@ export default function Dashboard() {
 
     return (
         <div>
-            <h1 className="text-2xl font-semibold mb-6 text-gray-800">Dashboard Utama</h1>
 
             {/* Top Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-6">

@@ -63,4 +63,4 @@ export const menuSidebar: menuSide[] = [
         label: "katalog",
         href: '/catalog',
     },
-]
+];

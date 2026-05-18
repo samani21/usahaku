@@ -19,39 +19,33 @@ const FilterComponent = ({ search, setSearch, dateRangeText, itemsPerPage, setIt
     const [isModalOpen, setIsModalOpen] = useState(false)
     return (
         <>
-            <div className="bg-white p-5 rounded-2xl shadow-xl border border-gray-100 mb-6">
-                <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
-                    {/* Search Input */}
-                    <div className="col-span-full md:col-span-1">
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Pencarian</label>
-                        <div className="relative">
-                            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
-                            <input type="text" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Cari data..." className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition shadow-sm h-[40px]" />
-                        </div>
+            <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm shadow-emerald-50 space-y-4">
+                <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+                    <div className="relative flex-1">
+                        <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                        <input
+                            type="text"
+                            placeholder="Search by name, email, or role..."
+                            value={search}
+                            onChange={(e) => { setSearch(e.target.value); setPage(1); }}
+                            className="w-full bg-slate-100 border border-slate-100 rounded-xl pl-10 pr-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition-all duration-150"
+                        />
                     </div>
-
-                    {/* Date Range Input */}
                     <div className="col-span-1">
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Rentang Tanggal</label>
                         <div className="relative">
-                            <input readOnly onClick={() => setIsModalOpen(true)} value={dateRangeText} placeholder="Pilih rentang tanggal" className="w-full pl-4 pr-10 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition shadow-sm bg-white cursor-pointer h-[40px]" />
+                            <input readOnly onClick={() => setIsModalOpen(true)} value={dateRangeText} placeholder="Pilih rentang tanggal" className="w-full bg-slate-100 border border-slate-100 rounded-xl pl-10 pr-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition-all duration-150" />
                             <button onClick={() => setIsModalOpen(true)} className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-blue-600" type="button">
                                 <Calendar className="w-5 h-5" />
                             </button>
                         </div>
                     </div>
-
-                    {/* Items Per Page Selector */}
                     <div className="col-span-1">
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Tampilkan</label>
-                        <select value={itemsPerPage} onChange={(e) => { setItemsPerPage(Number(e.target.value)); setPage(1) }} className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition shadow-sm h-[40px] cursor-pointer">
+                        <select value={itemsPerPage} onChange={(e) => { setItemsPerPage(Number(e.target.value)); setPage(1) }} className="w-full bg-slate-100 border border-slate-100 rounded-xl pl-10 pr-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition-all duration-150">
                             {[10, 25, 50, 100].map((num) => (
                                 <option key={num} value={num}>{num} Data</option>
                             ))}
                         </select>
                     </div>
-
-                    {/* Reset Button */}
                     <div className="flex items-end">
                         <button onClick={handleReset} className="w-full py-2 px-4 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-100 transition shadow-sm flex items-center justify-center h-[40px] cursor-pointer">
                             <Undo2 className="w-5 h-5 mr-1" /> Reset Filter

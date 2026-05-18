@@ -1,4 +1,5 @@
 "use client"
+import ButtonSubmit from '@/Components/Component/CRUD/FormInput/ButtonSubmit';
 import FormInput from '@/Components/Component/CRUD/FormInput/FormInput';
 import ImagePreview from '@/Components/Component/CRUD/FormInput/ImagePreview';
 import ToggleSwitch from '@/Components/ui/ToggleSwitch';
@@ -531,24 +532,7 @@ const ProductFormModalContent = ({ isOpen, onClose, onSubmit, dataUpdate, loadin
                     )}
 
                     {/* Footer Form / Tombol Submit */}
-                    <div className="sticky bottom-0 p-4 bg-white border-t border-gray-200 flex justify-end space-x-4 z-10 rounded-b-xl">
-                        <button
-                            type="button"
-                            onClick={onClose}
-                            className="flex items-center cursor-pointer space-x-2 px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-100 transition duration-200"
-                        >
-                            <XCircle size={20} />
-                            <span>Batal</span>
-                        </button>
-                        <button
-                            type="submit"
-                            className="disabled:bg-gray-300 disabled:text-slate-600 flex items-center cursor-pointer space-x-2 px-8 py-3 bg-zinc-700 text-white font-extrabold rounded-lg shadow-xl shadow-zinc-500/50 hover:bg-zinc-800 transition duration-200 disabled:from-gray-400 disabled:to-gray-500 disabled:shadow-none"
-                            disabled={loading || isSaveDisabled}
-                        >
-                            <Save size={20} />
-                            <span>Simpan</span>
-                        </button>
-                    </div>
+                    <ButtonSubmit onClose={onClose} isSubmitting={loading} />
 
                     {isSaveDisabled && (
                         <p className="text-sm text-red-500 text-right mt-2 font-semibold">

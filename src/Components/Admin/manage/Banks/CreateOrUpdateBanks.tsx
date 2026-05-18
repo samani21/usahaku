@@ -3,6 +3,7 @@ import FormInput from "@/Components/Component/CRUD/FormInput/FormInput";
 import React, { useEffect, useState } from "react";
 import { Get } from "@/utils/Get";
 import { BanksType } from "@/types/Admin/Banks";
+import ButtonSubmit from "@/Components/Component/CRUD/FormInput/ButtonSubmit";
 
 type Props = {
     handleFormSubmit: (form: FormData, id: number | null) => void;
@@ -156,37 +157,7 @@ const CreateOrUpdateBanks = ({ handleFormSubmit, data, onCancel }: Props) => {
                 error={error.master_bank_id}
             />
 
-            {/* ACTIONS BUTTONS */}
-            <div className="flex flex-col sm:flex-row gap-4 pt-4">
-                {/* Tombol Batal */}
-                <button
-                    type="button"
-                    onClick={onCancel}
-                    disabled={loading}
-                    className="flex-1 py-3 rounded-xl font-semibold border border-gray-300 text-gray-700 hover:bg-gray-50 transition disabled:opacity-50"
-                >
-                    BATAL
-                </button>
-
-                {/* Tombol Simpan */}
-                <button
-                    type="submit"
-                    disabled={loading}
-                    className={`flex-[2] py-3 rounded-xl font-semibold transition flex items-center justify-center gap-2 ${loading
-                        ? "bg-gray-400 cursor-not-allowed text-white"
-                        : "bg-black text-white hover:bg-gray-800 shadow-lg active:scale-[0.98]"
-                        }`}
-                >
-                    {loading ? (
-                        <>
-                            <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                            <span>MEMPROSES...</span>
-                        </>
-                    ) : (
-                        "SIMPAN DATA"
-                    )}
-                </button>
-            </div>
+            <ButtonSubmit onClose={onCancel} isSubmitting={loading} />
         </form>
     );
 };
