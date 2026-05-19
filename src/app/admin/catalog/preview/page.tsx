@@ -201,7 +201,8 @@ export default function PreviewPage({ onClose }: Props) {
                                     isDarkMode={summary?.mode === 'light' ? false : isDarkTheme || category?.mode == 'dark'}
                                     totalCart={cartItem?.item}
                                     summary={cartItem?.amount}
-                                    isBuild={true} />
+                                    isBuild={true}
+                                    selectedOutlet={null} />
                             }
                         </div>
                     </div>

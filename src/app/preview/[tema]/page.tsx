@@ -263,6 +263,7 @@ function PreviewPage() {
                                     totalCart={cartItem?.item}
                                     summary={cartItem?.amount}
                                     isBuild={true}
+                                    selectedOutlet={null}
                                 />
                             }
                         </div>

@@ -321,7 +321,7 @@ export default function SummaryPage({ summaryData, isDarkMode, setIsDarkMode, ge
                                             </div>
                                         </div>
                                         <div className='absolute bottom-0 w-full'>
-                                            <SummaryConfig theme={summaryLayout} isDarkMode={isDarkMode} totalCart={3} summary={100000} isBuild={true} />
+                                            <SummaryConfig theme={summaryLayout} isDarkMode={isDarkMode} totalCart={3} summary={100000} isBuild={true} selectedOutlet={null} />
                                         </div>
                                     </div>
                                 </div>
