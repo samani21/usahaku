@@ -1,15 +1,17 @@
 import { formatIDR } from '@/types/FormtRupiah';
 import React from 'react'
 import HandleCheckout from './HandleCheckout';
+import { OutletsType } from '@/types/Admin/OutletType';
 
 type Props = {
     isDarkMode: boolean;
     isBuild?: boolean;
     totalCart: number;
     summary: number;
+    selectedOutlet: OutletsType | null
 }
 
-const Nine = ({ isDarkMode, totalCart, summary, isBuild }: Props) => {
+const Nine = ({ isDarkMode, totalCart, summary, isBuild, selectedOutlet }: Props) => {
     return (
         <div className="space-y-4">
             <div className="sticky bottom-4 flex justify-center">
@@ -19,7 +21,7 @@ const Nine = ({ isDarkMode, totalCart, summary, isBuild }: Props) => {
                         <span className="font-bold text-sm leading-none">{formatIDR(summary)}</span>
                     </div>
                     <div className="h-6 w-px bg-white/20"></div>
-                    <HandleCheckout isBuild={isBuild} className={`font-bold text-sm text-[var(--summary-primary-color)] uppercase tracking-tighter`}>Checkout ({totalCart})</HandleCheckout>
+                    <HandleCheckout selectedOutlet={selectedOutlet} isBuild={isBuild} className={`font-bold text-sm text-[var(--summary-primary-color)] uppercase tracking-tighter`}>Checkout ({totalCart})</HandleCheckout>
                 </div>
             </div>
         </div>

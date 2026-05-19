@@ -421,6 +421,7 @@ export default function Store() {
                                     isDarkMode={summary?.mode === 'light' ? false : isDarkTheme || category?.mode == 'dark'}
                                     totalCart={cartItem?.item}
                                     summary={cartItem?.amount}
+                                    selectedOutlet={selectedOutlet}
                                 />
                             }
                         </div>

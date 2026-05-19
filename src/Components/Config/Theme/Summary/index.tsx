@@ -13,6 +13,7 @@ import Twelve from './Twelve';
 import ThirTeen from './ThirTeen';
 import FourTeen from './FourTeen';
 import FiveTeen from './FiveTeen';
+import { OutletsType } from '@/types/Admin/OutletType';
 
 type Props = {
     theme: number | null;
@@ -20,14 +21,16 @@ type Props = {
     totalCart: number;
     isBuild?: boolean;
     summary: number;
+    selectedOutlet: OutletsType | null
 }
 
-const SummaryConfig = ({ theme, isDarkMode, totalCart, summary, isBuild }: Props) => {
+const SummaryConfig = ({ theme, isDarkMode, totalCart, summary, isBuild, selectedOutlet }: Props) => {
     const componenst = {
         isDarkMode,
         totalCart,
         summary,
         isBuild,
+        selectedOutlet
     }
     switch (theme) {
         case 1:

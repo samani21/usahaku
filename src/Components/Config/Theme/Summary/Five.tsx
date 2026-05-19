@@ -2,15 +2,17 @@ import { formatIDR } from '@/types/FormtRupiah';
 import { ShoppingBag, Zap } from 'lucide-react';
 import React from 'react'
 import HandleCheckout from './HandleCheckout';
+import { OutletsType } from '@/types/Admin/OutletType';
 
 type Props = {
     isDarkMode: boolean;
     isBuild?: boolean;
     totalCart: number;
     summary: number;
+    selectedOutlet: OutletsType | null
 }
 
-const Five = ({ isBuild, totalCart, summary }: Props) => {
+const Five = ({ isBuild, totalCart, summary, selectedOutlet }: Props) => {
     return (
         <div className="space-y-4">
             <div className="sticky bottom-0 bg-slate-900 text-white p-5 rounded-t-3xl flex items-center justify-between shadow-2xl">
@@ -23,7 +25,7 @@ const Five = ({ isBuild, totalCart, summary }: Props) => {
                         <p className="font-bold">{formatIDR(summary)}</p>
                     </div>
                 </div>
-                <HandleCheckout isBuild={isBuild} className="bg-white text-slate-900 px-6 py-2.5 rounded-full font-bold text-sm">Checkout</HandleCheckout>
+                <HandleCheckout selectedOutlet={selectedOutlet} isBuild={isBuild} className="bg-white text-slate-900 px-6 py-2.5 rounded-full font-bold text-sm">Checkout</HandleCheckout>
             </div>
         </div>
     )
