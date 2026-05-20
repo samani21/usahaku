@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import Loading from '../Component/Loading';
 import { Get } from '@/utils/Get';
+import { OrderType } from '@/types/Admin/Catalog/Order';
 
 type Props = {}
 
@@ -80,6 +81,12 @@ const TRANSACTION_DATA = [
         type: "Take-away"
     }
 ];
+
+interface DataType {
+    expenditure: number;
+    order: OrderType[];
+}
+
 function HistoryComponent({ }: Props) {
     const [historySearch, setHistorySearch] = useState("");
     const [historyFilterStatus, setHistoryFilterStatus] = useState("Semua");
@@ -92,6 +99,8 @@ function HistoryComponent({ }: Props) {
     });
     const [url, setUrl] = useState<string>('');
     const [loading, setLoading] = useState<boolean>(false);
+    const [history, setHistory] = useState<OrderType[]>([]);
+    const [amount, setAmount] = useState<number>(0);
     useEffect(() => {
         const path = window.location.pathname;
         let tenant: string | null = null;
@@ -105,7 +114,11 @@ function HistoryComponent({ }: Props) {
     const getHistory = async () => {
         setLoading(true);
         try {
-            const res = await Get<{ success: boolean, data: any }>('customer/show-history')
+            const res = await Get<{ success: boolean, data: DataType }>('customer/show-history');
+            if (res?.success) {
+                setAmount(res?.data?.expenditure)
+                setHistory(res?.data?.order);
+            }
         } catch (e: any) {
 
         } finally {
@@ -137,13 +150,13 @@ function HistoryComponent({ }: Props) {
                             <span className="text-[10px] uppercase tracking-wider text-zinc-400 font-bold block mb-1">Pengeluaran</span>
                             <div className="flex items-center gap-1">
                                 <span className="text-xs text-zinc-400 font-semibold">Rp</span>
-                                <span className="text-sm sm:text-lg font-black text-zinc-900">266K</span>
+                                <span className="text-sm sm:text-lg font-black text-zinc-900">{Number(amount).toLocaleString("id-ID")}</span>
                             </div>
                         </div>
                         <div className="bg-white border border-zinc-200/80 rounded-2xl p-4 shadow-sm">
                             <span className="text-[10px] uppercase tracking-wider text-zinc-400 font-bold block mb-1">Transaksi</span>
                             <div className="flex items-center gap-2">
-                                <span className="text-sm sm:text-lg font-black text-zinc-900">4</span>
+                                <span className="text-sm sm:text-lg font-black text-zinc-900">{history.length}</span>
                                 <span className="text-[9px] bg-zinc-100 text-zinc-600 px-1.5 py-0.5 rounded-full font-bold">Total</span>
                             </div>
                         </div>
@@ -196,80 +209,95 @@ function HistoryComponent({ }: Props) {
 
                     {/* List Kartu Transaksi */}
                     <div className="space-y-3">
-                        {filteredTransactions.length > 0 ? (
-                            filteredTransactions.map((tx) => (
-                                <div
-                                    key={tx.id}
-                                    className="bg-white border border-zinc-200/80 rounded-2xl p-4 shadow-sm hover:shadow-md transition-shadow duration-200 flex flex-col justify-between"
-                                >
-                                    {/* Top: Info ID, Status & Tipe */}
-                                    <div className="flex items-center justify-between border-b border-zinc-100 pb-3 mb-3">
-                                        <div className="space-y-0.5">
-                                            <span className="text-[10px] text-zinc-400 font-mono tracking-wider">{tx.id}</span>
-                                            <h4 className="text-xs sm:text-sm font-black text-zinc-900 leading-tight flex items-center gap-1">
-                                                <Store className="w-3.5 h-3.5 text-zinc-400" />
-                                                {tx.outletName}
-                                            </h4>
-                                        </div>
+                        {history.length > 0 ? (
+                            history.map((tx) => {
+                                const date = new Date(tx.created_at);
 
-                                        <div className="flex gap-1.5 items-center">
-                                            <span className={`px-2.5 py-1 rounded-full text-[9px] font-bold ${tx.status === "Selesai" ? "bg-emerald-50 text-emerald-700 border border-emerald-100" :
-                                                tx.status === "Diproses" ? "bg-amber-50 text-amber-700 border border-amber-100" :
-                                                    "bg-rose-50 text-rose-700 border border-rose-100"
-                                                }`}>
-                                                {tx.status}
-                                            </span>
-                                            <span className="bg-zinc-100 text-zinc-600 border border-zinc-200/50 px-2 py-1 rounded-full text-[9px] font-bold">
-                                                {tx.type}
-                                            </span>
-                                        </div>
-                                    </div>
+                                const formattedDate = date.toLocaleDateString("id-ID", {
+                                    day: "2-digit",
+                                    month: "long",
+                                    year: "numeric",
+                                });
 
-                                    {/* Middle: Pratinjau Item Belanja */}
-                                    <div className="space-y-1 px-1 mb-4">
-                                        {tx.items.map((item, index) => (
-                                            <div key={index} className="flex justify-between items-center text-xs text-zinc-600">
-                                                <span>{item.name}</span>
-                                                <span className="font-mono text-zinc-400">x{item.qty}</span>
-                                            </div>
-                                        ))}
-                                    </div>
-
-                                    {/* Bottom: Tanggal, Total, dan Tombol Rincian */}
-                                    <div className="flex flex-wrap items-center justify-between border-t border-zinc-50 pt-3 gap-3">
-                                        <div className="flex items-center gap-2 text-[11px] text-zinc-400 font-medium">
-                                            <Calendar className="w-3.5 h-3.5" />
-                                            <span>{tx.date} • {tx.time} WIB</span>
-                                        </div>
-
-                                        <div className="flex items-center gap-3">
-                                            <div>
-                                                <p className="text-[9px] text-right text-zinc-400 font-bold uppercase tracking-wider">Total Bayar</p>
-                                                <p className="text-xs sm:text-sm font-black text-zinc-950">
-                                                    Rp {tx.total.toLocaleString("id-ID")}
-                                                </p>
+                                const formattedTime = date.toLocaleTimeString("id-ID", {
+                                    hour: "2-digit",
+                                    minute: "2-digit",
+                                });
+                                return (
+                                    <div
+                                        key={tx.id}
+                                        className="bg-white border border-zinc-200/80 rounded-2xl p-4 shadow-sm hover:shadow-md transition-shadow duration-200 flex flex-col justify-between"
+                                    >
+                                        {/* Top: Info ID, Status & Tipe */}
+                                        <div className="flex items-center justify-between border-b border-zinc-100 pb-3 mb-3">
+                                            <div className="space-y-0.5">
+                                                <span className="text-[10px] text-zinc-400 font-mono tracking-wider">{tx.order_number}</span>
+                                                <h4 className="text-xs sm:text-sm font-black text-zinc-900 leading-tight flex items-center gap-1">
+                                                    <Store className="w-3.5 h-3.5 text-zinc-400" />
+                                                    {tx.outlet?.name}
+                                                </h4>
                                             </div>
 
-                                            <div className="flex gap-1.5">
-                                                <button
-                                                    // onClick={() => triggerToast(`Memesan ulang paket pesanan ${tx.id}`)}
-                                                    className="p-2.5 rounded-xl bg-zinc-100 hover:bg-zinc-200 text-zinc-700 transition-colors"
-                                                    title="Pesan Lagi"
-                                                >
-                                                    <RefreshCw className="w-4 h-4" />
-                                                </button>
-                                                <button
-                                                    // onClick={() => setSelectedTransaction(tx)}
-                                                    className="px-3.5 py-2 rounded-xl bg-zinc-900 hover:bg-zinc-950 text-white font-bold text-xs shadow-sm transition-colors"
-                                                >
-                                                    Lihat Detail
-                                                </button>
+                                            <div className="flex gap-1.5 items-center">
+                                                <span className={`px-2.5 py-1 rounded-full text-[9px] font-bold ${tx.status === "Selesai" ? "bg-emerald-50 text-emerald-700 border border-emerald-100" :
+                                                    tx.status === "Diproses" ? "bg-amber-50 text-amber-700 border border-amber-100" :
+                                                        "bg-rose-50 text-rose-700 border border-rose-100"
+                                                    }`}>
+                                                    {tx.status}
+                                                </span>
+                                                <span className="bg-zinc-100 text-zinc-600 border border-zinc-200/50 px-2 py-1 rounded-full text-[9px] font-bold">
+                                                    {tx.payment_method}
+                                                </span>
                                             </div>
                                         </div>
-                                    </div>
 
-                                </div>
-                            ))
+                                        {/* Middle: Pratinjau Item Belanja */}
+                                        <div className="space-y-1 px-1 mb-4">
+                                            {tx.items.map((item, index) => (
+                                                <div key={index} className="flex justify-between items-center text-xs text-zinc-600">
+                                                    <span>{item.product_name}</span>
+                                                    <span className="font-mono text-zinc-400">x{item.qty}</span>
+                                                </div>
+                                            ))}
+                                        </div>
+
+                                        {/* Bottom: Tanggal, Total, dan Tombol Rincian */}
+                                        <div className="flex flex-wrap items-center justify-between border-t border-zinc-50 pt-3 gap-3">
+                                            <div className="flex items-center gap-2 text-[11px] text-zinc-400 font-medium">
+                                                <Calendar className="w-3.5 h-3.5" />
+                                                <span>{formattedDate} {formattedTime} </span>
+                                            </div>
+
+                                            <div className="flex items-center gap-3">
+                                                <div>
+                                                    <p className="text-[9px] text-right text-zinc-400 font-bold uppercase tracking-wider">Total Bayar</p>
+                                                    <p className="text-xs sm:text-sm font-black text-zinc-950">
+                                                        Rp. {Number(tx.grand_total).toLocaleString("id-ID")}
+                                                    </p>
+                                                </div>
+
+                                                <div className="flex gap-1.5">
+                                                    <button
+                                                        // onClick={() => triggerToast(`Memesan ulang paket pesanan ${tx.id}`)}
+                                                        className="p-2.5 rounded-xl bg-zinc-100 hover:bg-zinc-200 text-zinc-700 transition-colors"
+                                                        title="Pesan Lagi"
+                                                    >
+                                                        <RefreshCw className="w-4 h-4" />
+                                                    </button>
+                                                    <Link
+                                                        href={`detail/${tx.qr_token}`}
+                                                        // onClick={() => setSelectedTransaction(tx)}
+                                                        className="px-3.5 py-2 rounded-xl bg-zinc-900 hover:bg-zinc-950 text-white font-bold text-xs shadow-sm transition-colors"
+                                                    >
+                                                        Lihat Detail
+                                                    </Link>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                )
+                            })
                         ) : (
                             <div className="text-center py-12 px-4 bg-white rounded-3xl border border-zinc-200/85">
                                 <div className="bg-zinc-100 text-zinc-400 p-4 rounded-full inline-block mb-3">

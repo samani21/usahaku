@@ -23,11 +23,12 @@ import {
 } from 'lucide-react';
 import { Get } from '@/utils/Get';
 import Loading from '../Component/Loading';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams, usePathname, useRouter } from 'next/navigation';
 import { BanksType } from '@/types/Admin/Banks';
 import { Post } from '@/utils/Post';
 import { QRCodeCanvas } from 'qrcode.react';
 import { CatalogHeaderType } from '@/types/Admin/Catalog/Header';
+import Link from 'next/link';
 
 interface CartItemsType {
     id: number;
@@ -76,6 +77,8 @@ const hexToRgb = (hex: string) => {
 
 const DetailCheckoutComponent = () => {
     const { token } = useParams();
+    const pathname = usePathname();
+    const segments = pathname.split("/").filter(Boolean);
     const [darkMode, setDarkMode] = useState(false);
     const [paymentMethod, setPaymentMethod] = useState('');
     const [isPaid, setIsPaid] = useState(false);
@@ -203,15 +206,21 @@ const DetailCheckoutComponent = () => {
     const maxStock = 6; // dummy global
 
     const invalidItems = items.filter((item) => item.qty > maxStock);
+    const url = segments
+        ?.map((s, i) =>
+            i + 2 < segments.length
+                ? `/${s}`
+                : ""
+        )
+        .join("");
     return (
         <div className={`${darkMode ? 'dark bg-[#0a0f18] text-white' : 'bg-gray-50 text-gray-900'} min-h-screen font-sans p-4 md:p-8 transition-colors duration-300`}>
             {/* Header */}
             <div className="max-w-5xl mx-auto flex items-center justify-between mb-8">
-                <button onClick={() => router?.back()} className={`flex items-center gap-2 ${darkMode ? "text-gray-400" : "text-gray-500"} hover:text-[var(--header-primary-color)] transition-colors`}>
+                <Link href={String(url) + '/history'} className={`flex items-center gap-2 ${darkMode ? "text-gray-400" : "text-gray-500"} hover:text-[var(--header-primary-color)] transition-colors`}>
                     <ArrowLeft size={20} />
                     <span className="hidden sm:inline">Kembali</span>
-                </button>
-
+                </Link>
                 <div className="flex items-center gap-2">
                     {
                         header?.logo && <img src={header?.logo} className='w-18 h-18 rounded-md' />
@@ -500,7 +509,7 @@ const DetailCheckoutComponent = () => {
             {
                 loading && <Loading />
             }
-        </div>
+        </div >
     );
 };
 
