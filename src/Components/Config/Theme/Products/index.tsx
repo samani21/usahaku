@@ -14,19 +14,22 @@ import Thirteen from './Thirteen';
 import Fourteen from './FourTeen';
 import Fiveteen from './Fiveteen';
 import { ProductsType, Variants } from '@/types/Admin/ProductsType';
+import { OutletsType } from '@/types/Admin/OutletType';
 type Props = {
     theme: number;
     products: ProductsType[];
     isDarkMode: boolean;
     handleCart?: (p: ProductsType | null, v: Variants | null, qty: number) => void;
+    selectedOutlet?: OutletsType | null
 }
 
-const ProductConfig = ({ theme, products, isDarkMode, handleCart }: Props) => {
+const ProductConfig = ({ theme, products, isDarkMode, handleCart, selectedOutlet }: Props) => {
 
     const commonProps = {
         products,
         isDarkMode,
-        handleCart
+        handleCart,
+        selectedOutlet
     };
 
     /* ===================== Numeric Theme ===================== */

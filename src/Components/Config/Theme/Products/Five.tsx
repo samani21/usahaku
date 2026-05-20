@@ -8,14 +8,16 @@ import { ProductsType, Variants } from '@/types/Admin/ProductsType';
 import { formatIDR } from '@/types/FormtRupiah';
 import ExpandableHTML from './ExpandableHTML';
 import { getPromoDetails } from './PromoType';
+import { OutletsType } from '@/types/Admin/OutletType';
 
 type Props = {
     products: ProductsType[];
     isDarkMode: boolean;
     handleCart?: (p: ProductsType | null, v: Variants | null, qty: number) => void;
+    selectedOutlet?: OutletsType | null
 }
 
-const Five = ({ products, isDarkMode, handleCart }: Props) => {
+const Five = ({ products, isDarkMode, handleCart, selectedOutlet }: Props) => {
     const [product, setProduct] = useState<ProductsType | null>(null);
     const [productAlert, setProductAlert] = useState<ProductsType | null>(null);
     const [selectedVariant, setSelectedVariant] = useState<Variants | null>(null);
@@ -23,10 +25,10 @@ const Five = ({ products, isDarkMode, handleCart }: Props) => {
     const [activeAlert, setActiveAlert] = useState<boolean>(false);
 
     const disableButton = useMemo(() => {
-        if (!product) return true;
-        if (product?.variants?.length > 0 && !selectedVariant) return true;
-        return false;
-    }, [product, selectedVariant])
+        if (!product || !selectedOutlet) return true;
+        return product?.variants?.length > 0 && !selectedVariant;
+    }, [product, selectedVariant]);
+
 
     const mockItem = useMemo(() => ({
         name: productAlert?.name,
@@ -46,12 +48,14 @@ const Five = ({ products, isDarkMode, handleCart }: Props) => {
     }, [product]);
 
     const addCart = () => {
-        setActiveAlert(true);
-        if (handleCart) handleCart(product, selectedVariant, quantity);
-        setProduct(null);
-        setSelectedVariant(null);
-        setQuantity(1);
-    }
+        if (selectedOutlet) {
+            setActiveAlert(true);
+            if (handleCart) handleCart(product, selectedVariant, quantity);
+            setProduct(null);
+            setSelectedVariant(null);
+            setQuantity(1);
+        }
+    };
 
     return (
         <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-8'>

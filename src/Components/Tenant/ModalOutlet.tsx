@@ -153,7 +153,7 @@ const ModalOutlet = ({ onClose, tenant, selectedOutlet }: Props) => {
                         filteredOutlets.map((outlet) => {
                             // const isStoreOpenNow = checkStoreStatus(outlet.time_open, outlet.time_close);
                             const isCurrentlyActive = selectedOutlet && selectedOutlet.id === outlet.id;
-                            const url = pathname === `/${tenant}` ? outlet?.name : `/${tenant}/${outlet?.name}`
+                            const url = pathname === `/` ? outlet?.name : `/${tenant}/${outlet?.name}`
                             return (
                                 <div
                                     key={outlet.id}
@@ -168,7 +168,6 @@ const ModalOutlet = ({ onClose, tenant, selectedOutlet }: Props) => {
                                         <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-zinc-700 to-zinc-900 text-white flex items-center justify-center flex-shrink-0 hidden sm:flex shadow-sm">
                                             <MapPin className="w-4.5 h-4.5 text-zinc-200" />
                                         </div>
-
                                         <div className="space-y-1 flex-1 min-w-0">
                                             <div className="flex items-center gap-2 flex-wrap">
                                                 <h4 className="font-bold text-zinc-900 group-hover:text-zinc-700 transition-colors text-sm sm:text-base truncate">

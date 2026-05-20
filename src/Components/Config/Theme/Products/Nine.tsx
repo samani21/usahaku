@@ -8,23 +8,26 @@ import { ProductsType, Variants } from '@/types/Admin/ProductsType';
 import { formatIDR } from '@/types/FormtRupiah';
 import ExpandableHTML from './ExpandableHTML';
 import { getPromoDetails, Promo } from './PromoType';
+import { OutletsType } from '@/types/Admin/OutletType';
 
 type Props = {
     products: ProductsType[];
     isDarkMode: boolean;
     handleCart?: (p: ProductsType | null, v: Variants | null, qty: number) => void;
+    selectedOutlet?: OutletsType | null
 }
 
-const Nine = ({ products, isDarkMode, handleCart }: Props) => {
+const Nine = ({ products, isDarkMode, handleCart, selectedOutlet }: Props) => {
     const [product, setProduct] = useState<ProductsType | null>(null);
     const [selectedVariant, setSelectedVariant] = useState<Variants | null>(null);
     const [quantity, setQuantity] = useState<number>(1);
     const [activeAlert, setActiveAlert] = useState<boolean>(false);
 
     const disableButton = useMemo(() => {
-        if (!product) return true;
+        if (!product || !selectedOutlet) return true;
         return product?.variants?.length > 0 && !selectedVariant;
     }, [product, selectedVariant]);
+
 
     useEffect(() => {
         if (activeAlert) {
@@ -37,15 +40,15 @@ const Nine = ({ products, isDarkMode, handleCart }: Props) => {
         document.body.style.overflow = product ? 'hidden' : 'unset';
         return () => { document.body.style.overflow = 'unset'; };
     }, [product]);
-
     const addCart = () => {
-        setActiveAlert(true);
-        if (handleCart) handleCart(product, selectedVariant, quantity);
-        setProduct(null);
-        setSelectedVariant(null);
-        setQuantity(1);
-    }
-
+        if (selectedOutlet) {
+            setActiveAlert(true);
+            if (handleCart) handleCart(product, selectedVariant, quantity);
+            setProduct(null);
+            setSelectedVariant(null);
+            setQuantity(1);
+        }
+    };
     return (
         <div className='grid grid-cols-1 lg:grid-cols-2 gap-6'>
             {products?.map((p, i) => {

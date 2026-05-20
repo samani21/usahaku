@@ -233,7 +233,7 @@ const DetailCheckoutComponent = () => {
                     <section className={`${darkMode ? "bg-[#161d2a] border-gray-800" : "bg-white border-gray-200"} p-6 rounded-3xl border shadow-sm`}>
                         <div className="flex justify-between items-center mb-6">
                             <h3 className="text-xl font-bold flex items-center gap-3">
-                                <CreditCard className="text-[var(--header-primary-color)]" /> Metode Pembayaran
+                                <CreditCard className="text-emerald-500" /> Metode Pembayaran
                             </h3>
                             {!paymentMethod && (
                                 <span className={`text-[10px] ${darkMode ? 'bg-[var(--header-primary-color)]/30' : "bg-[var(--header-primary-color)]"} text-[var(--header-primary-color)] px-2 py-1 rounded-md animate-pulse`}>Wajib Pilih Satu</span>
@@ -275,7 +275,7 @@ const DetailCheckoutComponent = () => {
                         {paymentMethod && (
                             <div className={`mt-8 p-6 ${darkMode ? "bg-[#0f1520] border-gray-800" : "bg-gray-50 border-gray-200"} rounded-2xl border animate-in fade-in zoom-in-95 duration-300`}>
                                 <h4 className={`text-sm font-bold mb-4 flex items-center gap-2 ${darkMode ? "text-white" : "text-gray-800"}`}>
-                                    <Info size={16} className="text-[var(--header-primary-color)]" /> Instruksi Pembayaran {paymentMethod === 'cash' ? 'Tunai' : paymentMethod === 'transfer' ? 'Transfer' : 'QRIS'}
+                                    <Info size={16} className="text-emerald-500" /> Instruksi Pembayaran {paymentMethod === 'cash' ? 'Tunai' : paymentMethod === 'transfer' ? 'Transfer' : 'QRIS'}
                                 </h4>
 
                                 <div className='sm:flex gap-2 justify-between items-center'>
@@ -370,34 +370,10 @@ const DetailCheckoutComponent = () => {
                 <div className="lg:col-span-1">
                     <section className={`${darkMode ? "bg-[#161d2a] border-gray-800" : "bg-white border-gray-200"} p-6 rounded-3xl border sticky top-8 shadow-md`}>
                         <h3 className={`text-xl font-bold mb-6 flex items-center gap-3 ${darkMode && 'text-white'}`}>
-                            <ShoppingBag className="text-[var(--header-primary-color)]" /> Ringkasan
+                            <ShoppingBag className="text-emerald-500" /> Ringkasan
                         </h3>
 
                         <div className="space-y-6 mb-8 max-h-[40vh] overflow-y-auto pr-2 custom-scrollbar">
-                            {invalidItems.length > 0 && (
-                                <div className={`mb-4 p-3 rounded-xl border text-xs ${darkMode
-                                    ? "bg-red-900/20 border-red-800 text-red-300"
-                                    : "bg-red-50 border-red-200 text-red-600"
-                                    }`}>
-                                    <div className="font-semibold mb-1">
-                                        ⚠ Beberapa item melebihi stok
-                                    </div>
-
-                                    <ul className="space-y-1">
-                                        {invalidItems.map((item) => {
-                                            const overQty = item.qty - maxStock;
-
-                                            return (
-                                                <li key={item.id}>
-                                                    • {item.name_product}
-                                                    {item?.name_variant ? ` (${item.name_variant})` : ''}
-                                                    {" "}→ maksimal {maxStock}, kelebihan {overQty}
-                                                </li>
-                                            );
-                                        })}
-                                    </ul>
-                                </div>
-                            )}
                             {items.length > 0 ? (
                                 items.map((item) => {
 

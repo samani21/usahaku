@@ -26,6 +26,8 @@ import Loading from '../Component/Loading';
 import { useParams, useRouter } from 'next/navigation';
 import { BanksType } from '@/types/Admin/Banks';
 import { Post } from '@/utils/Post';
+import { CatalogHeaderType } from '@/types/Admin/Catalog/Header';
+import { Delete } from '@/utils/Delete';
 
 interface CartItemsType {
     id: number;
@@ -49,6 +51,7 @@ interface CartsType {
     total: number;
     is_bank: boolean;
     is_qris: boolean;
+    header: CatalogHeaderType;
 }
 
 interface StockAvailableType {
@@ -77,9 +80,9 @@ const CheckOutComponent = () => {
     const [error, setError] = useState<string | null>(null);
     const [stockAvailable, setStockAvailable] = useState<StockAvailableType[]>([]);
     const [tenant, setTenant] = useState<string>('');
+    const [header, setHeader] = useState<CatalogHeaderType | null>(null);
     useEffect(() => {
         const path = window.location.pathname;
-        let tenant: string | null = null;
         const segments = path.split("/").filter(Boolean);
         if (segments.length > 0) {
             setTenant(segments[0]);
@@ -196,6 +199,33 @@ const CheckOutComponent = () => {
     useEffect(() => {
         getCarts()
     }, [])
+    const getCarts = async () => {
+        setLoading(true)
+        try {
+            const res = await Get<{ success: boolean, data: CartsType }>('customer/list-cart');
+            if (res?.success) {
+                setItems(res?.data?.items)
+                setIsBank(res?.data?.is_bank);
+                setIsQris(res?.data?.is_qris);
+                setHeader(res?.data?.header)
+            }
+        } catch (e: any) {
+
+        } finally {
+            setLoading(false)
+
+        }
+    }
+    const handleDeleteItem = async (id: number) => {
+        try {
+            const res = await Delete(`customer/delete/items/${id}`);
+            if (res) {
+                getCarts()
+            }
+        } catch (e: any) {
+
+        }
+    }
 
     if (showMobileUpload) {
         return (
@@ -245,26 +275,6 @@ const CheckOutComponent = () => {
             </div>
         );
     }
-    const getCarts = async () => {
-        setLoading(true)
-        try {
-            const res = await Get<{ success: boolean, data: CartsType }>('customer/list-cart');
-            if (res?.success) {
-                setItems(res?.data?.items)
-                setIsBank(res?.data?.is_bank);
-                setIsQris(res?.data?.is_qris);
-            }
-        } catch (e: any) {
-
-        } finally {
-            setLoading(false)
-
-        }
-    }
-    // const maxStock = 6; // dummy global
-
-    // const invalidItems = items.filter((item) => item.qty > maxStock);
-    // let is_invalid
     return (
         <div className={`${darkMode ? 'dark bg-[#0a0f18] text-white' : 'bg-gray-50 text-gray-900'} min-h-screen font-sans p-4 md:p-8 transition-colors duration-300`}>
             {/* Header */}
@@ -274,10 +284,10 @@ const CheckOutComponent = () => {
                     <span className="hidden sm:inline">Kembali</span>
                 </button>
                 <div className="flex items-center gap-2">
-                    <div className={`w-10 h-10 ${darkMode ? 'bg-white ' : "bg-emerald-600"} rounded-lg flex items-center justify-center shadow-lg`}>
-                        <span className={` ${darkMode ? 'text-black' : "text-white"} font-bold text-sm`}>TS</span>
-                    </div>
-                    <span className="text-xl font-bold italic text-emerald-600">Toko<span className={darkMode ? "text-white" : "text-gray-900"}>Sepatu</span></span>
+                    {
+                        header?.logo && <img src={header?.logo} className='w-18 h-18 rounded-md' />
+                    }
+                    <span className="text-xl font-bold italic text-[var(--header-primary-color)]">{header?.span_one}<span className={darkMode ? "text-white" : "text-gray-900"}>{header?.span_two}</span></span>
                 </div>
 
                 <button
@@ -362,66 +372,6 @@ const CheckOutComponent = () => {
                                         </div>
                                     </div>
                                 ) : (
-                                    // <div className="flex flex-col md:flex-row gap-8">
-                                    //     {/* Panel Kiri: Aksi QR/Visual */}
-                                    //     <div className="flex-1 text-center">
-                                    //         {paymentMethod === 'qris' ? (
-                                    //             <div className="space-y-4">
-                                    //                 <div className="bg-white p-3 rounded-2xl shadow-xl border border-gray-100 inline-block">
-                                    //                     <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=QRIS_DEMO" alt="QRIS" className="w-32 h-32" />
-                                    //                 </div>
-                                    //                 <p className="text-[10px] text-gray-500 font-medium italic">Pindai kode QR di atas menggunakan aplikasi bank atau e-wallet (Gopay/OVO/Dana).</p>
-                                    //             </div>
-                                    //         ) : (
-                                    //             <div className="space-y-4">
-                                    //                 {
-                                    //                     banks?.map((b, i) => (
-                                    //                         <div key={i} className={`p-4 ${darkMode ? "border-gray-700 bg-[#1a2333]" : "bg-white border-gray-200"} rounded-2xl border shadow-sm text-left`}>
-                                    //                             <div className="flex justify-between items-center mb-2">
-                                    //                                 <span className="text-[10px] font-bold text-blue-600 uppercase">{b?.master_bank?.name}</span>
-                                    //                                 <img src={b?.master_bank?.logo} alt={b?.master_bank?.name} className="h-3" />
-                                    //                             </div>
-                                    //                             <p className="text-xs text-gray-400 mb-1">Nomor Rekening:</p>
-                                    //                             <div className='flex items-center justify-between'>
-                                    //                                 <p className={`text-lg font-mono font-bold ${darkMode ? "text-white" : "text-gray-800"}`}>{b?.account_number}</p>
-                                    //                                 <Copy size={14} />
-                                    //                             </div>
-                                    //                             <p className="text-[10px] text-gray-500 mt-1">a/n {b?.account_name}</p>
-                                    //                         </div>
-                                    //                     ))
-                                    //                 }
-                                    //             </div>
-                                    //         )}
-                                    //     </div>
-
-                                    //     {/* Panel Kanan: Upload Bukti */}
-                                    //     <div className={`flex-[1.5] border-t md:border-t-0 md:border-l ${darkMode ? "border-gray-800" : "border-gray-200 "} pt-6 md:pt-0 md:pl-8`}>
-                                    //         <p className="text-[11px] font-bold text-gray-500 uppercase tracking-widest mb-3">Upload Bukti Transfer</p>
-                                    //         <label className={`relative group cursor-pointer block border-2 border-dashed ${darkMode ? "bg-[#1a2333]  border-gray-700" : "border-gray-300 bg-white"} hover:border-emerald-500 rounded-2xl p-4 text-center transition-all`}>
-                                    //             <input type="file" className="hidden" accept="image/*" onChange={handleFileUpload} />
-                                    //             {imagePreview ? (
-                                    //                 <div className="relative">
-                                    //                     <img src={imagePreview} alt="Preview" className="h-24 mx-auto rounded-lg shadow-md" />
-                                    //                     <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center rounded-lg transition-opacity">
-                                    //                         <span className="text-[10px] text-white font-bold">Ganti Foto</span>
-                                    //                     </div>
-                                    //                 </div>
-                                    //             ) : (
-                                    //                 <div className="py-2">
-                                    //                     <div className={`w-10 h-10 ${darkMode ? "bg-[#0f1520]" : "bg-gray-50 "} rounded-full flex items-center justify-center mx-auto mb-2 group-hover:scale-110 transition-transform`}>
-                                    //                         <Upload className="text-gray-400 group-hover:text-emerald-500" size={18} />
-                                    //                     </div>
-                                    //                     <span className="text-[10px] text-gray-500 block">Klik untuk pilih file atau foto struk</span>
-                                    //                     <span className="text-[9px] text-gray-400 italic">Maks. 5MB (JPG, PNG)</span>
-                                    //                 </div>
-                                    //             )}
-                                    //         </label>
-                                    //         <div className="mt-4 flex items-start gap-2 text-[10px] text-gray-400">
-                                    //             <Smartphone size={12} className="shrink-0 mt-0.5" />
-                                    //             <p>Atau <button onClick={() => setShowMobileUpload(true)} className="text-emerald-500 font-bold hover:underline">Scan QR</button> di sisi kiri untuk upload langsung dari HP.</p>
-                                    //         </div>
-                                    //     </div>
-                                    // </div>
                                     ""
                                 )}
                             </div>
@@ -436,30 +386,6 @@ const CheckOutComponent = () => {
                         </h3>
 
                         <div className="space-y-6 mb-8 max-h-[40vh] overflow-y-auto pr-2 custom-scrollbar">
-                            {/* {invalidItems.length > 0 && (
-                                <div className={`mb-4 p-3 rounded-xl border text-xs ${darkMode
-                                    ? "bg-red-900/20 border-red-800 text-red-300"
-                                    : "bg-red-50 border-red-200 text-red-600"
-                                    }`}>
-                                    <div className="font-semibold mb-1">
-                                        ⚠ Beberapa item melebihi stok
-                                    </div>
-
-                                    <ul className="space-y-1">
-                                        {invalidItems.map((item) => {
-                                            const overQty = item.qty - maxStock;
-
-                                            return (
-                                                <li key={item.id}>
-                                                    • {item.name_product}
-                                                    {item?.name_variant ? ` (${item.name_variant})` : ''}
-                                                    {" "}→ maksimal {maxStock}, kelebihan {overQty}
-                                                </li>
-                                            );
-                                        })}
-                                    </ul>
-                                </div>
-                            )} */}
                             {items.length > 0 ? (
                                 items.map((item) => {
                                     const maxStock = stockAvailable?.find((s) => s?.variant_id === item?.variant_id)?.available_stock ?? stockAvailable?.find((s) => s?.product_id === item?.product_id)?.available_stock ?? item?.product_variant_stock ?? item?.product_stock; // 👉 statis dulu (dummy)
@@ -493,7 +419,7 @@ const CheckOutComponent = () => {
                                                 <div className="flex items-center gap-3 mt-2">
                                                     <div className={`flex items-center ${darkMode ? "bg-[#0f1520] border-gray-800" : "bg-gray-100 border-gray-200"} rounded-lg p-1 border`}>
                                                         <button
-                                                            onClick={() => updateQty(item.id, -1)}
+                                                            onClick={() => item.qty === 1 ? handleDeleteItem(item?.id) : updateQty(item.id, -1)}
                                                             className={`p-1 ${darkMode ? "hover:bg-gray-800" : "hover:bg-white"} rounded-md transition-colors text-gray-500`}
                                                         >
                                                             {item.qty === 1 ? <Trash2 size={12} className="text-emerald-500" /> : <Minus size={12} />}

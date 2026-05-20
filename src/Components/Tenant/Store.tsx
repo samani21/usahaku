@@ -163,6 +163,10 @@ export default function Store() {
 
     const handleCart = async (p: ProductsType | null, v: Variants | null, qty: number) => {
         // setLoading(true)
+        if (!selectedOutlet) {
+            setIsOpenModal(true);
+            return
+        }
         try {
             const formData = new FormData();
             formData.append('product_id', String(p?.id));
@@ -172,7 +176,7 @@ export default function Store() {
             formData.append('qty', String(qty));
             const res = await Post<any, FormData>('/customer/add-cart', formData)
             if (res?.success) {
-                console.log('res?.cartItem', res)
+                // console.log('res?.cartItem', res)
                 setCartItem({
                     item: res?.data?.cartItem?.item,
                     amount: res?.data?.cartItem?.amount
@@ -213,6 +217,7 @@ export default function Store() {
             }
         } catch (e: any) {
             // console.error(e);
+            setToastMessage(e?.message)
         } finally {
             // setLoading(false)
         }
@@ -409,13 +414,14 @@ export default function Store() {
                                 theme={product?.layout_products}
                                 products={products}
                                 isDarkMode={product?.mode === 'light' ? false : isDarkTheme || product?.mode == 'dark'}
-                                handleCart={handleCart} />
+                                handleCart={handleCart}
+                                selectedOutlet={selectedOutlet} />
                         }
                     </section>
                     <div className='fixed bottom-0 w-full flex z-20 items-center justify-center left-0'>
                         <div className='max-w-7xl w-full'>
                             {
-                                summary && cartItem?.item > 0 &&
+                                summary && cartItem?.item > 0 && selectedOutlet &&
                                 <SummaryConfig
                                     theme={summary?.layout_summary}
                                     isDarkMode={summary?.mode === 'light' ? false : isDarkTheme || category?.mode == 'dark'}
