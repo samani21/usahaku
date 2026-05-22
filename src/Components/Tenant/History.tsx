@@ -87,6 +87,15 @@ interface DataType {
     order: OrderType[];
 }
 
+const statusClass = {
+    unpaid: "bg-rose-50 text-rose-700 border border-rose-100",
+    pending_verification: "bg-yellow-50 text-yellow-700 border border-yellow-100",
+    paid: "bg-emerald-50 text-emerald-700 border border-emerald-100",
+    processing: "bg-blue-50 text-blue-700 border border-blue-100",
+    completed: "bg-emerald-50 text-emerald-700 border border-emerald-100",
+    cancalled: "bg-emerald-50 text-emerald-700 border border-emerald-100",
+}
+
 function HistoryComponent({ }: Props) {
     const [historySearch, setHistorySearch] = useState("");
     const [historyFilterStatus, setHistoryFilterStatus] = useState("Semua");
@@ -101,6 +110,7 @@ function HistoryComponent({ }: Props) {
     const [loading, setLoading] = useState<boolean>(false);
     const [history, setHistory] = useState<OrderType[]>([]);
     const [amount, setAmount] = useState<number>(0);
+    console.log('statusClass', statusClass)
     useEffect(() => {
         const path = window.location.pathname;
         let tenant: string | null = null;
