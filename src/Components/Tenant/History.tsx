@@ -1,6 +1,6 @@
 "use client"
 import { Calendar, ChevronLeft, Receipt, RefreshCw, Search, Sparkles, Store } from 'lucide-react';
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import GlassCard from '../Layout/GlassCard';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
@@ -10,107 +10,67 @@ import { OrderType } from '@/types/Admin/Catalog/Order';
 
 type Props = {}
 
-const TRANSACTION_DATA = [
-    {
-        id: "TX-90218-024",
-        outletName: "Kopi Senja - Menteng",
-        date: "18 Mei 2026",
-        time: "14:32",
-        status: "Selesai",
-        paymentMethod: "Senja Wallet / QRIS",
-        items: [
-            { name: "Senja Creamy Latte (Large)", qty: 2, price: 38000 },
-            { name: "Butter Croissant Premium", qty: 1, price: 28000 }
-        ],
-        subtotal: 104000,
-        tax: 10400,
-        service: 5000,
-        total: 119400,
-        type: "Dine-in"
-    },
-    {
-        id: "TX-88310-109",
-        outletName: "Kopi Senja - Dago",
-        date: "16 Mei 2026",
-        time: "19:05",
-        status: "Selesai",
-        paymentMethod: "Kartu Debit",
-        items: [
-            { name: "Americano Ice (Regular)", qty: 1, price: 25000 },
-            { name: "Almond Croissant", qty: 2, price: 32000 },
-            { name: "Caramel Macchiato", qty: 1, price: 40000 }
-        ],
-        subtotal: 129000,
-        tax: 12900,
-        service: 5000,
-        total: 146900,
-        type: "Take-away"
-    },
-    {
-        id: "TX-77402-990",
-        outletName: "Kopi Senja - Kuta",
-        date: "14 Mei 2026",
-        time: "10:15",
-        status: "Diproses",
-        paymentMethod: "Senja Wallet / QRIS",
-        items: [
-            { name: "Tropical Cold Brew", qty: 2, price: 35000 },
-            { name: "Fries & Dip Platter", qty: 1, price: 30000 }
-        ],
-        subtotal: 100000,
-        tax: 10000,
-        service: 5000,
-        total: 115000,
-        type: "Dine-in"
-    },
-    {
-        id: "TX-55110-384",
-        outletName: "Kopi Senja - Gubeng",
-        date: "10 Mei 2026",
-        time: "16:45",
-        status: "Dibatalkan",
-        paymentMethod: "Tunai",
-        items: [
-            { name: "Matcha Oat Latte", qty: 1, price: 42000 },
-            { name: "Cinnamon Roll", qty: 1, price: 26000 }
-        ],
-        subtotal: 68000,
-        tax: 6800,
-        service: 5000,
-        total: 79800,
-        type: "Take-away"
-    }
-];
-
 interface DataType {
     expenditure: number;
     order: OrderType[];
 }
 
-const statusClass = {
-    unpaid: "bg-rose-50 text-rose-700 border border-rose-100",
-    pending_verification: "bg-yellow-50 text-yellow-700 border border-yellow-100",
-    paid: "bg-emerald-50 text-emerald-700 border border-emerald-100",
-    processing: "bg-blue-50 text-blue-700 border border-blue-100",
-    completed: "bg-emerald-50 text-emerald-700 border border-emerald-100",
-    cancalled: "bg-emerald-50 text-emerald-700 border border-emerald-100",
-}
-
+const status = [
+    {
+        label: 'Semua',
+        value: 'all'
+    },
+    {
+        label: 'Belum Dibayar',
+        value: 'pending'
+    },
+    {
+        label: 'Diproses',
+        value: 'processing'
+    },
+    {
+        label: 'Dibatalkan',
+        value: 'cancelled'
+    },
+    {
+        label: 'Selesai',
+        value: 'completed'
+    },
+]
 function HistoryComponent({ }: Props) {
     const [historySearch, setHistorySearch] = useState("");
-    const [historyFilterStatus, setHistoryFilterStatus] = useState("Semua");
+    const [historyFilterStatus, setHistoryFilterStatus] = useState("all");
     const pathname = usePathname();
-    const filteredTransactions = TRANSACTION_DATA.filter((tx) => {
-        const matchesSearch = tx.outletName.toLowerCase().includes(historySearch.toLowerCase()) ||
-            tx.id.toLowerCase().includes(historySearch.toLowerCase());
-        const matchesStatus = historyFilterStatus === "Semua" || tx.status === historyFilterStatus;
-        return matchesSearch && matchesStatus;
-    });
+    // const filteredTransactions = TRANSACTION_DATA.filter((tx) => {
+    //     const matchesSearch = tx.outletName.toLowerCase().includes(historySearch.toLowerCase()) ||
+    //         tx.id.toLowerCase().includes(historySearch.toLowerCase());
+    //     const matchesStatus = historyFilterStatus === "Semua" || tx.status === historyFilterStatus;
+    //     return matchesSearch && matchesStatus;
+    // });
     const [url, setUrl] = useState<string>('');
     const [loading, setLoading] = useState<boolean>(false);
     const [history, setHistory] = useState<OrderType[]>([]);
     const [amount, setAmount] = useState<number>(0);
-    console.log('statusClass', statusClass)
+    const badgeStatus = (status: string) => {
+        switch (status) {
+            case 'paid':
+                return "bg-emerald-50 text-emerald-700 border border-emerald-100";
+            case 'pending_verification':
+                return "bg-indigo-50 text-indigo-700 border border-indigo-100";
+            case 'unpaid':
+                return "bg-rose-50 text-rose-700 border border-rose-100";
+            case 'pending':
+                return "bg-yellow-50 text-yellow-700 border border-yellow-100";
+            case 'processing':
+                return "bg-blue-50 text-blue-700 border border-blue-100";
+            case 'completed':
+                return "bg-emerald-50 text-emerald-700 border border-emerald-100";
+            case 'cancelled':
+                return "bg-red-50 text-red-700 border border-red-100";
+            default:
+                return "bg-gray-50 text-gray-700 border border-gray-100";
+        }
+    }
     useEffect(() => {
         const path = window.location.pathname;
         let tenant: string | null = null;
@@ -135,6 +95,18 @@ function HistoryComponent({ }: Props) {
             setLoading(false)
         }
     }
+
+    const filteredTransactions = useMemo(() => {
+        if (historySearch?.length > 0) {
+            const filterHistory = history?.filter((e) => e?.outlet?.name.toLowerCase().includes(historySearch.toLowerCase()) || e?.order_number.toLowerCase().includes(historySearch.toLowerCase()))
+            return filterHistory
+        } else if (historyFilterStatus === 'all') {
+            return history
+        } else {
+            const filterHistory = history?.filter((e) => e?.status === historyFilterStatus)
+            return filterHistory
+        }
+    }, [history, historyFilterStatus, historySearch])
     return (
         <div className="flex items-center  justify-center ">
             <div className='relative w-full max-w-7xl'>
@@ -153,6 +125,7 @@ function HistoryComponent({ }: Props) {
                         </div>
                     </GlassCard>
                 </div>
+
                 <div className='px-4 lg:px-0 mt-12 py-4 space-y-6 animate-fade-in'>
                     {/* Dashboard Summary Riwayat */}
                     <div className="grid grid-cols-3 gap-3">
@@ -202,16 +175,16 @@ function HistoryComponent({ }: Props) {
 
                         {/* Filter Pills status */}
                         <div className="flex gap-1.5 overflow-x-auto pb-0.5">
-                            {["Semua", "Selesai", "Diproses", "Dibatalkan"].map((status) => (
+                            {status?.map((status) => (
                                 <button
-                                    key={status}
-                                    onClick={() => setHistoryFilterStatus(status)}
-                                    className={`px-3 py-1.5 rounded-lg text-[10px] sm:text-xs font-bold whitespace-nowrap transition-all ${historyFilterStatus === status
+                                    key={status?.label}
+                                    onClick={() => setHistoryFilterStatus(status?.value)}
+                                    className={`px-3 py-1.5 rounded-lg text-[10px] sm:text-xs font-bold whitespace-nowrap transition-all ${historyFilterStatus === status?.value
                                         ? 'bg-zinc-900 text-white shadow-sm'
                                         : 'bg-zinc-50 text-zinc-600 hover:bg-zinc-100 border border-zinc-200'
                                         }`}
                                 >
-                                    {status}
+                                    {status?.label}
                                 </button>
                             ))}
                         </div>
@@ -220,7 +193,7 @@ function HistoryComponent({ }: Props) {
                     {/* List Kartu Transaksi */}
                     <div className="space-y-3">
                         {history.length > 0 ? (
-                            history.map((tx) => {
+                            filteredTransactions?.map((tx) => {
                                 const date = new Date(tx.created_at);
 
                                 const formattedDate = date.toLocaleDateString("id-ID", {
@@ -249,11 +222,8 @@ function HistoryComponent({ }: Props) {
                                             </div>
 
                                             <div className="flex gap-1.5 items-center">
-                                                <span className={`px-2.5 py-1 rounded-full text-[9px] font-bold ${tx.status === "Selesai" ? "bg-emerald-50 text-emerald-700 border border-emerald-100" :
-                                                    tx.status === "Diproses" ? "bg-amber-50 text-amber-700 border border-amber-100" :
-                                                        "bg-rose-50 text-rose-700 border border-rose-100"
-                                                    }`}>
-                                                    {tx.status}
+                                                <span className={`px-2.5 py-1 rounded-full text-[9px] font-bold ${badgeStatus(tx?.payment_status === 'pending_verification' ? tx?.payment_status : tx?.status)}`}>
+                                                    {tx?.payment_status === 'pending_verification' ? "pending verification" : tx?.status}
                                                 </span>
                                                 <span className="bg-zinc-100 text-zinc-600 border border-zinc-200/50 px-2 py-1 rounded-full text-[9px] font-bold">
                                                     {tx.payment_method}
