@@ -5,8 +5,6 @@ import React, { useEffect, useState } from 'react'
 import SidebarComponent from './SidebarComponent';
 import Header from './Header';
 import Loading from '../Component/Loading';
-import GlassCard from './GlassCard';
-import { Bell } from 'lucide-react';
 
 type Props = {
     children: React.ReactNode
@@ -126,7 +124,7 @@ const MainLayout = ({ children }: Props) => {
                                     ))}
                                 </ol>
                             </nav>
-                            <h1 className="text-2xl font-semibold mb-6 text-gray-800">{breadcrumb[breadcrumb.length - 1]}</h1>
+                            <h1 className="text-2xl font-black tracking-tight text-slate-900">{breadcrumb[breadcrumb.length - 1]}</h1>
                             {children}
                         </div>
                     </div>

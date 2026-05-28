@@ -182,7 +182,7 @@ export default function Store() {
                     amount: res?.data?.cartItem?.amount
                 })
 
-                const productNew: ProductsType[] = products?.map((p) => {
+                const productNew: ProductsType[] = dataProduct?.map((p) => {
                     // hanya update product yang cocok
                     if (p.id === Number(res?.data?.item?.product_id)) {
                         let updatedProduct = {

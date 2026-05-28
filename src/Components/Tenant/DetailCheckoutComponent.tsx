@@ -345,7 +345,7 @@ const DetailCheckoutComponent = () => {
                                         <div className='flex items-center justify-center my-2'>
                                             <div className={`shrink-0 p-4 text-center ${darkMode ? "bg-slate-800 border-gray-700" : "bg-white border-gray-200"} sm:w-auto  dark: rounded-xl border shadow-sm`}>
                                                 <div className='bg-slate-100 p-2 rounded-lg'>
-                                                    <QRCodeCanvas value={String(token)} size={120} />
+                                                    <QRCodeCanvas value={String(dataOrder?.qr_order)} size={120} />
                                                 </div>
                                                 <span className="text-[10px] text-gray-400 mt-2 font-medium tracking-wider">QR konfirmasi pesanan</span>
                                             </div>
@@ -393,10 +393,9 @@ const DetailCheckoutComponent = () => {
                                                 <p className="text-[11px] font-bold text-gray-400 uppercase tracking-widest mb-3">Upload Bukti Transfer</p>
                                                 <label className={`relative group cursor-pointer block border-2 border-dashed ${darkMode ? "bg-[#1a2333] border-gray-700 hover:border-gray-500" : "border-gray-300 bg-white hover:border-blue-400"} rounded-2xl p-6 text-center transition-all`}>
                                                     {
-                                                        dataOrder?.payment_status === 'unpaid' || dataOrder?.payment_status === 'pending_verification' &&
-                                                        <input type="file" className="hidden" accept="image/*" onChange={handleFileUpload} />
+                                                        dataOrder?.payment_status === 'unpaid' || dataOrder?.payment_status === 'pending_verification' ?
+                                                            <input type="file" className="hidden" accept="image/*" onChange={handleFileUpload} /> : ""
                                                     }
-
                                                     {imagePreview ? (
                                                         <div className="relative py-2">
                                                             <img src={imagePreview} alt="Preview" className="h-32 mx-auto rounded-lg shadow-md object-cover" />

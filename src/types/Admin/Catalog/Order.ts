@@ -1,4 +1,5 @@
 import { OutletsType } from "../OutletType";
+import { OrderItemType } from "./Item";
 
 export interface OrderType {
     bank_name: string;
@@ -16,6 +17,7 @@ export interface OrderType {
     payment_status: string;
     phone_number: string;
     qr_token: string;
+    qr_order?: string;
     status: string;
     total_price: number;
     unique_code: string;

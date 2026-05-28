@@ -1,4 +1,7 @@
-interface OrderItemType {
+import { ProductsType, Variant } from "../ProductsType";
+import { ProductType } from "./Products";
+
+export interface OrderItemType {
     id: number;
     order_id: number;
     price: number;
@@ -8,4 +11,6 @@ interface OrderItemType {
     product_variant_id: number;
     qty: number;
     subtotal: number;
+    product?: ProductsType;
+    variant?: Variant;
 }
