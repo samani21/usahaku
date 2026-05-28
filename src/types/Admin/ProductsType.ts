@@ -93,6 +93,7 @@ export interface ProductsType {
     slug: string,
     image: string,
     qrcode: string,
+    slug_business?: string,
     has_variant: boolean,
     is_active: boolean
     price: number,

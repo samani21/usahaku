@@ -16,13 +16,16 @@ export default function Home() {
     const token = getToken();
     const user = getUserInfo();
     const router = useRouter();
-    const [loading, setLoading] = useState<boolean>(false);
+    const [loading, setLoading] = useState<boolean>(true);
     const [detailTheme, setDetailTheme] = useState<boolean>(false);
     useEffect(() => {
+        setLoading(true)
         if (token && user) {
             router?.push('/admin/dashboard')
+        } else {
+            setLoading(false)
         }
-    })
+    }, [])
     return (
         <div className="font-sans text-gray-800 antialiased bg-white">
             <Header setLoading={setLoading} />

@@ -19,6 +19,7 @@ import FormInput from "@/Components/Component/CRUD/FormInput/FormInput";
 import ModalConfirmPromo from "./ModalConfirmPromo";
 import ConfirmPromo from "./ConfirmPromo";
 import Loading from "@/Components/Component/Loading";
+import { QRCodeCanvas } from "qrcode.react";
 
 export default function ListProductPage() {
     const [search, setSearch] = useState("");
@@ -40,6 +41,7 @@ export default function ListProductPage() {
         total: 0,
     });
     const [debouncedSearch, setDebouncedSearch] = useState('');
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
     const [showAlert, setShowAlert] = useState<AlertType | null>(null)
     useEffect(() => {
         const handler = setTimeout(() => {
@@ -279,7 +281,9 @@ export default function ListProductPage() {
                 key: "qrcode",
                 label: "qrcode",
                 width: "200",
-                render: (row) => <img src={row.qrcode} className="w-12 rounded-md" />,
+                render: (row) => (
+                    <QRCodeCanvas value={String(`${baseUrl}/${row?.slug_business}/detail-product/${row?.qrcode}`)} size={120} />
+                ),
             },
             {
                 key: "is_active",
