@@ -52,13 +52,20 @@ const Two = ({ products, isDarkMode, handleCart, selectedOutlet }: Props) => {
 
     const addCart = () => {
         if (selectedOutlet) {
-            setActiveAlert(true);
+            //setActiveAlert(true);
             if (handleCart) handleCart(product, selectedVariant, quantity);
             setProduct(null);
             setSelectedVariant(null);
             setQuantity(1);
         }
     };
+
+    useEffect(() => {
+        if ((selectedVariant?.product_variant_stock ?? 0) < quantity) {
+            setQuantity(selectedVariant?.product_variant_stock ?? 0);
+        }
+    }, [selectedVariant])
+
     return (
         <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-10 h-full'>
             {products?.map((p, i) => {

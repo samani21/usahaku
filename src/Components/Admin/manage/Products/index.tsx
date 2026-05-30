@@ -282,7 +282,7 @@ export default function ListProductPage() {
                 label: "qrcode",
                 width: "200",
                 render: (row) => (
-                    <QRCodeCanvas value={String(`${baseUrl}/${row?.slug_business}/detail-product/${row?.qrcode}`)} size={120} />
+                    <QRCodeCanvas value={String(`${baseUrl}/${row?.slug_business}/outlet 1/detail-product/${row?.qrcode}`)} size={80} />
                 ),
             },
             {

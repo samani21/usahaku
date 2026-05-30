@@ -39,13 +39,18 @@ const Fiveteen = ({ products, isDarkMode, handleCart }: Props) => {
     }, [product]);
 
     const addCart = () => {
-        setActiveAlert(true);
+        //setActiveAlert(true);
         if (handleCart) handleCart(product, selectedVariant, quantity);
         setProduct(null);
         setSelectedVariant(null);
         setQuantity(1);
     };
 
+    useEffect(() => {
+        if ((selectedVariant?.product_variant_stock ?? 0) < quantity) {
+            setQuantity(selectedVariant?.product_variant_stock ?? 0);
+        }
+    }, [selectedVariant])
     return (
         <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 p-6 `}>
             {products?.map((p, i) => {

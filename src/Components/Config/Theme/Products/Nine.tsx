@@ -42,13 +42,19 @@ const Nine = ({ products, isDarkMode, handleCart, selectedOutlet }: Props) => {
     }, [product]);
     const addCart = () => {
         if (selectedOutlet) {
-            setActiveAlert(true);
+            //setActiveAlert(true);
             if (handleCart) handleCart(product, selectedVariant, quantity);
             setProduct(null);
             setSelectedVariant(null);
             setQuantity(1);
         }
     };
+    useEffect(() => {
+        if ((selectedVariant?.product_variant_stock ?? 0) < quantity) {
+            setQuantity(selectedVariant?.product_variant_stock ?? 0);
+        }
+    }, [selectedVariant])
+
     return (
         <div className='grid grid-cols-1 lg:grid-cols-2 gap-6'>
             {products?.map((p, i) => {

@@ -58,7 +58,7 @@ const Eleven = ({ products, isDarkMode, handleCart, selectedOutlet }: Props) => 
     }, [product]);
     const addCart = () => {
         if (selectedOutlet) {
-            setActiveAlert(true);
+            //setActiveAlert(true);
             if (handleCart) handleCart(product, selectedVariant, quantity);
             setProduct(null);
             setSelectedVariant(null);
@@ -68,6 +68,11 @@ const Eleven = ({ products, isDarkMode, handleCart, selectedOutlet }: Props) => 
     const currentPrice = selectedVariant?.price ?? product?.price ?? 0;
     const currentFinalPrice = selectedVariant?.final_price ?? product?.final_price ?? 0;
     const currentDiscount = currentPrice - currentFinalPrice;
+    useEffect(() => {
+        if ((selectedVariant?.product_variant_stock ?? 0) < quantity) {
+            setQuantity(selectedVariant?.product_variant_stock ?? 0);
+        }
+    }, [selectedVariant])
     return (
         <div className='grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-6 h-full'>
             {products?.map((p, i) => {

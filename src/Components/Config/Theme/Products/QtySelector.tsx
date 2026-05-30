@@ -49,7 +49,7 @@ const QtySelector = ({ setQuantity, quantity, isDarkMode, product, selectedVaria
             {/* Tombol Plus */}
             <button
                 onClick={handleIncrease}
-                disabled={quantity >= maxStock}
+                disabled={quantity >= maxStock || (product?.has_variant && !selectedVariant)}
                 className={`p-2 rounded-xl transition-all shadow-sm 
                     ${isDarkMode
                         ? 'hover:bg-zinc-700 text-white disabled:text-zinc-600'

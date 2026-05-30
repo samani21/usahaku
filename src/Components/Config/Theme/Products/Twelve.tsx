@@ -59,7 +59,7 @@ const Twelve = ({ products, isDarkMode, handleCart, selectedOutlet }: Props) => 
 
     const addCart = () => {
         if (selectedOutlet) {
-            setActiveAlert(true);
+            //setActiveAlert(true);
             if (handleCart) handleCart(product, selectedVariant, quantity);
             setProduct(null);
             setSelectedVariant(null);
@@ -70,6 +70,13 @@ const Twelve = ({ products, isDarkMode, handleCart, selectedOutlet }: Props) => 
     const currentFinalPrice = selectedVariant?.final_price ?? product?.final_price ?? 0;
     const currentDiscount = currentPrice - currentFinalPrice;
     const discountPercent = Math.round((currentDiscount / currentPrice) * 100);
+
+    useEffect(() => {
+        if ((selectedVariant?.product_variant_stock ?? 0) < quantity) {
+            setQuantity(selectedVariant?.product_variant_stock ?? 0);
+        }
+    }, [selectedVariant])
+
     return (
         <div className='grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4  h-full'>
             {products?.map((p, i) => {
