@@ -20,7 +20,14 @@ import ModalConfirmPromo from "./ModalConfirmPromo";
 import ConfirmPromo from "./ConfirmPromo";
 import Loading from "@/Components/Component/Loading";
 import { QRCodeCanvas } from "qrcode.react";
+import { OutletsType } from "@/types/Admin/OutletType";
+import GlassCard from "@/Components/Layout/GlassCard";
+import ModalDetailQRCode from "./ModalDetailQRCode";
 
+interface datatype {
+    data: ProductsType[];
+    outlets: OutletsType[];
+}
 export default function ListProductPage() {
     const [search, setSearch] = useState("");
     const [dateRangeText, setDateRangeText] = useState("");
@@ -31,9 +38,12 @@ export default function ListProductPage() {
     const [dataUpdate, setDataUpdate] = useState<ProductsType | null>(null)
     const [deleteData, setDeleteData] = useState<ProductsType | null>(null)
     const [products, setProducts] = useState<ProductsType[]>([]);
+    const [outlets, setOutlets] = useState<OutletsType[]>([]);
+    const [selectOutlet, setSelectOutlet] = useState<string>('Semua');
     const [error, setError] = useState<string>('');
     const [openModalConfirm, setOpenModalConfirm] = useState<ProductsType | null>(null);
     const [stepsPromo, setStepsPromo] = useState<number | null>(null);
+    const [openModalQRCode, setOpenModalQRCode] = useState<ProductsType | null>(null)
     const [meta, setMeta] = useState<Meta>({
         last_page: 1,
         limit: 10,
@@ -41,7 +51,7 @@ export default function ListProductPage() {
         total: 0,
     });
     const [debouncedSearch, setDebouncedSearch] = useState('');
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+
     const [showAlert, setShowAlert] = useState<AlertType | null>(null)
     useEffect(() => {
         const handler = setTimeout(() => {
@@ -105,19 +115,20 @@ export default function ListProductPage() {
             "?" +
             Object.entries(params)
                 .map(([key, value]) => `${key}=${encodeURIComponent(value ?? "")}`)
-                .join("&")
+                .join("&") + `&outlet=${selectOutlet == 'Semua' ? "" : selectOutlet}`
         );
-    }, [parsedDate, page, debouncedSearch, itemsPerPage]);
+    }, [parsedDate, page, debouncedSearch, itemsPerPage, selectOutlet]);
 
     const fetchProducts = useCallback(async () => {
         try {
-            setLoading(true)
-            const res = await Get<{ success: boolean; data: ProductsType[]; meta: Meta }>(
+            setLoading(true);
+            const res = await Get<{ success: boolean; data: datatype; meta: Meta }>(
                 `/products${queryString}`
             );
 
             if (res?.success) {
-                setProducts(res.data);
+                setProducts(res.data?.data);
+                setOutlets(res.data?.outlets);
                 setMeta(res.meta);
                 setLoading(false)
             }
@@ -130,7 +141,7 @@ export default function ListProductPage() {
 
     useEffect(() => {
         fetchProducts();
-    }, [fetchProducts, page]);
+    }, [fetchProducts, page, selectOutlet]);
 
     // Komponen (handleFormSubmit) (Perbaikan: Kirim formData asli)
 
@@ -282,7 +293,9 @@ export default function ListProductPage() {
                 label: "qrcode",
                 width: "200",
                 render: (row) => (
-                    <QRCodeCanvas value={String(`${baseUrl}/${row?.slug_business}/outlet 1/detail-product/${row?.qrcode}`)} size={80} />
+                    <div className="" onClick={() => setOpenModalQRCode(row)}>
+                        Lihat Qr Code Produk
+                    </div>
                 ),
             },
             {
@@ -361,7 +374,7 @@ export default function ListProductPage() {
         return <ConfirmPromo productInfo={openModalConfirm} onBack={() => { setStepsPromo(1), setOpenModalConfirm(null) }} fetchProducts={fetchProducts} />
     }
     return (
-        <div>
+        <div className="space-y-4">
             <FilterComponent
                 search={search}
                 setSearch={setSearch}
@@ -373,7 +386,20 @@ export default function ListProductPage() {
                 handleReset={handleResetFilter}
                 setIsModalOpenForm={setIsModalOpen}
             />
-
+            <GlassCard className="p-4 overflow-x-auto">
+                <div className="flex items-center gap-4 overflow-x-auto text-slate-800">
+                    <div onClick={() => setSelectOutlet("Semua")} className={`${selectOutlet === 'Semua' ? 'font-semibold border-b-3 px-2 border-emerald-500' : ''} cursor-pointer`}>
+                        Semua
+                    </div>
+                    {
+                        outlets?.map((o, i) => (
+                            <div key={i} onClick={() => setSelectOutlet(o?.name)} className={`${selectOutlet === o?.name ? 'font-semibold border-b-3 px-2 border-emerald-500' : ''} cursor-pointer`}>
+                                {o?.name}
+                            </div>
+                        ))
+                    }
+                </div>
+            </GlassCard>
             <div className="mt-6">
                 <DataTable
                     data={products}
@@ -423,6 +449,9 @@ export default function ListProductPage() {
             {
                 showAlert?.isOpen &&
                 <Alert type={showAlert?.type} message={showAlert?.message} onClose={() => setShowAlert(null)} />
+            }
+            {
+                openModalQRCode && <ModalDetailQRCode onClose={() => setOpenModalQRCode(null)} product={openModalQRCode} selectOutlet={selectOutlet} outlets={outlets} />
             }
         </div>
     );
