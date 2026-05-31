@@ -293,7 +293,7 @@ export default function ListProductPage() {
                 label: "qrcode",
                 width: "200",
                 render: (row) => (
-                    <div className="" onClick={() => setOpenModalQRCode(row)}>
+                    <div className="font-semibold" onClick={() => setOpenModalQRCode(row)}>
                         Lihat Qr Code Produk
                     </div>
                 ),

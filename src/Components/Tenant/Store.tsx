@@ -164,6 +164,7 @@ export default function Store() {
     const handleCart = async (p: ProductsType | null, v: Variants | null, qty: number) => {
         // setLoading(true)
         if (!selectedOutlet) {
+            setToastMessage("Silahkan pilih outlet dulu!")
             setIsOpenModal(true);
             return
         }
@@ -214,10 +215,11 @@ export default function Store() {
                 }) ?? [];
 
                 setdataProducts(productNew);
+                triggerToast(`✓ Berhasil ditambah ke keranjang  ${p?.name} ${v ? `(${v?.name})` : ''}`)
             }
         } catch (e: any) {
             // console.error(e);
-            setToastMessage(e?.message)
+            triggerToast(e?.message)
         } finally {
             // setLoading(false)
         }

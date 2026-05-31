@@ -3,7 +3,7 @@ import Loading from '@/Components/Component/Loading'
 import { OrderType } from '@/types/Admin/Catalog/Order'
 import { Meta } from '@/types/Public'
 import { Get } from '@/utils/Get'
-import { CalendarIcon, CheckIcon, ClockIcon, PlusIcon, ScanBarcode, SearchIcon, ShoppingBagIcon, Signature, SlidersIcon, TimerOff, TruckIcon, XIcon } from 'lucide-react'
+import { CalendarIcon, CheckCheckIcon, CheckIcon, ClockIcon, PlusIcon, ScanBarcode, SearchIcon, ShoppingBagIcon, Signature, SlidersIcon, TimerOff, TruckIcon, XIcon } from 'lucide-react'
 import React, { use, useEffect, useMemo, useState } from 'react'
 import ModalPayment from './ModalPayment'
 import { Post } from '@/utils/Post'
@@ -71,7 +71,12 @@ const OrdersComponent = (props: Props) => {
         completed: {
             bg: 'bg-emerald-50 text-emerald-700 border-emerald-200/60',
             icon: <CheckIcon />,
-            label: 'Selesai'
+            label: 'Pesanan Selesai'
+        },
+        done: {
+            bg: 'bg-emerald-50 text-emerald-700 border-emerald-200/60',
+            icon: <CheckCheckIcon />,
+            label: 'Orderan Selesai'
         },
         paid: {
             bg: 'bg-emerald-50 text-emerald-700 border-emerald-200/60',
@@ -93,7 +98,7 @@ const OrdersComponent = (props: Props) => {
     const handleTriggerProcess = (order: OrderType) => {
         if (order.payment_method === 'cash') {
             // Jika pembayaran Cash, langsung ubah status menjadi processing
-            handleUpdateStatus(order, 'processing');
+            handleUpdateStatus(order, 'processing', 'paid');
         } else {
             // Jika pembayaran QRIS atau Transfer Bank, buka modal verifikasi pembayaran
             setActiveVerifyOrder(order);
@@ -153,7 +158,7 @@ const OrdersComponent = (props: Props) => {
                     </div>
 
                     <div className="bg-emerald-50/50 p-4 rounded-2xl border border-emerald-100/50 shadow-2xs">
-                        <span className="text-[11px] font-bold text-[#009662] uppercase tracking-wider block">Selesai</span>
+                        <span className="text-[11px] font-bold text-[#009662] uppercase tracking-wider block">Orderan/Pesanan Selesai</span>
                         <p className="text-2xl font-black text-[#009662] mt-1">{dataOrders?.summary?.completed}</p>
                     </div>
 
@@ -371,11 +376,11 @@ const OrdersComponent = (props: Props) => {
                                                         {order.payment_method === 'cash' ? 'Proses Pesanan' : 'Verifikasi & Proses'}
                                                     </button>
                                                     <button
-                                                        // onClick={() => handleStatusChange(order.id, 'cancelled')}
+                                                        onClick={() => handleUpdateStatus(order, 'cancelled', 'cancelled')}
                                                         className="px-2.5 py-1.5 text-rose-500 hover:bg-rose-50 border border-rose-200/60 text-xs font-bold rounded-lg transition-all"
                                                         title="Batalkan Pesanan"
                                                     >
-                                                        Batal
+                                                        Batalkan Pesanan
                                                     </button>
                                                 </>
                                             )}
@@ -406,9 +411,17 @@ const OrdersComponent = (props: Props) => {
                                                 </>
                                             )}
 
-                                            {(order.status === 'completed' || order.status === 'cancelled') && (
+                                            {(order.status === 'completed') && (
+                                                <button
+                                                    onClick={() => handleUpdateStatus(order, 'done')}
+                                                    className="flex-1 py-1.5 bg-[#009662] hover:bg-[#007d51] text-white text-xs font-bold rounded-lg transition-colors shadow-xs shadow-[#009662]/10"
+                                                >
+                                                    Selesaikan Orderan
+                                                </button>
+                                            )}
+                                            {(order.status === 'done' || order.status === 'cancelled') && (
                                                 <div className="w-full text-center py-1 text-[11px] font-bold text-slate-400 bg-slate-50 border border-slate-100 rounded-lg">
-                                                    {order.status === 'completed' ? 'Transaksi Telah Selesai' : 'Pesanan Dibatalkan'}
+                                                    {order.status === 'done' ? 'Orderan Telah Selesai' : 'Pesanan Dibatalkan'}
                                                 </div>
                                             )}
                                         </div>

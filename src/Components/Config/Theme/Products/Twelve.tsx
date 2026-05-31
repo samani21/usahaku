@@ -72,8 +72,8 @@ const Twelve = ({ products, isDarkMode, handleCart, selectedOutlet }: Props) => 
     const discountPercent = Math.round((currentDiscount / currentPrice) * 100);
 
     useEffect(() => {
-        if ((selectedVariant?.product_variant_stock ?? 0) < quantity) {
-            setQuantity(selectedVariant?.product_variant_stock ?? 0);
+        if (selectedVariant?.product_variant_stock && selectedVariant?.product_variant_stock < quantity) {
+            setQuantity(selectedVariant?.product_variant_stock);
         }
     }, [selectedVariant])
 

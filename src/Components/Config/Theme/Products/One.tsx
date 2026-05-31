@@ -58,8 +58,8 @@ const One = ({ products, isDarkMode, handleCart, selectedOutlet }: Props) => {
     };
 
     useEffect(() => {
-        if ((selectedVariant?.product_variant_stock ?? 0) < quantity) {
-            setQuantity(selectedVariant?.product_variant_stock ?? 0);
+        if (selectedVariant?.product_variant_stock && selectedVariant?.product_variant_stock < quantity) {
+            setQuantity(selectedVariant?.product_variant_stock);
         }
     }, [selectedVariant])
 

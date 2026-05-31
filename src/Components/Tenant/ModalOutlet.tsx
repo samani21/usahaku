@@ -26,7 +26,6 @@ const ModalOutlet = ({ onClose, tenant, selectedOutlet }: Props) => {
                 },
                 (error) => {
                     // Jika user tolak/error, ambil data tanpa koordinat (default)
-                    console.error("Gagal ambil lokasi:", error);
                     getOutlet();
                 }
             );
