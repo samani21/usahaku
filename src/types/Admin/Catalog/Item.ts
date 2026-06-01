@@ -8,6 +8,7 @@ export interface OrderItemType {
     price_promo: number;
     product_id: number;
     product_name: string;
+    iamge_product?: string;
     product_variant_id: number;
     qty: number;
     subtotal: number;

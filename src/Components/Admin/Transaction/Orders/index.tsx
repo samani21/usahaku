@@ -3,11 +3,14 @@ import Loading from '@/Components/Component/Loading'
 import { OrderType } from '@/types/Admin/Catalog/Order'
 import { Meta } from '@/types/Public'
 import { Get } from '@/utils/Get'
-import { CalendarIcon, CheckCheckIcon, CheckIcon, ClockIcon, PlusIcon, ScanBarcode, SearchIcon, ShoppingBagIcon, Signature, SlidersIcon, TimerOff, TruckIcon, XIcon } from 'lucide-react'
+import { AlertCircle, AlertTriangle, CalendarIcon, Check, CheckCheck, CheckCheckIcon, CheckCircle2, CheckIcon, Clock, ClockIcon, Eye, FileCheck2, Hourglass, Package, PackageCheck, Play, PlusIcon, ScanBarcode, SearchIcon, ShoppingBagIcon, Signature, SlidersIcon, TimerOff, TruckIcon, Wallet, XCircle, XIcon } from 'lucide-react'
 import React, { use, useEffect, useMemo, useState } from 'react'
 import ModalPayment from './ModalPayment'
 import { Post } from '@/utils/Post'
 import ModalScan from './ModalScan'
+import ModalAddOrder from './ModalAddOrder'
+import { OutletsType } from '@/types/Admin/OutletType'
+import ModalDetailOrder from './ModalDetailOrder'
 
 type Props = {}
 interface dataType {
@@ -22,6 +25,7 @@ interface dataType {
         cancelled: number;
     }
     data: OrderType[];
+    outlets: OutletsType[];
     meta: Meta;
 }
 const OrdersComponent = (props: Props) => {
@@ -35,6 +39,10 @@ const OrdersComponent = (props: Props) => {
     const [showPaymentModal, setShowPaymentModal] = useState(false);
     const [activeVerifyOrder, setActiveVerifyOrder] = useState<OrderType | null>(null);
     const [isOpenScan, setIsOpenScan] = useState<boolean>(false);
+    const [toasts, setToasts] = useState<{ message: string, type: string } | null>(null);
+    const [openModalAdd, setOpenModalAdd] = useState<boolean>(false);
+    const [outlets, setOutlets] = useState<OutletsType[]>([]);
+    const [qrToken, setQrToken] = useState<string | null>(null);
     useEffect(() => {
         getOrder();
     }, [])
@@ -44,6 +52,7 @@ const OrdersComponent = (props: Props) => {
             const res = await Get<{ success: Boolean, data: dataType }>(`orders?per_page=${itemsPerPage}&page=${currentPage}`);
             if (res?.success) {
                 setDataOrders(res?.data)
+                setOutlets(res?.data?.outlets)
             }
         } catch (e: any) {
 
@@ -52,49 +61,48 @@ const OrdersComponent = (props: Props) => {
         }
     }
 
-    const statusMeta: any = {
+    const statusMeta: Record<string, { bg: string; icon: React.ReactNode; label: string }> = {
         pending: {
             bg: 'bg-amber-50 text-amber-700 border-amber-200/60',
-            icon: <ClockIcon />,
+            icon: <Clock size={16} />,
             label: 'Menunggu'
         },
         unpaid: {
             bg: 'bg-indigo-50 text-indigo-700 border-indigo-200/60',
-            icon: <ClockIcon />,
-            label: 'Belum dibayar'
+            icon: <Wallet size={16} />, // Lebih cocok untuk pembayaran dibanding Clock
+            label: 'Belum Dibayar'
         },
         processing: {
             bg: 'bg-blue-50 text-blue-700 border-blue-200/60',
-            icon: <TruckIcon />,
+            icon: <Package size={16} />, // Package/Box menggambarkan proses packing/persiapan barang
             label: 'Diproses'
         },
         completed: {
             bg: 'bg-emerald-50 text-emerald-700 border-emerald-200/60',
-            icon: <CheckIcon />,
-            label: 'Pesanan Selesai'
+            icon: <CheckCircle2 size={16} />,
+            label: 'Selesai'
         },
         done: {
             bg: 'bg-emerald-50 text-emerald-700 border-emerald-200/60',
-            icon: <CheckCheckIcon />,
-            label: 'Orderan Selesai'
+            icon: <PackageCheck size={16} />, // Membedakan 'completed' dan 'done' jika alurnya berbeda (misal: Selesai diterima)
+            label: 'Pesanan Diterima'
         },
         paid: {
             bg: 'bg-emerald-50 text-emerald-700 border-emerald-200/60',
-            icon: <Signature />,
-            label: 'Dibayar'
+            icon: <FileCheck2 size={16} />, // Signature diganti ke konfirmasi dokumen/pembayaran sukses
+            label: 'Sudah Dibayar'
         },
         cancelled: {
             bg: 'bg-rose-50 text-rose-700 border-rose-200/60',
-            icon: <XIcon />,
-            label: 'Batal'
+            icon: <XCircle size={16} />,
+            label: 'Dibatalkan'
         },
         expired: {
             bg: 'bg-gray-50 text-gray-700 border-gray-200/60',
-            icon: <TimerOff />,
-            label: 'Expired'
+            icon: <Hourglass size={16} />, // Pengganti TimerOff yang lebih umum di Lucide
+            label: 'Kadaluwarsa'
         }
     };
-
     const handleTriggerProcess = (order: OrderType) => {
         if (order.payment_method === 'cash') {
             // Jika pembayaran Cash, langsung ubah status menjadi processing
@@ -127,7 +135,17 @@ const OrdersComponent = (props: Props) => {
             setLoading(false);
         }
     }
-
+    const addToast = (message: string, type: string = 'success') => {
+        const id = Date.now();
+        const toast = {
+            message: message,
+            type: type
+        }
+        setToasts(toast);
+        setTimeout(() => {
+            setToasts(null);
+        }, 3000);
+    };
     return (
         <div>
             <div className="lg:p-6 mx-auto space-y-6">
@@ -250,7 +268,7 @@ const OrdersComponent = (props: Props) => {
                                 <span>Scan</span>
                             </button>
                             <button
-                                // onClick={() => setShowAddModal(true)}
+                                onClick={() => setOpenModalAdd(true)}
                                 className="w-full inline-flex items-center justify-center px-4 py-2.5 text-sm font-bold text-white bg-[#009662] hover:bg-[#007d51] active:scale-95 rounded-xl transition-all duration-150 shadow-sm shadow-[#009662]/15"
                             >
                                 <PlusIcon />
@@ -367,61 +385,93 @@ const OrdersComponent = (props: Props) => {
 
                                         {/* Interactive Actions */}
                                         <div className="flex items-center gap-2 pt-2 border-t border-slate-100">
+                                            {/* Tombol Detail selalu muncul */}
+                                            <button
+                                                onClick={() => setQrToken(order?.qr_token)}
+                                                className="flex items-center gap-1.5 px-3 py-1.5 text-slate-600 hover:text-slate-800 hover:bg-slate-100 border border-slate-200 text-xs font-bold rounded-lg transition-all"
+                                                title="Lihat Detail Pesanan"
+                                            >
+                                                <Eye size={14} />
+                                                Detail
+                                            </button>
+
+                                            {/* STATUS: PENDING */}
                                             {order.status === 'pending' && (
                                                 <>
                                                     <button
                                                         onClick={() => handleTriggerProcess(order)}
-                                                        className="flex-1 py-1.5 bg-blue-500 hover:bg-blue-600 text-white text-xs font-bold rounded-lg transition-colors shadow-xs shadow-blue-500/10"
+                                                        className="flex-1 flex items-center justify-center gap-1.5 py-1.5 bg-blue-500 hover:bg-blue-600 text-white text-xs font-bold rounded-lg transition-colors shadow-xs shadow-blue-500/10"
                                                     >
+                                                        <Play size={14} fill="currentColor" />
                                                         {order.payment_method === 'cash' ? 'Proses Pesanan' : 'Verifikasi & Proses'}
                                                     </button>
                                                     <button
                                                         onClick={() => handleUpdateStatus(order, 'cancelled', 'cancelled')}
-                                                        className="px-2.5 py-1.5 text-rose-500 hover:bg-rose-50 border border-rose-200/60 text-xs font-bold rounded-lg transition-all"
+                                                        className="flex items-center gap-1.5 px-2.5 py-1.5 text-rose-500 hover:bg-rose-50 border border-rose-200/60 text-xs font-bold rounded-lg transition-all"
                                                         title="Batalkan Pesanan"
                                                     >
-                                                        Batalkan Pesanan
-                                                    </button>
-                                                </>
-                                            )}
-                                            {order.status === 'paid' && (
-                                                <>
-                                                    <button
-                                                        onClick={() => handleUpdateStatus(order, 'processing')}
-                                                        className="flex-1 py-1.5 bg-blue-500 hover:bg-blue-600 text-white text-xs font-bold rounded-lg transition-colors shadow-xs shadow-blue-500/10"
-                                                    >
-                                                        Proses Pesanan
-                                                    </button>
-                                                </>
-                                            )}
-                                            {order.status === 'processing' && (
-                                                <>
-                                                    <button
-                                                        onClick={() => handleUpdateStatus(order, 'completed')}
-                                                        className="flex-1 py-1.5 bg-[#009662] hover:bg-[#007d51] text-white text-xs font-bold rounded-lg transition-colors shadow-xs shadow-[#009662]/10"
-                                                    >
-                                                        Selesaikan Pesanan
-                                                    </button>
-                                                    <button
-                                                        onClick={() => handleUpdateStatus(order, order?.payment_method === 'cash' ? 'pending' : 'paid')}
-                                                        className="px-2.5 py-1.5 text-rose-500 hover:bg-rose-50 border border-rose-200/60 text-xs font-bold rounded-lg transition-all"
-                                                    >
+                                                        <XCircle size={14} />
                                                         Batal
                                                     </button>
                                                 </>
                                             )}
 
-                                            {(order.status === 'completed') && (
+                                            {/* STATUS: PAID */}
+                                            {order.status === 'paid' && (
+                                                <button
+                                                    onClick={() => handleUpdateStatus(order, 'processing')}
+                                                    className="flex-1 flex items-center justify-center gap-1.5 py-1.5 bg-blue-500 hover:bg-blue-600 text-white text-xs font-bold rounded-lg transition-colors shadow-xs shadow-blue-500/10"
+                                                >
+                                                    <Play size={14} fill="currentColor" />
+                                                    Proses Pesanan
+                                                </button>
+                                            )}
+
+                                            {/* STATUS: PROCESSING */}
+                                            {order.status === 'processing' && (
+                                                <>
+                                                    <button
+                                                        onClick={() => handleUpdateStatus(order, 'completed')}
+                                                        className="flex-1 flex items-center justify-center gap-1.5 py-1.5 bg-[#009662] hover:bg-[#007d51] text-white text-xs font-bold rounded-lg transition-colors shadow-xs shadow-[#009662]/10"
+                                                    >
+                                                        <Check size={14} strokeWidth={3} />
+                                                        Selesaikan Pesanan
+                                                    </button>
+                                                    <button
+                                                        onClick={() => handleUpdateStatus(order, order?.payment_method === 'cash' ? 'pending' : 'paid')}
+                                                        className="flex items-center gap-1.5 px-2.5 py-1.5 text-rose-500 hover:bg-rose-50 border border-rose-200/60 text-xs font-bold rounded-lg transition-all"
+                                                    >
+                                                        <XCircle size={14} />
+                                                        Batal
+                                                    </button>
+                                                </>
+                                            )}
+
+                                            {/* STATUS: COMPLETED */}
+                                            {order.status === 'completed' && (
                                                 <button
                                                     onClick={() => handleUpdateStatus(order, 'done')}
-                                                    className="flex-1 py-1.5 bg-[#009662] hover:bg-[#007d51] text-white text-xs font-bold rounded-lg transition-colors shadow-xs shadow-[#009662]/10"
+                                                    className="flex-1 flex items-center justify-center gap-1.5 py-1.5 bg-[#009662] hover:bg-[#007d51] text-white text-xs font-bold rounded-lg transition-colors shadow-xs shadow-[#009662]/10"
                                                 >
+                                                    <CheckCheck size={14} strokeWidth={2.5} />
                                                     Selesaikan Orderan
                                                 </button>
                                             )}
+
+                                            {/* STATUS: DONE / CANCELLED (READ ONLY BADGE) */}
                                             {(order.status === 'done' || order.status === 'cancelled') && (
-                                                <div className="w-full text-center py-1 text-[11px] font-bold text-slate-400 bg-slate-50 border border-slate-100 rounded-lg">
-                                                    {order.status === 'done' ? 'Orderan Telah Selesai' : 'Pesanan Dibatalkan'}
+                                                <div className="w-full flex items-center justify-center gap-1.5 py-1 text-[11px] font-bold text-slate-400 bg-slate-50 border border-slate-100 rounded-lg">
+                                                    {order.status === 'done' ? (
+                                                        <>
+                                                            <CheckCheck size={13} className="text-emerald-500" />
+                                                            Orderan Telah Selesai
+                                                        </>
+                                                    ) : (
+                                                        <>
+                                                            <AlertCircle size={13} className="text-rose-400" />
+                                                            Pesanan Dibatalkan
+                                                        </>
+                                                    )}
                                                 </div>
                                             )}
                                         </div>
@@ -491,6 +541,30 @@ const OrdersComponent = (props: Props) => {
                 isOpenScan &&
                 <ModalScan onClose={() => setIsOpenScan(false)} handleUpdateStatus={handleUpdateStatus} />
             }
+            {
+                openModalAdd && <ModalAddOrder onClose={() => setOpenModalAdd(false)} addToast={addToast} outlets={outlets} handleSubmit={(token: string) => { getOrder(), setQrToken(token), setOpenModalAdd(false) }} />
+            }
+            {
+                toasts &&
+                <div className="fixed bottom-6 right-1 sm:right-6 z-70 flex flex-col gap-2.5 max-w-sm w-full">
+                    <div
+                        className={`p-4 rounded-xl shadow-lg border text-sm font-semibold flex items-center gap-3 animate-in slide-in-from-bottom duration-300 ${toasts.type === 'error'
+                            ? 'bg-rose-50 text-rose-800 border-rose-200'
+                            : toasts.type === 'info'
+                                ? 'bg-slate-800 text-white border-slate-700'
+                                : 'bg-emerald-50 text-emerald-800 border-emerald-200'
+                            }`}
+                    >
+                        {toasts.type === 'error' ? <AlertTriangle className='text-rose-600' /> : '✓'}
+                        <p className="flex-1">{toasts.message}</p>
+                    </div>
+                </div>
+            }
+
+            {
+                qrToken && <ModalDetailOrder onClose={() => setQrToken(null)} token={qrToken} />
+            }
+
         </div>
     )
 }

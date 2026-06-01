@@ -21,5 +21,6 @@ export interface OrderType {
     status: string;
     total_price: number;
     unique_code: string;
+    slug?: string;
     items: OrderItemType[];
 }

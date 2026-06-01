@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState, useRef, useMemo } from 'react';
-import { CalendarIcon, CheckIcon, ClockIcon, ShoppingBagIcon, Signature, TimerOff, TruckIcon, XIcon } from 'lucide-react';
+import { AlertCircle, CalendarIcon, Check, CheckCircle2, CheckIcon, ClockIcon, Play, ShoppingBagIcon, Signature, TimerOff, TruckIcon, XCircle, XIcon } from 'lucide-react';
 import { Html5Qrcode, Html5QrcodeSupportedFormats } from 'html5-qrcode';
 import { Get } from '@/utils/Get';
 import { OrderType } from '@/types/Admin/Catalog/Order';
@@ -287,53 +287,72 @@ const ModalScan = ({ onClose, handleUpdateStatus }: Props) => {
 
                             {/* Interactive Actions */}
                             <div className="flex items-center gap-2 pt-2 border-t border-slate-100">
+                                {/* STATUS: PENDING */}
                                 {dataOrder.status === 'pending' && (
                                     <>
                                         <button
                                             onClick={() => handleUpdateStatus(dataOrder, 'processing', 'paid')}
-                                            className="flex-1 py-1.5 bg-blue-500 hover:bg-blue-600 text-white text-xs font-bold rounded-lg transition-colors shadow-xs shadow-blue-500/10"
+                                            className="flex-1 flex items-center justify-center gap-1.5 py-1.5 bg-blue-500 hover:bg-blue-600 text-white text-xs font-bold rounded-lg transition-colors shadow-xs shadow-blue-500/10"
                                         >
+                                            <Play size={14} fill="currentColor" />
                                             {dataOrder.payment_method === 'cash' ? 'Proses Pesanan' : 'Verifikasi & Proses'}
                                         </button>
                                         <button
-                                            // onClick={() => handleStatusChange(order.id, 'cancelled')}
-                                            className="px-2.5 py-1.5 text-rose-500 hover:bg-rose-50 border border-rose-200/60 text-xs font-bold rounded-lg transition-all"
+                                            onClick={() => handleUpdateStatus(dataOrder, 'cancelled', 'cancelled')}
+                                            className="flex items-center gap-1.5 px-2.5 py-1.5 text-rose-500 hover:bg-rose-50 border border-rose-200/60 text-xs font-bold rounded-lg transition-all"
                                             title="Batalkan Pesanan"
                                         >
-                                            Batal
-                                        </button>
-                                    </>
-                                )}
-                                {dataOrder.status === 'paid' && (
-                                    <>
-                                        <button
-                                            onClick={() => handleUpdateStatus(dataOrder, 'processing')}
-                                            className="flex-1 py-1.5 bg-blue-500 hover:bg-blue-600 text-white text-xs font-bold rounded-lg transition-colors shadow-xs shadow-blue-500/10"
-                                        >
-                                            Proses Pesanan
-                                        </button>
-                                    </>
-                                )}
-                                {dataOrder.status === 'processing' && (
-                                    <>
-                                        <button
-                                            onClick={() => handleUpdateStatus(dataOrder, 'completed')}
-                                            className="flex-1 py-1.5 bg-[#009662] hover:bg-[#007d51] text-white text-xs font-bold rounded-lg transition-colors shadow-xs shadow-[#009662]/10"
-                                        >
-                                            Selesaikan Pesanan
-                                        </button>
-                                        <button
-                                            onClick={() => handleUpdateStatus(dataOrder, dataOrder?.payment_method === 'cash' ? 'pending' : 'paid')}
-                                            className="px-2.5 py-1.5 text-rose-500 hover:bg-rose-50 border border-rose-200/60 text-xs font-bold rounded-lg transition-all"
-                                        >
+                                            <XCircle size={14} />
                                             Batal
                                         </button>
                                     </>
                                 )}
 
+                                {/* STATUS: PAID */}
+                                {dataOrder.status === 'paid' && (
+                                    <button
+                                        onClick={() => handleUpdateStatus(dataOrder, 'processing')}
+                                        className="flex-1 flex items-center justify-center gap-1.5 py-1.5 bg-blue-500 hover:bg-blue-600 text-white text-xs font-bold rounded-lg transition-colors shadow-xs shadow-blue-500/10"
+                                    >
+                                        <Play size={14} fill="currentColor" />
+                                        Proses Pesanan
+                                    </button>
+                                )}
+
+                                {/* STATUS: PROCESSING */}
+                                {dataOrder.status === 'processing' && (
+                                    <>
+                                        <button
+                                            onClick={() => handleUpdateStatus(dataOrder, 'completed')}
+                                            className="flex-1 flex items-center justify-center gap-1.5 py-1.5 bg-[#009662] hover:bg-[#007d51] text-white text-xs font-bold rounded-lg transition-colors shadow-xs shadow-[#009662]/10"
+                                        >
+                                            <Check size={14} strokeWidth={3} />
+                                            Selesaikan Pesanan
+                                        </button>
+                                        <button
+                                            onClick={() => handleUpdateStatus(dataOrder, dataOrder?.payment_method === 'cash' ? 'pending' : 'paid')}
+                                            className="flex items-center gap-1.5 px-2.5 py-1.5 text-rose-500 hover:bg-rose-50 border border-rose-200/60 text-xs font-bold rounded-lg transition-all"
+                                        >
+                                            <XCircle size={14} />
+                                            Batal
+                                        </button>
+                                    </>
+                                )}
+
+                                {/* STATUS: COMPLETED / CANCELLED (READ ONLY BADGE) */}
                                 {(dataOrder?.status === 'completed' || dataOrder?.status === 'cancelled') && (
-                                    <div className="w-full text-center py-1 text-[11px] font-bold text-slate-400 bg-slate-50 border border-slate-100 rounded-lg">
-                                        {dataOrder?.status === 'completed' ? 'Transaksi Telah Selesai' : 'Pesanan Dibatalkan'}
+                                    <div className="w-full flex items-center justify-center gap-1.5 py-1 text-[11px] font-bold text-slate-400 bg-slate-50 border border-slate-100 rounded-lg">
+                                        {dataOrder?.status === 'completed' ? (
+                                            <>
+                                                <CheckCircle2 size={13} className="text-emerald-500" />
+                                                Transaksi Telah Selesai
+                                            </>
+                                        ) : (
+                                            <>
+                                                <AlertCircle size={13} className="text-rose-400" />
+                                                Pesanan Dibatalkan
+                                            </>
+                                        )}
                                     </div>
                                 )}
                             </div>

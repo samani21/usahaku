@@ -19,15 +19,39 @@ const ModalDetailQRCode = ({ onClose, product, selectOutlet, outlets }: Props) =
     const qrValue = `${baseUrl}/${product?.slug_business}/${selectedOutletId}/detail-product/${product?.qrcode}`;
     const qrRef = useRef<HTMLDivElement>(null);
     const downloadQRCode = () => {
-        // 2. Cari elemen canvas di dalam div referensi
         const canvas = qrRef.current?.querySelector("canvas");
-        if (canvas) {
-            const url = canvas.toDataURL("image/png");
-            const link = document.createElement("a");
-            link.download = `qrcode-${product?.name || 'product'}.png`;
-            link.href = url;
-            link.click();
-        }
+
+        if (!canvas) return;
+
+        const newCanvas = document.createElement("canvas");
+        const ctx = newCanvas.getContext("2d");
+
+        if (!ctx) return;
+
+        const text = product?.name || "Product 1";
+
+        newCanvas.width = canvas.width;
+        newCanvas.height = canvas.height + 50;
+
+        // Background putih
+        ctx.fillStyle = "#fff";
+        ctx.fillRect(0, 0, newCanvas.width, newCanvas.height);
+
+        // QR Code
+        ctx.drawImage(canvas, 0, 0);
+
+        // Teks produk
+        ctx.fillStyle = "#000";
+        ctx.font = "16px Arial";
+        ctx.textAlign = "center";
+        ctx.fillText(text, newCanvas.width / 2, canvas.height + 30);
+
+        const url = newCanvas.toDataURL("image/png");
+
+        const link = document.createElement("a");
+        link.download = `qrcode-${text}.png`;
+        link.href = url;
+        link.click();
     };
     return (
         <div className="fixed inset-0 z-60 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">

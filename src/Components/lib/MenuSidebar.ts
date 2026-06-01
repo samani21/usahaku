@@ -67,6 +67,10 @@ export const menuSidebar: menuSide[] = [
                 label: 'Orderan',
                 href: '/orders'
             },
+            {
+                label: 'Pembayaran',
+                href: '/payments'
+            },
             // {
             //     label: 'Pembayaran',
             //     href: '/payment'
