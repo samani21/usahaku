@@ -110,7 +110,7 @@ export default function StorePageComponent() {
         );
 
         const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-        setIsDark(mediaQuery.matches);
+        setIsDark(false);
         const handler = (e: any) => setIsDark(e.matches);
         mediaQuery.addEventListener('change', handler);
         return () => mediaQuery.removeEventListener('change', handler);

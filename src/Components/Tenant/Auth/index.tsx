@@ -1,10 +1,18 @@
 "use client"
 import React, { useState, useEffect, useCallback } from 'react';
-import { Mail, Lock, User, Building2, ArrowRight, Eye, EyeOff, ShieldCheck, Zap, Globe, Sun, Moon, AlertTriangle, X } from 'lucide-react';
+import { Mail, Lock, User, Building2, ArrowRight, Eye, EyeOff, ShieldCheck, Zap, Globe, Sun, Moon, AlertTriangle, X, ShoppingBag, History, FileText } from 'lucide-react';
 import { Catalog } from '@/types/Admin/Catalog/Catalog';
 import { Get } from '@/utils/Get';
 import { useAuthStore } from '@/store/authStore';
-import { useRouter } from 'next/navigation';
+import { useParams, usePathname, useRouter } from 'next/navigation';
+import { CatalogHeaderType } from '@/types/Admin/Catalog/Header';
+import { BusinessType } from '@/types/Admin/BusinessType';
+import Loading from '@/Components/Component/Loading';
+import ModalOrder from './ModalOrder';
+import FormAuth from './FormAuth';
+import { OrderType } from '@/types/Admin/Catalog/Order';
+import { Post } from '@/utils/Post';
+
 const getContrastColor = (hex: string | undefined) => {
     if (!hex) return '#1e293b';
     const r = parseInt(hex.slice(1, 3), 16);
@@ -21,15 +29,23 @@ const hexToRgb = (hex: string) => {
     return `${r}, ${g}, ${b}`;
 };
 
+interface dataType {
+    header: CatalogHeaderType;
+    business: BusinessType;
+    order: OrderType[];
+}
+
+
 const AuthComponent = ({ tenant }: { tenant: string }) => {
-    const { register, loading, clearError, login } = useAuthStore();
     const [isLogin, setIsLogin] = useState(true);
     const [showPassword, setShowPassword] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [isVisible, setIsVisible] = useState(false);
+    const params = useParams();
     const route = useRouter();
+    const pathname = usePathname();
+    const [headerData, setHeaderData] = useState<CatalogHeaderType>();
     const [theme, setTheme] = useState('dark');
-    const [catalogData, setCatalogData] = useState<Catalog | null>(null);
     const [form, setForm] = useState({
         name: "",
         email: "",
@@ -39,18 +55,21 @@ const AuthComponent = ({ tenant }: { tenant: string }) => {
         confirmPassword: "",
     });
     const [error, setError] = useState<string>("");
+    const [order, setOrder] = useState<OrderType[]>([]);
+    // State Tambahan untuk Fitur Bind Orderan
+    const [showOrderModal, setShowOrderModal] = useState(false);
+    const [bindOrdersChecked, setBindOrdersChecked] = useState(true);
+    const segments = pathname.split("/").filter(Boolean);
     const handleWhatsappChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        let value = e.target.value.replace(/\D/g, ""); // hapus semua non-angka
-
-        // Jika diawali 0, hapus 0 pertama
+        let value = e.target.value.replace(/\D/g, "");
         if (value.startsWith("0")) {
             value = value.substring(1);
         }
-
         setForm({ ...form, whatsapp: value });
     };
+
     useEffect(() => {
-        fetchCatalog()
+        fetchCatalog();
         setIsVisible(true);
 
         // Deteksi tema perangkat awal
@@ -58,10 +77,8 @@ const AuthComponent = ({ tenant }: { tenant: string }) => {
         const initialTheme = mediaQuery.matches ? 'dark' : 'light';
         setTheme(initialTheme);
 
-        // Listener untuk perubahan tema perangkat secara real-time
         const handleChange = (e: any) => setTheme(e.matches ? 'dark' : 'light');
         mediaQuery.addEventListener('change', handleChange);
-
         return () => mediaQuery.removeEventListener('change', handleChange);
     }, []);
 
@@ -71,20 +88,19 @@ const AuthComponent = ({ tenant }: { tenant: string }) => {
         const contrastRgb = hexToRgb(contrast);
 
         document.documentElement.style.setProperty(`--${type}-primary-color`, color);
-        document.documentElement.style.setProperty(`--${type}-primary-color`, color);
         document.documentElement.style.setProperty(`--${type}-secondary-color`, contrast);
         document.documentElement.style.setProperty(`--${type}-primary-rgb`, rgb);
         document.documentElement.style.setProperty(`--${type}-secondary-rgb`, contrastRgb);
     }, []);
+
     const fetchCatalog = async () => {
         try {
             setIsLoading(true);
-            const res = await Get<{ success: boolean; data: Catalog }>(`/catalog/${tenant}`);
+            const res = await Get<{ success: boolean; data: dataType }>(`/customer/auth/show`);
             if (res?.success && res.data) {
-                setCatalogData(res.data);
+                setHeaderData(res?.data?.header);
                 setTheme(res.data.header?.mode);
-
-                // Update CSS variables if colors exist
+                setOrder(res.data?.order);
                 if (res.data.header?.color) updateCssVariables('header', res.data.header.color);
             }
         } catch (error) {
@@ -94,16 +110,9 @@ const AuthComponent = ({ tenant }: { tenant: string }) => {
         }
     };
 
-    // Fungsi untuk toggle tema secara manual
     const toggleTheme = () => {
         setTheme(prevTheme => prevTheme === 'dark' ? 'light' : 'dark');
     };
-
-    // const handleSubmit = (e: any) => {
-    //     e.preventDefault();
-    //     setIsLoading(true);
-    //     setTimeout(() => setIsLoading(false), 2000);
-    // };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -112,23 +121,48 @@ const AuthComponent = ({ tenant }: { tenant: string }) => {
             setError("Kata sandi tidak cocok. Silakan periksa kembali.");
             return;
         }
-        if (isLogin) {
-            const success = await login(form);
-            if (success) {
-                route?.push('/')
+
+        // Kirim payload tambahan `bind_orders: true` ke backend jika user mencentang opsi sinkronisasi
+        const payload = {
+            ...form,
+            bind_guest_orders: order?.length > 0 ? bindOrdersChecked : false,
+            device_orders_tokens: order?.map(o => o.id) // mengirimkan track id orderan lama ke API
+        };
+
+        setIsLoading(true)
+        try {
+            let url;
+            if (isLogin) {
+                url = '/customer/auth/login';
+            } else {
+                url = '/customer/auth/register';
             }
-        } else {
-            const success = await register(form);
+            const success = await Post<any, any>(url, payload);
             if (success) {
-                // setIsOtp(true)
+                const token = success?.token;
+                const device_id = success?.device_id;
+                const user = success?.user;
+                localStorage.setItem("token", token);
+                localStorage.setItem("device_id", device_id);
+                localStorage.setItem("user", JSON.stringify(user));
                 setIsLoading(true);
-                setTimeout(() => setIsLoading(false), 2000);
+                setTimeout(() => {
+                    setIsLoading(false);
+                }, 2000);
+                if (params?.tenant === segments[0]) {
+                    route?.push(`/${params?.tenant}`);
+                } else {
+                    route?.push(`/`);
+                }
             }
+        } catch (e: any) {
+            setError(e?.message)
+        } finally {
+            setIsLoading(false)
+
         }
-        setError("");
     };
 
-    // Dinamis Class based on theme
     const themeStyles = {
         bg: theme === 'dark' ? 'bg-[#050505]' : 'bg-slate-50',
         card: theme === 'dark' ? 'bg-white/[0.02] border-white/10' : 'bg-white/80 border-slate-200',
@@ -137,52 +171,72 @@ const AuthComponent = ({ tenant }: { tenant: string }) => {
         inputBg: theme === 'dark' ? 'bg-white/[0.03]' : 'bg-slate-100/50',
         inputBorder: theme === 'dark' ? 'border-white/10' : 'border-slate-200',
         socialBtn: theme === 'dark' ? 'bg-white/[0.03] hover:bg-white/[0.08]' : 'bg-slate-100 hover:bg-slate-200',
-        accent: 'bg-[var(--header-primary-color)]'
+        accent: headerData ? 'bg-[var(--header-primary-color)]' : 'bg-gray-800'
     };
+
+    if (isLoading) return <Loading />;
 
     return (
         <div className={`min-h-screen ${themeStyles.bg} flex items-center justify-center p-4 md:p-8 font-sans overflow-hidden relative transition-colors duration-700`}>
-
-            {/* Background Ornaments */}
             <div className={`absolute top-[-10%] right-[-10%] w-[300px] md:w-[500px] h-[300px] md:h-[500px] rounded-full blur-[80px] md:blur-[120px] animate-pulse transition-colors duration-700 ${theme === 'dark' ? 'bg-purple-600/20' : 'bg-purple-400/10'}`}></div>
             <div className={`absolute bottom-[-10%] left-[-10%] w-[300px] md:w-[500px] h-[300px] md:h-[500px] rounded-full blur-[80px] md:blur-[120px] animate-pulse transition-colors duration-700 ${theme === 'dark' ? 'bg-blue-600/20' : 'bg-blue-400/10'}`} style={{ animationDelay: '2s' }}></div>
-
             <div className={`max-w-5xl w-full grid md:grid-cols-2 backdrop-blur-2xl rounded-[24px] md:rounded-[32px] border ${themeStyles.card} shadow-2xl overflow-hidden transition-all duration-1000 transform ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
-
-                {/* Left Side: Branding & Info */}
-                <div className={`hidden md:flex flex-col justify-between p-8 md:p-12  ${themeStyles.accent} relative overflow-hidden`}>
-                    <div className="relative z-10">
-                        <div className="flex items-center space-x-2 mb-8 md:mb-12">
-                            <div className="p-2 bg-white/20 backdrop-blur-md rounded-lg">
-                                <img src={catalogData?.header?.logo} className='w-12 h-12' />
+                {
+                    headerData ?
+                        <div className={`hidden md:flex flex-col justify-between p-8 md:p-12 ${themeStyles.accent} relative overflow-hidden`}>
+                            <div className="relative z-10">
+                                <div className="flex items-center space-x-2 mb-8 md:mb-12">
+                                    <div className="p-2 bg-white/20 backdrop-blur-md rounded-lg">
+                                        <img src={headerData?.logo} className='w-12 h-12' alt="Logo" />
+                                    </div>
+                                    <span className="text-lg md:text-xl font-bold text-white tracking-tight">{headerData?.span_one} {headerData?.span_two}</span>
+                                </div>
+                                <h1 className="text-3xl md:text-4xl font-extrabold text-white leading-tight mb-4 md:mb-6">
+                                    <span className="text-[var(--header-secondary-color)]">Selamat Datang di {headerData?.span_one} {headerData?.span_two}</span>
+                                </h1>
+                                <p className="text-[var(--header-secondary-color)] text-sm md:text-lg opacity-80 leading-relaxed">
+                                    Masuk untuk mulai menggunakan layanan dan menikmati semua fasilitas yang tersedia.
+                                </p>
                             </div>
-                            <span className="text-lg md:text-xl font-bold text-white tracking-tight">{catalogData?.header?.span_one} {catalogData?.header?.span_two}</span>
+                            <div className="absolute top-0 right-0 w-full h-full opacity-10 pointer-events-none text-white">
+                                <svg width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="none">
+                                    <defs>
+                                        <pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse">
+                                            <path d="M 10 0 L 0 0 0 10" fill="none" stroke="currentColor" strokeWidth="0.5" />
+                                        </pattern>
+                                    </defs>
+                                    <rect width="100%" height="100%" fill="url(#grid)" />
+                                </svg>
+                            </div>
+                        </div> :
+                        <div className={`hidden md:flex flex-col justify-between p-8 md:p-12 ${themeStyles.accent} relative overflow-hidden`}>
+                            <div className="relative z-10">
+                                <div className="flex items-center space-x-2 mb-8 md:mb-12">
+                                    <div className="p-2 bg-white/20 backdrop-blur-md rounded-lg">
+                                        <img src={'/logo_usahaku.png'} className='w-12 h-12' alt="Logo" />
+                                    </div>
+                                    <span className="text-lg md:text-xl font-bold text-emerald-500 tracking-tight">UsahaKu</span>
+                                </div>
+                                <h1 className="text-3xl md:text-4xl font-extrabold text-white leading-tight mb-4 md:mb-6">
+                                    <span className="text-emerald-500">Selamat Datang di UsahaKu</span>
+                                </h1>
+                                <p className="text-white text-sm md:text-lg opacity-80 leading-relaxed italic">
+                                    Masuk untuk mulai menggunakan layanan dan menikmati semua fasilitas yang tersedia.
+                                </p>
+                            </div>
+                            <div className="absolute top-0 right-0 w-full h-full opacity-10 pointer-events-none text-white">
+                                <svg width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="none">
+                                    <defs>
+                                        <pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse">
+                                            <path d="M 10 0 L 0 0 0 10" fill="none" stroke="currentColor" strokeWidth="0.5" />
+                                        </pattern>
+                                    </defs>
+                                    <rect width="100%" height="100%" fill="url(#grid)" />
+                                </svg>
+                            </div>
                         </div>
+                }
 
-
-                        <h1 className="text-3xl md:text-4xl font-extrabold text-white leading-tight mb-4 md:mb-6">
-                            <span className="text-[var(--header-secondary-color)]">Selamat Datang di {catalogData?.header?.span_one} {catalogData?.header?.span_two}</span>
-                        </h1>
-                        <p className="text-[var(--header-secondary-color)] text-sm md:text-lg opacity-80 leading-relaxed">
-                            Masuk untuk mulai belanja dan temukan produk favorit Anda.
-                        </p>
-                    </div>
-
-
-                    {/* Grid Pattern Overlay */}
-                    <div className="absolute top-0 right-0 w-full h-full opacity-10 pointer-events-none text-white">
-                        <svg width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="none">
-                            <defs>
-                                <pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse">
-                                    <path d="M 10 0 L 0 0 0 10" fill="none" stroke="currentColor" strokeWidth="0.5" />
-                                </pattern>
-                            </defs>
-                            <rect width="100%" height="100%" fill="url(#grid)" />
-                        </svg>
-                    </div>
-                </div>
-
-                {/* Right Side: Form */}
                 <div className={`p-6 md:p-12 flex flex-col justify-center transition-colors duration-700 ${theme === 'dark' ? 'bg-black/20' : 'bg-white/40'}`}>
                     <div className="flex justify-between items-start mb-6 md:mb-8">
                         <div>
@@ -193,9 +247,8 @@ const AuthComponent = ({ tenant }: { tenant: string }) => {
                                 {isLogin ? 'Silakan masuk ke akun Anda' : 'Lengkapi data untuk membuat portal'}
                             </p>
                         </div>
-
-                        {/* Theme Toggle Button (Interactive) */}
                         <button
+                            type="button"
                             onClick={toggleTheme}
                             title={theme === 'dark' ? 'Ganti ke Light Mode' : 'Ganti ke Dark Mode'}
                             className={`p-2.5 rounded-xl border transition-all duration-300 hover:scale-110 active:scale-95 ${theme === 'dark'
@@ -206,135 +259,23 @@ const AuthComponent = ({ tenant }: { tenant: string }) => {
                             {theme === 'dark' ? <Sun size={20} className="animate-spin-slow" /> : <Moon size={20} />}
                         </button>
                     </div>
-
-                    <form onSubmit={handleSubmit} className="space-y-4 md:space-y-5">
-                        {error && (
-                            <div className="p-3 bg-red-100 border border-red-400 text-red-700 rounded-xl text-sm font-medium space-y-1 flex item-center justify-between" role="alert">
-                                <div className='flex items-center gap-4'>
-                                    <AlertTriangle className='text-red-600 w-5' />
-                                    {error}
-                                </div>
-                                <button
-                                    className="text-red-600 cursor-pointer"
-                                    onClick={() => clearError()}
-                                >
-                                    <X />
-                                </button>
-                            </div>
-                        )}
-                        {!isLogin && (
-                            <div className="grid grid-cols-1 sm:grid-cols-1 gap-4">
-                                <div className="space-y-1 md:space-y-2">
-                                    <label className={`text-[10px] md:text-xs font-semibold ${themeStyles.textSub} uppercase tracking-wider ml-1`}>Nama Lengkap</label>
-                                    <input
-                                        type="text"
-                                        className={`w-full ${themeStyles.inputBg} border ${themeStyles.inputBorder} rounded-xl md:rounded-2xl py-2.5 md:py-3 px-4 ${themeStyles.textMain} outline-none focus:border-[var(--header-primary-color)] transition-all text-sm`}
-                                        placeholder="Contoh: Budi"
-                                        onChange={(e) => setForm({ ...form, name: e.target.value })}
-                                    />
-                                </div>
-                                <div className="space-y-1 md:space-y-2">
-                                    <label className={`text-[10px] md:text-xs font-semibold ${themeStyles.textSub} uppercase tracking-wider ml-1`}>Bisnis</label>
-                                    <div className={`flex items-center w-full ${themeStyles.inputBg} border ${themeStyles.inputBorder} rounded-xl md:rounded-2xl  px-4 ${themeStyles.textMain} outline-none focus:border-[var(--header-primary-color)] transition-all text-sm`}>
-                                        <span className="pl-4 pr-2 text-gray-500">+62</span>
-                                        <input
-                                            type="text"
-                                            value={form.whatsapp}
-                                            onChange={handleWhatsappChange}
-                                            className={`w-full px-2 py-3 rounded-r-xl outline-none`}
-                                            placeholder="81234567890"
-
-                                        />
-                                    </div>
-
-                                </div>
-                            </div>
-                        )}
-
-                        <div className="space-y-1 md:space-y-2">
-                            <label className={`text-[10px] md:text-xs font-semibold ${themeStyles.textSub} uppercase tracking-wider ml-1`}>Email Perusahaan</label>
-                            <div className="relative group">
-                                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 md:w-5 md:h-5 text-slate-500 group-focus-within:text-[var(--header-primary-color)] transition-colors" />
-                                <input
-                                    type="email"
-                                    className={`w-full ${themeStyles.inputBg} border ${themeStyles.inputBorder} rounded-xl md:rounded-2xl py-2.5 md:py-3 pl-10 md:pl-12 pr-4 ${themeStyles.textMain} outline-none focus:border-[var(--header-primary-color)] transition-all text-sm`}
-                                    placeholder="example@mail.com"
-                                    onChange={(e) => setForm({ ...form, email: e.target.value })}
-                                />
-                            </div>
-                        </div>
-
-                        <div className="space-y-1 md:space-y-2">
-                            <label className={`text-[10px] md:text-xs font-semibold ${themeStyles.textSub} uppercase tracking-wider ml-1`}>Kata Sandi</label>
-                            <div className="relative group">
-                                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 md:w-5 md:h-5 text-slate-500 group-focus-within:text-[var(--header-primary-color)] transition-colors" />
-                                <input
-                                    type={showPassword ? "text" : "password"}
-                                    className={`w-full ${themeStyles.inputBg} border ${themeStyles.inputBorder} rounded-xl md:rounded-2xl py-2.5 md:py-3 pl-10 md:pl-12 pr-12 ${themeStyles.textMain} outline-none focus:border-[var(--header-primary-color)] transition-all text-sm`}
-                                    placeholder="••••••••"
-                                    onChange={(e) => setForm({ ...form, password: e.target.value })}
-                                />
-                                <button
-                                    type="button"
-                                    onClick={() => setShowPassword(!showPassword)}
-                                    className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-[var(--header-primary-color)] transition-colors"
-                                >
-                                    {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-                                </button>
-                            </div>
-                        </div>
-
-                        {
-                            !isLogin && (
-                                <div className="space-y-1 md:space-y-2">
-                                    <label className={`text-[10px] md:text-xs font-semibold ${themeStyles.textSub} uppercase tracking-wider ml-1`}>Kata Sandi</label>
-                                    <div className="relative group">
-                                        <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 md:w-5 md:h-5 text-slate-500 group-focus-within:text-[var(--header-primary-color)] transition-colors" />
-                                        <input
-                                            type={showPassword ? "text" : "password"}
-                                            className={`w-full ${themeStyles.inputBg} border ${themeStyles.inputBorder} rounded-xl md:rounded-2xl py-2.5 md:py-3 pl-10 md:pl-12 pr-12 ${themeStyles.textMain} outline-none focus:border-[var(--header-primary-color)] transition-all text-sm`}
-                                            placeholder="••••••••"
-                                            onChange={(e) => setForm({ ...form, confirmPassword: e.target.value })}
-                                        />
-                                        <button
-                                            type="button"
-                                            onClick={() => setShowPassword(!showPassword)}
-                                            className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-[var(--header-primary-color)] transition-colors"
-                                        >
-                                            {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-                                        </button>
-                                    </div>
-                                </div>
-                            )
-                        }
-
-                        {isLogin && (
-                            <div className="flex justify-end">
-                                <button type="button" className="text-[10px] md:text-xs font-bold text-[var(--header-primary-color)] transition-colors">
-                                    Lupa Password?
-                                </button>
-                            </div>
-                        )}
-
-                        <button
-                            type="submit"
-                            disabled={isLoading}
-                            className={`w-full relative group overflow-hidden ${theme === 'dark' ? 'bg-white text-black' : 'bg-slate-900 text-white'} font-bold py-3 md:py-4 rounded-xl md:rounded-2xl transition-all hover:scale-[1.01] active:scale-[0.98] disabled:opacity-50 mt-2`}
-                        >
-                            <div className="absolute inset-0 bg-[var(--header-primary-color)] opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                            <span className="relative z-10 group-hover:text-white transition-colors flex items-center justify-center gap-2 uppercase tracking-widest text-[11px] md:text-sm">
-                                {isLoading ? (
-                                    <div className={`w-4 h-4 md:w-5 md:h-5 border-2 ${theme === 'dark' ? 'border-black/20 border-t-black' : 'border-white/20 border-t-white'} rounded-full animate-spin`}></div>
-                                ) : (
-                                    <>
-                                        {isLogin ? 'Masuk Sekarang' : 'Daftar Akun'}
-                                        <ArrowRight size={16} className="md:w-[18px] md:h-[18px]" />
-                                    </>
-                                )}
-                            </span>
-                        </button>
-                    </form>
-
+                    <FormAuth
+                        handleSubmit={(e) => handleSubmit(e)}
+                        error={error}
+                        clearError={() => setError('')}
+                        isLogin={isLogin}
+                        themeStyles={themeStyles}
+                        setForm={setForm}
+                        form={form}
+                        handleWhatsappChange={(e) => handleWhatsappChange(e)}
+                        showPassword={showPassword}
+                        setShowPassword={setShowPassword}
+                        isLoading={isLoading}
+                        theme={theme}
+                        order={order}
+                        setShowOrderModal={setShowOrderModal}
+                        bindOrdersChecked={bindOrdersChecked}
+                        setBindOrdersChecked={setBindOrdersChecked} />
                     <div className="mt-6 md:mt-10 text-center">
                         <p className={`${themeStyles.textSub} text-xs md:text-sm`}>
                             {isLogin ? "Belum punya akses tenant?" : "Sudah memiliki akun?"}{' '}
@@ -346,11 +287,14 @@ const AuthComponent = ({ tenant }: { tenant: string }) => {
                             </button>
                         </p>
                     </div>
-
-
                 </div>
             </div>
 
+            {/* MODAL BARU: Detail Riwayat Orderan Guest (Glassmorphism Premium) */}
+            {/* MODAL: Detail Riwayat Orderan Guest (Glassmorphic Netral) */}
+            {showOrderModal && (
+                <ModalOrder onClose={() => setShowOrderModal(false)} theme={theme} order={order} themeStyles={themeStyles} />
+            )}
             {/* Footer System Info */}
             <div className="fixed bottom-4 md:bottom-6 left-0 right-0 md:left-auto md:right-6 flex justify-center md:justify-end px-4">
                 <button
@@ -359,20 +303,33 @@ const AuthComponent = ({ tenant }: { tenant: string }) => {
                 >
                     <div className={`w-1.5 h-1.5 md:w-2 md:h-2 rounded-full animate-pulse ${theme === 'dark' ? 'bg-green-500' : 'bg-blue-600'}`}></div>
                     <span className={`text-[9px] md:text-[10px] ${themeStyles.textSub} font-mono tracking-widest uppercase`}>
-                        {theme.toUpperCase()} MODE ACTIVE
+                        {theme?.toUpperCase()} MODE ACTIVE
                     </span>
                 </button>
             </div>
-
             <style>{`
-        @keyframes spin-slow {
-          from { transform: rotate(0deg); }
-          to { transform: rotate(360deg); }
-        }
-        .animate-spin-slow {
-          animation: spin-slow 8s linear infinite;
-        }
-      `}</style>
+                @keyframes spin-slow {
+                    from { transform: rotate(0deg); }
+                    to { transform: rotate(360deg); }
+                }
+                .animate-spin-slow {
+                    animation: spin-slow 8s linear infinite;
+                }
+                @keyframes fadeIn {
+                    from { opacity: 0; transform: scale(0.95); }
+                    to { opacity: 1; transform: scale(1); }
+                }
+                .animate-fadeIn {
+                    animation: fadeIn 0.2s ease-out forwards;
+                }
+                .custom-scrollbar::-webkit-scrollbar {
+                    width: 4px;
+                }
+                .custom-scrollbar::-webkit-scrollbar-thumb {
+                    background: rgba(255,255,255,0.1);
+                    border-radius: 10px;
+                }
+            `}</style>
         </div>
     );
 };

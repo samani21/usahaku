@@ -30,9 +30,9 @@ const Header = ({ searchQuery, setSearchQuery, isDark, toggleTheme, onOpenMenu }
             </div>
 
             <div className="flex items-center gap-2">
-                <button onClick={toggleTheme} className={`p-2.5 rounded-xl transition-all ${isDark ? 'bg-zinc-900 text-yellow-400' : 'bg-gray-100 text-gray-500'}`}>
+                {/* <button onClick={toggleTheme} className={`p-2.5 rounded-xl transition-all ${isDark ? 'bg-zinc-900 text-yellow-400' : 'bg-gray-100 text-gray-500'}`}>
                     {isDark ? <Sun size={20} /> : <Moon size={20} />}
-                </button>
+                </button> */}
                 <div className={`flex items-center gap-2 p-1 rounded-xl transition-all cursor-pointer ${isDark ? 'bg-zinc-900' : 'bg-gray-100'}`}>
                     <div className="w-8 h-8 rounded-lg bg-emerald-500 flex items-center justify-center text-white font-bold text-xs">A</div>
                 </div>

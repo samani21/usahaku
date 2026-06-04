@@ -125,12 +125,12 @@ const DailyUpdatePage = ({ isDark }: Props) => {
 
             {/* Postingan Feed */}
             <div className="px-4">
-                <div className="flex items-center justify-between mb-6">
+                {/* <div className="flex items-center justify-between mb-6">
                     <h2 className={`text-xl font-black ${isDark ? 'text-white' : 'text-zinc-900'}`}>Update <span className="text-emerald-500">Premium</span></h2>
                     <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-zinc-400">
                         Terbaru <Clock size={12} />
                     </div>
-                </div>
+                </div> */}
                 {PREMIUM_POSTS.map(post => <PostCard key={post.id} post={post} isDark={isDark} />)}
 
                 {/* No more posts indicator */}

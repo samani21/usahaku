@@ -92,11 +92,11 @@ const CreateOrUpdateProductStock = ({ handleFormSubmit, data, loading, setLoadin
         try {
             const res = await Get<{ success: Boolean, data: any }>('products?limit=10000');
             if (res?.success) {
-                const productStock = res?.data?.map((item: any) => ({
+                const productStock = res?.data?.data?.map((item: any) => ({
                     label: item.name,   // sesuaikan dengan field API
                     value: item.id,
                 })) ?? [];
-                setProducts(res?.data);
+                setProducts(res?.data?.data);
                 setProductOptions(productStock);
             }
         } catch (e) {

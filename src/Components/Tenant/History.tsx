@@ -1,5 +1,5 @@
 "use client"
-import { Calendar, ChevronLeft, Receipt, RefreshCw, Search, Sparkles, Store } from 'lucide-react';
+import { AlertCircle, Calendar, CheckCircle2, ChevronLeft, Clock, Package, PackageCheck, Receipt, RefreshCw, Search, ShieldAlert, Sparkles, Store, XCircle } from 'lucide-react';
 import React, { useEffect, useMemo, useState } from 'react'
 import GlassCard from '../Layout/GlassCard';
 import { usePathname } from 'next/navigation';
@@ -51,26 +51,64 @@ function HistoryComponent({ }: Props) {
     const [loading, setLoading] = useState<boolean>(false);
     const [history, setHistory] = useState<OrderType[]>([]);
     const [amount, setAmount] = useState<number>(0);
-    const badgeStatus = (status: string) => {
+    const getBadgeMeta = (status: string) => {
         switch (status) {
             case 'paid':
-                return "bg-emerald-50 text-emerald-700 border border-emerald-100";
+                return {
+                    className: "bg-emerald-50 text-emerald-700 border border-emerald-100",
+                    icon: <CheckCircle2 size={10} />,
+                    label: "Sudah Dibayar"
+                };
             case 'pending_verification':
-                return "bg-indigo-50 text-indigo-700 border border-indigo-100";
+                return {
+                    className: "bg-indigo-50 text-indigo-700 border border-indigo-100",
+                    icon: <ShieldAlert size={10} />,
+                    label: "Verifikasi"
+                };
             case 'unpaid':
-                return "bg-rose-50 text-rose-700 border border-rose-100";
+                return {
+                    className: "bg-rose-50 text-rose-700 border border-rose-100",
+                    icon: <XCircle size={10} />,
+                    label: "Belum Dibayar"
+                };
             case 'pending':
-                return "bg-yellow-50 text-yellow-700 border border-yellow-100";
+                return {
+                    className: "bg-amber-50 text-amber-700 border border-amber-200/60", // Disamakan dengan kuning-amber sebelumnya
+                    icon: <Clock size={10} />,
+                    label: "Menunggu"
+                };
             case 'processing':
-                return "bg-blue-50 text-blue-700 border border-blue-100";
+                return {
+                    className: "bg-blue-50 text-blue-700 border border-blue-100",
+                    icon: <Package size={10} />,
+                    label: "Diproses"
+                };
             case 'completed':
-                return "bg-emerald-50 text-emerald-700 border border-emerald-100";
+                return {
+                    className: "bg-emerald-50 text-emerald-700 border border-emerald-100",
+                    icon: <CheckCircle2 size={10} />,
+                    label: "Selesai"
+                };
+            case 'done': // Penambahan status DONE sesuai request
+                return {
+                    className: "bg-emerald-50 text-emerald-700 border border-emerald-100",
+                    icon: <PackageCheck size={10} />,
+                    label: "Pesanan Diterima"
+                };
             case 'cancelled':
-                return "bg-red-50 text-red-700 border border-red-100";
+                return {
+                    className: "bg-red-50 text-red-700 border border-red-100",
+                    icon: <XCircle size={10} />,
+                    label: "Dibatalkan"
+                };
             default:
-                return "bg-gray-50 text-gray-700 border border-gray-100";
+                return {
+                    className: "bg-gray-50 text-gray-700 border border-gray-100",
+                    icon: <AlertCircle size={10} />,
+                    label: status
+                };
         }
-    }
+    };
     useEffect(() => {
         const path = window.location.pathname;
         let tenant: string | null = null;
@@ -206,6 +244,10 @@ function HistoryComponent({ }: Props) {
                                     hour: "2-digit",
                                     minute: "2-digit",
                                 });
+                                // Tentukan status aktifnya dulu
+                                const activeStatus = tx?.payment_status === 'pending_verification' ? tx?.payment_status : tx?.status;
+                                // Ambil metadata badge berdasarkan status aktif
+                                const badge = getBadgeMeta(activeStatus);
                                 return (
                                     <div
                                         key={tx.id}
@@ -222,10 +264,14 @@ function HistoryComponent({ }: Props) {
                                             </div>
 
                                             <div className="flex gap-1.5 items-center">
-                                                <span className={`px-2.5 py-1 rounded-full text-[9px] font-bold ${badgeStatus(tx?.payment_status === 'pending_verification' ? tx?.payment_status : tx?.status)}`}>
-                                                    {tx?.payment_status === 'pending_verification' ? "pending verification" : tx?.status}
+                                                {/* Status Badge Utama */}
+                                                <span className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-[9px] font-bold ${badge.className}`}>
+                                                    {badge.icon}
+                                                    {badge.label}
                                                 </span>
-                                                <span className="bg-zinc-100 text-zinc-600 border border-zinc-200/50 px-2 py-1 rounded-full text-[9px] font-bold">
+
+                                                {/* Metode Pembayaran Badge */}
+                                                <span className="bg-zinc-100 text-zinc-600 border border-zinc-200/50 px-2 py-1 rounded-full text-[9px] font-bold capitalize">
                                                     {tx.payment_method}
                                                 </span>
                                             </div>
