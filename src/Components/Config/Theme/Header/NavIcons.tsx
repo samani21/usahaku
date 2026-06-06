@@ -1,5 +1,5 @@
 "use client"
-import ModalScanProduct from '@/Components/Tenant/ModalScanProduct';
+import ModalScanProduct from '@/Components/Tenant/Components/ModalScanProduct';
 import { History, Moon, ScanBarcode, Sun, Menu, X } from 'lucide-react'; // Menambahkan Menu dan X
 import Link from 'next/link';
 import { useParams, usePathname } from 'next/navigation';

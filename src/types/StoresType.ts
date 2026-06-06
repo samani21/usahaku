@@ -13,6 +13,7 @@ export interface StoresType {
         slug: string,
         start_time: string,
         verified_status: number,
+        id?: number,
     },
     day_close: string,
     day_open: string,

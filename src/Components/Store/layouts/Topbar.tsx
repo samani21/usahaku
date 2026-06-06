@@ -1,37 +1,33 @@
-"use client"
-import Home from '@/app/page';
-import { Bell, Compass, Map, Search, ShoppingBag, User, Video } from 'lucide-react';
-import React, { Dispatch, SetStateAction, useState } from 'react'
+'use client'
+import { Bell, Compass, Home, Map, Search, User, Video } from 'lucide-react';
+import React, { Dispatch, SetStateAction, useState } from 'react';
 
-type Props = {
+type TopbarItemProps = {
     PRIMARY_COLOR: string;
     searchTerm: string;
     setSearchTerm: Dispatch<SetStateAction<string>>;
     activeNav: string;
     setActiveNav: Dispatch<SetStateAction<string>>;
     setActiveCategory: Dispatch<SetStateAction<string>>;
-    setIsCartOpen: Dispatch<SetStateAction<boolean>>;
-    getCartCount: number
-}
+};
 
-const Header = ({ PRIMARY_COLOR, searchTerm, setSearchTerm, activeNav, setActiveNav, setActiveCategory, setIsCartOpen, getCartCount,
-}: Props) => {
+export const TopbarItem = ({ PRIMARY_COLOR, searchTerm, setSearchTerm, activeNav, setActiveNav, setActiveCategory }: TopbarItemProps) => {
+    // Notifications simulation
     const [notifications, setNotifications] = useState([
         { id: 1, text: 'Diskon 15% dari Kopi Senja tinggal hari ini!', time: '10 menit yang lalu', unread: true },
         { id: 2, text: 'Batik Kencana membalas chat Anda: "Siap kak, ukuran L..."', time: '1 jam yang lalu', unread: true },
         { id: 3, text: 'Pesanan Nastar Keju Anda telah selesai dikemas', time: '4 jam yang lalu', unread: false }
     ]);
     const [showNotificationMenu, setShowNotificationMenu] = useState(false);
-    const [savedItems, setSavedItems] = useState({ 101: false, 102: false });
+
     return (
         <header className="fixed top-0 inset-x-0 h-16 bg-white/95 backdrop-blur-md border-b border-zinc-200/80 z-45 shadow-xs transition-all">
             <div className="max-w-7xl mx-auto h-full px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-4">
 
                 {/* Brand Logo */}
                 <div className="flex items-center gap-3 shrink-0">
-                    <div className="w-10 h-10 bg-emerald-500 rounded-2xl flex items-center justify-center text-white shadow-md shadow-emerald-500/20 font-black text-lg">
-                        U
-                    </div>
+
+                    <img src={'/logo_usahaku.png'} className='"w-10 h-10 bg-zinc-100 rounded-2xl flex items-center justify-center text-white shadow-md shadow-emerald-500/20 font-black text-lg' />
                     <div className="hidden sm:block">
                         <h1 className="text-xl font-extrabold italic leading-none tracking-tight" style={{ color: PRIMARY_COLOR }}>
                             UsahaKu.
@@ -93,17 +89,17 @@ const Header = ({ PRIMARY_COLOR, searchTerm, setSearchTerm, activeNav, setActive
 
                 {/* USER ACTIONS */}
                 <div className="flex items-center gap-2 sm:gap-3 shrink-0">
-                    <button
+                    {/* <button
                         onClick={() => setIsCartOpen(true)}
                         className="p-2.5 rounded-xl border border-zinc-200 hover:border-emerald-200 hover:bg-emerald-50/50 transition relative text-zinc-600 hover:text-emerald-600"
                     >
                         <ShoppingBag size={18} />
-                        {getCartCount > 0 && (
+                        {getCartCount() > 0 && (
                             <span className="absolute -top-1 -right-1 w-5 h-5 bg-emerald-500 text-white text-[10px] font-extrabold rounded-full flex items-center justify-center animate-bounce">
-                                {getCartCount}
+                                {getCartCount()}
                             </span>
                         )}
-                    </button>
+                    </button> */}
 
                     <div className="relative">
                         <button
@@ -154,7 +150,5 @@ const Header = ({ PRIMARY_COLOR, searchTerm, setSearchTerm, activeNav, setActive
 
             </div>
         </header>
-    )
-}
-
-export default Header
+    );
+};

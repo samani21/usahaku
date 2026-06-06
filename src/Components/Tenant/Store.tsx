@@ -12,9 +12,10 @@ import { ProductsType, Variants } from '@/types/Admin/ProductsType';
 import { v4 as uuidv4 } from "uuid";
 import { Post } from '@/utils/Post';
 import { useParams, useRouter } from 'next/navigation';
-import { ChevronDown, MapPin, Store as IconStore, ChevronRight, Clock, CheckCircle2, AlertCircle, Phone, Navigation, X } from 'lucide-react';
-import ModalOutlet from './ModalOutlet';
+import { ChevronDown, MapPin, Store as IconStore, ChevronRight, Clock, CheckCircle2, AlertCircle, Phone, Navigation, X, ChevronLeft, Sun, History, Scan, Moon, ScanBarcode } from 'lucide-react';
+import ModalOutlet from './Components/ModalOutlet';
 import { OutletsType } from '@/types/Admin/OutletType';
+import ModalScanProduct from './Components/ModalScanProduct';
 
 
 interface Cart {
@@ -46,6 +47,7 @@ const hexToRgb = (hex: string) => {
 
 export default function Store() {
     const { outlet } = useParams();
+    const params = useParams();
     const outletName = typeof outlet === 'string'
         ? decodeURIComponent(outlet)
         : '';
@@ -73,6 +75,9 @@ export default function Store() {
     const [dataProduct, setdataProducts] = useState<ProductsType[]>([]);
     const [tenant, setTenant] = useState<string>('');
     const [toastMessage, setToastMessage] = useState<string | null>(null);
+    const [isOpenScan, setIsOpenScan] = useState<boolean>(false);
+    // State untuk Sidebar Mobile
+    const [isOpenSidebar, setIsOpenSidebar] = useState<boolean>(false);
     useEffect(() => {
         const path = window.location.pathname;
         let tenant: string | null = null;
@@ -237,19 +242,85 @@ export default function Store() {
         <div className={`flex flex-col overflow-hidden  items-center justify-center ${isDarkTheme ? 'bg-slate-950 text-white' : 'bg-slate-50 text-slate-900'}`}>
             <div className='max-w-7xl  min-h-screen w-full space-y-6 relative'>
                 <div className='fixed z-40  w-full max-w-7xl'>
-                    {header && (
-                        <HeaderConfig
-                            layout={header.layout_header}
-                            themeMode={isDarkTheme || header?.mode == 'dark' ? "dark" : "light"}
-                            logoImage={header.logo}
-                            frameType={header.type_frame}
-                            frameTheme={header.color_frame}
-                            toggleTheme={() => setIsDarkTheme(!isDarkTheme)}
-                            spanOne={header.span_one}
-                            spanTwo={header.span_two}
-                            displayMode={header.mode}
-                        />
-                    )}
+                    {params?.tenant === tenant ?
+                        <header className={`sticky top-0 z-50 w-full ${isDarkTheme ? "bg-slate-900/90" : "bg-white/90 "} backdrop-blur-md border-b ${isDarkTheme ? "border-slate-800/80" : "border-slate-100/80"} px-4 sm:px-6 h-16 flex items-center justify-between transition-colors duration-300`}>
+
+                            {/* SISI KIRI: Tombol Kembali */}
+                            <div className="flex flex-1 items-center justify-start">
+                                <button
+                                    onClick={() => window.location.href = '/store'}
+                                    className={`flex items-center justify-center w-9 h-9 rounded-xl border ${isDarkTheme ? "border-slate-800 bg-slate-800/40 hover:bg-slate-800" : "border-slate-100 bg-slate-50/50 hover:bg-slate-100"}  transition-all duration-200 active:scale-95`}
+                                    aria-label="Kembali"
+                                >
+                                    <ChevronLeft className="w-5 h-5 stroke-[2.5]" />
+                                </button>
+                            </div>
+
+                            {/* SISI TENGAH: Identitas Bisnis */}
+                            <div className="flex flex-auto items-center justify-center gap-2.5 max-w-xs sm:max-w-md">
+                                <div className={`relative flex items-center justify-center w-12 h-12 rounded-full border p-0.5 shadow-sm overflow-hidden shrink-0 ${isDarkTheme ? "bg-slate-800 border-slate-700 " : "bg-slate-50 border-slate-100"}`}>
+                                    <img
+                                        src={header?.logo ?? '/logo.png'}// Sesuaikan path logo usaha Anda
+                                        alt="Logo"
+                                        className="w-full h-full object-contain rounded-full"
+                                    />
+                                </div>
+                                <h1
+                                    className="font-bold text-base tracking-tight truncate"
+                                >
+                                    {header?.span_one} {header?.span_two}
+                                </h1>
+                            </div>
+
+                            {/* SISI KANAN: Panel Menu Fitur */}
+                            <div className="flex flex-1 items-center justify-end gap-1.5">
+                                <div className={`flex items-center gap-1 p-1 rounded-2xl border ${isDarkTheme ? "bg-slate-800/80 border-slate-700/50" : "bg-slate-50/80 border-slate-100/50"}`}>
+                                    {
+                                        header?.mode === 'auto' &&
+                                        <button
+                                            className={`p-2 rounded-xl transition-all active:scale-95 group ${isDarkTheme ? "hover:bg-slate-700 hover:shadow-none" : "hover:shadow-sm hover:bg-white"}`}
+                                            title="Ubah Tema"
+                                            onClick={() => setIsDarkTheme(!isDarkTheme)}
+                                        >
+                                            <Sun className={`w-4.5 h-4.5 ${isDarkTheme ? "hidden" : "block"} group-hover:rotate-45 transition-transform`} />
+                                            <Moon className={`w-4.5 h-4.5 ${isDarkTheme ? "block" : "hidden"}`} />
+                                        </button>
+                                    }
+                                    <button
+                                        onClick={() => window.location.href = `/${tenant}/history`}
+                                        className={`p-2  rounded-xl transition-all active:scale-95 ${isDarkTheme ? "hover:bg-slate-700 hover:shadow-none" : "hover:bg-white hover:shadow-sm"}`}
+                                        title="Riwayat"
+                                    >
+                                        <History className="w-4.5 h-4.5" />
+                                    </button>
+                                    <button
+                                        onClick={() => {
+                                            setIsOpenScan(true);
+                                            setIsOpenSidebar(false); // Tutup sidebar saat modal scan dibuka
+                                        }}
+                                        className={`p-2 dark: rounded-xl transition-all active:scale-95 ${isDarkTheme ? "hover:bg-slate-700 hover:shadow-none" : "hover:bg-white hover:shadow-sm"}`}
+                                        title="Scan QR"
+                                    >
+                                        <ScanBarcode className="w-4.5 h-4.5" />
+                                    </button>
+
+                                </div>
+                            </div>
+                        </header> :
+                        header && (
+                            <HeaderConfig
+                                layout={header.layout_header}
+                                themeMode={isDarkTheme || header?.mode == 'dark' ? "dark" : "light"}
+                                logoImage={header.logo}
+                                frameType={header.type_frame}
+                                frameTheme={header.color_frame}
+                                toggleTheme={() => setIsDarkTheme(!isDarkTheme)}
+                                spanOne={header.span_one}
+                                spanTwo={header.span_two}
+                                displayMode={header.mode}
+                            />
+                        )
+                    }
                 </div>
                 <div className={`mt-8 space-y-6 ${header?.layout_header === 3 ? "pt-26" : 'pt-16'} pb-18 px-2 `}>
                     <div className='flex items-center justify-center'>
@@ -450,6 +521,7 @@ export default function Store() {
                     </button>
                 </div>
             )}
+            {isOpenScan && <ModalScanProduct onClose={() => setIsOpenScan(false)} />}
         </div>
     );
 }

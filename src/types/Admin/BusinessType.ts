@@ -9,6 +9,7 @@ export interface BusinessType {
     name: string,
     plan: string,
     slug: string,
+    id?: number,
     start_time: string,
     verified_status: number,
     outlet: OutletsType[]

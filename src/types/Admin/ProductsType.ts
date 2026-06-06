@@ -98,6 +98,7 @@ export interface ProductsType {
     is_active: boolean
     price: number,
     stock?: number,
+    distance?: number,
     variants: Variants[]
     discount_price?: number,
     percent_discount?: number,

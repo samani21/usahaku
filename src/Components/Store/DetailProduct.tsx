@@ -13,16 +13,18 @@ import {
     Info,
     Calendar,
     AlertCircle,
-    BellRing
+    BellRing,
+    CheckCircle2
 } from 'lucide-react';
 import { Get } from '@/utils/Get';
-import { useParams } from 'next/navigation';
-import ExpendDescription from './Components/ExpendDescription';
+import { useParams, useRouter } from 'next/navigation';
 import { ProductsType, Variants } from '@/types/Admin/ProductsType';
-import VariantPicker from './Components/VariantPicker';
-import QtySelector from './Components/QtySelector';
-import { OutletsType } from '@/types/Admin/OutletType';
 import { Post } from '@/utils/Post';
+import ExpendDescription from './components/ExpendDescription';
+import VariantPicker from './components/VariantPicker';
+import QtySelector from './components/QtySelector';
+import { UserLocationType } from './StoresType';
+import { StoresType } from '@/types/StoresType';
 
 
 // ==========================================
@@ -46,21 +48,25 @@ const hexToRgb = (hex: string) => {
     return `${r}, ${g}, ${b}`;
 };
 
-// ==========================================
-// MAIN APP COMPONENT
-// ==========================================
-export default function App() {
+interface OutletsType extends StoresType {
+    product_stock?: number;
+    is_currently_open: boolean;
+    variants: Variants[];
+}
+
+export default function DetailProduct() {
     const [retryEffect, setRetreyEffect] = useState(false);
     const [loading, setLoading] = useState(false);
     const params = useParams();
+    const router = useRouter();
     // Menggunakan data mock dengan struktur persis seperti data database milikmu
     const [product, setProduct] = useState<ProductsType>();
-    const [outlet, setOutlet] = useState<OutletsType>();
+    const [selectedoutlet, setSelectedOutlet] = useState<OutletsType>();
+    const [outlets, setOutlets] = useState<OutletsType[]>();
 
     const [quantity, setQuantity] = useState(1);
     const [selectedVariant, setSelectedVariant] = useState<Variants | null>(null);
     const [toast, setToast] = useState<string | null>(null);
-    const [isOpenScan, setIsOpenScan] = useState(false);
     const [isNotified, setIsNotified] = useState(false); // Untuk fitur "Ingatkan Saya" saat stok habis
 
     const updateCssVariables = useCallback((type: string, color: string) => {
@@ -73,10 +79,87 @@ export default function App() {
         document.documentElement.style.setProperty(`--${type}-primary-rgb`, rgb);
         document.documentElement.style.setProperty(`--${type}-secondary-rgb`, contrastRgb);
     }, []);
+    const [userLocation, setUserLocation] = useState<UserLocationType | null>(null);
+    const [address, setAddress] = useState<string>("Mencari lokasi GPS...");
+    const [addressLoading, setAddressLoading] = useState<boolean>(true);
+    const getReadableAddress = async (lat: number, lng: number) => {
+        setAddressLoading(true);
+        try {
+            const response = await fetch(
+                `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}&accept-language=id`
+            );
+            const data = await response.json();
+
+            if (data && data.address) {
+                const addr = data.address;
+                // Mengambil nama kecamatan/kelurahan/kota terdekat
+                const district = addr.suburb || addr.village || addr.city_district || addr.municipality || "";
+                const city = addr.city || addr.town || addr.regency || addr.county || "";
+
+                if (district && city) {
+                    setAddress(`${district}, ${city}`);
+                } else if (city) {
+                    setAddress(city);
+                } else {
+                    // Fallback jika tidak menemukan info detail
+                    const cleanName = data.display_name.split(',').slice(0, 2).join(', ');
+                    setAddress(cleanName || "Lokasi Terdeteksi");
+                }
+            } else {
+                setAddress("Lokasi tidak dikenal");
+            }
+        } catch (error) {
+            console.error("Gagal mendapatkan alamat:", error);
+            setAddress("Gagal memuat nama lokasi");
+        } finally {
+            setAddressLoading(false);
+        }
+    };
 
     useEffect(() => {
-        fetDetailProduct()
-    }, [])
+        if (!navigator.geolocation) {
+            console.log("Geolocation tidak didukung");
+            setAddress("GPS Tidak Didukung");
+            setAddressLoading(false);
+            return;
+        }
+
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                const lat = position.coords.latitude;
+                const lng = position.coords.longitude;
+
+                setUserLocation({ lat, lng });
+                getReadableAddress(lat, lng);
+            },
+            (error) => {
+                setUserLocation({
+                    lat: 0,
+                    lng: 0,
+                });
+                setAddress("Akses GPS Ditolak / Gagal");
+                setAddressLoading(false);
+                console.log("Gagal ambil lokasi:", error.message);
+            },
+            {
+                enableHighAccuracy: true,
+                timeout: 10000,
+            }
+        );
+    }, []);
+
+    useEffect(() => {
+
+        const device_id = localStorage.getItem('device_id');
+        const token = localStorage.getItem('token');
+        if (device_id && token) {
+            if (userLocation != null) {
+                fetDetailProduct();
+            }
+        } else {
+            getInitToken();
+        }
+    }, [userLocation, retryEffect]);
 
     // Pantau jika stok varian berubah menjadi lebih kecil dari kuantitas terpilih
     useEffect(() => {
@@ -87,16 +170,20 @@ export default function App() {
             setQuantity(1);
         }
     }, [selectedVariant, product]);
+
+
     const fetDetailProduct = async () => {
         try {
             setLoading(true);
-            const res = await Get<{ success: boolean; data: any }>(`/customer/detail-product/${params?.token}`);
-            if (res?.success && res.data) {
+            const res = await Get<{ success: boolean; data: any }>(`/customer/store/detail-product/${params?.token}?tenant=${params?.tenant}&lat=${userLocation?.lat !== 0 ? userLocation?.lat : ''}&lng=${userLocation?.lng !== 0 ? userLocation?.lng : ""}`);
+            if (res?.success) {
                 setProduct(res?.data?.products)
                 if (res?.data?.products?.variants && res?.data?.products.variants.length > 0) {
                     setSelectedVariant(res?.data?.products.variants[0]);
                 }
-                setOutlet(res?.data?.outlet)
+                setSelectedOutlet(res?.data?.outlets[0])
+                setQuantity(res?.data?.outlets[0]?.product_stock > 0 ? 1 : 0)
+                setOutlets(res?.data?.outlets)
                 if (res.data?.product?.color) {
                     updateCssVariables('product', res.data?.product.color);
                 } else {
@@ -109,7 +196,18 @@ export default function App() {
             setLoading(false);
         }
     };
-
+    const getInitToken = async () => {
+        try {
+            const res = await Get<{ success: Boolean, data: any }>('/customer/init')
+            if (res?.success) {
+                localStorage.setItem("device_id", res?.data.device_id)
+                localStorage.setItem("token", res?.data.token)
+                setRetreyEffect(true);
+            }
+        } catch (e: any) {
+            // console.error(e)
+        }
+    }
     const handleCart = async () => {
         setLoading(true);
         try {
@@ -119,43 +217,11 @@ export default function App() {
                 formData.append('variant_id', String(selectedVariant?.id));
             }
             formData.append('qty', String(quantity));
+            formData.append('tenant', String(params?.tenant));
+            formData.append('outlet', String(selectedoutlet?.name));
             const res = await Post<any, FormData>('/customer/add-cart', formData)
             if (res?.success) {
-                setTimeout(() => {
-                    const reducedQty = Number(quantity) || 1;
-
-                    // Update state stok lokal agar reaktif langsung berubah setelah sukses belanja
-                    setProduct((prev) => {
-                        if (!prev) return prev;
-                        return {
-                            ...prev,
-                            product_stock: Math.max(0, (prev?.product_stock ?? 0) - reducedQty),
-                            variants: prev.variants?.map((v) => {
-                                if (v.id === selectedVariant?.id) {
-                                    return {
-                                        ...v,
-                                        product_variant_stock: Math.max(0, (v.product_variant_stock ?? 0) - reducedQty)
-                                    };
-                                }
-                                return v;
-                            })
-                        };
-                    });
-
-                    // Update varian terpilih agar mencerminkan stok terbaru
-                    if (selectedVariant) {
-                        setSelectedVariant(prev => prev ? {
-                            ...prev,
-                            product_variant_stock: Math.max(0, (prev.product_variant_stock ?? 0) - reducedQty)
-                        } : null);
-                    }
-
-                    setToast(`✓ Berhasil ditambah ke keranjang (${quantity}x ${product?.name} ${selectedVariant ? `(${selectedVariant?.name})` : ''})`);
-                    setLoading(false);
-
-                    // Menghilangkan toast otomatis
-                    setTimeout(() => setToast(null), 3000);
-                }, 800);
+                router.push(`/${params?.tenant}/${selectedoutlet?.name}`)
             }
         } catch (e: any) {
             // console.error(e);
@@ -168,14 +234,14 @@ export default function App() {
 
     const handleNotifyMe = () => {
         setIsNotified(true);
-        setToast(`🔔 Kami akan memberi tahu Anda jika stok ${selectedVariant?.name || product?.name} di ${outlet?.name} telah tersedia kembali!`);
+        setToast(`🔔 Kami akan memberi tahu Anda jika stok ${selectedVariant?.name || product?.name} di ${selectedoutlet?.name} telah tersedia kembali!`);
         setTimeout(() => setToast(null), 4000);
     };
 
     // Cek apakah stok varian terpilih / stok produk utama kosong
     const isOutOfStock = selectedVariant
         ? selectedVariant.product_variant_stock === 0
-        : (product?.product_stock === 0);
+        : (selectedoutlet?.product_stock === 0);
 
     // Hitung persentase hemat diskon
     const originalPrice = selectedVariant ? selectedVariant.price : product?.price;
@@ -185,37 +251,24 @@ export default function App() {
 
     return (
         <div className="min-h-screen bg-[#FDFDFD] pb-24 text-slate-900 font-sans antialiased">
-
-            {/* Dynamic Navigasi Bar */}
             <nav className="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-100 px-4 py-3.5">
                 <div className="max-w-5xl mx-auto flex items-center justify-between">
                     <button
-                        onClick={() => window.location.href = `/${params?.tenant}/${params?.outlet}`}
+                        onClick={() => router?.back()}
                         className="w-10 h-10 rounded-xl hover:bg-slate-50 flex items-center justify-center transition-all border border-slate-100 active:scale-95 group"
                         aria-label="Kembali"
                     >
                         <ArrowLeft className="w-5 h-5 text-slate-600 group-hover:-translate-x-0.5 transition-transform" />
                     </button>
-
                     <span className="text-sm font-bold text-slate-800 tracking-tight">Detail Menu & Outlet</span>
+                    <div>
 
-                    <button
-                        onClick={() => setIsOpenScan(true)}
-                        className="w-10 h-10 rounded-xl hover:bg-slate-50 flex items-center justify-center transition-all border border-slate-100 active:scale-95 text-slate-700"
-                        aria-label="Scan Barcode"
-                    >
-                        <ScanBarcode className="w-5 h-5" />
-                    </button>
+                    </div>
                 </div>
             </nav>
-
             <main className="max-w-5xl mx-auto p-4 md:p-8">
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-
-                    {/* SISI KIRI: MEDIA PREVIEW & DESKRIPSI DETAIL */}
                     <section className="lg:col-span-7 space-y-6">
-
-                        {/* Foto Produk Premium Frame */}
                         <div className="bg-white rounded-3xl border border-slate-100 shadow-sm flex items-center justify-center aspect-square relative overflow-hidden group">
                             <img
                                 src={selectedVariant?.image ?? product?.image}
@@ -223,7 +276,6 @@ export default function App() {
                                 className="w-full h-full object-cover group-hover:scale-102 transition-transform duration-700 ease-out"
                             />
 
-                            {/* Badges Floating di Foto */}
                             <div className="absolute top-4 left-4 flex flex-col gap-2 z-10">
                                 {product?.category && (
                                     <span className="px-3.5 py-1.5 rounded-xl bg-white/95 backdrop-blur-md text-slate-800 text-[10px] font-bold uppercase tracking-wider shadow-sm border border-slate-100">
@@ -238,7 +290,6 @@ export default function App() {
                             </div>
                         </div>
 
-                        {/* Deskripsi Produk */}
                         {product?.description && product?.description !== '' && (
                             <div className="bg-white rounded-3xl border border-slate-100 shadow-sm p-6 md:p-8 space-y-4">
                                 <div className="flex items-center gap-2">
@@ -251,14 +302,81 @@ export default function App() {
                                 />
                             </div>
                         )}
-                    </section>
+                        <div className="space-y-3.5">
+                            {outlets && outlets?.length > 0 ? (
+                                outlets.map((out) => {
+                                    const isSelected = out.id === selectedoutlet?.id;
+                                    const stockAtThisOutlet = out.product_stock ?? 0;
+                                    const isStockOut = stockAtThisOutlet === 0;
 
-                    {/* SISI KANAN: HARGA, VARIAN, OUTLET & AKSI TRANSAKSI */}
+                                    return (
+                                        <div
+                                            key={out.id}
+                                            onClick={() => {
+                                                setSelectedOutlet(out);
+                                                setSelectedVariant(out?.variants[0])
+                                            }}
+                                            className={`group relative flex flex-col sm:flex-row justify-between items-start sm:items-center p-5 rounded-2xl border text-left transition-all duration-300 cursor-pointer ${isSelected
+                                                ? 'border-[var(--product-primary-color)] bg-[rgba(var(--product-primary-rgb),0.03)] ring-1 ring-[var(--product-primary-color)] shadow-xs'
+                                                : 'border-slate-150 hover:border-slate-300 bg-white shadow-xs'
+                                                }`}
+                                        >
+                                            <div className="space-y-2 flex-1 min-w-0 pr-4">
+                                                <div className="flex items-center gap-2">
+                                                    <span className={`w-2.5 h-2.5 rounded-full ${out.is_currently_open ? 'bg-emerald-500' : 'bg-rose-400 animate-pulse'}`} />
+                                                    <h4 className="font-extrabold text-slate-800 text-sm truncate">{out.name}</h4>
+                                                    {isSelected && (
+                                                        <span className="text-[9px] bg-[var(--product-primary-color)] text-white font-bold px-2 py-0.5 rounded-full flex items-center gap-1">
+                                                            <Check className="w-2.5 h-2.5" /> Aktif
+                                                        </span>
+                                                    )}
+                                                </div>
+
+                                                <p className="text-xs text-slate-500 font-medium leading-relaxed line-clamp-1">{out.address}</p>
+
+                                                <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] text-slate-400 font-semibold">
+                                                    <span className="flex items-center gap-1">
+                                                        <MapPin className="w-3.5 h-3.5 text-slate-400" /> {out.distance} dari lokasi Anda
+                                                    </span>
+                                                    <span className="flex items-center gap-1">
+                                                        <Clock className="w-3.5 h-3.5 text-slate-400" /> {out.time_open} - {out.time_close}
+                                                    </span>
+                                                </div>
+                                            </div>
+
+                                            <div className="mt-4 sm:mt-0 flex sm:flex-col items-end gap-2 w-full sm:w-auto shrink-0 border-t sm:border-t-0 pt-3 sm:pt-0 border-slate-100">
+                                                {isStockOut ? (
+                                                    <span className="px-3 py-1 rounded-full text-[10px] font-bold text-rose-600 bg-rose-50 border border-rose-100/60 flex items-center gap-1">
+                                                        <AlertCircle className="w-3.5 h-3.5" /> Habis di Sini
+                                                    </span>
+                                                ) : (
+                                                    <span className="px-3 py-1 rounded-full text-[10px] font-bold text-emerald-600 bg-emerald-50 border border-emerald-100/60 flex items-center gap-1">
+                                                        <CheckCircle2 className="w-3.5 h-3.5" /> Ready {stockAtThisOutlet} Pcs
+                                                    </span>
+                                                )}
+
+                                                {!out.is_currently_open && (
+                                                    <span className="text-[9px] font-bold text-amber-600 bg-amber-50 px-2 py-0.5 rounded">TUTUP</span>
+                                                )}
+
+                                                <span className={`text-[11px] font-bold hidden sm:flex items-center gap-0.5 ${isSelected ? 'text-[var(--product-primary-color)]' : 'text-slate-400 group-hover:text-slate-700'}`}>
+                                                    {isSelected ? 'Sedang Dipilih' : 'Pilih Outlet'} <ChevronRight className="w-3 h-3" />
+                                                </span>
+                                            </div>
+                                        </div>
+                                    );
+                                })
+                            ) : (
+                                <div className="p-8 text-center bg-slate-50 rounded-2xl border border-dashed border-slate-200">
+                                    <p className="text-xs text-slate-500 font-bold">Outlet tidak ditemukan. Silakan ganti kata kunci pencarian Anda.</p>
+                                </div>
+                            )}
+                        </div>
+                    </section>
                     <section className="lg:col-span-5 lg:sticky lg:top-24 space-y-4">
 
                         <div className="bg-white rounded-3xl border border-slate-100 shadow-sm p-6 md:p-8 space-y-6">
 
-                            {/* Judul & Badge Potongan Harga */}
                             <div className="space-y-2">
                                 <div className="flex items-center gap-2">
                                     {product?.category && (
@@ -279,36 +397,41 @@ export default function App() {
                                 </h1>
                             </div>
 
-                            {/* Box Harga Retail */}
-                            <div className="p-4 bg-slate-50/50 rounded-2xl border border-slate-100 flex items-center justify-between">
-                                <div>
-                                    <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest block mb-0.5">Harga Terbaik</span>
-                                    <div className="flex items-baseline gap-2">
-                                        <span className="text-2xl font-black text-slate-900">
+                            <div className="p-3 sm:p-4 bg-slate-50/50 rounded-2xl border border-slate-100 flex flex-col xs:flex-row gap-3 xs:gap-2 items-start xs:items-center justify-between min-w-0">
+                                {/* Kolom Kiri: Informasi Harga */}
+                                <div className="min-w-0 w-full xs:w-auto">
+                                    <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest block mb-0.5">
+                                        Harga Terbaik
+                                    </span>
+                                    <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5 min-w-0">
+                                        <span className="text-xl sm:text-2xl font-black text-slate-900 break-all xs:break-normal">
                                             Rp {finalPrice?.toLocaleString('id-ID')}
                                         </span>
                                         {hasDiscount && (
-                                            <span className="text-xs font-bold text-slate-400 line-through decoration-slate-300">
+                                            <span className="text-[11px] sm:text-xs font-bold text-slate-400 line-through decoration-slate-300 truncate">
                                                 Rp {originalPrice?.toLocaleString('id-ID')}
                                             </span>
                                         )}
                                     </div>
                                 </div>
 
-                                {/* Sisa Stok Indicator */}
-                                <div className="text-right">
-                                    <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest block mb-1">Status Stok</span>
+                                {/* Kolom Kanan: Status Stok */}
+                                <div className="text-left xs:text-right shrink-0 w-full xs:w-auto pt-2 xs:pt-0 border-t border-dashed border-slate-200 xs:border-none">
+                                    <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest block mb-1.5 xs:mb-1">
+                                        Status Stok
+                                    </span>
                                     {isOutOfStock ? (
-                                        <span className="text-[10px] font-bold text-rose-500 bg-rose-50 px-2.5 py-1 rounded-lg">Stok Habis</span>
+                                        <span className="inline-block text-[10px] font-bold text-rose-500 bg-rose-50 px-2.5 py-1 rounded-lg">
+                                            Stok Habis
+                                        </span>
                                     ) : (
-                                        <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-lg animate-pulse">
-                                            Ready {(selectedVariant ? selectedVariant.product_variant_stock : product?.product_stock)} Pcs
+                                        <span className="inline-block text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-lg animate-pulse whitespace-nowrap">
+                                            Ready {(selectedVariant ? selectedVariant.product_variant_stock : selectedoutlet?.product_stock)} Pcs
                                         </span>
                                     )}
                                 </div>
                             </div>
 
-                            {/* Info Lokasi Outlet Aktif */}
                             <div className="border border-slate-100 rounded-2xl p-4 space-y-3 bg-white shadow-xs">
                                 <div className="flex items-start gap-3">
                                     <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-100 text-slate-500 shrink-0 mt-0.5">
@@ -316,28 +439,27 @@ export default function App() {
                                     </div>
                                     <div className="space-y-0.5 min-w-0">
                                         <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest block">Lokasi Pembelian</span>
-                                        <h4 className="text-xs font-bold text-slate-800 truncate">{outlet?.name}</h4>
-                                        <p className="text-[11px] text-slate-500 font-medium leading-normal line-clamp-1">{outlet?.address}</p>
+                                        <h4 className="text-xs font-bold text-slate-800 truncate">{selectedoutlet?.name}</h4>
+                                        <p className="text-[11px] text-slate-500 font-medium leading-normal line-clamp-1">{selectedoutlet?.address}</p>
                                     </div>
                                 </div>
 
                                 <div className="pt-2.5 border-t border-slate-50 flex items-center justify-between text-[11px] text-slate-500 font-semibold px-1">
                                     <div className="flex items-center gap-1">
                                         <Calendar className="w-3.5 h-3.5 text-slate-450" />
-                                        <span>{outlet?.day_open} - {outlet?.day_close}</span>
+                                        <span>{selectedoutlet?.day_open} - {selectedoutlet?.day_close}</span>
                                     </div>
                                     <div className="flex items-center gap-1">
                                         <Clock className="w-3.5 h-3.5 text-slate-450" />
-                                        <span>{outlet?.time_open} - {outlet?.time_close}</span>
+                                        <span>{selectedoutlet?.time_open} - {selectedoutlet?.time_close}</span>
                                     </div>
                                 </div>
                             </div>
 
-                            {/* Variant Picker */}
-                            {product?.variants && product.variants.length > 0 && (
+                            {product && selectedoutlet?.variants && selectedoutlet.variants.length > 0 && (
                                 <div className="pt-2">
                                     <VariantPicker
-                                        variants={product.variants}
+                                        variants={selectedoutlet.variants}
                                         product={product}
                                         selectedVariant={selectedVariant}
                                         setSelectedVariant={(v) => {
@@ -348,19 +470,17 @@ export default function App() {
                                 </div>
                             )}
 
-                            {/* Quantity Selector */}
                             {product && product.is_qty && (
                                 <div className="pt-1">
                                     <QtySelector
                                         quantity={quantity}
                                         setQuantity={setQuantity}
-                                        product={product}
+                                        stock={selectedoutlet?.product_stock ?? 0}
                                         selectedVariant={selectedVariant}
                                     />
                                 </div>
                             )}
 
-                            {/* UX RECOVERY: INTERACTIVE FALLBACK JIKA STOK HABIS */}
                             {isOutOfStock && (
                                 <div className="space-y-3.5 pt-1">
                                     <div className="bg-amber-50/70 border border-amber-200/80 p-4 rounded-2xl flex items-start gap-3">
@@ -370,14 +490,13 @@ export default function App() {
                                         <div className="space-y-1">
                                             <h4 className="font-bold text-amber-800 text-xs sm:text-sm">Varian Produk Kosong</h4>
                                             <p className="text-[11px] text-amber-700 leading-relaxed font-medium">
-                                                Waduh, maaf! Varian <span className="font-bold">"{selectedVariant?.name}"</span> sedang habis di {outlet?.name}. Silakan ganti ke varian lain yang bertanda hijau, atau daftarkan pengingat restock instan.
+                                                Waduh, maaf! Varian <span className="font-bold">"{selectedVariant?.name}"</span> sedang habis di {selectedoutlet?.name}. Silakan ganti ke varian lain yang bertanda hijau, atau daftarkan pengingat restock instan.
                                             </p>
                                         </div>
                                     </div>
                                 </div>
                             )}
 
-                            {/* SUMMARY PEMBELIAN & SUB-TOTAL */}
                             <div className="pt-4 border-t border-slate-100 space-y-4">
                                 <div className="flex items-center justify-between">
                                     <div>
@@ -394,7 +513,6 @@ export default function App() {
                                     </div>
                                 </div>
 
-                                {/* Tombol Aksi Transaksi Dinamis */}
                                 <div className="space-y-2 pt-1">
                                     {isOutOfStock ? (
                                         /* JIKA OUT OF STOCK: GANTI TOMBOL BELI DENGAN TOMBOL "INGATKAN SAYA" */
@@ -411,11 +529,11 @@ export default function App() {
                                     ) : (
                                         /* JIKA STOK TERSEDIA: TOMBOL BELI SEKARANG AKTIF / MATI KARENA TOKO TUTUP */
                                         <button
-                                            disabled={!outlet?.is_currently_open || loading}
+                                            disabled={!selectedoutlet?.is_currently_open || loading}
                                             onClick={handleCart}
                                             className="w-full py-4 text-xs font-black rounded-xl uppercase tracking-wider transition-all duration-200 shadow-md flex items-center justify-center gap-2 disabled:bg-slate-300 disabled:shadow-none disabled:cursor-not-allowed"
                                             style={{
-                                                backgroundColor: outlet?.is_currently_open ? 'var(--product-primary-color)' : '#94a3b8',
+                                                backgroundColor: selectedoutlet?.is_currently_open ? 'var(--product-primary-color)' : '#94a3b8',
                                                 color: 'var(--product-secondary-color)',
                                             }}
                                         >
@@ -425,13 +543,12 @@ export default function App() {
                                                 <ShoppingBag className="w-4 h-4" />
                                             )}
                                             <span>
-                                                {outlet?.is_currently_open ? 'Beli Sekarang' : 'Outlet Sedang Tutup'}
+                                                {selectedoutlet?.is_currently_open ? 'Beli Sekarang' : 'Outlet Sedang Tutup'}
                                             </span>
                                         </button>
                                     )}
 
-                                    {/* Status operasional outlet alert jika outlet tutup */}
-                                    {!outlet?.is_currently_open && (
+                                    {!selectedoutlet?.is_currently_open && (
                                         <div className="flex items-center justify-center gap-1.5 text-[10px] text-slate-500 font-semibold pt-1">
                                             <AlertCircle className="w-3.5 h-3.5 text-rose-500" />
                                             <span>Pesanan hanya dapat diproses pada jam operasional outlet.</span>
@@ -442,8 +559,6 @@ export default function App() {
 
                         </div>
                     </section>
-
-                    {/* Toast Notification Floating */}
                     <div className="fixed bottom-6 right-6 z-50 flex flex-col gap-2 max-w-sm w-full px-4">
                         {toast && (
                             <div className="p-4 rounded-xl bg-slate-900 text-white shadow-xl text-xs font-bold flex items-center justify-between gap-3 animate-in slide-in-from-bottom duration-200 border border-slate-800">
@@ -457,36 +572,8 @@ export default function App() {
                             </div>
                         )}
                     </div>
-
                 </div>
             </main>
-
-            {/* Simulasi Modal Scan */}
-            {isOpenScan && (
-                <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-center justify-center p-4">
-                    <div className="bg-white rounded-3xl p-6 max-w-sm w-full text-center space-y-4 shadow-xl border border-slate-100">
-                        <div className="w-16 h-16 bg-slate-50 border border-slate-100 rounded-full flex items-center justify-center mx-auto text-slate-600">
-                            <ScanBarcode className="w-8 h-8" />
-                        </div>
-                        <div className="space-y-1">
-                            <h3 className="font-bold text-slate-800">Pemindai Barcode</h3>
-                            <p className="text-xs text-slate-500 leading-relaxed">
-                                Silakan dekatkan kode barcode produk ke kamera perangkat Anda untuk proses pemindaian otomatis cepat.
-                            </p>
-                        </div>
-                        <div className="w-full aspect-video bg-slate-900 rounded-xl relative overflow-hidden flex items-center justify-center text-xs text-slate-450 font-bold border-2 border-slate-200">
-                            <div className="absolute inset-x-0 h-0.5 bg-rose-500 top-1/2 -translate-y-1/2 animate-pulse" />
-                            <span>[ KAMERA AKTIF ]</span>
-                        </div>
-                        <button
-                            onClick={() => setIsOpenScan(false)}
-                            className="w-full py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl transition-all"
-                        >
-                            Kembali
-                        </button>
-                    </div>
-                </div>
-            )}
         </div>
     );
 }
