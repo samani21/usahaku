@@ -204,3 +204,17 @@ input[type=number] {
 .leaflet-routing-container {
   display: none !important;
 }
+
+
+/* Hilangkan default box styles milik Leaflet tooltip */
+.leaflet-tooltip.custom-clean-tooltip {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+
+/* Hilangkan segitiga panah kecil bawaan leaflet di bawah text */
+.leaflet-tooltip-top.custom-clean-tooltip::before {
+  border-top-color: transparent !important;
+}

@@ -3,10 +3,10 @@ import React from 'react'
 
 type Props = {}
 
-function StorePage({ }: Props) {
+const MapsPage = (props: Props) => {
     return (
-        <StorePageComponent page={'Beranda'} />
+        <StorePageComponent page={'Maps'} />
     )
 }
 
-export default StorePage
+export default MapsPage

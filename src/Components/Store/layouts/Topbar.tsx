@@ -1,6 +1,7 @@
 'use client'
 import { Bell, Compass, Home, Map, Search, User, Video } from 'lucide-react';
 import React, { Dispatch, SetStateAction, useState } from 'react';
+import { Menus } from '../Menu';
 
 type TopbarItemProps = {
     PRIMARY_COLOR: string;
@@ -54,22 +55,13 @@ export const TopbarItem = ({ PRIMARY_COLOR, searchTerm, setSearchTerm, activeNav
 
                 {/* DESKTOP NAVIGATION ITEMS */}
                 <nav className="hidden lg:flex items-center gap-1">
-                    {[
-                        { id: 'Beranda', label: 'Beranda', icon: Home },
-                        { id: 'Postingan', label: 'Postingan', icon: Compass },
-                        { id: 'Maps', label: 'Peta UMKM', icon: Map, badge: 'Baru' },
-                        { id: 'Reels', label: 'Reels', icon: Video, badge: 'LIVE' },
-                        { id: 'Profile', label: 'Profil Saya', icon: User }
-                    ].map(item => {
+                    {Menus.map(item => {
                         const Icon = item.icon;
                         const isActive = activeNav === item.id;
                         return (
                             <button
                                 key={item.id}
-                                onClick={() => {
-                                    setActiveNav(item.id);
-                                    setActiveCategory('Semua');
-                                }}
+                                onClick={() => window.location.href = `/store/${item?.herf}`}
                                 className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition-all relative ${isActive
                                     ? 'bg-emerald-500 text-white shadow-md shadow-emerald-500/15'
                                     : 'text-zinc-600 hover:bg-emerald-50/70 hover:text-emerald-600'
@@ -77,11 +69,11 @@ export const TopbarItem = ({ PRIMARY_COLOR, searchTerm, setSearchTerm, activeNav
                             >
                                 <Icon size={16} strokeWidth={isActive ? 2.5 : 2} />
                                 <span>{item.label}</span>
-                                {item.badge && !isActive && (
+                                {/* {item.badge && !isActive && (
                                     <span className="absolute -top-1 right-1 text-[8px] font-black px-1.5 py-0.5 rounded-full bg-rose-500 text-white animate-pulse">
                                         {item.badge}
                                     </span>
-                                )}
+                                )} */}
                             </button>
                         );
                     })}

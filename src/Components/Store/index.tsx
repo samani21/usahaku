@@ -3,10 +3,16 @@ import React, { useState } from 'react';
 import { BerandaView } from './views/BerandaView';
 import { nearbyOutlets, nearbyProducts } from './Dummy';
 import { TopbarItem } from './layouts/Topbar';
+import Bottombar from './layouts/Bottombar';
+import MapsView from './views/MapsView';
 const PRIMARY_COLOR = "#10B981"; // Emerald-500
-export default function App() {
-    const [activeNav, setActiveNav] = useState('Beranda');
-    const [cart, setCart] = useState<any[]>([]);
+
+type Props = {
+    page: string;
+}
+
+export default function StorePageComponent({ page }: Props) {
+    const [activeNav, setActiveNav] = useState(page);
     const [searchTerm, setSearchTerm] = useState<string>('');
     const [activeCategory, setActiveCategory] = useState('Semua');
 
@@ -17,8 +23,8 @@ export default function App() {
                 return <BerandaView outlets={nearbyOutlets} />;
             // case 'Postingan':
             //     return <PostinganView onAddToCart={handleAddToCart} />;
-            // case 'Maps':
-            //     return <MapsView />;
+            case 'Maps':
+                return <MapsView PRIMARY_COLOR={PRIMARY_COLOR} />;
             // case 'Reels':
             //     return <ReelsView onAddToCart={handleAddToCart} />;
             // case 'Profile':
@@ -43,7 +49,7 @@ export default function App() {
             </main>
 
             {/* Layout Bawah untuk Mobile */}
-            {/* <Bottombar activeNav={activeNav} setActiveNav={setActiveNav} /> */}
+            <Bottombar activeNav={activeNav} setActiveNav={setActiveNav} setActiveCategory={setActiveCategory} />
         </div>
     );
 }
