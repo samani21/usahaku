@@ -142,9 +142,13 @@ const AuthComponent = ({ tenant }: { tenant: string }) => {
                 const token = success?.token;
                 const device_id = success?.device_id;
                 const user = success?.user;
-                localStorage.setItem("token", token);
+                if (success?.user?.role === 'customer') {
+                    localStorage.setItem("customer_token", token);
+                } else {
+                    localStorage.setItem("token", token);
+                }
                 localStorage.setItem("device_id", device_id);
-                localStorage.setItem("user", JSON.stringify(user));
+                localStorage.setItem("customer", JSON.stringify(user));
                 setIsLoading(true);
                 setTimeout(() => {
                     setIsLoading(false);

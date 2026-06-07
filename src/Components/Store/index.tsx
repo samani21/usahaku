@@ -1,10 +1,11 @@
 "use client"
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { BerandaView } from './views/BerandaView';
 import { nearbyOutlets, nearbyProducts } from './Dummy';
 import { TopbarItem } from './layouts/Topbar';
 import Bottombar from './layouts/Bottombar';
 import MapsView from './views/MapsView';
+import { Get } from '@/utils/Get';
 const PRIMARY_COLOR = "#10B981"; // Emerald-500
 
 type Props = {
@@ -15,6 +16,27 @@ export default function StorePageComponent({ page }: Props) {
     const [activeNav, setActiveNav] = useState(page);
     const [searchTerm, setSearchTerm] = useState<string>('');
     const [activeCategory, setActiveCategory] = useState('Semua');
+    const [retryEffect, setRetreyEffect] = useState<boolean>(false);
+    const getInitToken = async () => {
+        try {
+            const res = await Get<{ success: Boolean, data: any }>('/customer/init')
+            if (res?.success) {
+                localStorage.setItem("device_id", res?.data.device_id)
+                localStorage.setItem("customer_token", res?.data.token)
+                setRetreyEffect(true);
+            }
+        } catch (e: any) {
+            // console.error(e)
+        }
+    }
+
+    useEffect(() => {
+        const device_id = localStorage.getItem('device_id');
+        const token = localStorage.getItem('customer_token');
+        if (!device_id || !token) {
+            getInitToken();
+        }
+    }, [retryEffect]);
 
     // Render halaman dinamis berdasarkan menu aktif
     const renderView = () => {

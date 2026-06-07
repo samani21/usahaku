@@ -128,7 +128,7 @@ export default function Store() {
             const res = await Get<{ success: Boolean, data: any }>('/customer/init')
             if (res?.success) {
                 localStorage.setItem("device_id", res?.data.device_id)
-                localStorage.setItem("token", res?.data.token)
+                localStorage.setItem("customer_token", res?.data.token)
                 setRetreyEffect(true);
             }
         } catch (e: any) {
@@ -138,7 +138,7 @@ export default function Store() {
 
     useEffect(() => {
         const device_id = localStorage.getItem('device_id');
-        const token = localStorage.getItem('token');
+        const token = localStorage.getItem('customer_token');
         if (device_id && token) {
             fetchCatalog()
         } else {

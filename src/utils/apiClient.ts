@@ -40,7 +40,7 @@ const getTenantAndOutlet = () => {
 const getDevice = () => {
     return {
         device_id: localStorage.getItem("device_id"),
-        device_token: localStorage.getItem("token"),
+        device_token: localStorage.getItem("customer_token"),
     };
 };
 
